@@ -8,6 +8,9 @@
 # Java class files
 *.class
 
+# Eclipse workspace
+.metadata/*
+
 # Generated files
 bin/
 gen/
