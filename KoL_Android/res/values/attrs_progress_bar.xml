@@ -1,0 +1,9 @@
+<resources>
+
+    <declare-styleable name="ProgressBar">
+        <attr name="emptyColor" format="color" />
+        <attr name="fullColor" format="color" />
+        <attr name="outlineColor" format="color" />
+    </declare-styleable>
+
+</resources>
