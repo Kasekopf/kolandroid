@@ -119,6 +119,10 @@ public class ChatActivity extends ActionBarActivity implements
 			TabInfo ti = host.getChildByTag(tag);
 			
 			if (ti == null) {
+				if(!channel.isActive()) {
+					//Do not make a tab for an inactive channel.
+					continue;
+				}
 				Log.i("ChatService", "Making new tab for '" + tag + "'");
 				Bundle bund = new Bundle();
 				bund.putSerializable("list", channel.getMessages());

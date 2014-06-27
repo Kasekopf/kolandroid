@@ -78,6 +78,10 @@ public class ChatText implements Serializable {
 		return user;
 	}
 	
+	protected boolean isEvent() {
+		return this.format == 98;
+	}
+	
 	public String getTitle() {
 		if(user == null) return "";
 		if(user.name == null) return "";

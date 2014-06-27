@@ -3,6 +3,7 @@ package com.starfish.kol.model.models.chat;
 import java.io.Serializable;
 
 import com.starfish.kol.model.ProgressHandler;
+import com.starfish.kol.model.interfaces.DeferredAction;
 import com.starfish.kol.request.Request;
 import com.starfish.kol.request.ResponseHandler;
 
@@ -47,7 +48,7 @@ public class ChatAction implements Serializable {
 		return title;
 	}
 	
-	public class ChatActionSubmission {
+	public class ChatActionSubmission implements DeferredAction<ChatModel> {
 		private final ChatText baseMessage;
 		private final ProgressHandler<String> toChatField;
 		
@@ -56,6 +57,7 @@ public class ChatAction implements Serializable {
 			this.toChatField = toChatField;
 		}
 		
+		@Override
 		public void submit(ChatModel context) {
 			if(baseMessage.getUser() == null)
 				return; //cannot submit with no user

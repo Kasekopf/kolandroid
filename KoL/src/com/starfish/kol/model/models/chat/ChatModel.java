@@ -36,11 +36,15 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 			"handleMessage\\((\\{.*?\\})(, true)?\\);", 1);
 	private static final Regex ACTIONS = new Regex(
 			"var actions ?= ?(\\{.*?\\});\n", 1);
-	
-	private static final Regex PLAYER_ID = new Regex("playerid ?= ?[\"']?(\\d+)[\"']?[,;]", 1);
-	private static final Regex PWD = new Regex("pwdhash  ?= ?[\"']?([0-9a-fA-F]+)[\"']?[,;]", 1);
+
+	private static final Regex PLAYER_ID = new Regex(
+			"playerid ?= ?[\"']?(\\d+)[\"']?[,;]", 1);
+	private static final Regex PWD = new Regex(
+			"pwdhash  ?= ?[\"']?([0-9a-fA-F]+)[\"']?[,;]", 1);
 	private static final Regex BASEROOM = new Regex("active: \"([^\"]*)\"", 1);
-	
+
+	private static final Regex CHANNEL = new Regex("<br>&nbsp;&nbsp;(.*?)(?=<br>|$)", 1);
+
 	private boolean hasChat;
 	private HashSet<Integer> seenMessages;
 	private String lasttime;
@@ -52,11 +56,11 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 
 	private Map<String, ChatChannel> channelsByName;
 	private ArrayList<ChatChannel> channels;
-	
+
 	private ArrayList<ChatAction> baseActions;
-	
-	private String currentRoom;
-	
+
+	private String visibleChannel;
+
 	private final Gson parser;
 
 	public ChatModel() {
@@ -66,25 +70,33 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 
 		channels = new ArrayList<ChatChannel>();
 		channelsByName = new HashMap<String, ChatChannel>();
-		
+
 		lasttime = "0";
 		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(RawActionList.class, new RawActionListDeserializer());
-		parser = builder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+		builder.registerTypeAdapter(RawActionList.class,
+				new RawActionListDeserializer());
+		parser = builder.setFieldNamingPolicy(
+				FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 	}
-	
+
 	public void reset() {
 		this.seenMessages.clear();
 		messages.clear();
 		channels.clear();
 		channelsByName.clear();
-		
+
 		lasttime = "0";
+	}
+
+	public void refreshChannels() {
+		this.submitCommand("/channels");
+		this.submitCommand("/l");
 	}
 
 	@Override
 	public boolean handle(Session session, Request request, ServerReply response) {
-		if (!response.url.contains("newchatmessages.php") && !response.url.contains("submitnewchat.php")) {
+		if (!response.url.contains("newchatmessages.php")
+				&& !response.url.contains("submitnewchat.php")) {
 			notifyView(ChatStatus.STOPPED);
 			return false;
 		}
@@ -96,31 +108,77 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 
 		RawMessageList update = parser.fromJson(response.html,
 				RawMessageList.class);
-		/*
-		if (update.msgs.length > 0)
-			System.out.println(response.html);
-		*/
-		
+
+		System.out.println(response.html);
 		boolean updated = false;
 		for (ChatText message : update.msgs) {
-			//System.out.println("MSG: " + message.getText());
 			if (this.processMessage(message))
 				updated = true;
 		}
-		if(update.output != null) {
-			System.out.println("Recieved output: " + update.output);
-			if(this.processMessage(new ChatText(update.output)));
-				updated = true;
-		}
 		
+		if (update.output != null) {
+			boolean commandHandled = this.processCommand(update.output);
+			if(!commandHandled || !request.hasTag("hidden")) {
+				if (this.processMessage(new ChatText(update.output)))
+					updated = true;
+			}
+		}
 
 		if (updated)
 			notifyView(ChatStatus.UPDATE);
 
-		lasttime = update.last;
+		if(update.last != null)
+			lasttime = update.last;
 		return true;
 	}
 
+	private ChatChannel getOrCreateChannel(String name) {
+		ChatChannel channel;
+		if (channelsByName.containsKey(name)) {
+			channel = channelsByName.get(name);
+		} else {
+			channel = new ChatChannel(name);
+			channels.add(channel);
+			channelsByName.put(name, channel);
+			System.out.println("Added new chat channel: " + name);
+		}
+		return channel;
+	}
+
+	private boolean processCommand(String output) {
+		output = output.replace("</font>", "");
+		
+		if(output.contains("<font color=green>Available channels:")) {
+			//Loading result of /channel
+			for (String channel : CHANNEL.extractAllSingle(output)) {
+				getOrCreateChannel(channel);
+			}
+			return true;
+		}
+		else if(output.contains("<font color=green>Currently listening to channels:")) {
+			//Loading result of /listen
+			ArrayList<ChatChannel> active = new ArrayList<ChatChannel>();
+			for (String channel : CHANNEL.extractAllSingle(output)) {
+				if (channel.contains("<b>")) {
+					channel = channel.replace("<b>", "")
+							.replace("</b>", "");
+				}
+
+				ChatChannel c = getOrCreateChannel(channel);
+				c.setActive(true);
+				active.add(c);
+			}
+
+			for (ChatChannel c : channels) {
+				c.setActive(active.contains(c));
+			}
+			return true;
+		}
+		
+		System.out.println("Unknown command: " + output);
+		return false;
+	}
+	
 	private boolean processMessage(ChatText message) {
 		if (message.getID() != 0) {
 			if (seenMessages.contains(message.getID()))
@@ -128,46 +186,34 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 			seenMessages.add(message.getID());
 		}
 
-		message.prepare(baseActions, currentRoom);
-		
-		String channelName = message.getChannel();
-		ChatChannel channel;
-		if (channelsByName.containsKey(channelName)) {
-			channel = channelsByName.get(channelName);
-		} else {
-			channel = new ChatChannel(channelName);
-			channels.add(channel);
-			channelsByName.put(channelName, channel);
-			System.out.println("Added new chat channel: " + channelName);
-		}
+		message.prepare(baseActions, visibleChannel);
 
+		String channelName = message.getChannel();
+		ChatChannel channel = getOrCreateChannel(channelName);		
 		messages.add(message);
 		channel.addMessage(message);
 		return true;
 	}
 
 	private void processInitial(ServerReply response) {
-		for (String message : INITIAL_MESSAGES
-				.extractAllSingle(response.html)) {
+		for (String message : INITIAL_MESSAGES.extractAllSingle(response.html)) {
 			if (message.contains("<span class=\"welcome\">"))
 				continue;
 			processMessage(parser.fromJson(message, ChatText.class));
 		}
-		
+
 		this.playerid = PLAYER_ID.extractSingle(response.html);
 		this.pwd = PWD.extractSingle(response.html);
-		this.currentRoom = BASEROOM.extractSingle(response.html);
-		
+		this.visibleChannel = BASEROOM.extractSingle(response.html);
+
 		String actionList = ACTIONS.extractSingle(response.html);
-		System.out.println(actionList);
-		RawActionList rawactions = parser.fromJson(actionList, RawActionList.class);
+		RawActionList rawactions = parser.fromJson(actionList,
+				RawActionList.class);
 		this.baseActions = rawactions.actions;
-		
+
 		baseActions.add(0, ChatAction.SHOWPROFILE);
-		for(ChatAction action : baseActions)
-			System.out.println(action);
 	}
-	
+
 	public void triggerUpdate() {
 		this.makeRequest(new Request("newchatmessages.php?j=1&lasttime="
 				+ lasttime, this));
@@ -195,43 +241,57 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 			}
 		});
 		this.makeRequest(req);
+		this.refreshChannels();
 	}
 
 	public void setCurrentRoom(String room) {
-		this.currentRoom = room;
+		this.visibleChannel = room;
 	}
-	
-	@SuppressWarnings("deprecation")
-	protected void submitChat(String msg) {
-		String baseurl = "submitnewchat.php?playerid=%s&pwd=%s&graf=%s&j=1";
-		String encodedmsg;
-		
-		try {
-			encodedmsg = URLEncoder.encode(msg, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			encodedmsg = URLEncoder.encode(msg);
-		}
-		
-		String url = String.format(baseurl, playerid, pwd, encodedmsg);
-		System.out.println("Submitting chat for " + url);
-		
-		Request req = new Request(url, this);
-		this.makeRequest(req);
+
+	public void submitChat(String msg) {
+		submitChat(msg, false);
 	}
-	
+
 	public void submitChat(String channel, String msg) {
 		System.out.println("Submitting " + msg + " to " + channel);
-		if(!msg.startsWith("/")) {
-			if(channel.startsWith("@")) {
-				//private messaging channel
-				msg = String.format("/msg %s %s", channel.replace("@", ""), msg);
+		if (!msg.startsWith("/")) {
+			if (channel.startsWith("@")) {
+				// private messaging channel
+				msg = String
+						.format("/msg %s %s", channel.replace("@", ""), msg);
 			} else {
 				msg = String.format("/c %s %s", channel, msg);
 			}
 		}
 		submitChat(msg);
 	}
-	
+
+	private void submitCommand(String msg) {
+		if (!msg.startsWith("/"))
+			msg = "/" + msg;
+		submitChat(msg, true);
+	}
+
+	@SuppressWarnings("deprecation")
+	private void submitChat(String msg, boolean hiddencommand) {
+		String baseurl = "submitnewchat.php?playerid=%s&pwd=%s&graf=%s&j=1";
+		String encodedmsg;
+
+		try {
+			encodedmsg = URLEncoder.encode(msg, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			encodedmsg = URLEncoder.encode(msg);
+		}
+
+		String url = String.format(baseurl, playerid, pwd, encodedmsg);
+		System.out.println("Submitting chat for " + url);
+
+		Request req = new Request(url, this);
+		if(hiddencommand)
+			req.addTag("hidden");
+		this.makeRequest(req);
+	}
+
 	public static enum ChatStatus {
 		LOADED, NOCHAT, STOPPED, UPDATE;
 	}
@@ -260,30 +320,34 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		public String last;
 		public String output;
 	}
-	
+
 	public static class RawActionList {
 		public ArrayList<ChatAction> actions;
+
 		public RawActionList(ArrayList<ChatAction> actions) {
 			this.actions = actions;
 		}
 	}
-	
-	public static class RawActionListDeserializer implements JsonDeserializer<RawActionList> {
+
+	public static class RawActionListDeserializer implements
+			JsonDeserializer<RawActionList> {
 		@Override
 		public RawActionList deserialize(JsonElement element, Type type,
 				JsonDeserializationContext context) throws JsonParseException {
 			ArrayList<ChatAction> actions = new ArrayList<ChatAction>();
-			
-			JsonObject jsonObject = element.getAsJsonObject();			
+
+			JsonObject jsonObject = element.getAsJsonObject();
 			for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-	            // For individual City objects, we can use default deserialisation:
-	            ChatAction action = context.deserialize(entry.getValue(), ChatAction.class); 
-	            action.setEntry(entry.getKey());
-	            actions.add(action);
-	        }
-			
+				// For individual City objects, we can use default
+				// deserialisation:
+				ChatAction action = context.deserialize(entry.getValue(),
+						ChatAction.class);
+				action.setEntry(entry.getKey());
+				actions.add(action);
+			}
+
 			return new RawActionList(actions);
 		}
-		
+
 	}
 }

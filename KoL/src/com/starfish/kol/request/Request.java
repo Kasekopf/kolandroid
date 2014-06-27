@@ -1,25 +1,24 @@
 package com.starfish.kol.request;
 
 import java.net.MalformedURLException;
+import java.util.HashSet;
 
 import com.starfish.kol.connection.Connection;
 import com.starfish.kol.connection.Connection.ConnectionException;
-import com.starfish.kol.connection.Session;
 import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.Session;
 
 public class Request {
 	private String url;
 	private ResponseHandler handler;
 
+	private HashSet<String> tags;
+	
 	private String[] formNames;
 	private String[] formVals;
 
 	public Request(String url, ResponseHandler handler) {
-		this.url = url;
-		this.handler = handler;
-
-		this.formNames = new String[0];
-		this.formVals = new String[0];
+		this(url, new String[0], new String[0], handler);
 	}
 
 	public Request(String url, String[] names, String[] vals,
@@ -28,8 +27,17 @@ public class Request {
 		this.handler = handler;
 		this.formNames = names;
 		this.formVals = vals;
+		
+		this.tags = new HashSet<String>();
 	}
 
+	public void addTag(String tag) {
+		tags.add(tag);
+	}
+	
+	public boolean hasTag(String tag) {
+		return tags.contains(tag);
+	}
 	/**
 	 * Actually make the request and return a response.
 	 * This should be run on a background thread only!
