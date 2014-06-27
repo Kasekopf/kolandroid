@@ -232,6 +232,10 @@ public class CustomFragmentTabHost extends TabHost
         mOnCreateFragmentListener = f;
     }
 
+    public ArrayList<TabInfo> getTabs() {
+    	return new ArrayList<TabInfo>(mTabs);
+    }
+        
     public void addTab(TabHost.TabSpec tabSpec, Class<?> clss, Bundle args) {
         tabSpec.setContent(new DummyTabFactory(mContext));
         String tag = tabSpec.getTag();
@@ -327,9 +331,16 @@ public class CustomFragmentTabHost extends TabHost
         }
     }
 
+    public View getTabByTag(String tag) {
+    	TabInfo info = getChildByTag(tag);
+    	if(info == null) return null;
+    	
+    	int index = mTabs.indexOf(info);
+    	return getTabWidget().getChildTabViewAt(index);
+    }
+    
     public TabInfo getChildByTag(String tag) {
     	if(tag == null) return null;
-    	
     	for(TabInfo ti : mTabs) {
     		if(ti.tag.equals(tag))
     			return ti;

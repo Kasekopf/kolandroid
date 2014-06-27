@@ -1,4 +1,4 @@
-package com.starfish.kol.android.dialogs;
+package com.starfish.kol.android.chat;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -17,9 +17,9 @@ import com.starfish.kol.android.util.searchlist.OnListSelection;
 import com.starfish.kol.model.models.chat.ChatAction;
 import com.starfish.kol.model.models.chat.ChatText;
 
-public class ChatDialog extends DialogFragment {
-	public static ChatDialog create(ChatText base) {
-		ChatDialog dialog = new ChatDialog();
+public class ChatActionDialog extends DialogFragment {
+	public static ChatActionDialog create(ChatText base) {
+		ChatActionDialog dialog = new ChatActionDialog();
 		Bundle args = new Bundle();
 		
 		args.putSerializable("base", base);
@@ -62,7 +62,7 @@ public class ChatDialog extends DialogFragment {
 				if(select != null) {
 					if(selector != null)
 						selector.selectItem(select);
-					ChatDialog.this.dismiss();
+					ChatActionDialog.this.dismiss();
 				}
 			}
 	    });

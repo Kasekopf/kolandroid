@@ -31,9 +31,10 @@ public class ChatChannel implements Serializable {
 		return new DeferredAction<ChatModel>() {
 			@Override
 			public void submit(ChatModel context) {
-				if(name.contains("@")) return;
-				if(active) return;
-				context.submitChat("/listen " + name);
+				ChatChannel me = context.getChannel(name);
+				if(me.name.contains("@")) return;
+				if(me.active) return;
+				context.submitChat("/listen " + me.name);
 			}			
 		};
 	}
@@ -42,9 +43,14 @@ public class ChatChannel implements Serializable {
 		return new DeferredAction<ChatModel>() {
 			@Override
 			public void submit(ChatModel context) {
-				if(name.contains("@")) return;
-				if(!active) return;
-				context.submitChat("/listen " + name);
+				ChatChannel me = context.getChannel(name);
+				if(me.name.contains("@")) {
+					me.setActive(false);
+					context.notifyChange();
+					return;
+				}
+				if(!me.active) return;
+				context.submitChat("/listen " + me.name);
 			}			
 		};
 	}
@@ -61,6 +67,9 @@ public class ChatChannel implements Serializable {
 	protected void addMessage(ChatText message) {
 		messages.add(message);
 		
+		if(this.name.startsWith("@"))
+			setActive(true);
+		
 		if(message.isEvent()) {
 			String text = message.getText();
 			if(text.contains("Now listening to channel:"))
@@ -71,7 +80,7 @@ public class ChatChannel implements Serializable {
 				setActive(true);
 		}
 	}
-
+	
 	public ArrayList<ChatText> getMessages() {
 		return new ArrayList<ChatText>(messages);
 	}

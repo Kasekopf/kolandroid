@@ -93,6 +93,10 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		this.submitCommand("/l");
 	}
 
+	protected void notifyChange() {
+		notifyView(ChatStatus.UPDATE);
+	}
+
 	@Override
 	public boolean handle(Session session, Request request, ServerReply response) {
 		if (!response.url.contains("newchatmessages.php")
@@ -125,13 +129,17 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		}
 
 		if (updated)
-			notifyView(ChatStatus.UPDATE);
+			notifyChange();
 
 		if(update.last != null)
 			lasttime = update.last;
 		return true;
 	}
 
+	protected ChatChannel getChannel(String name) {
+		return channelsByName.get(name);
+	}
+	
 	private ChatChannel getOrCreateChannel(String name) {
 		ChatChannel channel;
 		if (channelsByName.containsKey(name)) {

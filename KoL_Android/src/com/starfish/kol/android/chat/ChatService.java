@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.starfish.kol.android.util.AndroidProgressHandler;
 import com.starfish.kol.android.view.ApplicationView;
-import com.starfish.kol.model.models.chat.ChatAction.ChatActionSubmission;
+import com.starfish.kol.model.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChatChannel;
 import com.starfish.kol.model.models.chat.ChatModel;
 import com.starfish.kol.model.models.chat.ChatModel.ChatStatus;
@@ -123,7 +123,7 @@ public class ChatService extends Service {
 		base.submitChat(channel, msg);
 	}
 	
-	public void submitChatAction(ChatActionSubmission sub) {
+	public void submitChatAction(DeferredAction<ChatModel> sub) {
 		sub.submit(base);
 	}
 

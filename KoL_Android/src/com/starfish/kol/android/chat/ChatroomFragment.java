@@ -1,6 +1,5 @@
 package com.starfish.kol.android.chat;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
@@ -13,11 +12,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.android.dialogs.ChatDialog;
 import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.android.util.listbuilders.ChatBuilder;
 import com.starfish.kol.android.util.searchlist.OnListSelection;
 import com.starfish.kol.model.models.chat.ChatAction;
+import com.starfish.kol.model.models.chat.ChatChannel;
 import com.starfish.kol.model.models.chat.ChatText;
 
 /**
@@ -27,12 +26,9 @@ import com.starfish.kol.model.models.chat.ChatText;
  * 
  */
 public class ChatroomFragment extends Fragment {
+	private ChatChannel base;
 	private ListAdapter<ChatText> adapter;
 	
-	public ChatroomFragment() {
-		// Required empty public constructor
-	}
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,8 +39,9 @@ public class ChatroomFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_chatroom, container, false);
 
-		@SuppressWarnings("unchecked")
-		List<ChatText> messages = (List<ChatText>)getArguments().getSerializable("list");
+		this.base = (ChatChannel)getArguments().getSerializable("base");
+		
+		List<ChatText> messages = base.getMessages();
 		adapter = new ListAdapter<ChatText>(view.getContext(), messages, new ChatBuilder());
 		
 		ListView list = (ListView)view.findViewById(R.id.chatroom_display_list);
@@ -57,7 +54,7 @@ public class ChatroomFragment extends Fragment {
 				
 				if(choice.getActions().size() == 0) return;
 				
-				ChatDialog dialog = ChatDialog.create(choice);
+				ChatActionDialog dialog = ChatActionDialog.create(choice);
 				dialog.setOnSelection(new OnListSelection<ChatAction>() {
 					@Override
 					public boolean selectItem(ChatAction item) {
@@ -71,14 +68,19 @@ public class ChatroomFragment extends Fragment {
 		return view;
 	}
 	
-	public void setList(ArrayList<ChatText> messages) {
-		getArguments().putSerializable("list", messages);
+	public void updateChannel(ChatChannel channel) {
+		getArguments().putSerializable("base", channel);
+		this.base = channel;
+		
 		if(adapter != null) {
-			adapter.setElements(messages);
-			//Log.i("ChatroomFragment", "Updating message list");
-		} else {
-			//Log.i("ChatroomFragment", "Adapter was null");
+			adapter.setElements(channel.getMessages());
 		}
+	}
+	
+	public ChatChannel getChannel() {
+		if(this.base != null)
+			return base;
+		return (ChatChannel)getArguments().getSerializable("base");
 	}
 		
 	public interface ChatroomHost {
