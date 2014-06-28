@@ -91,7 +91,7 @@ public class LoginScreen extends ActionBarActivity {
 					.findViewById(R.id.login_password);
 			final Button login = (Button) view
 					.findViewById(R.id.login_btnlogin);
-
+			
 			pass.setOnEditorActionListener(new OnEditorActionListener() {
 				@Override
 				public boolean onEditorAction(TextView view, int actionId,

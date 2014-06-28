@@ -17,9 +17,8 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.ImageDownloader;
 import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
-import com.starfish.kol.android.util.searchlist.OnListSelection;
-import com.starfish.kol.model.interfaces.ActionItem;
-import com.starfish.kol.model.interfaces.ModelItem;
+import com.starfish.kol.android.view.ApplicationView;
+import com.starfish.kol.model.basic.ActionItem;
 import com.starfish.kol.model.models.InventoryModel.InvItem;
 
 public class ItemDialog extends DialogFragment {
@@ -31,17 +30,11 @@ public class ItemDialog extends DialogFragment {
 		return dialog;
 	}
 
-	private OnListSelection<ActionItem> selector;
-	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Dialog dialog = super.onCreateDialog(savedInstanceState);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		return dialog;
-	}
-
-	public void setOnSelection(OnListSelection<ActionItem> select) {
-		this.selector = select;
 	}
 
 	@Override
@@ -52,7 +45,7 @@ public class ItemDialog extends DialogFragment {
 
 		InvItem item = (InvItem) this.getArguments().getSerializable("item");
 
-	    ListAdapter<ModelItem> adapter = new ListAdapter<ModelItem>(this.getActivity(), item.getActions(), new DefaultBuilder<ModelItem>());
+	    ListAdapter<ActionItem> adapter = new ListAdapter<ActionItem>(this.getActivity(), item.getActions(), new DefaultBuilder<ActionItem>());
 	    
 	    ListView list = (ListView)rootView.findViewById(R.id.dialog_item_list);
 	    list.setAdapter(adapter);
@@ -61,9 +54,10 @@ public class ItemDialog extends DialogFragment {
 			public void onItemClick(AdapterView<?> ad, View list, int pos,
 					long arg3) {
 				ActionItem select = (ActionItem)ad.getItemAtPosition(pos);
-				if(select != null) {
-					if(selector != null)
-						selector.selectItem(select);
+				
+				ApplicationView view = (ApplicationView)getActivity().getApplication();
+				if(select != null && view != null) {
+					view.executeAction(select);
 					ItemDialog.this.dismiss();
 				}
 			}

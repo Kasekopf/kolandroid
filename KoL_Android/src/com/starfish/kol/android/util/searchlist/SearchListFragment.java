@@ -18,6 +18,7 @@ import android.widget.ListView;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.adapters.ListElementBuilder;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
+import com.starfish.kol.model.basic.ActionItem;
 import com.starfish.kol.model.interfaces.ModelItem;
 
 /**
@@ -25,15 +26,16 @@ import com.starfish.kol.model.interfaces.ModelItem;
  * 
  */
 public class SearchListFragment<E extends ModelItem> extends DialogFragment {
-	public static <E extends ModelItem> SearchListFragment<E> newInstance(String title, ArrayList<E> elements) {
+	public static <E extends ActionItem> SearchListFragment<E> newInstance(String title, ArrayList<E> elements) {
 		SearchListFragment<E> frag = new SearchListFragment<E>();
         Bundle args = new Bundle();
         args.putString("title", title);
         args.putSerializable("list", elements);
+        args.putSerializable("selector", new ActionSelector<E>());
         frag.setArguments(args);
         return frag;
 	}
-
+	
 	private OnListSelection<E> selector;
 	private HighlightableListAdapter<E> adapter;
 	private ArrayList<E> base;
@@ -51,7 +53,7 @@ public class SearchListFragment<E extends ModelItem> extends DialogFragment {
     	return d;
     }
 
-	public void setOnSelection(OnListSelection<E> select) {
+	public void setOnSelectionX(OnListSelection<E> select) {
 		this.selector = select;
 	}
 
@@ -75,6 +77,9 @@ public class SearchListFragment<E extends ModelItem> extends DialogFragment {
 		if(base == null)
 			base = new ArrayList<E>();
 		
+		if(args.containsKey("selector"))
+			selector = (OnListSelection<E>)args.getSerializable("selector");
+		
 		if(args.containsKey("builder"))
 			builder = (ListElementBuilder<E>)args.getSerializable("builder");
 		if(builder == null)
@@ -88,7 +93,7 @@ public class SearchListFragment<E extends ModelItem> extends DialogFragment {
 			public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
 				E choice = (E)myAdapter.getItemAtPosition(myItemInt);
 				if(selector != null)
-					if(selector.selectItem(choice)) {
+					if(selector.selectItem(SearchListFragment.this, choice)) {
 						if (getShowsDialog())
 							SearchListFragment.this.dismiss();
 					}

@@ -14,6 +14,7 @@ import com.starfish.kol.android.game.GameScreen;
 import com.starfish.kol.model.GameModel;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.ViewMaker;
+import com.starfish.kol.model.interfaces.DeferredGameAction;
 import com.starfish.kol.model.models.ChoiceModel;
 import com.starfish.kol.model.models.CraftingModel;
 import com.starfish.kol.model.models.FightModel;
@@ -81,6 +82,9 @@ public class ApplicationView extends Application {
 		model.connect(m);
 	}
 	
+	public void executeAction(DeferredGameAction action) {
+		action.submit(model.getChatModel());
+	}
 	
 	private static class ActivityLauncher extends Handler
 	{

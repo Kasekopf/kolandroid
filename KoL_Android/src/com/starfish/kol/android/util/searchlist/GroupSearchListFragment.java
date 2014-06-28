@@ -18,6 +18,7 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.adapters.ListFullBuilder;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
+import com.starfish.kol.model.basic.ActionItem;
 import com.starfish.kol.model.interfaces.ModelGroup;
 import com.starfish.kol.model.interfaces.ModelItem;
 
@@ -28,12 +29,13 @@ import com.starfish.kol.model.interfaces.ModelItem;
 @SuppressLint("ValidFragment")
 public class GroupSearchListFragment<F extends ModelItem> extends
 		DialogFragment {
-	public static <F extends ModelItem> GroupSearchListFragment<F> newInstance(
+	public static <F extends ActionItem> GroupSearchListFragment<F> newInstance(
 			String title, ArrayList<ModelGroup<F>> elements) {
 		GroupSearchListFragment<F> frag = new GroupSearchListFragment<F>();
 		Bundle args = new Bundle();
 		args.putString("title", title);
 		args.putSerializable("list", elements);
+		args.putSerializable("selector", new ActionSelector<F>());
 		frag.setArguments(args);
 		return frag;
 	}
@@ -60,7 +62,7 @@ public class GroupSearchListFragment<F extends ModelItem> extends
 		return d;
 	}
 
-	public void setOnSelection(OnListSelection<F> select) {
+	public void setOnSelectionX(OnListSelection<F> select) {
 		this.selector = select;
 	}
 
@@ -93,6 +95,9 @@ public class GroupSearchListFragment<F extends ModelItem> extends
 		if(builder == null)
 			builder = new DefaultBuilder<F>();
 		
+		if(args.containsKey("selector"))
+			selector = (OnListSelection<F>)args.getSerializable("selector");
+		
 		adapter = new HighlightableListGroupAdapter<F>(view.getContext(), base, builder);
 		list = (ExpandableListView) view.findViewById(R.id.list_display_list);
 		list.setOnChildClickListener(new OnChildClickListener() {
@@ -101,7 +106,7 @@ public class GroupSearchListFragment<F extends ModelItem> extends
 					int groupPosition, int childPosition, long id) {
 				F choice = (F) adapter.getChild(groupPosition, childPosition);
 				if (selector != null)
-					if (selector.selectItem(choice)) {
+					if (selector.selectItem(GroupSearchListFragment.this, choice)) {
 						if (getShowsDialog())
 							GroupSearchListFragment.this.dismiss();
 					}

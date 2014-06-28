@@ -60,13 +60,6 @@ public abstract class GameFragment extends DialogFragment {
 		return (Class<?>)this.getArguments().getSerializable("modeltype");
 	}
 	
-	/*
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		//this.getArguments().putSerializable("model", this.getModel());
-	}
-	*/
-	
 	public void invalidateStats() {
 		GameCallbacks toActivity = (GameCallbacks)this.getActivity();
 		toActivity.refreshStats();

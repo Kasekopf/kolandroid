@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.adapters.ListElementBuilder;
-import com.starfish.kol.android.util.searchlist.OnListSelection;
+import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChatChannel;
 import com.starfish.kol.model.models.chat.ChatModel;
@@ -19,10 +19,10 @@ public class ChannelBuilder implements ListElementBuilder<ChatChannel>{
 	 */
 	private static final long serialVersionUID = -3074449411826485757L;
 
-	private OnListSelection<ChatChannel> channelHandler;
-	private OnListSelection<DeferredAction<ChatModel>> actionHandler;
+	private ProgressHandler<ChatChannel> channelHandler;
+	private ProgressHandler<DeferredAction<ChatModel>> actionHandler;
 	
-	public ChannelBuilder(OnListSelection<ChatChannel> channelHandler, OnListSelection<DeferredAction<ChatModel>> actionHandler) {
+	public ChannelBuilder(ProgressHandler<ChatChannel> channelHandler, ProgressHandler<DeferredAction<ChatModel>> actionHandler) {
 		this.channelHandler = channelHandler;
 		this.actionHandler = actionHandler;
 	}
@@ -40,7 +40,7 @@ public class ChannelBuilder implements ListElementBuilder<ChatChannel>{
 			@Override
 			public void onClick(View arg0) {
 				if(channelHandler != null)
-					channelHandler.selectItem(child);
+					channelHandler.reportProgress(child);
 			}			
 		});
 		
@@ -54,7 +54,7 @@ public class ChannelBuilder implements ListElementBuilder<ChatChannel>{
 				@Override
 				public void onClick(View arg0) {
 					if(actionHandler != null)
-						actionHandler.selectItem(child.leave());
+						actionHandler.reportProgress(child.leave());
 				}
 			});
 		} else {
@@ -64,7 +64,7 @@ public class ChannelBuilder implements ListElementBuilder<ChatChannel>{
 				@Override
 				public void onClick(View arg0) {
 					if(actionHandler != null)
-						actionHandler.selectItem(child.enter());
+						actionHandler.reportProgress(child.enter());
 				}
 			});
 		}

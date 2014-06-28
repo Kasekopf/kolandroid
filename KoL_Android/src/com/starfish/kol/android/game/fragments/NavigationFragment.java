@@ -23,7 +23,7 @@ import com.starfish.kol.android.util.AndroidProgressHandler;
 import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.android.view.ApplicationView;
-import com.starfish.kol.model.interfaces.ActionItem;
+import com.starfish.kol.model.basic.ActionItem;
 import com.starfish.kol.model.models.NavigationModel;
 import com.starfish.kol.model.util.LiveModel.LiveMessage;
 

@@ -13,7 +13,7 @@ import android.widget.ListView;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.android.util.listbuilders.ChannelBuilder;
-import com.starfish.kol.android.util.searchlist.OnListSelection;
+import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChatChannel;
 import com.starfish.kol.model.models.chat.ChatModel;
@@ -28,7 +28,6 @@ public class ChatChannelDialog extends DialogFragment {
 		return dialog;
 	}
 
-	private ChatChannelDialogCallback callback = null;
 	private ListAdapter<ChatChannel> adapter;
 		
 	@Override
@@ -55,25 +54,22 @@ public class ChatChannelDialog extends DialogFragment {
 
 		@SuppressWarnings("unchecked")
 		ArrayList<ChatChannel> base = (ArrayList<ChatChannel>)this.getArguments().getSerializable("base");
-		this.callback = (ChatChannelDialogCallback)getActivity();
 		
-		OnListSelection<ChatChannel> localChannelSelector = new OnListSelection<ChatChannel>() {
+		final ChatChannelDialogCallback callback = (ChatChannelDialogCallback)getActivity();
+		
+		ProgressHandler<ChatChannel> localChannelSelector = new ProgressHandler<ChatChannel>() {
 			@Override
-			public boolean selectItem(ChatChannel item) {
-				if(callback != null)
-					callback.onChannelSelect(item);
+			public void reportProgress(ChatChannel item) {
+				callback.onChannelSelect(item);
 				if(item.isActive())
 					ChatChannelDialog.this.dismiss();
-				return true;
 			}			
 		};
-		OnListSelection<DeferredAction<ChatModel>> localActionSelector = new OnListSelection<DeferredAction<ChatModel>>() {
+		ProgressHandler<DeferredAction<ChatModel>> localActionSelector = new ProgressHandler<DeferredAction<ChatModel>>() {
 			@Override
-			public boolean selectItem(DeferredAction<ChatModel> item) {
-				if(callback != null)
-					callback.onChannelAction(item);
-				return true;
-			}			
+			public void reportProgress(DeferredAction<ChatModel> item) {
+				callback.onChannelAction(item);
+			}	
 		};
 		
 	    adapter = new ListAdapter<ChatChannel>(this.getActivity(), base, new ChannelBuilder(localChannelSelector, localActionSelector));

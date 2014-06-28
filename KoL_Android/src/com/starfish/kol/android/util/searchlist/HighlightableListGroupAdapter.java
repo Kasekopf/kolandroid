@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.adapters.ListFullBuilder;
 import com.starfish.kol.android.util.adapters.ListGroupAdapter;
-import com.starfish.kol.model.interfaces.BasicGroup;
+import com.starfish.kol.model.basic.BasicGroup;
 import com.starfish.kol.model.interfaces.ModelGroup;
 import com.starfish.kol.util.Regex;
 

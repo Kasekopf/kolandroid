@@ -1,6 +1,8 @@
-package com.starfish.kol.model.interfaces;
+package com.starfish.kol.model.basic;
 
 import java.util.ArrayList;
+
+import com.starfish.kol.model.interfaces.ModelGroup;
 
 public class BasicGroup<E> implements ModelGroup<E> {
 	/**

@@ -13,7 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.android.util.searchlist.OnListSelection;
+import com.starfish.kol.android.view.ApplicationView;
+import com.starfish.kol.model.interfaces.DeferredGameAction;
 import com.starfish.kol.model.models.SkillsModel.SkillItem;
 
 public class SkillDialog extends DialogFragment {
@@ -25,8 +26,6 @@ public class SkillDialog extends DialogFragment {
 		return dialog;
 	}
 
-	private OnListSelection<SkillDialogResult> selector;
-	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Dialog dialog = super.onCreateDialog(savedInstanceState);
@@ -34,17 +33,13 @@ public class SkillDialog extends DialogFragment {
 		return dialog;
 	}
 
-	public void setOnSelection(OnListSelection<SkillDialogResult> select) {
-		this.selector = select;
-	}
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+			Bundle savedInstanceState) {		
 		final View rootView = (View)inflater.inflate(R.layout.dialog_skill_screen,
 				container, false);
 
-		SkillItem skill = (SkillItem) this.getArguments().getSerializable("skill");
+		final SkillItem skill = (SkillItem) this.getArguments().getSerializable("skill");
 		
 	    TextView text = (TextView)rootView.findViewById(R.id.dialog_skill_text);
 	    text.setText(skill.getText());
@@ -71,32 +66,13 @@ public class SkillDialog extends DialogFragment {
 		    	if(play.equalsIgnoreCase("(yourself)"))
 		    		play = "";
 		    	
-		    	SkillDialogResult result = new SkillDialogResult(num, play);
-		    	if(selector != null) {
-		    		selector.selectItem(result);
-		    	}
-
+		    	DeferredGameAction action = skill.cast(num, play);
+		    	ApplicationView view = (ApplicationView)getActivity().getApplication();
+		    	view.executeAction(action);
+		    	
 				SkillDialog.this.dismiss();
 			}	    	
 	    });
 		return rootView;
-	}
-	
-	public class SkillDialogResult
-	{
-		private String num;
-		private String player;
-		public SkillDialogResult(String num, String player) {
-			this.num = num;
-			this.player = player;
-		}
-		
-		public String getNum() {
-			return num;
-		}
-		
-		public String getPlayer() {
-			 return player;
-		}
 	}
 }

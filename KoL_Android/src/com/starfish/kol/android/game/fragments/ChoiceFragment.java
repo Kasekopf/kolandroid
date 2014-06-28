@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.model.interfaces.ActionItem;
+import com.starfish.kol.model.basic.ActionItem;
 import com.starfish.kol.model.models.ChoiceModel;
 
 public class ChoiceFragment extends WebFragment<ChoiceModel> {

@@ -8,9 +8,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.android.util.searchlist.OnListSelection;
 import com.starfish.kol.android.util.searchlist.SearchListFragment;
-import com.starfish.kol.model.interfaces.ActionItem;
+import com.starfish.kol.model.basic.ActionItem;
 import com.starfish.kol.model.models.FightModel;
 
 public class FightFragment extends WebFragment<FightModel> {	
@@ -38,13 +37,6 @@ public class FightFragment extends WebFragment<FightModel> {
 				ArrayList<ActionItem> skills = getModel().getSkills();
 
 				SearchListFragment<ActionItem> newFragment = SearchListFragment.newInstance("Choose a skill to use:", skills);
-				newFragment.setOnSelection(new OnListSelection<ActionItem>() {
-					@Override
-					public boolean selectItem(ActionItem item) {
-						item.select(getModel());
-						return true;
-					}
-				});
 			    newFragment.show(getFragmentManager(), "dialog");
 			}			
 		});
@@ -56,13 +48,6 @@ public class FightFragment extends WebFragment<FightModel> {
 				ArrayList<ActionItem> items = getModel().getItems();
 				
 				SearchListFragment<ActionItem> newFragment = SearchListFragment.newInstance("Choose an item to use:", items);
-				newFragment.setOnSelection(new OnListSelection<ActionItem>() {
-					@Override
-					public boolean selectItem(ActionItem item) {
-						item.select(getModel());
-						return true;
-					}
-				});
 			    newFragment.show(getFragmentManager(), "dialog");
 			}			
 		});

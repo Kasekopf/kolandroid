@@ -3,7 +3,7 @@ package com.starfish.kol.model.models;
 import java.util.ArrayList;
 
 import com.starfish.kol.connection.Connection.ServerReply;
-import com.starfish.kol.model.interfaces.ActionItem;
+import com.starfish.kol.model.basic.ActionItem;
 import com.starfish.kol.model.util.LiveModel;
 
 public class NavigationModel extends LiveModel {

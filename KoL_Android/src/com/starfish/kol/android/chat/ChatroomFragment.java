@@ -14,7 +14,6 @@ import android.widget.ListView;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.android.util.listbuilders.ChatBuilder;
-import com.starfish.kol.android.util.searchlist.OnListSelection;
 import com.starfish.kol.model.models.chat.ChatAction;
 import com.starfish.kol.model.models.chat.ChatChannel;
 import com.starfish.kol.model.models.chat.ChatText;
@@ -54,15 +53,7 @@ public class ChatroomFragment extends Fragment {
 				
 				if(choice.getActions().size() == 0) return;
 				
-				ChatActionDialog dialog = ChatActionDialog.create(choice);
-				dialog.setOnSelection(new OnListSelection<ChatAction>() {
-					@Override
-					public boolean selectItem(ChatAction item) {
-						((ChatroomHost)getActivity()).submitChatAction(item, choice);
-						return true;
-					}
-				});
-				dialog.show(getFragmentManager(), "itemoptions");
+				ChatActionDialog.create(choice).show(getFragmentManager(), "itemoptions");
 			}
 		});
 		return view;
