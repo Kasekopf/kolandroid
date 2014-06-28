@@ -28,9 +28,9 @@ public class ChatChannelDialog extends DialogFragment {
 		return dialog;
 	}
 
+	private ChatChannelDialogCallback callback = null;
 	private ListAdapter<ChatChannel> adapter;
-	private OnListSelection<DeferredAction<ChatModel>> selector;
-	
+		
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Dialog dialog = super.onCreateDialog(savedInstanceState);
@@ -46,10 +46,7 @@ public class ChatChannelDialog extends DialogFragment {
 		}
 	}
 	
-	public void setOnSelection(OnListSelection<DeferredAction<ChatModel>> select) {
-		this.selector = select;
-	}
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -58,12 +55,37 @@ public class ChatChannelDialog extends DialogFragment {
 
 		@SuppressWarnings("unchecked")
 		ArrayList<ChatChannel> base = (ArrayList<ChatChannel>)this.getArguments().getSerializable("base");
-
-	    adapter = new ListAdapter<ChatChannel>(this.getActivity(), base, new ChannelBuilder(selector));
+		this.callback = (ChatChannelDialogCallback)getActivity();
+		
+		OnListSelection<ChatChannel> localChannelSelector = new OnListSelection<ChatChannel>() {
+			@Override
+			public boolean selectItem(ChatChannel item) {
+				if(callback != null)
+					callback.onChannelSelect(item);
+				if(item.isActive())
+					ChatChannelDialog.this.dismiss();
+				return true;
+			}			
+		};
+		OnListSelection<DeferredAction<ChatModel>> localActionSelector = new OnListSelection<DeferredAction<ChatModel>>() {
+			@Override
+			public boolean selectItem(DeferredAction<ChatModel> item) {
+				if(callback != null)
+					callback.onChannelAction(item);
+				return true;
+			}			
+		};
+		
+	    adapter = new ListAdapter<ChatChannel>(this.getActivity(), base, new ChannelBuilder(localChannelSelector, localActionSelector));
 	    
 	    ListView list = (ListView)rootView.findViewById(R.id.dialog_chat_list);
 	    list.setAdapter(adapter);
-		
 		return rootView;
+	}
+	
+	public interface ChatChannelDialogCallback
+	{
+		public void onChannelAction(DeferredAction<ChatModel> action);
+		public void onChannelSelect(ChatChannel channel);
 	}
 }

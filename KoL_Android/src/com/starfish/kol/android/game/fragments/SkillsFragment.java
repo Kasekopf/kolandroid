@@ -63,6 +63,7 @@ public class SkillsFragment extends BaseGameFragment<Void, SkillsModel> implemen
 	
 	@Override
 	public void setup(Fragment f, String tag) {
+		final SkillsModel model = this.getModel();
 		switch(tag) {
 		case "skills":
 			@SuppressWarnings("unchecked")
@@ -77,7 +78,7 @@ public class SkillsFragment extends BaseGameFragment<Void, SkillsModel> implemen
 					dialog.setOnSelection(new OnListSelection<SkillDialogResult>() {
 						@Override
 						public boolean selectItem(SkillDialogResult result) {
-							item.cast(getModel(), result.getNum(), result.getPlayer());
+							item.cast(model, result.getNum(), result.getPlayer());
 							return true;
 						}
 					});
@@ -93,7 +94,7 @@ public class SkillsFragment extends BaseGameFragment<Void, SkillsModel> implemen
 			itemFrag.setOnSelection(new OnListSelection<RestorerItem>() {
 				@Override
 				public boolean selectItem(final RestorerItem item) {
-					MultiUseDialog dialog = MultiUseDialog.create(getModel(), item);
+					MultiUseDialog dialog = MultiUseDialog.create(model, item);
 					dialog.show(getFragmentManager(), "multiuseitem");
 					return true;
 				}				

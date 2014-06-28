@@ -19,10 +19,12 @@ public class ChannelBuilder implements ListElementBuilder<ChatChannel>{
 	 */
 	private static final long serialVersionUID = -3074449411826485757L;
 
-	private OnListSelection<DeferredAction<ChatModel>> handler;
+	private OnListSelection<ChatChannel> channelHandler;
+	private OnListSelection<DeferredAction<ChatModel>> actionHandler;
 	
-	public ChannelBuilder(OnListSelection<DeferredAction<ChatModel>> handler) {
-		this.handler = handler;
+	public ChannelBuilder(OnListSelection<ChatChannel> channelHandler, OnListSelection<DeferredAction<ChatModel>> actionHandler) {
+		this.channelHandler = channelHandler;
+		this.actionHandler = actionHandler;
 	}
 	
 	@Override
@@ -34,6 +36,13 @@ public class ChannelBuilder implements ListElementBuilder<ChatChannel>{
 	public void fillChild(View view, final ChatChannel child) {
 		TextView text = (TextView)view.findViewById(R.id.list_item_text);
 		text.setText(Html.fromHtml(child.getName()));
+		text.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if(channelHandler != null)
+					channelHandler.selectItem(child);
+			}			
+		});
 		
 		Button enter = (Button)view.findViewById(R.id.chat_channel_enter);
 		Button leave = (Button)view.findViewById(R.id.chat_channel_leave);
@@ -44,7 +53,8 @@ public class ChannelBuilder implements ListElementBuilder<ChatChannel>{
 			leave.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					handler.selectItem(child.leave());
+					if(actionHandler != null)
+						actionHandler.selectItem(child.leave());
 				}
 			});
 		} else {
@@ -53,7 +63,8 @@ public class ChannelBuilder implements ListElementBuilder<ChatChannel>{
 			enter.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					handler.selectItem(child.enter());
+					if(actionHandler != null)
+						actionHandler.selectItem(child.enter());
 				}
 			});
 		}
