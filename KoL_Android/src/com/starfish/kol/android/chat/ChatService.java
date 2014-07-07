@@ -63,9 +63,6 @@ public class ChatService extends Service {
 		this.base.connectView(new AndroidProgressHandler<ChatStatus>() {
 			@Override
 			public void recieveProgress(ChatStatus message) {
-				//Log.i("ChatService", message.toString());
-				//Log.i("ChatService", "Now have " + base.getMessages().size()
-				//		+ " messages");
 				if (message == ChatStatus.UPDATE && callback != null)
 					callback.sendUpdate();
 
@@ -77,6 +74,7 @@ public class ChatService extends Service {
 
 		if (updateTimer != null)
 			updateTimer.cancel();
+		
 		updateTimer = new Timer("ChatUpdater", true);
 		updateTimer.schedule(new TimerTask() {
 			@Override
@@ -98,6 +96,9 @@ public class ChatService extends Service {
 	}
 
 	public void openChat() {
+		if(base == null)
+			return;
+		
 		if (base.getChatExists()) {
 			Intent intent = new Intent(ChatService.this, ChatActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

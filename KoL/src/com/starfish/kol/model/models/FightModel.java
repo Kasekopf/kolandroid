@@ -42,6 +42,8 @@ public class FightModel extends FilteredWebModel {
 			"<a[^>]*>\\(show old combat form\\)</a>");
 	private static final Regex BUTTONS = new Regex("<form[^>]*>.*?</form>");
 
+	private static final Regex HAS_FUNKSLINGING = new Regex("<select[^>]*whichitem2[^>]*>");
+	
 	private ArrayList<ActionItem> skills;
 	private ArrayList<ActionItem> items;
 
@@ -49,6 +51,8 @@ public class FightModel extends FilteredWebModel {
 	private ActionItem attack = new ActionItem("Attack",
 			"fight.php?action=attack");
 
+	private boolean funkslinging;
+	
 	public FightModel(ServerReply text) {
 		super(text);
 
@@ -101,6 +105,8 @@ public class FightModel extends FilteredWebModel {
 		String dropdown = ALL_ITEMS.extractSingle(html);
 		extractOptions(dropdown, this.items,
 				"fight.php?action=useitem&whichitem=");
+		
+		this.funkslinging = HAS_FUNKSLINGING.matches(html);
 	}
 
 	private void extractOptions(String dropdown, ArrayList<ActionItem> result,
@@ -140,6 +146,11 @@ public class FightModel extends FilteredWebModel {
 
 	public ActionItem getAttack() {
 		return attack;
+	}
+	
+	public boolean hasFunkslinging() {
+		return true;
+		//return funkslinging;
 	}
 
 	@Override

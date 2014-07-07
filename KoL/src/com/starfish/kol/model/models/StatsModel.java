@@ -3,7 +3,6 @@ package com.starfish.kol.model.models;
 import com.starfish.kol.connection.Connection.ServerReply;
 import com.starfish.kol.model.util.LiveModel;
 import com.starfish.kol.request.Request;
-import com.starfish.kol.request.ResponseHandler;
 import com.starfish.kol.request.SimulatedRequest;
 import com.starfish.kol.util.Regex;
 
@@ -211,7 +210,7 @@ public class StatsModel extends LiveModel{
 			
 			req = new SimulatedRequest(this.getBase(), "http://www.kingdomofloathing.com/questsidebar.php", body);
 		} else {
-			req = new Request("http://www.kingdomofloathing.com/questlog.php", ResponseHandler.none);
+			req = new Request("http://www.kingdomofloathing.com/questlog.php");
 		}
 		this.makeRequest(req);
 	}

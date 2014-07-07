@@ -30,7 +30,7 @@ public class ChoiceFragment extends WebFragment<ChoiceModel> {
 			optionBtn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					thisOption.select(getModel());
+					thisOption.submit(getModel());
 				}
 			});
 			options.addView(optionBtn);

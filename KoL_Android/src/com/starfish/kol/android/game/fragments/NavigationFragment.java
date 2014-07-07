@@ -194,14 +194,14 @@ public class NavigationFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, null, false);
 
-		NavigationModel model = (NavigationModel)this.getArguments().getSerializable("model");
+		final NavigationModel model = (NavigationModel)this.getArguments().getSerializable("model");
 		ApplicationView app = (ApplicationView) getActivity().getApplication();
 		app.connectModel(model);
 
 		this.callback = new AndroidProgressHandler<LiveMessage>() {
 			@Override
 			public void recieveProgress(LiveMessage message) {
-				adapter.notifyDataSetChanged();
+				adapter.setElements(model.getLocations());
 			}
 		};
 		
@@ -228,7 +228,7 @@ public class NavigationFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ActionItem choice = (ActionItem)parent.getItemAtPosition(position);
-				choice.select(base);
+				choice.submit(base);
 		        if (mDrawerLayout != null) {
 		            mDrawerLayout.closeDrawer(mFragmentContainerView);
 		        }

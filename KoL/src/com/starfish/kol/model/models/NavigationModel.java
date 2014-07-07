@@ -13,61 +13,144 @@ public class NavigationModel extends LiveModel {
 	private static final long serialVersionUID = 1037526493595536003L;
 
 	private ArrayList<ActionItem> locations;
+
 	public NavigationModel() {
 		super("topmenu.php");
-		
+
 		this.locations = new ArrayList<ActionItem>();
 		loadContent(null);
 	}
-	
-	private void conditionalAdd(String html, String name, String image, String url) {
-		if(html.contains(url))
-			locations.add(new ActionItem(name, image, url));
+
+	private void conditionalAdd(String html, String name, String image,
+			String... urls) {
+		for (String url : urls) {
+			if (html.contains(url)) {
+				locations.add(new ActionItem(name, image, url));
+				break;
+			}
+		}
 	}
-	
-	
+
 	public ArrayList<ActionItem> getLocations() {
 		this.access();
-		return this.locations;
+		return new ArrayList<ActionItem>(this.locations);
 	}
 
 	@Override
 	protected void loadContent(ServerReply content) {
 		this.locations.clear();
-		
-		locations.add(new ActionItem("Main Map", "http://images.kingdomofloathing.com/itemimages/map.gif", "main.php"));
-		locations.add(new ActionItem("Inventory", "http://images.kingdomofloathing.com/itemimages/backpack.gif", "inventory.php"));
-		locations.add(new ActionItem("Skills", "http://images.kingdomofloathing.com/itemimages/book3.gif", "skills.php"));
-		locations.add(new ActionItem("Crafting", "http://images.kingdomofloathing.com/itemimages/pliers.gif", "craft.php"));
-		
-		if(content != null) {
+
+		locations.add(new ActionItem("Main Map",
+				"http://images.kingdomofloathing.com/itemimages/map.gif",
+				"main.php"));
+		locations.add(new ActionItem("Inventory",
+				"http://images.kingdomofloathing.com/itemimages/backpack.gif",
+				"inventory.php"));
+		locations.add(new ActionItem("Skills",
+				"http://images.kingdomofloathing.com/itemimages/book3.gif",
+				"skills.php"));
+		locations.add(new ActionItem("Crafting",
+				"http://images.kingdomofloathing.com/itemimages/pliers.gif",
+				"craft.php"));
+
+		if (content != null) {
 			String html = content.html;
-			conditionalAdd(html, "Seaside Town", "http://images.kingdomofloathing.com/itemimages/seasidetown.gif", "town.php");
-			conditionalAdd(html, "Your Campsite", "http://images.kingdomofloathing.com/itemimages/tent1.gif", "campground.php");
-			conditionalAdd(html, "The Big Mountains", "http://images.kingdomofloathing.com/itemimages/themountains.gif", "mountains.php");
-			conditionalAdd(html, "The Sea", "http://images.kingdomofloathing.com/itemimages/thesea.gif", "thesea.php");
-			conditionalAdd(html, "The Plains", "http://images.kingdomofloathing.com/itemimages/theplains.gif", "plains.php");
-			conditionalAdd(html, "Desert Beach", "http://images.kingdomofloathing.com/itemimages/thedesert.gif", "beach.php");
-			conditionalAdd(html, "The Distant Woods", "http://images.kingdomofloathing.com/itemimages/bansai.gif", "woods.php");
+			conditionalAdd(
+					html,
+					"Seaside Town",
+					"http://images.kingdomofloathing.com/itemimages/seasidetown.gif",
+					"town.php", "whichplace=town");
+			conditionalAdd(html, "Your Campsite",
+					"http://images.kingdomofloathing.com/itemimages/tent1.gif",
+					"campground.php", "place.php?whichplace=campground");
+			conditionalAdd(
+					html,
+					"The Big Mountains",
+					"http://images.kingdomofloathing.com/itemimages/themountains.gif",
+					"mountains.php", "place.php?whichplace=mountains");
+			conditionalAdd(
+					html,
+					"The Sea",
+					"http://images.kingdomofloathing.com/itemimages/thesea.gif",
+					"thesea.php", "place.php?whichplace=thesea");
+			conditionalAdd(
+					html,
+					"The Plains",
+					"http://images.kingdomofloathing.com/itemimages/theplains.gif",
+					"plains.php", "place.php?whichplace=plains");
+			conditionalAdd(
+					html,
+					"Desert Beach",
+					"http://images.kingdomofloathing.com/itemimages/thedesert.gif",
+					"beach.php", "place.php?whichplace=desertbeach");
+			conditionalAdd(
+					html,
+					"The Distant Woods",
+					"http://images.kingdomofloathing.com/itemimages/bansai.gif",
+					"woods.php", "place.php?whichplace=woods");
+
+			conditionalAdd(
+					html,
+					"The Mysterious Island of Mystery",
+					"http://images.kingdomofloathing.com/itemimages/theisland.gif",
+					"island.php", "place.php?whichplace=island");
+			conditionalAdd(
+					html,
+					"Your Clan Hall",
+					"http://images.kingdomofloathing.com/itemimages/clanhall.gif",
+					"clan_hall.php", "place.php?whichplace=clan");
+
+			conditionalAdd(
+					html,
+					"The Mall",
+					"http://images.kingdomofloathing.com/itemimages/themall.gif",
+					"mall.php");
 			
-			conditionalAdd(html, "The Mysterious Island of Mystery", "http://images.kingdomofloathing.com/itemimages/theisland.gif", "island.php");
-			conditionalAdd(html, "Your Clan Hall", "http://images.kingdomofloathing.com/itemimages/clanhall.gif", "clan_hall.php");
-			
-			
-			conditionalAdd(html, "The Mall", "http://images.kingdomofloathing.com/itemimages/themall.gif", "mall.php");
-			conditionalAdd(html, "The Beanstalk", "http://images.kingdomofloathing.com/itemimages/thebeanstalk.gif", "beanstalk.php");
-			
-			conditionalAdd(html, "Sorceress' Lair", "http://images.kingdomofloathing.com/itemimages/lairicon.gif", "lair.php");
-			conditionalAdd(html, "Spookyraven Manor", "http://images.kingdomofloathing.com/itemimages/manoricon.gif", "place.php?whichplace=manor1");
-			conditionalAdd(html, "PvP", "http://images.kingdomofloathing.com/itemimages/swords.gif", "peevpee.php");			
+			conditionalAdd(
+					html,
+					"The Beanstalk",
+					"http://images.kingdomofloathing.com/itemimages/thebeanstalk.gif",
+					"beanstalk.php", "place.php?whichplace=beanstalk");
+
+			conditionalAdd(
+					html,
+					"Sorceress' Lair",
+					"http://images.kingdomofloathing.com/itemimages/lairicon.gif",
+					"lair.php", "place.php?whichplace=lair");
+			conditionalAdd(
+					html,
+					"Spookyraven Manor",
+					"http://images.kingdomofloathing.com/itemimages/manoricon.gif",
+					"place.php?whichplace=manor1", "place.php?whichplace=manor1");
+			conditionalAdd(
+					html,
+					"PvP",
+					"http://images.kingdomofloathing.com/itemimages/swords.gif",
+					"peevpee.php");
 		}
-		
-		locations.add(new ActionItem("Messages", "http://images.kingdomofloathing.com/itemimages/envelope.gif", "messages.php"));
-		locations.add(new ActionItem("Donate", "http://images.kingdomofloathing.com/itemimages/donate.gif", "donatepopup.php"));
-		locations.add(new ActionItem("Options", "http://images.kingdomofloathing.com/itemimages/blackwrench.gif", "account.php"));
-		locations.add(new ActionItem("Community", "http://images.kingdomofloathing.com/itemimages/chat.gif", "community.php"));
-		locations.add(new ActionItem("Help", "http://images.kingdomofloathing.com/itemimages/help.gif", "doc.php?topic=home"));
-		locations.add(new ActionItem("Report Bug", "http://images.kingdomofloathing.com/itemimages/beetle.gif", "adminmail.php"));
-		locations.add(new ActionItem("Logout", "http://images.kingdomofloathing.com/itemimages/sleepy.gif", "logout.php"));
+
+		locations.add(new ActionItem("Messages",
+				"http://images.kingdomofloathing.com/itemimages/envelope.gif",
+				"messages.php"));
+		locations.add(new ActionItem("Donate",
+				"http://images.kingdomofloathing.com/itemimages/donate.gif",
+				"donatepopup.php"));
+		locations
+				.add(new ActionItem(
+						"Options",
+						"http://images.kingdomofloathing.com/itemimages/blackwrench.gif",
+						"account.php"));
+		locations.add(new ActionItem("Community",
+				"http://images.kingdomofloathing.com/itemimages/chat.gif",
+				"community.php"));
+		locations.add(new ActionItem("Help",
+				"http://images.kingdomofloathing.com/itemimages/help.gif",
+				"doc.php?topic=home"));
+		locations.add(new ActionItem("Report Bug",
+				"http://images.kingdomofloathing.com/itemimages/beetle.gif",
+				"adminmail.php"));
+		locations.add(new ActionItem("Logout",
+				"http://images.kingdomofloathing.com/itemimages/sleepy.gif",
+				"logout.php"));
 	}
 }

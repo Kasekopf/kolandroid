@@ -56,6 +56,7 @@ public class WebFragment<E extends WebModel> extends BaseGameFragment<Void, E>{
 	    	if(url.startsWith("data:text/html"))
 	    		return true;
 	    	
+	    	url = url.replace("reallyquitefake/", "");
 	    	Log.i("WebFragment", "Request made to " + url);
 	    	if(!getModel().makeRequest(url)) {
 	    		Log.i("WebFragment", "Externel request: " + url);
@@ -95,12 +96,17 @@ public class WebFragment<E extends WebModel> extends BaseGameFragment<Void, E>{
 		web.getSettings().setUseWideViewPort(true);
 		web.getSettings().setJavaScriptEnabled(true);
         web.addJavascriptInterface(new JavaScriptInterface(), "FORMOUT");
-		web.loadData(fixedHtml, "text/html", null);
+		//web.loadData( fixedHtml, "text/html", null);
+        web.loadDataWithBaseURL(base.getURL(), fixedHtml, "text/html", null, null);
+        
+        Log.i("WebFragment", fixedHtml);
 		web.invalidate();
 		web.setWebViewClient(new KoLWebViewClient());
+		/*
 		if (Build.VERSION.SDK_INT >= 11){
 			this.disableHardwareAcceleration(web);
 		}
+		*/
 	}
 
 	@Override

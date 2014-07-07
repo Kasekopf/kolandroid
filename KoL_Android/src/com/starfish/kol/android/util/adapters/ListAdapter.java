@@ -19,14 +19,19 @@ public class ListAdapter<E> extends BaseAdapter{
 	}
 	
 	public ListAdapter(Context c, List<E> baseList, ListElementBuilder<E> builder){
-		this.baseList = baseList;
+		this.baseList = new ArrayList<E>(baseList);
 		this.context = c;
 		this.builder = builder;
 	}
 	
 	public void setElements(List<E> base) {
-		this.baseList = base;
-		this.notifyDataSetChanged();
+		this.baseList = new ArrayList<E>(base);
+		super.notifyDataSetChanged();
+	}
+	
+	@Override
+	public void notifyDataSetChanged() {
+		throw new RuntimeException("Should not manually change list elements");
 	}
 	
 	@Override
@@ -36,7 +41,7 @@ public class ListAdapter<E> extends BaseAdapter{
 
 	public void addItem(E item) {
 		this.baseList.add(item);
-		this.notifyDataSetChanged();
+		super.notifyDataSetChanged();
 	}
 	
 	@Override

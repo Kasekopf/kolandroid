@@ -26,7 +26,7 @@ public class FightFragment extends WebFragment<FightModel> {
 			public void onClick(View arg0) {
 				ActionItem action = getModel().getAttack();
 				if(action != null)
-					action.select(getModel());
+					action.submit(getModel());
 			}
 		});
 		
@@ -38,7 +38,7 @@ public class FightFragment extends WebFragment<FightModel> {
 
 				SearchListFragment<ActionItem> newFragment = SearchListFragment.newInstance("Choose a skill to use:", skills);
 			    newFragment.show(getFragmentManager(), "dialog");
-			}			
+			}
 		});
 		
 		final Button useitem = (Button)view.findViewById(R.id.fight_items);

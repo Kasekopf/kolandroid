@@ -3,7 +3,6 @@ package com.starfish.kol.model.models;
 import com.starfish.kol.connection.Connection.ServerReply;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.request.Request;
-import com.starfish.kol.request.ResponseHandler;
 import com.starfish.kol.util.Regex;
 
 public class WebModel extends Model<Void> {
@@ -18,7 +17,6 @@ public class WebModel extends Model<Void> {
 	private static final Regex URL_FIND = new Regex(
 			"^https?://www(\\d*).kingdomofloathing.com/(.*)$", 2);
 	
-
 	private static final Regex URL_BASE_FIND = new Regex(
 			"^(?:.*/)?([^/?]*)(?:\\?.*)?$", 1);
 
@@ -49,12 +47,23 @@ public class WebModel extends Model<Void> {
 			"<input[^>]*button[^>]*>", 0);
 	private static final Regex GET_TEXT = new Regex("value=\"([^>]*)\">", 1);
 
+	private static final Regex FORM_REPLACER = new Regex("<form([^>]*)action=([\"']?[^\"' >]*[\"']?)([^>]*)>");
+	private static final Regex FORM_REPLACER2 = new Regex("<form([^>]*)method=[\"']?[^\"' >]*[\"']?([^>]*)>");
+	
+	private static final Regex TABLE_FIXER = new Regex("(</td>)(.*?)(</td>|</tr>|</table>|<td[^>]*>)");
+	/**
+	 * Remove code which redirects when no frames are detected.
+	 */
+	private static final Regex FRAME_REDIRECT = new Regex("if\\s*\\(parent\\.frames\\.length\\s*==\\s*0\\)\\s*location.href\\s*=\\s*[\"']?game\\.php[\"']?;", 0);
+	
+	
 	private String url;
 	private String html;
 
 	public WebModel(ServerReply text) {
 		super(text);
 
+		System.out.println("Loading webmodel for " + text.url);
 		this.setHTML(text.html);
 		this.url = text.url;
 	}
@@ -71,16 +80,11 @@ public class WebModel extends Model<Void> {
 				"<a href=\"desc_item.php?whichitem=$1&otherplayer=$2\">$0</a>");
 		//html = replaceButtons(html);
 		html = replaceForms(html);
+		html = FRAME_REDIRECT.replaceAll(html, "");
+		
 		this.html = html;
 	}
-
-	private static final Regex FORM_REPLACER = new Regex("<form([^>]*)action=([\"']?[^\"' >]*[\"']?)([^>]*)>");
-	private static final Regex FORM_REPLACER2 = new Regex("<form([^>]*)method=[\"']?[^\"' >]*[\"']?([^>]*)>");
 	
-	private static final Regex TABLE_FIXER = new Regex("(</td>)(.*?)(</td>|</tr>|</table>|<td[^>]*>)");
-	
-	//private static final Regex FORM_REPLACER = new Regex("<input([^>]*class=[\"']?button[^>]*)>");
-	//private static final Regex REMOVE_SUBMISSION = new Regex("(<input onclick='customParseForm[^>]*)type=[\"']?submit[\"']?([^>]*>)");
 	private static final Regex HEAD_TAG = new Regex("<head>");
 
     private final static String jsInjectCode = 
@@ -112,11 +116,9 @@ public class WebModel extends Model<Void> {
 	private String replaceForms(String html) {
 		html = FORM_REPLACER.replaceAll(html, "<form$1$3><input type=hidden name=totallyrealaction value=$2>");
 		html = FORM_REPLACER2.replaceAll(html, "<form$1action=\"\" onsubmit=\"customParseForm(this);\"$2>");
-		//html = REMOVE_SUBMISSION.replaceAll(html, "$1$2");
 		
 		html = TABLE_FIXER.replaceAll(html, "$1$3$2");
 		html = HEAD_TAG.replaceAll(html, "$0 <script>" + jsInjectCode + "</script>");
-		//System.out.println(html);
 		return html;
 	}
 
@@ -181,12 +183,12 @@ public class WebModel extends Model<Void> {
 			url = currentBase + url;
 		}
 
-		Request req = new Request(url, ResponseHandler.none);
+		Request req = new Request(url);
 		this.makeRequest(req);
 		return true;
 	}
 	
 	public boolean isSmall() {
-		return this.url.contains("small/");
+		return this.url.contains("small_");
 	}
 }

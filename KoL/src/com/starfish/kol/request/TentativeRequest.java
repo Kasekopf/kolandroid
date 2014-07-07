@@ -8,13 +8,12 @@ import com.starfish.kol.connection.Connection.ConnectionException;
 import com.starfish.kol.connection.Connection.ServerReply;
 
 public class TentativeRequest extends Request {
+	public TentativeRequest(String url) {
+		super(url);
+	}
+	
 	public TentativeRequest(String url, ResponseHandler handler) {
 		super(url, handler);
-	}
-
-	public TentativeRequest(String url, String[] names, String[] vals,
-			ResponseHandler handler) {
-		super(url, names, vals, handler);
 	}
 
 	@Override

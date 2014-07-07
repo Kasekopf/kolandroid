@@ -17,11 +17,15 @@ public class Request {
 	private String[] formNames;
 	private String[] formVals;
 
+	public Request(String url) {
+		this(url, ResponseHandler.none);
+	}
+	
 	public Request(String url, ResponseHandler handler) {
 		this(url, new String[0], new String[0], handler);
 	}
 
-	public Request(String url, String[] names, String[] vals,
+	 protected Request(String url, String[] names, String[] vals,
 			ResponseHandler handler) {
 		this.url = url;
 		this.handler = handler;
@@ -60,6 +64,7 @@ public class Request {
 				return response;
 			return null;
 		} catch (MalformedURLException | ConnectionException e) {
+			System.out.println("Error: " + e);
 			e.printStackTrace();
 			return null;
 		}

@@ -8,10 +8,6 @@ public class DirectRequest extends Request {
 		super(url, handler);
 	}
 
-	public DirectRequest(String url, String[] names, String[] vals, ResponseHandler handler) {
-		super(url, names, vals, handler);
-	}
-
 	public ServerReply make(Session session, String server, String cookie) {
 		ServerReply response = super.make(session, server, cookie);
 		if(response != null) //response was not actually handled by request

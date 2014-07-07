@@ -83,7 +83,7 @@ public class ApplicationView extends Application {
 	}
 	
 	public void executeAction(DeferredGameAction action) {
-		action.submit(model.getChatModel());
+		action.submit(model);
 	}
 	
 	private static class ActivityLauncher extends Handler

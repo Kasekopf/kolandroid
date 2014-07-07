@@ -104,7 +104,7 @@ public class Connection {
 			if (numReattempts > 0)
 				return connect(cookie, numReattempts - 1);
 			//System.out.println("ERROR: " + url);
-			throw new ConnectionException();
+			throw new ConnectionException(e);
 		}
 	}
 
@@ -183,6 +183,17 @@ public class Connection {
 
 	public class ConnectionException extends IOException {
 		private static final long serialVersionUID = 1592480171367152698L;
+		
+		private Exception base;
+		
+		public ConnectionException(Exception base) {
+			this.base = base;
+		}
+				
+		@Override
+		public String toString() {
+			return base.toString();
+		}
 	}
 
 	protected byte[] getData() {

@@ -13,7 +13,7 @@ import com.starfish.kol.model.models.chat.ChatModel;
 import com.starfish.kol.request.Request;
 import com.starfish.kol.request.ResponseHandler;
 
-public class GameModel implements ResponseHandler {	
+public class GameModel implements ResponseHandler, GameRequestHandler {	
 	private ViewMaker view;
 	private Session session;
 	private ChatModel chat;
@@ -43,6 +43,11 @@ public class GameModel implements ResponseHandler {
 		view.display(type, model);
 	}
 	
+
+	public void makeRequest(Request req) {
+		session.handle(req);
+	}
+
 	@Override
 	public boolean handle(Session session, Request request, ServerReply response) {
 		if(view == null) {

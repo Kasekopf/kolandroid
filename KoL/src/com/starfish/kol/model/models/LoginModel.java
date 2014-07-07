@@ -27,12 +27,6 @@ public class LoginModel extends Model<LoginStatus> {
 	private static final Regex CHALLENGE = new Regex(
 			"<input type=hidden name=challenge value=\"([^\"]*?)\">", 1);
 
-	public void cheat() {
-		Request req = new Request("static.php?id=whatiskol",
-				ResponseHandler.none);
-		this.makeRequest(req);
-	}
-
 	public void login(final String username, final String pass) {
 		this.notifyView(LoginStatus.STARTING);
 
@@ -73,10 +67,7 @@ public class LoginModel extends Model<LoginStatus> {
 								notifyView(LoginStatus.SUCCESS);
 
 								session.setCookie(response.cookie);
-								Request game = new Request("main.php", ResponseHandler.none);
-								// Request game = new
-								// Request("craft.php?mode=combine",
-								// ResponseHandler.none);
+								Request game = new Request("main.php");
 								session.handle(game);
 								return true;
 							}
