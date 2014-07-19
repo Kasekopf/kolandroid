@@ -20,9 +20,13 @@ public class BasicAction implements DeferredGameAction {
 		this.session = session;
 	}
 	
+	protected void submit(ViewContext context, String urloverride) {
+		Request r = new Request(urloverride, new GameHandler(context));
+		r.makeAsync(session);
+	}
+	
 	@Override
 	public void submit(ViewContext context) {
-		Request r = new Request(url, new GameHandler(context));
-		r.makeAsync(session);
+		submit(context, url);
 	}
 }

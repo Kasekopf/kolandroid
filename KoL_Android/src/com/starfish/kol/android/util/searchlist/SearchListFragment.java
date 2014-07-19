@@ -77,7 +77,7 @@ public class SearchListFragment<E extends ModelItem> extends DialogFragment {
 		if(base == null)
 			base = new ArrayList<E>();
 		
-		if(args.containsKey("selector"))
+		if(args.containsKey("selector") && selector == null)
 			selector = (OnListSelection<E>)args.getSerializable("selector");
 		
 		if(args.containsKey("builder"))

@@ -11,8 +11,8 @@ public class ActionItem extends BasicAction implements ModelItem
 	 */
 	private static final long serialVersionUID = 8834750738130793384L;
 	
-	private String text;
-	private String img;
+	private final String text;
+	private final String img;
 	
 	public ActionItem(Session session, String text, String action) {
 		this(session, text, "", action);

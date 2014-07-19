@@ -95,7 +95,7 @@ public class GroupSearchListFragment<F extends ModelItem> extends
 		if(builder == null)
 			builder = new DefaultBuilder<F>();
 		
-		if(args.containsKey("selector"))
+		if(args.containsKey("selector") && selector == null)
 			selector = (OnListSelection<F>)args.getSerializable("selector");
 		
 		adapter = new HighlightableListGroupAdapter<F>(view.getContext(), base, builder);

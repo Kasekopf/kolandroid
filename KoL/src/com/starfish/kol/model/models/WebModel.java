@@ -57,7 +57,6 @@ public class WebModel extends Model<Void> {
 	 */
 	private static final Regex FRAME_REDIRECT = new Regex("if\\s*\\(parent\\.frames\\.length\\s*==\\s*0\\)\\s*location.href\\s*=\\s*[\"']?game\\.php[\"']?;", 0);
 	
-	
 	private String url;
 	private String html;
 
@@ -171,6 +170,11 @@ public class WebModel extends Model<Void> {
 
 	public boolean makeRequest(String url) {
 		if(url == null || url.length() < 1) return false;
+		
+		if(url.contains("totallyrealaction")) {
+			System.out.println("Ignoring duplicate form request");
+			return true;
+		}
 		
 		if (url.contains("http://") || url.contains("https://")) {
 			url = URL_FIND.extractSingle(url);

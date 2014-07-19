@@ -5,16 +5,59 @@
     android:orientation="vertical"
     tools:context="com.starfish.kol.android.dialogs.FunkslingingDialog" >
 
-    <FrameLayout
-        android:id="@+id/funksling_item1"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#fff">
+        <LinearLayout
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:orientation="vertical">
+		    <FrameLayout
+		        android:id="@+id/funksling_item1"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" />
+		    
+		    <View
+		        android:layout_width="match_parent"
+		        android:layout_height="1dp"
+		        android:background="#000"
+		       />  
+		       
+		    <FrameLayout
+		        android:id="@+id/funksling_item2"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" />
+	    </LinearLayout>
     
-    <FrameLayout
-        android:id="@+id/funksling_item2"
+	    <View
+	        android:layout_width="1dp"
+	        android:layout_height="match_parent"
+	        android:background="#000"
+	       />
+    
+        <Button 
+		    android:id="@+id/funksling_submit"
+            android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:text="Use"            
+            />
+    </LinearLayout>
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="2dp"
+        android:background="#000"
+        android:layout_marginBottom="1dp"
+       />
 	    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#000"
+       />  
+       
     <FrameLayout
         android:id="@+id/funksling_list"
         android:layout_width="match_parent"
