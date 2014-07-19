@@ -143,7 +143,7 @@ public class InventoryModel extends ParentModel<Void> {
 		private ArrayList<ModelGroup<InvItem>> items;
 
 		public InvPocketModel(Session s, String updateUrl) {
-			super(s, updateUrl);
+			super(s, updateUrl, true);
 			this.items = new ArrayList<ModelGroup<InvItem>>();
 		}
 

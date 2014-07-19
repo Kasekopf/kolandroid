@@ -16,7 +16,7 @@ public class NavigationModel extends LiveModel {
 	private ArrayList<ActionItem> locations;
 
 	public NavigationModel(Session session) {
-		super(session, "topmenu.php");
+		super(session, "topmenu.php", false);
 
 		this.locations = new ArrayList<ActionItem>();
 		loadContent(null);

@@ -93,7 +93,7 @@ public class CraftingModel extends Model<Void> {
 		private WebModel base;
 		
 		public CraftingSubModel(Session s, String title, String updateUrl) {
-			super(s, updateUrl);
+			super(s, updateUrl, true);
 			this.base = new WebModel(getSession(), new ServerReply(200, "", "", "", "", ""));
 			this.title = title;
 		}

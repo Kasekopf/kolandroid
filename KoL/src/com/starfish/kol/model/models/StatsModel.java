@@ -110,7 +110,7 @@ public class StatsModel extends LiveModel{
 	private String[] currentStats = null;
 		
 	public StatsModel(Session s) {
-		super(s, "charpane.php");
+		super(s, "charpane.php", false);
 	}
 			
 	@Override

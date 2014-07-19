@@ -103,7 +103,7 @@ public class LoginScreen extends ActionBarActivity {
 	        check.setChecked(settings.getBoolean("savepass", true));
 	        
 	        if(settings.contains("password")) {
-	        	pass.setHint("..........");
+	        	pass.setHint("\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"); //unicode dot x10
 	        	
 	        	savedUser = settings.getString("username", "");
 	        	savedPass = new PasswordHash(settings.getString("password", ""), true);
@@ -135,7 +135,7 @@ public class LoginScreen extends ActionBarActivity {
 					if(username == null || username.length() == 0)
 						return;
 					
-					if(savedUser != null && username.contentEquals(savedUser) && (password == null || password.length() == 0)) {
+					if(savedUser != null && username.equalsIgnoreCase(savedUser) && (password == null || password.length() == 0)) {
 						pass = savedPass;
 					} else {
 						if (password == null || password.length() == 0)

@@ -15,12 +15,14 @@ public abstract class LiveModel extends Model<LiveMessage> {
 
 	private final String updateUrl;
 	private boolean filling;
+	private boolean shouldRedirect;
 
-	public LiveModel(Session s, String updateUrl) {
+	public LiveModel(Session s, String updateUrl, boolean redirectOnUnknownResponse) {
 		super(s);
 		
 		this.filling = false;
 		this.updateUrl = updateUrl;
+		this.shouldRedirect = redirectOnUnknownResponse;
 	}
 	
 	public final void process(ServerReply response) {
@@ -40,7 +42,10 @@ public abstract class LiveModel extends Model<LiveMessage> {
 					updateBase(response);
 					process(response);
 				} else {
-					getGameHandler().handle(session, request, response);
+					if(shouldRedirect)
+						getGameHandler().handle(session, request, response);
+					else
+						System.out.println("LiveModel expected " + updateUrl + " but was redirected to " + response.url);
 				}
 				return true;
 			}
