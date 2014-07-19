@@ -181,9 +181,12 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 				active.add(c);
 			}
 
-			for (ChatChannel c : channels) {
+			for(int i = 0; i < channels.size(); i++) {
+				//Avoid foreach loop to avoid concurrent modification issues.
+				ChatChannel c = channels.get(i);
 				c.setActive(active.contains(c));
 			}
+			
 			return true;
 		}
 		
