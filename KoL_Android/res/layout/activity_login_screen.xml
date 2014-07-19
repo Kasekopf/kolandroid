@@ -3,6 +3,6 @@
     android:id="@+id/game_mainfragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.starfish.kol.android.LoginScreen"
+    tools:context="com.starfish.kol.android.login.LoginScreen"
     tools:ignore="MergeRootFrame" />
 

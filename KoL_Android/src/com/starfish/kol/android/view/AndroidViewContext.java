@@ -8,8 +8,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.starfish.kol.android.LoginScreen;
 import com.starfish.kol.android.game.GameScreen;
+import com.starfish.kol.android.login.LoginScreen;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.ChoiceModel;
