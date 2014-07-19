@@ -25,6 +25,9 @@ import com.starfish.kol.android.game.fragments.SkillsFragment;
 import com.starfish.kol.android.game.fragments.StatsFragment;
 import com.starfish.kol.android.game.fragments.StatsFragment.StatsCallbacks;
 import com.starfish.kol.android.game.fragments.WebFragment;
+import com.starfish.kol.android.view.AndroidViewContext;
+import com.starfish.kol.connection.Session;
+import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.ChoiceModel;
 import com.starfish.kol.model.models.CraftingModel;
 import com.starfish.kol.model.models.FightModel;
@@ -65,12 +68,17 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 		
 		mTitle = getTitle();
 
+		Intent intent = this.getIntent();
+		Model<?> model = (Model<?>)intent.getSerializableExtra("model");
+		Session session = model.getSession();
+		Log.i("GameScreen", "Session: " + session);
+		
 		// Set up the drawer.
-		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
+		mNavigationDrawerFragment.setUp(session, R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 
 		mStatsFragment = new StatsFragment();
-		mStatsFragment.setArguments(GameFragment.getModelBundle(new StatsModel()));
+		mStatsFragment.setArguments(GameFragment.getModelBundle(new StatsModel(session)));
 		getSupportFragmentManager().beginTransaction()
 				.add(R.id.game_statsfragment, mStatsFragment).commit();
 
@@ -81,7 +89,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 			}			
 		};
         
-		chat.open(this);
+		chat.open(session, this);
 		displayIntent(this.getIntent(), false);
 	}
 
@@ -187,7 +195,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 			return true;
 		case R.id.action_chat:
 			if(chat.getService() != null)
-				chat.getService().openChat();
+				chat.getService().openChat(new AndroidViewContext(this));
 			return true;
 		}
 

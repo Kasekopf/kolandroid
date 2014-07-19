@@ -3,12 +3,15 @@ package com.starfish.kol.android.game.fragments;
 import java.util.ArrayList;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.dialogs.FunkslingingDialog;
 import com.starfish.kol.android.util.searchlist.SearchListFragment;
+import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.model.basic.ActionItem;
 import com.starfish.kol.model.models.FightModel;
 
@@ -26,7 +29,7 @@ public class FightFragment extends WebFragment<FightModel> {
 			public void onClick(View arg0) {
 				ActionItem action = getModel().getAttack();
 				if(action != null)
-					action.submit(getModel());
+					action.submit(new AndroidViewContext(getActivity()));
 			}
 		});
 		
@@ -47,7 +50,13 @@ public class FightFragment extends WebFragment<FightModel> {
 			public void onClick(View btn) {
 				ArrayList<ActionItem> items = getModel().getItems();
 				
-				SearchListFragment<ActionItem> newFragment = SearchListFragment.newInstance("Choose an item to use:", items);
+				DialogFragment newFragment;
+				
+				if(getModel().hasFunkslinging())
+					newFragment = FunkslingingDialog.create(items);
+				else
+					newFragment = SearchListFragment.newInstance("Choose an item to use:", items);
+				
 			    newFragment.show(getFragmentManager(), "dialog");
 			}			
 		});

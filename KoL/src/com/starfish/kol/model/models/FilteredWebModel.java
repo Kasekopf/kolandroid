@@ -1,6 +1,7 @@
 package com.starfish.kol.model.models;
 
 import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.Session;
 
 public abstract class FilteredWebModel extends WebModel {
 	/**
@@ -8,8 +9,8 @@ public abstract class FilteredWebModel extends WebModel {
 	 */
 	private static final long serialVersionUID = -2252578234021924109L;
 	
-	public FilteredWebModel(ServerReply text) {
-		super(text);
+	public FilteredWebModel(Session s, ServerReply text) {
+		super(s, text);
 		
 		this.setHTML(filterHtml(text.html));
 	}

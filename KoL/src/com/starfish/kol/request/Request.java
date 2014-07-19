@@ -16,10 +16,6 @@ public class Request {
 	
 	private String[] formNames;
 	private String[] formVals;
-
-	public Request(String url) {
-		this(url, ResponseHandler.none);
-	}
 	
 	public Request(String url, ResponseHandler handler) {
 		this(url, new String[0], new String[0], handler);
@@ -42,6 +38,17 @@ public class Request {
 	public boolean hasTag(String tag) {
 		return tags.contains(tag);
 	}
+	
+	public void makeAsync(final Session session) {
+		Thread t = new Thread() {
+			public void run() {
+				Request.this.make(session, session.getServer(),
+						session.getCookie());
+			}
+		};
+		t.start();
+	}
+	
 	/**
 	 * Actually make the request and return a response.
 	 * This should be run on a background thread only!
@@ -51,7 +58,7 @@ public class Request {
 	 * @param cookie	Cookie to use with this request
 	 * @return	An unhandled ServerReply. Null if the reply has already been handled.
 	 */
-	public ServerReply make(Session session, String server, String cookie) {
+	protected void make(Session session, String server, String cookie) {
 		try {
 			Connection con = new Connection("http://" + server
 					+ ".kingdomofloathing.com/" + getURL());
@@ -60,13 +67,12 @@ public class Request {
 			System.out.println("Making request to " + getURL());
 			ServerReply response = con.connect(cookie);
 			boolean done = getHandler().handle(session, this, response);
-			if (!done)
-				return response;
-			return null;
+			if (!done) {
+				throw new RuntimeException("No valid handler for: " + this.toString());
+			}
 		} catch (MalformedURLException | ConnectionException e) {
 			System.out.println("Error: " + e);
 			e.printStackTrace();
-			return null;
 		}
 	}
 

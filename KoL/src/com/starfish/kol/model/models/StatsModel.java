@@ -1,6 +1,7 @@
 package com.starfish.kol.model.models;
 
 import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.util.LiveModel;
 import com.starfish.kol.request.Request;
 import com.starfish.kol.request.SimulatedRequest;
@@ -82,11 +83,11 @@ public class StatsModel extends LiveModel{
 		//Slim&Normal mode
 		new Regex("/(?:slim)?mp\\.gif.*?<span.*?>(\\d+?)&nbsp;/&nbsp;(\\d+?)</span>", 2),
 		//Compact mode
-		new Regex("MP.*?>(\\d+?)/(\\d+?)</", 1),
+		new Regex("MP.*?>(\\d+?)/(\\d+?)</", 2),
 		//Slim&Normal (Zombiecore)
 		new Regex("/(?:slim)?zombies/horde.*?\\.gif.*?Horde: (\\d+)", 1),
 		//Compact mode (Zombiecore)
-		new Regex("Horde: (\\d+)")
+		new Regex("Horde: (\\d+)", 1)
 	};
 	
 	private static final Regex[] NAME = {
@@ -108,8 +109,8 @@ public class StatsModel extends LiveModel{
 	private String currentStatsPage = null;
 	private String[] currentStats = null;
 		
-	public StatsModel() {
-		super("charpane.php");
+	public StatsModel(Session s) {
+		super(s, "charpane.php");
 	}
 			
 	@Override
@@ -208,15 +209,15 @@ public class StatsModel extends LiveModel{
 		if(sideLog != null) {
 			String body = PAGE_BODY.replaceAll(currentStatsPage, "$1" + sideLog + "$3");
 			
-			req = new SimulatedRequest(this.getBase(), "http://www.kingdomofloathing.com/questsidebar.php", body);
+			req = new SimulatedRequest(this.getBase(), "http://www.kingdomofloathing.com/questsidebar.php", body, this.getGameHandler());
 		} else {
-			req = new Request("http://www.kingdomofloathing.com/questlog.php");
+			req = new Request("http://www.kingdomofloathing.com/questlog.php", this.getGameHandler());
 		}
 		this.makeRequest(req);
 	}
 	
 	public void loadFull() {
 		String body = QUEST_LOG.replaceAll(currentStatsPage, "");
-		this.makeRequest(new SimulatedRequest(this.getBase(), "http://www.kingdomofloathing.com/fullsidebar.php", body));
+		this.makeRequest(new SimulatedRequest(this.getBase(), "http://www.kingdomofloathing.com/fullsidebar.php", body, this.getGameHandler()));
 	}
 }

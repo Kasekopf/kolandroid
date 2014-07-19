@@ -3,6 +3,7 @@ package com.starfish.kol.model.models;
 import java.util.ArrayList;
 
 import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.util.LiveModel;
 import com.starfish.kol.util.Regex;
@@ -29,8 +30,8 @@ public class CraftingModel extends Model<Void> {
 	
 	private int initialSlot;
 	
-	public CraftingModel(ServerReply reply) {
-		super(reply);
+	public CraftingModel(Session s, ServerReply reply) {
+		super(s, reply);
 		
 		ArrayList<String> options = SELECTION.extractAllSingle(TOP_BAR.extractSingle(reply.html));
 		
@@ -45,11 +46,11 @@ public class CraftingModel extends Model<Void> {
 			}
 			System.out.println("Found: " + title + " @ " + link);
 			
-			crafts[i] = new CraftingSubModel(title, link);
+			crafts[i] = new CraftingSubModel(s, title, link);
 		}
 		
 		if(crafts.length == 0) {
-			crafts = new CraftingSubModel[]{new CraftingSubModel("Error", "crafting.php")};
+			crafts = new CraftingSubModel[]{new CraftingSubModel(s, "Error", "crafting.php")};
 		}
 		System.out.println("Loaded " + crafts.length + " crafts; selected " + initialSlot);
 		
@@ -67,7 +68,7 @@ public class CraftingModel extends Model<Void> {
 		ServerReply newRep = new ServerReply(base.responseCode,
 				base.redirectLocation, base.date, html, "small/craftingresults.php",
 				base.cookie);
-		return new WebModel(newRep);
+		return new WebModel(getSession(), newRep);
 	}
 	
 	public int getNumberSlots() {
@@ -91,9 +92,9 @@ public class CraftingModel extends Model<Void> {
 		private String title;
 		private WebModel base;
 		
-		public CraftingSubModel(String title, String updateUrl) {
-			super(updateUrl);
-			this.base = new WebModel(new ServerReply(200, "", "", "", "", ""));
+		public CraftingSubModel(Session s, String title, String updateUrl) {
+			super(s, updateUrl);
+			this.base = new WebModel(getSession(), new ServerReply(200, "", "", "", "", ""));
 			this.title = title;
 		}
 
@@ -102,7 +103,7 @@ public class CraftingModel extends Model<Void> {
 			ServerReply newRep = new ServerReply(content.responseCode,
 					content.redirectLocation, content.date, TOP_BAR.replaceAll(content.html, "$1"), content.url,
 					content.cookie);
-			this.base = new WebModel(newRep);
+			this.base = new WebModel(getSession(), newRep);
 		}
 		
 		public String getTitle() {

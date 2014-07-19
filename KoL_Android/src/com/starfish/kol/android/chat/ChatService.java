@@ -16,7 +16,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.starfish.kol.android.util.AndroidProgressHandler;
-import com.starfish.kol.android.view.ApplicationView;
+import com.starfish.kol.android.view.AndroidViewContext;
+import com.starfish.kol.connection.Session;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChatChannel;
 import com.starfish.kol.model.models.chat.ChatModel;
@@ -39,7 +41,6 @@ public class ChatService extends Service {
 	}
 
 	private ChatCallback callback;
-
 	private ChatModel base;
 	private Timer updateTimer = null;
 
@@ -55,23 +56,24 @@ public class ChatService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.i("ChatService", "Received start id " + startId + ": " + intent);
-		// We want this service to continue running until it is explicitly
-		// stopped, so return sticky.
-		ApplicationView app = (ApplicationView) getApplication();
-		this.base = app.getChat();
-
-		this.base.connectView(new AndroidProgressHandler<ChatStatus>() {
-			@Override
-			public void recieveProgress(ChatStatus message) {
-				if (message == ChatStatus.UPDATE && callback != null)
-					callback.sendUpdate();
-
-				if (updateTimer != null && message == ChatStatus.STOPPED)
-					updateTimer.cancel();
-			}
-		});
-		this.base.start();
-
+		
+		if(intent != null) {
+			Session session = (Session)intent.getSerializableExtra("session");
+			this.base = new ChatModel(session);
+	
+			this.base.connectView(new AndroidProgressHandler<ChatStatus>() {
+				@Override
+				public void recieveProgress(ChatStatus message) {
+					if (message == ChatStatus.UPDATE && callback != null)
+						callback.sendUpdate();
+	
+					if (updateTimer != null && message == ChatStatus.STOPPED)
+						updateTimer.cancel();
+				}
+			}, new AndroidViewContext(this.getApplicationContext()));
+			this.base.start();
+		}
+		
 		if (updateTimer != null)
 			updateTimer.cancel();
 		
@@ -83,6 +85,9 @@ public class ChatService extends Service {
 					base.triggerUpdate();
 			}
 		}, 1000, 5000);
+		
+		// We want this service to continue running until it is explicitly
+		// stopped, so return sticky.
 		return START_STICKY;
 	}
 
@@ -95,16 +100,17 @@ public class ChatService extends Service {
 			updateTimer.cancel();
 	}
 
-	public void openChat() {
+	public void openChat(ViewContext context) {
 		if(base == null)
 			return;
 		
 		if (base.getChatExists()) {
 			Intent intent = new Intent(ChatService.this, ChatActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.putExtra("session", base.getSession());
 			this.getApplicationContext().startActivity(intent);
 		} else {
-			base.displayRejectionMessage();
+			base.displayRejectionMessage(context);
 		}
 	}
 
@@ -138,7 +144,7 @@ public class ChatService extends Service {
 		private AndroidProgressHandler<Void> callback;
 		private ServiceConnection service;
 
-		public void open(Activity context) {
+		public void open(Session session, Activity context) {
 			service = new ServiceConnection() {
 				@Override
 				public void onServiceConnected(ComponentName className,
@@ -156,6 +162,7 @@ public class ChatService extends Service {
 			};
 
 			Intent intent = new Intent(context, ChatService.class);
+			intent.putExtra("session", session);
 			context.getApplicationContext().bindService(intent, service,
 					Context.BIND_AUTO_CREATE);
 

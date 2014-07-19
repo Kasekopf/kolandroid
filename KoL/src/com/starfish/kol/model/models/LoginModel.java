@@ -6,9 +6,10 @@ import java.security.NoSuchAlgorithmException;
 
 import com.starfish.kol.connection.Connection.ServerReply;
 import com.starfish.kol.connection.Session;
+import com.starfish.kol.gamehandler.GameHandler;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.LoginModel.LoginStatus;
-import com.starfish.kol.request.DirectRequest;
 import com.starfish.kol.request.Request;
 import com.starfish.kol.request.ResponseHandler;
 import com.starfish.kol.request.SingleRequest;
@@ -27,10 +28,20 @@ public class LoginModel extends Model<LoginStatus> {
 	private static final Regex CHALLENGE = new Regex(
 			"<input type=hidden name=challenge value=\"([^\"]*?)\">", 1);
 
-	public void login(final String username, final String pass) {
+	public LoginModel() {
+		super(new Session());
+	}
+	
+	public void cheat(ViewContext context) {
+		Request req = new Request("static.php?id=whatiskol",
+				new GameHandler(context));
+		this.makeRequest(req);
+	}
+
+	public void login(final ViewContext context, final String username, final String pass) {
 		this.notifyView(LoginStatus.STARTING);
 
-		Request req = new DirectRequest("login.php", new ResponseHandler() {
+		Request req = new Request("login.php", new ResponseHandler() {
 			@Override
 			public boolean handle(Session session, Request request,
 					ServerReply response) {
@@ -67,14 +78,17 @@ public class LoginModel extends Model<LoginStatus> {
 								notifyView(LoginStatus.SUCCESS);
 
 								session.setCookie(response.cookie);
-								Request game = new Request("main.php");
-								session.handle(game);
+								Request game = new Request("main.php", new GameHandler(context));
+								// Request game = new
+								// Request("craft.php?mode=combine",
+								// ResponseHandler.none);
+								game.makeAsync(session);
 								return true;
 							}
 
 						});
 
-				session.handle(login);
+				login.makeAsync(session);
 				return true;
 			}
 		});

@@ -75,7 +75,7 @@ public class ChatAction implements Serializable {
 
 			switch (action) {
 			case 1:
-				Request webReq = new Request(entry + "?" + arg + "=" + baseMessage.getUser().getId());
+				Request webReq = new Request(entry + "?" + arg + "=" + baseMessage.getUser().getId(), context.getGameHandler());
 				context.makeRequest(webReq);
 				break;
 			case 2:
@@ -92,7 +92,7 @@ public class ChatAction implements Serializable {
 				toChatField.reportProgress(entry + " " + player);
 				break;
 			case 5:
-				Request chatReq = new Request(entry + baseMessage.getUser().getId());
+				Request chatReq = new Request(entry + baseMessage.getUser().getId(), context.getGameHandler());
 				context.makeRequest(chatReq);
 			}
 		}

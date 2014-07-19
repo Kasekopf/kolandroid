@@ -2,7 +2,7 @@ package com.starfish.kol.android.util.searchlist;
 
 import android.support.v4.app.DialogFragment;
 
-import com.starfish.kol.android.view.ApplicationView;
+import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.model.basic.ActionItem;
 
 public class ActionSelector<E extends ActionItem> implements OnListSelection<E>{
@@ -12,9 +12,8 @@ public class ActionSelector<E extends ActionItem> implements OnListSelection<E>{
 	private static final long serialVersionUID = 3523297469606009532L;
 
 	@Override
-	public boolean selectItem(DialogFragment list, E item) {
-		ApplicationView app = (ApplicationView)list.getActivity().getApplication();
-		app.executeAction(item);
+	public boolean selectItem(DialogFragment list, E item) {		
+		item.submit(new AndroidViewContext(list.getActivity()));
 		return true;
 	}
 }

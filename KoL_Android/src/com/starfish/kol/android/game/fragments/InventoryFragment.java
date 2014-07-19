@@ -16,6 +16,7 @@ import com.starfish.kol.android.util.CustomFragmentTabHost.OnCreateFragmentListe
 import com.starfish.kol.android.util.listbuilders.SubtextBuilder;
 import com.starfish.kol.android.util.searchlist.GroupSearchListFragment;
 import com.starfish.kol.android.util.searchlist.OnListSelection;
+import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.model.models.InventoryModel;
 import com.starfish.kol.model.models.InventoryModel.InvItem;
 import com.starfish.kol.model.models.InventoryModel.InvPocketModel;
@@ -79,7 +80,7 @@ public class InventoryFragment extends BaseGameFragment<Void, InventoryModel> im
 					break;
 				}
 			}
-		});
+		}, new AndroidViewContext(getActivity()));
 		
 		//Display an item selection dialog when an item is selected
 		fragment.setOnSelectionX(new OnListSelection<InvItem>() {

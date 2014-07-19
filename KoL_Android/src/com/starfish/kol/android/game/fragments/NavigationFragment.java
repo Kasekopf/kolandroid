@@ -18,11 +18,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.android.game.GameFragment;
 import com.starfish.kol.android.util.AndroidProgressHandler;
 import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
-import com.starfish.kol.android.view.ApplicationView;
+import com.starfish.kol.android.view.AndroidViewContext;
+import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.basic.ActionItem;
 import com.starfish.kol.model.models.NavigationModel;
 import com.starfish.kol.model.util.LiveModel.LiveMessage;
@@ -58,10 +58,6 @@ public class NavigationFragment extends Fragment {
     private ListAdapter<ActionItem> adapter;
 	private AndroidProgressHandler<LiveMessage> callback;
 	
-    public NavigationFragment() {    	
-    	this.setArguments(GameFragment.getModelBundle(new NavigationModel()));
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +90,7 @@ public class NavigationFragment extends Fragment {
      * @param fragmentId   The android:id of this fragment in its activity's layout.
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
      */
-    public void setUp(int fragmentId, DrawerLayout drawerLayout) {
+    public void setUp(Session session, int fragmentId, DrawerLayout drawerLayout) {
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
 
@@ -160,6 +156,8 @@ public class NavigationFragment extends Fragment {
         });
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        
+        this.setupModel(session);
     }
 
     @Override
@@ -188,15 +186,8 @@ public class NavigationFragment extends Fragment {
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, null, false);
-
-		final NavigationModel model = (NavigationModel)this.getArguments().getSerializable("model");
-		ApplicationView app = (ApplicationView) getActivity().getApplication();
-		app.connectModel(model);
+    private void setupModel(Session session) {
+    	final NavigationModel model = new NavigationModel(session);
 
 		this.callback = new AndroidProgressHandler<LiveMessage>() {
 			@Override
@@ -205,34 +196,35 @@ public class NavigationFragment extends Fragment {
 			}
 		};
 		
-		model.connectView(callback);
+		model.connectView(callback, new AndroidViewContext(getActivity()));
 		
-		this.onCreateSetup(rootView, model, savedInstanceState);
-		return rootView;
-	}
-
-	public final void onDestroyView() {
-		callback.close();
-		super.onDestroyView();
-	}
-	
-	public void onCreateSetup(View view, final NavigationModel base,
-			Bundle savedInstanceState) {
+		ListView mDrawerListView = (ListView)this.getView().findViewById(R.id.navigation_list);
 		
-		ListView mDrawerListView = (ListView)view;
-		
-        adapter = new ListAdapter<ActionItem>(getActionBar().getThemedContext(), base.getLocations(), new DefaultBuilder<ActionItem>());
+        adapter = new ListAdapter<ActionItem>(getActionBar().getThemedContext(), model.getLocations(), new DefaultBuilder<ActionItem>());
         mDrawerListView.setAdapter(adapter);
         
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ActionItem choice = (ActionItem)parent.getItemAtPosition(position);
-				choice.submit(base);
+				choice.submit(new AndroidViewContext(getActivity()));
 		        if (mDrawerLayout != null) {
 		            mDrawerLayout.closeDrawer(mFragmentContainerView);
 		        }
             }
         });
+    }
+    
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, null, false);
+		return rootView;
+	}
+
+	public final void onDestroyView() {
+		if(callback != null)
+			callback.close();
+		super.onDestroyView();
 	}
 }

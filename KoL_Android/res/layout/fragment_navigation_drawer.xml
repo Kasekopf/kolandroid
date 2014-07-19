@@ -6,5 +6,6 @@
     android:choiceMode="singleChoice"
     android:divider="#aaa"
     android:dividerHeight="1dp"
+    android:id="@+id/navigation_list"
     tools:context="com.starfish.kol.android.game.fragments.NavigationFragment" />
 

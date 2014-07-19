@@ -3,6 +3,7 @@ package com.starfish.kol.model.models;
 import java.util.ArrayList;
 
 import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.basic.ActionItem;
 import com.starfish.kol.util.Regex;
 
@@ -25,9 +26,8 @@ public class ChoiceModel extends FilteredWebModel {
 	
 	private ArrayList<ActionItem> options;
 	
-	
-	public ChoiceModel(ServerReply response) {
-		super(response);
+	public ChoiceModel(Session s, ServerReply response) {
+		super(s, response);
 		
 		this.extractOptions(response.html);
 	}
@@ -47,7 +47,7 @@ public class ChoiceModel extends FilteredWebModel {
 			text = text.replace("&quot;", "\"");
 			
 			String action = "choice.php?pwd=" + pwd + "&whichchoice=" + whichchoice + "&option=" + option;
-			options.add(new ActionItem(text, action));
+			options.add(new ActionItem(getSession(), text, action));
 		}
 	}
 	

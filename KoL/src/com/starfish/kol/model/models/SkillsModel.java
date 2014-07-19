@@ -3,6 +3,7 @@ package com.starfish.kol.model.models;
 import java.util.ArrayList;
 
 import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.basic.BasicAction;
 import com.starfish.kol.model.basic.BasicGroup;
@@ -58,8 +59,8 @@ public class SkillsModel extends Model<Void> {
 	private final ArrayList<ModelGroup<SkillItem>> skills;
 
 	private final boolean usedItem;
-	public SkillsModel(ServerReply text) {
-		super(text);
+	public SkillsModel(Session s, ServerReply text) {
+		super(s, text);
 		this.loadContent(text);
 
 		this.skills = processSkills(text.html);
@@ -162,7 +163,7 @@ public class SkillsModel extends Model<Void> {
 		ServerReply newRep = new ServerReply(base.responseCode,
 				base.redirectLocation, base.date, html, "small/skillresults.php",
 				base.cookie);
-		return new WebModel(newRep);
+		return new WebModel(getSession(), newRep);
 	}
 
 	public ArrayList<ModelGroup<SkillItem>> getSkills() {
@@ -197,7 +198,7 @@ public class SkillsModel extends Model<Void> {
 		
 		public DeferredGameAction use(String quantity) {
 			String action = actionBase + "&itemquantity=" + quantity;
-			return new BasicAction(action);
+			return new BasicAction(getSession(), action);
 		}
 		
 	}
@@ -245,7 +246,7 @@ public class SkillsModel extends Model<Void> {
 				action += "&quantity=" + number;
 			}
 			
-			return new BasicAction(action);
+			return new BasicAction(getSession(), action);
 		}
 	}
 

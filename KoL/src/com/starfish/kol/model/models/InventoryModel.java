@@ -3,6 +3,7 @@ package com.starfish.kol.model.models;
 import java.util.ArrayList;
 
 import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.ParentModel;
 import com.starfish.kol.model.basic.ActionItem;
@@ -34,14 +35,14 @@ public class InventoryModel extends ParentModel<Void> {
 	
 	private String resultsPane;
 
-	public InventoryModel(ServerReply text) {
-		super(text);
+	public InventoryModel(Session s, ServerReply text) {
+		super(s, text);
 
 		pockets = new InvPocketModel[4];
-		pockets[0] = new InvPocketModel("inventory.php?which=1");
-		pockets[1] = new InvPocketModel("inventory.php?which=2");
-		pockets[2] = new InvPocketModel("inventory.php?which=3");
-		pockets[3] = new InvPocketModel("inventory.php?which=f-1");
+		pockets[0] = new InvPocketModel(s, "inventory.php?which=1");
+		pockets[1] = new InvPocketModel(s, "inventory.php?which=2");
+		pockets[2] = new InvPocketModel(s, "inventory.php?which=3");
+		pockets[3] = new InvPocketModel(s, "inventory.php?which=f-1");
 		
 		loadContent(text);
 	}
@@ -83,7 +84,7 @@ public class InventoryModel extends ParentModel<Void> {
 		ServerReply newRep = new ServerReply(base.responseCode,
 				base.redirectLocation, base.date, html, "small/invresults.php",
 				base.cookie);
-		return new WebModel(newRep);
+		return new WebModel(getSession(), newRep);
 	}
 
 	public int getInitialChosen() {
@@ -141,8 +142,8 @@ public class InventoryModel extends ParentModel<Void> {
 
 		private ArrayList<ModelGroup<InvItem>> items;
 
-		public InvPocketModel(String updateUrl) {
-			super(updateUrl);
+		public InvPocketModel(Session s, String updateUrl) {
+			super(s, updateUrl);
 			this.items = new ArrayList<ModelGroup<InvItem>>();
 		}
 
@@ -177,7 +178,7 @@ public class InventoryModel extends ParentModel<Void> {
 				}
 
 				ArrayList<ActionItem> actions = new ArrayList<ActionItem>();
-				actions.add(new ActionItem("Description", "",
+				actions.add(new ActionItem(getSession(), "Description", "",
 						"desc_item.php?whichitem=" + descid));
 				for (String action : ITEM_ACTION.extractAllSingle(item)) {
 					String actName = ITEM_ACTION_NAME.extractSingle(action);
@@ -187,7 +188,7 @@ public class InventoryModel extends ParentModel<Void> {
 
 					actName = actName.substring(0, 1).toUpperCase()
 							+ actName.substring(1);
-					actions.add(new ActionItem(actName, "", actDest));
+					actions.add(new ActionItem(getSession(), actName, "", actDest));
 				}
 
 				newsection.add(new InvItem(name, img, subtext, actions));

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.starfish.kol.android.util.AndroidProgressHandler;
+import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.model.Model;
 
 public abstract class BaseGameFragment<C, M extends Model<C>> extends GameFragment {
@@ -29,7 +30,7 @@ public abstract class BaseGameFragment<C, M extends Model<C>> extends GameFragme
 			}
 		};
 		
-		base.connectView(callback);
+		base.connectView(callback, new AndroidViewContext(this.getActivity()));
 		
 		this.onCreateSetup(view, base, savedInstanceState);
 	}

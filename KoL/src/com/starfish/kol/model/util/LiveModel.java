@@ -4,8 +4,8 @@ import com.starfish.kol.connection.Connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.util.LiveModel.LiveMessage;
-import com.starfish.kol.request.Request;
 import com.starfish.kol.request.ResponseHandler;
+import com.starfish.kol.request.Request;
 
 public abstract class LiveModel extends Model<LiveMessage> {
 	/**
@@ -16,7 +16,9 @@ public abstract class LiveModel extends Model<LiveMessage> {
 	private final String updateUrl;
 	private boolean filling;
 
-	public LiveModel(String updateUrl) {
+	public LiveModel(Session s, String updateUrl) {
+		super(s);
+		
 		this.filling = false;
 		this.updateUrl = updateUrl;
 	}
@@ -37,9 +39,10 @@ public abstract class LiveModel extends Model<LiveMessage> {
 				if (response.url.contains(updateUrl)) {
 					updateBase(response);
 					process(response);
-					return true;
-				} else
-					return false;
+				} else {
+					getGameHandler().handle(session, request, response);
+				}
+				return true;
 			}
 		});
 		makeRequest(update);

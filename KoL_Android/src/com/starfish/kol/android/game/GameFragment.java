@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
-import com.starfish.kol.android.view.ApplicationView;
 import com.starfish.kol.model.Model;
 
 public abstract class GameFragment extends DialogFragment {
@@ -47,9 +46,6 @@ public abstract class GameFragment extends DialogFragment {
 			return rootView;
 		}
 		
-		ApplicationView app = (ApplicationView) getActivity().getApplication();
-		app.connectModel(model);
-
 		this.doCreateSetup(rootView, model, savedInstanceState);
 		return rootView;
 	}

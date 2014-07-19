@@ -1,6 +1,8 @@
 package com.starfish.kol.model.basic;
 
-import com.starfish.kol.model.GameRequestHandler;
+import com.starfish.kol.connection.Session;
+import com.starfish.kol.gamehandler.GameHandler;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.interfaces.DeferredGameAction;
 import com.starfish.kol.request.Request;
 
@@ -10,14 +12,17 @@ public class BasicAction implements DeferredGameAction {
 	 */
 	private static final long serialVersionUID = 7965783002773029040L;
 	
-	private String url;
+	private final String url;
+	private final Session session;
 	
-	public BasicAction(String url) {
+	public BasicAction(Session session, String url) {
 		this.url = url;
+		this.session = session;
 	}
 	
 	@Override
-	public void submit(GameRequestHandler context) {
-		context.makeRequest(new Request(url));
+	public void submit(ViewContext context) {
+		Request r = new Request(url, new GameHandler(context));
+		r.makeAsync(session);
 	}
 }

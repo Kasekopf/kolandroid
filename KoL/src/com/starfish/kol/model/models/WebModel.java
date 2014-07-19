@@ -1,6 +1,7 @@
 package com.starfish.kol.model.models;
 
 import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.request.Request;
 import com.starfish.kol.util.Regex;
@@ -60,8 +61,8 @@ public class WebModel extends Model<Void> {
 	private String url;
 	private String html;
 
-	public WebModel(ServerReply text) {
-		super(text);
+	public WebModel(Session s, ServerReply text) {
+		super(s, text);
 
 		System.out.println("Loading webmodel for " + text.url);
 		this.setHTML(text.html);
@@ -183,7 +184,7 @@ public class WebModel extends Model<Void> {
 			url = currentBase + url;
 		}
 
-		Request req = new Request(url);
+		Request req = new Request(url, this.getGameHandler());
 		this.makeRequest(req);
 		return true;
 	}

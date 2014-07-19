@@ -1,5 +1,6 @@
 package com.starfish.kol.model.basic;
 
+import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.interfaces.ModelItem;
 
 
@@ -13,12 +14,12 @@ public class ActionItem extends BasicAction implements ModelItem
 	private String text;
 	private String img;
 	
-	public ActionItem(String text, String action) {
-		this(text, "", action);
+	public ActionItem(Session session, String text, String action) {
+		this(session, text, "", action);
 	}
 
-	public ActionItem(String text, String img, String action) {
-		super(action);
+	public ActionItem(Session session, String text, String img, String action) {
+		super(session, action);
 		
 		this.text = text;
 		this.img = img;

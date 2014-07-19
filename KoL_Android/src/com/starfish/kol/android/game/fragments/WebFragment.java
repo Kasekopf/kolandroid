@@ -96,10 +96,8 @@ public class WebFragment<E extends WebModel> extends BaseGameFragment<Void, E>{
 		web.getSettings().setUseWideViewPort(true);
 		web.getSettings().setJavaScriptEnabled(true);
         web.addJavascriptInterface(new JavaScriptInterface(), "FORMOUT");
-		//web.loadData( fixedHtml, "text/html", null);
         web.loadDataWithBaseURL(base.getURL(), fixedHtml, "text/html", null, null);
         
-        Log.i("WebFragment", fixedHtml);
 		web.invalidate();
 		web.setWebViewClient(new KoLWebViewClient());
 		/*

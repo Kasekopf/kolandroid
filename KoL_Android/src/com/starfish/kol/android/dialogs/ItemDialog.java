@@ -17,7 +17,7 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.ImageDownloader;
 import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
-import com.starfish.kol.android.view.ApplicationView;
+import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.model.basic.ActionItem;
 import com.starfish.kol.model.models.InventoryModel.InvItem;
 
@@ -55,9 +55,8 @@ public class ItemDialog extends DialogFragment {
 					long arg3) {
 				ActionItem select = (ActionItem)ad.getItemAtPosition(pos);
 				
-				ApplicationView view = (ApplicationView)getActivity().getApplication();
-				if(select != null && view != null) {
-					view.executeAction(select);
+				if(select != null) {
+					select.submit(new AndroidViewContext(getActivity()));
 					ItemDialog.this.dismiss();
 				}
 			}

@@ -18,10 +18,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.starfish.kol.connection.Connection.ServerReply;
 import com.starfish.kol.connection.Session;
+import com.starfish.kol.gamehandler.GameHandler;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.chat.ChatModel.ChatStatus;
-import com.starfish.kol.request.Request;
 import com.starfish.kol.request.ResponseHandler;
+import com.starfish.kol.request.Request;
 import com.starfish.kol.request.SimulatedRequest;
 import com.starfish.kol.request.TentativeRequest;
 import com.starfish.kol.util.Regex;
@@ -63,7 +65,9 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 
 	private final Gson parser;
 
-	public ChatModel() {
+	public ChatModel(Session s) {
+		super(s);
+		
 		hasChat = false;
 		seenMessages = new HashSet<Integer>();
 		messages = new ArrayList<ChatText>();
@@ -308,11 +312,11 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		return hasChat;
 	}
 
-	public void displayRejectionMessage() {
+	public void displayRejectionMessage(ViewContext context) {
 		String html = "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"https://images.kingdomofloathing.com/styles.css\"></head><body><span class=small>You may not enter the chat until you have proven yourself literate. You can do so at the <a target=mainpane href=\"town_altar.php\">Temple of Literacy</a> in the Big Mountains.</body></html>";
 		ServerReply reject = new ServerReply(200, "", "", html,
 				"small_chatreject.php", "");
-		this.makeRequest(new SimulatedRequest(reject));
+		this.makeRequest(new SimulatedRequest(reject, new GameHandler(context)));
 	}
 
 	public ArrayList<ChatChannel> getChannels() {
@@ -323,6 +327,11 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		return new ArrayList<ChatText>(messages);
 	}
 
+	@Override
+	protected ResponseHandler getGameHandler() {
+		return super.getGameHandler();
+	}
+	
 	public static class RawMessageList {
 		public ChatText[] msgs;
 		public String last;

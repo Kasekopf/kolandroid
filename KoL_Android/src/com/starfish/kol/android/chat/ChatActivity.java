@@ -27,6 +27,7 @@ import com.starfish.kol.android.chat.ChatroomFragment.ChatroomHost;
 import com.starfish.kol.android.util.AndroidProgressHandler;
 import com.starfish.kol.android.util.CustomFragmentTabHost;
 import com.starfish.kol.android.util.CustomFragmentTabHost.TabInfo;
+import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChatAction;
@@ -49,6 +50,8 @@ public class ChatActivity extends ActionBarActivity implements
 		setContentView(R.layout.fragment_chat_screen);
 		overridePendingTransition(R.anim.inleftanim, R.anim.outleftanim);
 
+		Session session = (Session)this.getIntent().getSerializableExtra("session");
+		
 		chat = new ChatCallback() {
 			@Override
 			public void updateMessages(ChatService base) {
@@ -56,7 +59,7 @@ public class ChatActivity extends ActionBarActivity implements
 			}
 		};
 		
-		chat.open(this);
+		chat.open(session, this);
 		
 		host = (CustomFragmentTabHost) findViewById(R.id.tabs_tabhost);
 

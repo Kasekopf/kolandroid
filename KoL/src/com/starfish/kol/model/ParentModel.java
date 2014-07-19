@@ -9,16 +9,9 @@ public abstract class ParentModel<Callback> extends Model<Callback> {
 	 */
 	private static final long serialVersionUID = -5900739439863981210L;
 	
-	public ParentModel(ServerReply reply) {
-		super(reply);
+	public ParentModel(Session s, ServerReply reply) {
+		super(s, reply);
 	}
 	
 	protected abstract Model<?>[] getChildren();
-	
-	protected void connect(GameModel parent, Session session) {
-		super.connect(parent, session);
-		for(Model<?> child : getChildren())
-			child.connect(parent, session);
-	}
-	
 }

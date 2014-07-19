@@ -3,6 +3,7 @@ package com.starfish.kol.model.models;
 import java.util.ArrayList;
 
 import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.basic.ActionItem;
 import com.starfish.kol.util.Regex;
 
@@ -48,13 +49,13 @@ public class FightModel extends FilteredWebModel {
 	private ArrayList<ActionItem> items;
 
 	private boolean fightFinished = false;
-	private ActionItem attack = new ActionItem("Attack",
+	private ActionItem attack = new ActionItem(getSession(), "Attack",
 			"fight.php?action=attack");
 
 	private boolean funkslinging;
 	
-	public FightModel(ServerReply text) {
-		super(text);
+	public FightModel(Session s, ServerReply text) {
+		super(s, text);
 
 		processSkills(text.html);
 		processItems(text.html);
@@ -90,7 +91,7 @@ public class FightModel extends FilteredWebModel {
 				break;
 			}
 
-			this.skills.add(new ActionItem(text, img, "fight.php?action="
+			this.skills.add(new ActionItem(getSession(), text, img, "fight.php?action="
 					+ action));
 		}
 
@@ -128,7 +129,7 @@ public class FightModel extends FilteredWebModel {
 				img = "images.kingdomofloathing.com/itemimages/" + img;
 			if (!img.endsWith(".gif") && !img.endsWith(".png"))
 				img += ".gif";
-			result.add(new ActionItem(text, img, action + num));
+			result.add(new ActionItem(getSession(), text, img, action + num));
 		}
 	}
 
