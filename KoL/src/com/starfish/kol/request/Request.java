@@ -89,4 +89,8 @@ public class Request {
 	public ResponseHandler getHandler() {
 		return handler;
 	}
+	
+	public String toString() {
+		return "$Request[" + getURL() + "]";
+	}
 }

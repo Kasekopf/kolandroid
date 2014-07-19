@@ -106,7 +106,7 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		if (!response.url.contains("newchatmessages.php")
 				&& !response.url.contains("submitnewchat.php")) {
 			notifyView(ChatStatus.STOPPED);
-			return false;
+			return true;
 		}
 
 		if (response.html.length() < 5) {
@@ -243,7 +243,7 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 				}
 
 				if (!response.url.contains("mchat.php"))
-					return false;
+					return true;
 
 				notifyView(ChatStatus.LOADED);
 				hasChat = true;
