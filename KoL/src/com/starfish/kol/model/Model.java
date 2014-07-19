@@ -51,7 +51,7 @@ public abstract class Model<Callback> implements Serializable {
 	
 	protected void notifyView(Callback message) {
 		if(this.view != null)
-			this.view.reportProgress(message);;
+			this.view.reportProgress(message);
 	}
 	
 	public final void makeRequest(Request req) {

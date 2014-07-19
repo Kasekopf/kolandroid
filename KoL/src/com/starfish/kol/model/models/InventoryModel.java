@@ -69,7 +69,7 @@ public class InventoryModel extends ParentModel<Void> {
 			throw new RuntimeException(
 					"Unable to determine current inventory pane");
 
-		pockets[chosen].loadContent(text);
+		pockets[chosen].process(text);
 		System.out.println("Loaded into slot " + chosen);
 		return true;
 	}
