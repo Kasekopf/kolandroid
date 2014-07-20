@@ -12,15 +12,25 @@ public class OptionItem {
 			"value=\"?(\\d+)([<>\" ]|$)", 1);
 	private static final Regex OPTION_PIC = new Regex(
 			"picurl=\"?([^<>\" ]+)([<>\" ]|$)", 1);
+
+	private static final Regex OPTION_GROUP = new Regex(
+			"(^|<optgroup[^>]*>).*?(?=<optgroup|$)", 0);
+	private static final Regex OPTION_GROUP_NAME = new Regex(
+			"<optgroup[^>]*label=[\"']?(.*?)[\"'>]", 1);
+
+	private static final Regex OPTION_DISABLED = new Regex(
+			"<option[^>]*disabled[^>]*>", 0);
 	
 	public final String text;
 	public final String img;
 	public final String value;
+	public final boolean disabled;
 	
-	public OptionItem(String text, String img, String value) {
+	private OptionItem(String text, String img, String value, boolean disabled) {
 		this.text = text;
 		this.img = img;
 		this.value = value;
+		this.disabled = disabled;
 	}
 	
 	public static Regex regexFor(String select) {
@@ -28,8 +38,18 @@ public class OptionItem {
 				"<select name=" + select + ">(.*?)</select>", 1);
 	}
 	
-	public static ArrayList<ModelGroup<OptionItem>> extractOptionGroups(String dropdown) {
-		return null;
+	public static ArrayList<ModelGroup<OptionItem>> extractOptionGroups(String dropdown, String defaultName) {
+		ArrayList<ModelGroup<OptionItem>> options = new ArrayList<ModelGroup<OptionItem>>();
+		
+		for (String group : OPTION_GROUP.extractAllSingle(dropdown)) {
+			String name = OPTION_GROUP_NAME.extractSingle(group);
+			if(name == null) name = defaultName;
+			
+			ArrayList<OptionItem> option_group = extractOptions(group);
+			BasicGroup<OptionItem> section = new BasicGroup<OptionItem>(name, option_group);
+			options.add(section);
+		}
+		return options;
 	}
 	
 	public static ArrayList<OptionItem> extractOptions(String dropdown) {
@@ -44,15 +64,21 @@ public class OptionItem {
 			String num = OPTION_ID.extractSingle(option[0]);
 			String img = OPTION_PIC.extractSingle(option[0]);
 			String text = option[1];
+			boolean disabled = OPTION_DISABLED.matches(option[0]);
 
-			if (num == null || img == null || num.length() == 0)
+			if (num == null || num.length() == 0)
 				continue;
-
-			if (!img.contains("images.kingdomofloathing.com"))
-				img = "images.kingdomofloathing.com/itemimages/" + img;
-			if (!img.endsWith(".gif") && !img.endsWith(".png"))
-				img += ".gif";
-			result.add(new OptionItem(text, img, num));
+			
+			if(img == null) {
+				img = "";
+			} else {
+				if (!img.contains("images.kingdomofloathing.com"))
+					img = "images.kingdomofloathing.com/itemimages/" + img;
+				if (!img.endsWith(".gif") && !img.endsWith(".png"))
+					img += ".gif";
+			}
+			
+			result.add(new OptionItem(text, img, num, disabled));
 		}
 		return result;
 	}

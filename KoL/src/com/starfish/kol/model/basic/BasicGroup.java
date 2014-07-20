@@ -1,6 +1,7 @@
 package com.starfish.kol.model.basic;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.starfish.kol.model.interfaces.ModelGroup;
 
@@ -38,5 +39,10 @@ public class BasicGroup<E> implements ModelGroup<E> {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public Iterator<E> iterator() {
+		return items.iterator();
 	}
 }

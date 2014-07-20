@@ -8,6 +8,7 @@ import com.starfish.kol.model.Model;
 import com.starfish.kol.model.basic.BasicAction;
 import com.starfish.kol.model.basic.BasicGroup;
 import com.starfish.kol.model.basic.BasicItem;
+import com.starfish.kol.model.basic.OptionItem;
 import com.starfish.kol.model.interfaces.DeferredGameAction;
 import com.starfish.kol.model.interfaces.ModelGroup;
 import com.starfish.kol.model.interfaces.MultiUseableItem;
@@ -32,25 +33,12 @@ public class SkillsModel extends Model<Void> {
 	private static final Regex SKILLS_FORM = new Regex(
 			"<form[^>]*skillform[^>]*>.*?</form>", 0);
 	private static final Regex BUFFS_FORM = new Regex("<form[^>]*buffform[^>]*>.*?</form>", 0);
-	private static final Regex BUFFS_LIST = new Regex("<select[^>]*whichskill[^>]*>.*?</select>", 0);
+	private static final Regex BUFFS_LIST = OptionItem.regexFor("whichskill");
 	
 	private static final Regex PWD = new Regex("<input[^>]*pwd[^>]*>", 0);
 	private static final Regex EXTRACT_VALUE = new Regex(
 			"value=[\"']?([0-9a-fA-F]*)", 1);
-
-	private static final Regex OPTION_GROUP = new Regex(
-			"(^|<optgroup[^>]*>).*?(?=<optgroup|$)", 0);
-	private static final Regex OPTION_GROUP_NAME = new Regex(
-			"<optgroup[^>]*label=[\"']?(.*?)[\"'>]", 1);
-
-	private static final Regex OPTION = new Regex("<option[^>]*>.*?</option>",
-			0);
-	private static final Regex OPTION_VALUE = new Regex(
-			"<option[^>]*value=[\"']?(\\d+)[^>\\d]*>", 1);
-	private static final Regex OPTION_NAME = new Regex(
-			"<option[^>]*>(.*?)</option>", 1);
-	private static final Regex OPTION_DISABLED = new Regex(
-			"<option[^>]*disabled[^>]*>", 0);
+	
 	private static final Regex OPTION_MP = new Regex("\\(.*?\\)", 0);
 	
 	private static final Regex OPTION_YOURSELF = new Regex("<option value=[\"']?(\\d+)[\"']?>\\(yourself\\)</option>", 1);
@@ -75,14 +63,10 @@ public class SkillsModel extends Model<Void> {
 		System.out.println(all_items);
 		String pwd = EXTRACT_VALUE.extractSingle(PWD.extractSingle(all_items));
 		String actionBase = "inv_use.php?pwd=" + pwd + "&action=useitem&bounce=skills.php%3Faction%3Duseditem";
-		for(String option : OPTION.extractAllSingle(all_items)) {
-			String name = OPTION_NAME.extractSingle(option);
-			String value = OPTION_VALUE.extractSingle(option);
-			
-			if(name == null || value == null) continue;
-			
-			RestorerItem item = new RestorerItem(name, actionBase + "&whichitem=" + value);
-			items.add(item);
+		
+		ArrayList<OptionItem> options = OptionItem.extractOptions(all_items);
+		for(OptionItem option : options) {
+			items.add(new RestorerItem(option.text, actionBase + "&whichitem=" + option.value));
 		}
 		
 		return items;
@@ -95,29 +79,30 @@ public class SkillsModel extends Model<Void> {
 		String pwd = EXTRACT_VALUE.extractSingle(PWD.extractSingle(all_skills));
 		String actionBase = "skills.php?pwd=" + pwd + "&action=Skillz";
 
-		for (String group : OPTION_GROUP.extractAllSingle(all_skills)) {
-			String name = OPTION_GROUP_NAME.extractSingle(group);
-			if(name == null) name = "Skills";
-			
-			BasicGroup<SkillItem> section = new BasicGroup<SkillItem>(name);
-			for (String option : OPTION.extractAllSingle(group)) {
-				if(option.contains("(select a skill)")) continue;
+		ArrayList<ModelGroup<OptionItem>> options = OptionItem.extractOptionGroups(all_skills, "Skills");
+		System.out.println(all_skills);
+		System.out.println("Found " + options.size() + " skill options");
+		for(ModelGroup<OptionItem> optiongroup : options) {
+			BasicGroup<SkillItem> group = new BasicGroup<SkillItem>(optiongroup.getName());
+			System.out.println("Found group with " + options.size() + " skills");
+			for(OptionItem option : optiongroup) {
+				if(option.text.contains("(select a skill)")) continue;
 				
 				SkillItem skill = processSkill(option, actionBase, false);
-				section.add(skill);
+				group.add(skill);
 			}
-			skills.add(section);
+			skills.add(group);
 		}
-
+		
+		
 		String all_buffs = BUFFS_LIST.extractSingle(BUFFS_FORM.extractSingle(html));
-		
 		String yourself = OPTION_YOURSELF.extractSingle(all_buffs);
-		
 		pwd = EXTRACT_VALUE.extractSingle(PWD.extractSingle(all_buffs));
 		actionBase = "skills.php?pwd=" + pwd + "&action=Skillz&targetplayer=" + yourself;
+		ArrayList<OptionItem> buffsoptions = OptionItem.extractOptions(all_buffs);
 		BasicGroup<SkillItem> buffs = new BasicGroup<SkillItem>("Buffs");
-		for (String option : OPTION.extractAllSingle(all_buffs)) {
-			if(option.contains("(select a buff)")) continue;
+		for(OptionItem option : buffsoptions) {
+			if(option.text.contains("(select a buff)")) continue;
 			
 			SkillItem skill = processSkill(option, actionBase, true);
 			buffs.add(skill);
@@ -127,17 +112,15 @@ public class SkillsModel extends Model<Void> {
 		return skills;
 	}
 
-	private SkillItem processSkill(String option, String actionBase,
+	private SkillItem processSkill(OptionItem option, String actionBase,
 			boolean isBuff) {
-		String name = OPTION_NAME.extractSingle(option); // name of the skill
-		String value = OPTION_VALUE.extractSingle(option); // id of the skill
-		boolean disabled = OPTION_DISABLED.matches(option); // is skill disabled
-		String subtext = OPTION_MP.extractSingle(option); // mp cost of skill
+		String name = option.text;
+		String subtext = OPTION_MP.extractSingle(name); // mp cost of skill
 		if(subtext == null)
 			subtext = "";
 
 		name = OPTION_MP.replaceAll(name, ""); // remove mp from skill name
-		return new SkillItem(name, subtext, actionBase + "&whichskill=" + value, disabled, isBuff);
+		return new SkillItem(name, subtext, actionBase + "&whichskill=" + option.value, option.disabled, isBuff);
 	}
 
 	protected boolean loadContent(ServerReply text) {
