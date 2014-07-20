@@ -37,7 +37,8 @@ public abstract class BaseGameFragment<C, M extends Model<C>> extends GameFragme
 	
 	@Override
 	public void onDestroyView() {
-		callback.close();
+		if(callback != null)
+			callback.close();
 		Log.i("BaseGameFragment", "View destroyed for " + this.getClass());
 		super.onDestroyView();
 	}

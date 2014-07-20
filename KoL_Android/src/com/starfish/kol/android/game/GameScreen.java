@@ -19,11 +19,11 @@ import com.starfish.kol.android.game.GameFragment.GameCallbacks;
 import com.starfish.kol.android.game.fragments.ChoiceFragment;
 import com.starfish.kol.android.game.fragments.CraftingFragment;
 import com.starfish.kol.android.game.fragments.FightFragment;
-import com.starfish.kol.android.game.fragments.InventoryFragment;
 import com.starfish.kol.android.game.fragments.NavigationFragment;
 import com.starfish.kol.android.game.fragments.SkillsFragment;
 import com.starfish.kol.android.game.fragments.StatsFragment;
 import com.starfish.kol.android.game.fragments.StatsFragment.StatsCallbacks;
+import com.starfish.kol.android.game.fragments.inventory.InventoryFragment;
 import com.starfish.kol.android.game.fragments.WebFragment;
 import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.connection.Session;
@@ -31,10 +31,10 @@ import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.ChoiceModel;
 import com.starfish.kol.model.models.CraftingModel;
 import com.starfish.kol.model.models.FightModel;
-import com.starfish.kol.model.models.InventoryModel;
 import com.starfish.kol.model.models.SkillsModel;
 import com.starfish.kol.model.models.StatsModel;
 import com.starfish.kol.model.models.WebModel;
+import com.starfish.kol.model.models.inventory.InventoryModel;
 
 public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 		GameCallbacks {

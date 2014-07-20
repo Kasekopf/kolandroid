@@ -19,10 +19,10 @@ import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.model.basic.ActionItem;
-import com.starfish.kol.model.models.InventoryModel.InvItem;
+import com.starfish.kol.model.models.inventory.InventoryItem;
 
 public class ItemDialog extends DialogFragment {
-	public static ItemDialog create(InvItem base) {
+	public static ItemDialog create(InventoryItem base) {
 		ItemDialog dialog = new ItemDialog();
 		Bundle args = new Bundle();
 		args.putSerializable("item", base);
@@ -43,7 +43,7 @@ public class ItemDialog extends DialogFragment {
 		View rootView = (View)inflater.inflate(R.layout.dialog_item_screen,
 				container, false);
 
-		InvItem item = (InvItem) this.getArguments().getSerializable("item");
+		InventoryItem item = (InventoryItem) this.getArguments().getSerializable("item");
 
 	    ListAdapter<ActionItem> adapter = new ListAdapter<ActionItem>(this.getActivity(), item.getActions(), new DefaultBuilder<ActionItem>());
 	    

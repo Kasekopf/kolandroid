@@ -40,6 +40,17 @@ public class GroupSearchListFragment<F extends ModelItem> extends
 		return frag;
 	}
 
+	public static <F extends ModelItem> GroupSearchListFragment<F> newInstance(String title, ArrayList<ModelGroup<F>> elements, ListFullBuilder<ModelGroup<F>, F> builder, SerializableSelector<F> selector) {
+		GroupSearchListFragment<F> frag = new GroupSearchListFragment<F>();
+		Bundle args = new Bundle();
+		args.putString("title", title);
+		args.putSerializable("list", elements);
+		args.putSerializable("builder", builder);
+		args.putSerializable("selector", selector);
+		frag.setArguments(args);
+		return frag;
+	}
+
 	private ArrayList<ModelGroup<F>> base;
 	private OnListSelection<F> selector;
 	private ListFullBuilder<ModelGroup<F>, F> builder;
