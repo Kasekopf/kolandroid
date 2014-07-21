@@ -167,8 +167,11 @@ public class FightModel extends FilteredWebModel {
 				return true;
 			}
 			
-			//TODO: how submit both?
-			return false;
+			String action = "fight.php?action=useitem";
+			action += "&whichitem=" + val;
+			action += "&whichitem2=" + second.val;
+			this.submit(context, action);
+			return true;
 		}
 		
 		public static GameItem NONE = new GameItem(null, "(select an item below)", "", "") {
