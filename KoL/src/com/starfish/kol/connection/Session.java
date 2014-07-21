@@ -30,4 +30,9 @@ public class Session implements Serializable {
 		else
 			return server;
 	}
+	
+	@Override
+	public String toString() {
+		return "$Session[" + cookie + "]";
+	}
 }

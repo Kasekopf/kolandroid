@@ -81,8 +81,23 @@ public class WebModel extends Model<Void> {
 		//html = replaceButtons(html);
 		html = replaceForms(html);
 		html = FRAME_REDIRECT.replaceAll(html, "");
+		html = doHacks(html);
 		
 		this.html = html;
+	}
+	
+	private final String doHacks(String html) {
+		/**
+		 * Hacks for account.php
+		 */		
+		//stop removing the submit button on account.php
+		html = html.replace("document.write('<style type=\"text/css\">#submit {display: none; }</style>');", "");
+		//remove all the blue "Saving..." text on account.php 
+		html = html.replace("<span class=\"saving\">Saving...</span>", "");
+		//remove the fancy tab ajax calls on account.php; they do not have the proper cookie
+		html = html.replace("$('#tabs li').click(changeTab);", "");
+		
+		return html;
 	}
 	
 	private static final Regex HEAD_TAG = new Regex("<head>");
