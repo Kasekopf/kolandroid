@@ -9,9 +9,9 @@ public class OptionItem {
 	private static final Regex OPTION = new Regex(
 			"<option([^<>]*?)>(.*?)</option>", 1, 2);
 	private static final Regex OPTION_ID = new Regex(
-			"value=\"?(\\d+)([<>\" ]|$)", 1);
+			"value=[\"']?(-?\\d+)([<>\"' ]|$)", 1);
 	private static final Regex OPTION_PIC = new Regex(
-			"picurl=\"?([^<>\" ]+)([<>\" ]|$)", 1);
+			"picurl=[\"']?([^<>\"' ]+)([<>\"' ]|$)", 1);
 
 	private static final Regex OPTION_GROUP = new Regex(
 			"(^|<optgroup[^>]*>).*?(?=<optgroup|$)", 0);
@@ -45,6 +45,7 @@ public class OptionItem {
 			String name = OPTION_GROUP_NAME.extractSingle(group);
 			if(name == null) name = defaultName;
 			
+			System.out.println(group);
 			ArrayList<OptionItem> option_group = extractOptions(group);
 			BasicGroup<OptionItem> section = new BasicGroup<OptionItem>(name, option_group);
 			options.add(section);

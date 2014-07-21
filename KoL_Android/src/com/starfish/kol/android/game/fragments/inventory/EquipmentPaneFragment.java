@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.dialogs.ItemDialog;
+import com.starfish.kol.android.dialogs.SaveOutfitDialog;
 import com.starfish.kol.android.game.BaseGameFragment;
 import com.starfish.kol.android.util.listbuilders.SubtextBuilder;
 import com.starfish.kol.android.util.searchlist.GroupSearchListFragment;
@@ -41,6 +42,15 @@ public class EquipmentPaneFragment extends BaseGameFragment<LiveMessage, Equipme
 				GroupSearchListFragment<ActionItem> outfitfragment = GroupSearchListFragment.newInstance("Equip outfit", getModel().getOutfits());
 				outfitfragment.show(getFragmentManager(), "outfits");
 			}			
+		});
+		
+		Button saveoutfit = (Button)view.findViewById(R.id.equipment_saveoutfit);
+		saveoutfit.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				SaveOutfitDialog saveoutfit = SaveOutfitDialog.create(getModel().saveOutfit());
+				saveoutfit.show(getFragmentManager(), "saveoutfit");
+			}
 		});
 	}
 
