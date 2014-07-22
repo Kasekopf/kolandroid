@@ -45,7 +45,7 @@ public class AndroidViewContext implements ViewContext {
 			Context context = parent.get();
 			if(context == null) {
 				Log.i("ViewContext", "Attempted to display model using garbage-collected intent");
-				throw new RuntimeException("Attempted to display model using garbage-collected intent");
+				return;
 			}
 			
 			Model<?> model = (Model<?>)m.obj;

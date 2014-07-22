@@ -88,7 +88,7 @@ public class ChatService extends Service {
 		
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
-		return START_STICKY;
+		return START_REDELIVER_INTENT;
 	}
 
 	@Override
@@ -115,14 +115,20 @@ public class ChatService extends Service {
 	}
 
 	public void setCurrentRoom(String room) {
+		if(base == null)
+			return;
 		this.base.setCurrentRoom(room);
 	}
 	
 	public ArrayList<ChatText> getMessages() {
+		if(base == null)
+			return new ArrayList<ChatText>();
 		return base.getMessages();
 	}
 
 	public ArrayList<ChatChannel> getChannels() {
+		if(base == null)
+			return new ArrayList<ChatChannel>();
 		return base.getChannels();
 	}
 
