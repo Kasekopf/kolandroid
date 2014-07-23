@@ -3,7 +3,7 @@ package com.starfish.kol.model.models.chat;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.starfish.kol.model.interfaces.DeferredAction;
+import com.starfish.kol.model.elements.interfaces.DeferredAction;
 
 public class ChatChannel implements Serializable {
 	/**

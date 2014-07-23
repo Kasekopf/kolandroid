@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.starfish.kol.connection.Connection.ServerReply;
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.model.basic.ActionItem;
+import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.util.LiveModel;
 
 public class NavigationModel extends LiveModel {
@@ -13,12 +13,12 @@ public class NavigationModel extends LiveModel {
 	 */
 	private static final long serialVersionUID = 1037526493595536003L;
 
-	private ArrayList<ActionItem> locations;
+	private ArrayList<ActionElement> locations;
 
 	public NavigationModel(Session session) {
 		super(session, "topmenu.php", false);
 
-		this.locations = new ArrayList<ActionItem>();
+		this.locations = new ArrayList<ActionElement>();
 		loadContent(null);
 	}
 
@@ -26,31 +26,31 @@ public class NavigationModel extends LiveModel {
 			String... urls) {
 		for (String url : urls) {
 			if (html.contains(url)) {
-				locations.add(new ActionItem(getSession(), name, image, url));
+				locations.add(new ActionElement(getSession(), name, image, url));
 				break;
 			}
 		}
 	}
 
-	public ArrayList<ActionItem> getLocations() {
+	public ArrayList<ActionElement> getLocations() {
 		this.access();
-		return new ArrayList<ActionItem>(this.locations);
+		return new ArrayList<ActionElement>(this.locations);
 	}
 
 	@Override
 	protected void loadContent(ServerReply content) {
 		this.locations.clear();
 
-		locations.add(new ActionItem(getSession(), "Main Map",
+		locations.add(new ActionElement(getSession(), "Main Map",
 				"http://images.kingdomofloathing.com/itemimages/map.gif",
 				"main.php"));
-		locations.add(new ActionItem(getSession(), "Inventory",
+		locations.add(new ActionElement(getSession(), "Inventory",
 				"http://images.kingdomofloathing.com/itemimages/backpack.gif",
 				"inventory.php"));
-		locations.add(new ActionItem(getSession(), "Skills",
+		locations.add(new ActionElement(getSession(), "Skills",
 				"http://images.kingdomofloathing.com/itemimages/book3.gif",
 				"skills.php"));
-		locations.add(new ActionItem(getSession(), "Crafting",
+		locations.add(new ActionElement(getSession(), "Crafting",
 				"http://images.kingdomofloathing.com/itemimages/pliers.gif",
 				"craft.php"));
 
@@ -130,27 +130,27 @@ public class NavigationModel extends LiveModel {
 					"peevpee.php");
 		}
 
-		locations.add(new ActionItem(getSession(), "Messages",
+		locations.add(new ActionElement(getSession(), "Messages",
 				"http://images.kingdomofloathing.com/itemimages/envelope.gif",
 				"messages.php"));
-		locations.add(new ActionItem(getSession(), "Donate",
+		locations.add(new ActionElement(getSession(), "Donate",
 				"http://images.kingdomofloathing.com/itemimages/donate.gif",
 				"donatepopup.php"));
 		locations
-				.add(new ActionItem(getSession(), 
+				.add(new ActionElement(getSession(), 
 						"Options",
 						"http://images.kingdomofloathing.com/itemimages/blackwrench.gif",
 						"account.php"));
-		locations.add(new ActionItem(getSession(), "Community",
+		locations.add(new ActionElement(getSession(), "Community",
 				"http://images.kingdomofloathing.com/itemimages/chat.gif",
 				"community.php"));
-		locations.add(new ActionItem(getSession(), "Help",
+		locations.add(new ActionElement(getSession(), "Help",
 				"http://images.kingdomofloathing.com/itemimages/help.gif",
 				"doc.php?topic=home"));
-		locations.add(new ActionItem(getSession(), "Report Bug",
+		locations.add(new ActionElement(getSession(), "Report Bug",
 				"http://images.kingdomofloathing.com/itemimages/beetle.gif",
 				"adminmail.php"));
-		locations.add(new ActionItem(getSession(), "Logout",
+		locations.add(new ActionElement(getSession(), "Logout",
 				"http://images.kingdomofloathing.com/itemimages/sleepy.gif",
 				"logout.php"));
 	}

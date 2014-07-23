@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.view.AndroidViewContext;
-import com.starfish.kol.model.basic.ActionItem;
+import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.models.ChoiceModel;
 
 public class ChoiceFragment extends WebFragment<ChoiceModel> {
@@ -21,13 +21,13 @@ public class ChoiceFragment extends WebFragment<ChoiceModel> {
 	public void onCreateSetup(View view, ChoiceModel base,
 			Bundle savedInstanceState) {		
 		LinearLayout options = (LinearLayout)view.findViewById(R.id.choice_choices);
-		for(ActionItem option : base.getOptions()) {
+		for(ActionElement option : base.getOptions()) {
 			Log.i("ChoiceFragment", "Making button for " + option.getText());
 			Button optionBtn = new Button(options.getContext());
 			optionBtn.setText(option.getText());
 			optionBtn.setWidth(options.getWidth());
 			
-			final ActionItem thisOption = option;
+			final ActionElement thisOption = option;
 			optionBtn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {

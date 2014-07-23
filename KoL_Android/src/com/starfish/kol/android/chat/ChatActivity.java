@@ -29,7 +29,7 @@ import com.starfish.kol.android.util.CustomFragmentTabHost;
 import com.starfish.kol.android.util.CustomFragmentTabHost.TabInfo;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.ProgressHandler;
-import com.starfish.kol.model.interfaces.DeferredAction;
+import com.starfish.kol.model.elements.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChatAction;
 import com.starfish.kol.model.models.chat.ChatAction.ChatActionSubmission;
 import com.starfish.kol.model.models.chat.ChatChannel;

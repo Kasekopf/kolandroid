@@ -1,11 +1,12 @@
-package com.starfish.kol.model.basic;
+package com.starfish.kol.model.elements;
 
 import java.util.ArrayList;
 
-import com.starfish.kol.model.interfaces.ModelGroup;
+import com.starfish.kol.model.elements.basic.BasicGroup;
+import com.starfish.kol.model.elements.interfaces.ModelGroup;
 import com.starfish.kol.util.Regex;
 
-public class OptionItem {
+public class OptionElement {
 	private static final Regex OPTION = new Regex(
 			"<option([^<>]*?)>(.*?)</option>", 1, 2);
 	private static final Regex OPTION_ID = new Regex(
@@ -26,7 +27,7 @@ public class OptionItem {
 	public final String value;
 	public final boolean disabled;
 	
-	private OptionItem(String text, String img, String value, boolean disabled) {
+	private OptionElement(String text, String img, String value, boolean disabled) {
 		this.text = text;
 		this.img = img;
 		this.value = value;
@@ -38,23 +39,23 @@ public class OptionItem {
 				"<select name=" + select + ">(.*?)</select>", 1);
 	}
 	
-	public static ArrayList<ModelGroup<OptionItem>> extractOptionGroups(String dropdown, String defaultName) {
-		ArrayList<ModelGroup<OptionItem>> options = new ArrayList<ModelGroup<OptionItem>>();
+	public static ArrayList<ModelGroup<OptionElement>> extractOptionGroups(String dropdown, String defaultName) {
+		ArrayList<ModelGroup<OptionElement>> options = new ArrayList<ModelGroup<OptionElement>>();
 		
 		for (String group : OPTION_GROUP.extractAllSingle(dropdown)) {
 			String name = OPTION_GROUP_NAME.extractSingle(group);
 			if(name == null) name = defaultName;
 			
 			System.out.println(group);
-			ArrayList<OptionItem> option_group = extractOptions(group);
-			BasicGroup<OptionItem> section = new BasicGroup<OptionItem>(name, option_group);
+			ArrayList<OptionElement> option_group = extractOptions(group);
+			BasicGroup<OptionElement> section = new BasicGroup<OptionElement>(name, option_group);
 			options.add(section);
 		}
 		return options;
 	}
 	
-	public static ArrayList<OptionItem> extractOptions(String dropdown) {
-		ArrayList<OptionItem> result = new ArrayList<OptionItem>();
+	public static ArrayList<OptionElement> extractOptions(String dropdown) {
+		ArrayList<OptionElement> result = new ArrayList<OptionElement>();
 		
 		ArrayList<String[]> options = OPTION.extractAll(dropdown);
 
@@ -79,7 +80,7 @@ public class OptionItem {
 					img += ".gif";
 			}
 			
-			result.add(new OptionItem(text, img, num, disabled));
+			result.add(new OptionElement(text, img, num, disabled));
 		}
 		return result;
 	}

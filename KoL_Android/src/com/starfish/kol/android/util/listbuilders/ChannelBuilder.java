@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.adapters.ListElementBuilder;
 import com.starfish.kol.model.ProgressHandler;
-import com.starfish.kol.model.interfaces.DeferredAction;
+import com.starfish.kol.model.elements.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChatChannel;
 import com.starfish.kol.model.models.chat.ChatModel;
 

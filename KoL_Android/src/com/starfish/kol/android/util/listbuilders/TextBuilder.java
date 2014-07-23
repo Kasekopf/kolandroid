@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.adapters.ListFullBuilder;
-import com.starfish.kol.model.interfaces.ModelGroup;
+import com.starfish.kol.model.elements.interfaces.ModelGroup;
 
 public class TextBuilder<F> implements ListFullBuilder<ModelGroup<F>, F>{	
 	/**

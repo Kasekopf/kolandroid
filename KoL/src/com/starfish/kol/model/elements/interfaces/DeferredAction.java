@@ -1,4 +1,4 @@
-package com.starfish.kol.model.interfaces;
+package com.starfish.kol.model.elements.interfaces;
 
 import java.io.Serializable;
 

@@ -19,7 +19,7 @@ import com.starfish.kol.android.util.AndroidProgressHandler;
 import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.model.interfaces.DeferredAction;
+import com.starfish.kol.model.elements.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChatChannel;
 import com.starfish.kol.model.models.chat.ChatModel;
 import com.starfish.kol.model.models.chat.ChatModel.ChatStatus;

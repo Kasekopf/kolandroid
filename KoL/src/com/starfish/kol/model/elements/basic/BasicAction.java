@@ -1,9 +1,9 @@
-package com.starfish.kol.model.basic;
+package com.starfish.kol.model.elements.basic;
 
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.GameHandler;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.model.interfaces.DeferredGameAction;
+import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
 import com.starfish.kol.request.Request;
 
 public class BasicAction implements DeferredGameAction {

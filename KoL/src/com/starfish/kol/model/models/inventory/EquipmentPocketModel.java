@@ -7,12 +7,12 @@ import java.util.ArrayList;
 
 import com.starfish.kol.connection.Connection.ServerReply;
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.model.basic.ActionItem;
-import com.starfish.kol.model.basic.BasicAction;
-import com.starfish.kol.model.basic.BasicGroup;
-import com.starfish.kol.model.basic.OptionItem;
-import com.starfish.kol.model.interfaces.DeferredGameAction;
-import com.starfish.kol.model.interfaces.ModelGroup;
+import com.starfish.kol.model.elements.ActionElement;
+import com.starfish.kol.model.elements.OptionElement;
+import com.starfish.kol.model.elements.basic.BasicAction;
+import com.starfish.kol.model.elements.basic.BasicGroup;
+import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
+import com.starfish.kol.model.elements.interfaces.ModelGroup;
 import com.starfish.kol.util.Regex;
 
 public class EquipmentPocketModel extends InventoryPocketModel {
@@ -25,9 +25,9 @@ public class EquipmentPocketModel extends InventoryPocketModel {
 			"<table[^>]*curequip[^>]*>.*?</table>", 0);
 	private static final Regex ITEM_EQUIPPED = new Regex("<tr>.*?(?=</?tr>)", 0);
 	
-	private static final Regex OUTFITS = OptionItem.regexFor("whichoutfit");
+	private static final Regex OUTFITS = OptionElement.regexFor("whichoutfit");
 	
-	private ArrayList<ModelGroup<ActionItem>> outfits = new ArrayList<ModelGroup<ActionItem>>();
+	private ArrayList<ModelGroup<ActionElement>> outfits = new ArrayList<ModelGroup<ActionElement>>();
 	
 	public EquipmentPocketModel(Session s, String updateUrl) {
 		super(s, updateUrl);
@@ -46,22 +46,22 @@ public class EquipmentPocketModel extends InventoryPocketModel {
 
 		String baseaction = "inv_equip.php?action=outfit&which=2&whichoutfit=";
 		
-		outfits = new ArrayList<ModelGroup<ActionItem>>();
+		outfits = new ArrayList<ModelGroup<ActionElement>>();
 		String outfit_select = OUTFITS.extractSingle(reply.html);
-		ArrayList<ModelGroup<OptionItem>> outfit_options = OptionItem.extractOptionGroups(outfit_select, "Outfits");
-		for(ModelGroup<OptionItem> outfit_group : outfit_options) {
-			BasicGroup<ActionItem> group = new BasicGroup<ActionItem>(outfit_group.getName());
+		ArrayList<ModelGroup<OptionElement>> outfit_options = OptionElement.extractOptionGroups(outfit_select, "Outfits");
+		for(ModelGroup<OptionElement> outfit_group : outfit_options) {
+			BasicGroup<ActionElement> group = new BasicGroup<ActionElement>(outfit_group.getName());
 			System.out.println("Found new outfit group of size " + outfit_group.size());
-			for(OptionItem option : outfit_group) {
+			for(OptionElement option : outfit_group) {
 				if(option.text.contains("(select an outfit)")) continue;
 				
-				group.add(new ActionItem(getSession(), option.text, option.img, baseaction + option.value));
+				group.add(new ActionElement(getSession(), option.text, option.img, baseaction + option.value));
 			}
 			outfits.add(group);
 		}
 	}
 	
-	public ArrayList<ModelGroup<ActionItem>> getOutfits() {
+	public ArrayList<ModelGroup<ActionElement>> getOutfits() {
 		this.access();
 		return outfits;
 	}

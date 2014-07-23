@@ -12,7 +12,7 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.dialogs.FunkslingingDialog;
 import com.starfish.kol.android.util.searchlist.SearchListFragment;
 import com.starfish.kol.android.view.AndroidViewContext;
-import com.starfish.kol.model.basic.ActionItem;
+import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.models.FightModel;
 import com.starfish.kol.model.models.FightModel.GameItem;
 
@@ -28,7 +28,7 @@ public class FightFragment extends WebFragment<FightModel> {
 		attack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				ActionItem action = getModel().getAttack();
+				ActionElement action = getModel().getAttack();
 				if(action != null)
 					action.submit(new AndroidViewContext(getActivity()));
 			}
@@ -38,9 +38,9 @@ public class FightFragment extends WebFragment<FightModel> {
 		useskill.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View btn) {
-				ArrayList<ActionItem> skills = getModel().getSkills();
+				ArrayList<ActionElement> skills = getModel().getSkills();
 
-				SearchListFragment<ActionItem> newFragment = SearchListFragment.newInstance("Choose a skill to use:", skills);
+				SearchListFragment<ActionElement> newFragment = SearchListFragment.newInstance("Choose a skill to use:", skills);
 			    newFragment.show(getFragmentManager(), "dialog");
 			}
 		});

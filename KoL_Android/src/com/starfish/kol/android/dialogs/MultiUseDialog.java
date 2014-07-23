@@ -17,8 +17,8 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.ImageDownloader;
 import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.model.Model;
-import com.starfish.kol.model.interfaces.DeferredGameAction;
-import com.starfish.kol.model.interfaces.MultiUseableItem;
+import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
+import com.starfish.kol.model.elements.interfaces.MultiUseableItem;
 
 public class MultiUseDialog extends DialogFragment {
 	public static MultiUseDialog create(final Model<?> context,

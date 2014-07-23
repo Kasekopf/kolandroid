@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 import com.starfish.kol.connection.Connection.ServerReply;
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.model.basic.ActionItem;
-import com.starfish.kol.model.basic.BasicGroup;
-import com.starfish.kol.model.interfaces.ModelGroup;
+import com.starfish.kol.model.elements.ActionElement;
+import com.starfish.kol.model.elements.basic.BasicGroup;
+import com.starfish.kol.model.elements.interfaces.ModelGroup;
 import com.starfish.kol.model.util.LiveModel;
 import com.starfish.kol.util.Regex;
 
@@ -80,8 +80,8 @@ public class InventoryPocketModel extends LiveModel {
 				name = slot + ": " + name;
 			}
 
-			ArrayList<ActionItem> actions = new ArrayList<ActionItem>();
-			actions.add(new ActionItem(getSession(), "Description", "",
+			ArrayList<ActionElement> actions = new ArrayList<ActionElement>();
+			actions.add(new ActionElement(getSession(), "Description", "",
 					"desc_item.php?whichitem=" + descid));
 			for (String action : ITEM_ACTION.extractAllSingle(item)) {
 				String actName = ITEM_ACTION_NAME.extractSingle(action);
@@ -91,7 +91,7 @@ public class InventoryPocketModel extends LiveModel {
 
 				actName = actName.substring(0, 1).toUpperCase()
 						+ actName.substring(1);
-				actions.add(new ActionItem(getSession(), actName, "", actDest));
+				actions.add(new ActionElement(getSession(), actName, "", actDest));
 			}
 
 			newsection.add(new InventoryItem(name, img, subtext, actions));

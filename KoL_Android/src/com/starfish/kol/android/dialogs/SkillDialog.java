@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.view.AndroidViewContext;
-import com.starfish.kol.model.interfaces.DeferredGameAction;
+import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
 import com.starfish.kol.model.models.SkillsModel.SkillItem;
 
 public class SkillDialog extends DialogFragment {

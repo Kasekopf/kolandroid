@@ -15,7 +15,7 @@ import com.starfish.kol.android.game.BaseGameFragment;
 import com.starfish.kol.android.util.listbuilders.SubtextBuilder;
 import com.starfish.kol.android.util.searchlist.GroupSearchListFragment;
 import com.starfish.kol.android.util.searchlist.SerializableSelector;
-import com.starfish.kol.model.basic.ActionItem;
+import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.models.inventory.EquipmentPocketModel;
 import com.starfish.kol.model.models.inventory.InventoryItem;
 import com.starfish.kol.model.util.LiveModel.LiveMessage;
@@ -39,7 +39,7 @@ public class EquipmentPaneFragment extends BaseGameFragment<LiveMessage, Equipme
 		equipoutfit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				GroupSearchListFragment<ActionItem> outfitfragment = GroupSearchListFragment.newInstance("Equip outfit", getModel().getOutfits());
+				GroupSearchListFragment<ActionElement> outfitfragment = GroupSearchListFragment.newInstance("Equip outfit", getModel().getOutfits());
 				outfitfragment.show(getFragmentManager(), "outfits");
 			}			
 		});

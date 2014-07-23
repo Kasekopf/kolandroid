@@ -2,7 +2,7 @@ package com.starfish.kol.android.util.adapters;
 
 import android.view.View;
 
-import com.starfish.kol.model.interfaces.ModelGroup;
+import com.starfish.kol.model.elements.interfaces.ModelGroup;
 
 public interface ListFullBuilder<E extends ModelGroup<F>, F> extends ListElementBuilder<F>{
 	public int getGroupLayout();

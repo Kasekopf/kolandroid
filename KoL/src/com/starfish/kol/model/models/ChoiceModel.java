@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.starfish.kol.connection.Connection.ServerReply;
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.model.basic.ActionItem;
+import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.util.Regex;
 
 public class ChoiceModel extends FilteredWebModel {
@@ -24,7 +24,7 @@ public class ChoiceModel extends FilteredWebModel {
 	private static Regex NUM_VALUE = new Regex("value=[\"']?(\\d+)[\"'>]", 1);
 	private static Regex VALUE = new Regex("value=[\"]?(.*?)[\">]", 1);
 	
-	private ArrayList<ActionItem> options;
+	private ArrayList<ActionElement> options;
 	
 	public ChoiceModel(Session s, ServerReply response) {
 		super(s, response);
@@ -33,7 +33,7 @@ public class ChoiceModel extends FilteredWebModel {
 	}
 	
 	private void extractOptions(String html) {
-		this.options = new ArrayList<ActionItem>();
+		this.options = new ArrayList<ActionElement>();
 		for(String form : OPTIONS.extractAllSingle(html)) {
 			System.out.println("Found option: " + form);
 			
@@ -47,11 +47,11 @@ public class ChoiceModel extends FilteredWebModel {
 			text = text.replace("&quot;", "\"");
 			
 			String action = "choice.php?pwd=" + pwd + "&whichchoice=" + whichchoice + "&option=" + option;
-			options.add(new ActionItem(getSession(), text, action));
+			options.add(new ActionElement(getSession(), text, action));
 		}
 	}
 	
-	public ArrayList<ActionItem> getOptions() {
+	public ArrayList<ActionElement> getOptions() {
 		return this.options;
 	}	
 

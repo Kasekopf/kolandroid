@@ -23,7 +23,7 @@ import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.model.basic.ActionItem;
+import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.models.NavigationModel;
 import com.starfish.kol.model.util.LiveModel.LiveMessage;
 
@@ -55,7 +55,7 @@ public class NavigationFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
-    private ListAdapter<ActionItem> adapter;
+    private ListAdapter<ActionElement> adapter;
 	private AndroidProgressHandler<LiveMessage> callback;
 	
     @Override
@@ -200,13 +200,13 @@ public class NavigationFragment extends Fragment {
 		
 		ListView mDrawerListView = (ListView)this.getView().findViewById(R.id.navigation_list);
 		
-        adapter = new ListAdapter<ActionItem>(getActionBar().getThemedContext(), model.getLocations(), new DefaultBuilder<ActionItem>());
+        adapter = new ListAdapter<ActionElement>(getActionBar().getThemedContext(), model.getLocations(), new DefaultBuilder<ActionElement>());
         mDrawerListView.setAdapter(adapter);
         
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				ActionItem choice = (ActionItem)parent.getItemAtPosition(position);
+				ActionElement choice = (ActionElement)parent.getItemAtPosition(position);
 				choice.submit(new AndroidViewContext(getActivity()));
 		        if (mDrawerLayout != null) {
 		            mDrawerLayout.closeDrawer(mFragmentContainerView);

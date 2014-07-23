@@ -18,18 +18,18 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.adapters.ListFullBuilder;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
-import com.starfish.kol.model.basic.ActionItem;
-import com.starfish.kol.model.interfaces.ModelGroup;
-import com.starfish.kol.model.interfaces.ModelItem;
+import com.starfish.kol.model.elements.ActionElement;
+import com.starfish.kol.model.elements.interfaces.ModelGroup;
+import com.starfish.kol.model.elements.interfaces.ModelElement;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  * 
  */
 @SuppressLint("ValidFragment")
-public class GroupSearchListFragment<F extends ModelItem> extends
+public class GroupSearchListFragment<F extends ModelElement> extends
 		DialogFragment {
-	public static <F extends ActionItem> GroupSearchListFragment<F> newInstance(
+	public static <F extends ActionElement> GroupSearchListFragment<F> newInstance(
 			String title, ArrayList<ModelGroup<F>> elements) {
 		GroupSearchListFragment<F> frag = new GroupSearchListFragment<F>();
 		Bundle args = new Bundle();
@@ -40,7 +40,7 @@ public class GroupSearchListFragment<F extends ModelItem> extends
 		return frag;
 	}
 
-	public static <F extends ModelItem> GroupSearchListFragment<F> newInstance(String title, ArrayList<ModelGroup<F>> elements, ListFullBuilder<ModelGroup<F>, F> builder, SerializableSelector<F> selector) {
+	public static <F extends ModelElement> GroupSearchListFragment<F> newInstance(String title, ArrayList<ModelGroup<F>> elements, ListFullBuilder<ModelGroup<F>, F> builder, SerializableSelector<F> selector) {
 		GroupSearchListFragment<F> frag = new GroupSearchListFragment<F>();
 		Bundle args = new Bundle();
 		args.putString("title", title);

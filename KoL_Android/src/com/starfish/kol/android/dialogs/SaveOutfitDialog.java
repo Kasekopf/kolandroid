@@ -12,7 +12,7 @@ import android.widget.EditText;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.view.AndroidViewContext;
-import com.starfish.kol.model.interfaces.DeferredGameAction;
+import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
 import com.starfish.kol.model.models.inventory.EquipmentPocketModel.CustomOutfitBuilder;
 
 public class SaveOutfitDialog extends DialogFragment {

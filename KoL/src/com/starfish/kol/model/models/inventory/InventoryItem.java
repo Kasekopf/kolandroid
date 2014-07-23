@@ -2,8 +2,8 @@ package com.starfish.kol.model.models.inventory;
 
 import java.util.ArrayList;
 
-import com.starfish.kol.model.basic.ActionItem;
-import com.starfish.kol.model.basic.BasicSubtextItem;
+import com.starfish.kol.model.elements.ActionElement;
+import com.starfish.kol.model.elements.basic.BasicSubtextItem;
 
 public class InventoryItem extends BasicSubtextItem {
 	/**
@@ -11,20 +11,20 @@ public class InventoryItem extends BasicSubtextItem {
 	 */
 	private static final long serialVersionUID = 8203542965489207042L;
 
-	private final ArrayList<ActionItem> actions;
+	private final ArrayList<ActionElement> actions;
 
-	public InventoryItem(String name, String url, ArrayList<ActionItem> actions) {
+	public InventoryItem(String name, String url, ArrayList<ActionElement> actions) {
 		super(name, url);
 		this.actions = actions;
 	}
 
 	public InventoryItem(String name, String url, String subtext,
-			ArrayList<ActionItem> actions) {
+			ArrayList<ActionElement> actions) {
 		super(name, url, subtext);
 		this.actions = actions;
 	}
 
-	public ArrayList<ActionItem> getActions() {
+	public ArrayList<ActionElement> getActions() {
 		return actions;
 	}
 }

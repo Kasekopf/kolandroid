@@ -8,8 +8,8 @@ import android.widget.TextView;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.ImageDownloader;
 import com.starfish.kol.android.util.adapters.ListFullBuilder;
-import com.starfish.kol.model.interfaces.ModelGroup;
-import com.starfish.kol.model.interfaces.SubtextItem;
+import com.starfish.kol.model.elements.interfaces.ModelGroup;
+import com.starfish.kol.model.elements.interfaces.SubtextItem;
 
 public class SubtextBuilder<F extends SubtextItem> implements
 		ListFullBuilder<ModelGroup<F>, F> {

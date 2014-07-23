@@ -3,7 +3,7 @@ package com.starfish.kol.model.models.chat;
 import java.io.Serializable;
 
 import com.starfish.kol.model.ProgressHandler;
-import com.starfish.kol.model.interfaces.DeferredAction;
+import com.starfish.kol.model.elements.interfaces.DeferredAction;
 import com.starfish.kol.request.Request;
 
 public class ChatAction implements Serializable {

@@ -18,15 +18,15 @@ import android.widget.ListView;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.adapters.ListElementBuilder;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
-import com.starfish.kol.model.basic.ActionItem;
-import com.starfish.kol.model.interfaces.ModelItem;
+import com.starfish.kol.model.elements.ActionElement;
+import com.starfish.kol.model.elements.interfaces.ModelElement;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  * 
  */
-public class SearchListFragment<E extends ModelItem> extends DialogFragment {
-	public static <E extends ActionItem> SearchListFragment<E> newInstance(String title, ArrayList<E> elements) {
+public class SearchListFragment<E extends ModelElement> extends DialogFragment {
+	public static <E extends ActionElement> SearchListFragment<E> newInstance(String title, ArrayList<E> elements) {
 		SearchListFragment<E> frag = new SearchListFragment<E>();
         Bundle args = new Bundle();
         args.putString("title", title);

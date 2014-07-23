@@ -13,10 +13,10 @@ import android.view.ViewGroup;
 import com.starfish.kol.android.util.adapters.ListElementBuilder;
 import com.starfish.kol.android.util.searchlist.OnListSelection;
 import com.starfish.kol.android.util.searchlist.SearchListFragment;
-import com.starfish.kol.model.interfaces.ModelItem;
+import com.starfish.kol.model.elements.interfaces.ModelElement;
 
-public class ItemSelectorFragment<E extends ModelItem> extends Fragment {
-	public static <E extends ModelItem> Bundle getBundle(String title, ListElementBuilder<E> builder, ArrayList<E> list, E def) {
+public class ItemSelectorFragment<E extends ModelElement> extends Fragment {
+	public static <E extends ModelElement> Bundle getBundle(String title, ListElementBuilder<E> builder, ArrayList<E> list, E def) {
 		Bundle bund = new Bundle();
 		bund.putString("title", title);
 		bund.putSerializable("builder", builder);

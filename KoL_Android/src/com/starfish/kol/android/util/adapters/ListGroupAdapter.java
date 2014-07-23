@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 
-import com.starfish.kol.model.interfaces.ModelGroup;
+import com.starfish.kol.model.elements.interfaces.ModelGroup;
 
 public class ListGroupAdapter<E extends ModelGroup<F>, F>
 		extends BaseExpandableListAdapter {
