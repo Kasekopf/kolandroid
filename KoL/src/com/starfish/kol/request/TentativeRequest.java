@@ -21,9 +21,7 @@ public class TentativeRequest extends Request {
 		try {
 			Connection con = getConnection(server);
 			ServerReply response = con.connect(cookie);
-			boolean done = getHandler().handle(session, this, response);
-			if (!done)
-				throw new RuntimeException("No valid handler for: " + this.toString());
+			getHandler().handle(session, this, response);
 		} catch (MalformedURLException | ConnectionException e) {
 			failure.handle(session, this, null);
 		}

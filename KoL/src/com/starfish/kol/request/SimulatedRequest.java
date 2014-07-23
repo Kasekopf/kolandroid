@@ -26,7 +26,6 @@ public class SimulatedRequest extends Request{
 	 * @return	An unhandled ServerReply. Null if the reply has already been handled.
 	 */
 	public void make(Session session, String server, String cookie) {
-		if(!this.getHandler().handle(session, this, toReply))
-			throw new RuntimeException("No valid handler for: " + this.toString());
+		this.getHandler().handle(session, this, toReply);
 	}
 }

@@ -13,13 +13,32 @@ import com.starfish.kol.model.models.login.LoginModel;
 import com.starfish.kol.request.ResponseHandler;
 import com.starfish.kol.request.Request;
 
+/**
+ * The standard ResponseHandler for most of the app, used to display an
+ *  arbitrary game page with the appropriate view and model.
+ *
+ */
 public class GameHandler implements ResponseHandler {
+	//Context used to map models to views.
 	private ViewContext view;
 	
+	/**
+	 * Create a new ResponseHandler which displays arbitrary game pages
+	 *  on the provided view context.
+	 *  
+	 * @param view	Context to display new models.
+	 */
 	public GameHandler(ViewContext view) {
 		this.view = view;
 	}
 	
+	/**
+	 * Map an arbitrary ServerReply to the appropriate Model.
+	 * 
+	 * @param session	Current session, passed to all created models.
+	 * @param response	The server reply to handle.
+	 * @return The model associated with the response page.
+	 */
 	private Model<?> loadModel(Session session, ServerReply response) {
 		/**
 		 * Reset the session if a logout was recieved.
@@ -67,11 +86,21 @@ public class GameHandler implements ResponseHandler {
 		
 		return new WebModel(session, response);
 	}
-
+	
+	/**
+	 * Process a new reply from the server. In this case, display this response
+	 *  in a newly generated view.
+	 * 
+	 * @param session
+	 *            The session used when making the request.
+	 * @param request
+	 *            The request which generated this reply.
+	 * @param response
+	 *            The response recieved from the server.
+	 */
 	@Override
-	public boolean handle(Session session, Request request, ServerReply response) {
+	public void handle(Session session, Request request, ServerReply response) {
 		Model<?> model = loadModel(session, response);
 		view.display(model);
-		return true;
 	}
 }

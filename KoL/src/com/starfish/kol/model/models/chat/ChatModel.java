@@ -102,16 +102,16 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 	}
 
 	@Override
-	public boolean handle(Session session, Request request, ServerReply response) {
+	public void handle(Session session, Request request, ServerReply response) {
 		if (!response.url.contains("newchatmessages.php")
 				&& !response.url.contains("submitnewchat.php")) {
 			notifyView(ChatStatus.STOPPED);
-			return true;
+			return;
 		}
 
 		if (response.html.length() < 5) {
 			notifyView(ChatStatus.STOPPED);
-			return true;
+			return;
 		}
 
 		RawMessageList update = parser.fromJson(response.html,
@@ -137,7 +137,6 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 
 		if(update.last != null)
 			lasttime = update.last;
-		return true;
 	}
 
 	protected ChatChannel getChannel(String name) {
@@ -237,24 +236,22 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 	public void start() {
 		Request req = new TentativeRequest("mchat.php", new ResponseHandler() {
 			@Override
-			public boolean handle(Session session, Request request,
+			public void handle(Session session, Request request,
 					ServerReply response) {
 				if (!response.url.contains("mchat.php"))
-					return true;
+					return;
 
 				notifyView(ChatStatus.LOADED);
 				hasChat = true;
 
 				processInitial(response);
-				return true;
 			}
 		}, new ResponseHandler() {
 			@Override
-			public boolean handle(Session session, Request request,
+			public void handle(Session session, Request request,
 					ServerReply response) {
 				notifyView(ChatStatus.NOCHAT);
 				hasChat = false;
-				return true;
 			}
 			
 		});

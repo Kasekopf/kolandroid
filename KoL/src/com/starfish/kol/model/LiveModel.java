@@ -34,7 +34,7 @@ public abstract class LiveModel extends Model<LiveMessage> {
 	public void update() {
 		Request update = new Request(this.updateUrl, new ResponseHandler() {
 			@Override
-			public boolean handle(Session session, Request request,
+			public void handle(Session session, Request request,
 					ServerReply response) {
 				if (response.url.contains(updateUrl)) {
 					updateBase(response);
@@ -45,7 +45,6 @@ public abstract class LiveModel extends Model<LiveMessage> {
 					else
 						System.out.println("LiveModel expected " + updateUrl + " but was redirected to " + response.url);
 				}
-				return true;
 			}
 		});
 		makeRequest(update);

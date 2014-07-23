@@ -38,7 +38,7 @@ public class LoginModel extends Model<LoginStatus> {
 
 		Request req = new Request("login.php", new ResponseHandler() {
 			@Override
-			public boolean handle(Session session, Request request,
+			public void handle(Session session, Request request,
 					ServerReply response) {
 				String loginId = LOGIN_ID.extractSingle(response.url);
 				String challenge = CHALLENGE.extractSingle(response.html);
@@ -46,7 +46,7 @@ public class LoginModel extends Model<LoginStatus> {
 
 				if (loginId == null || challenge == null || server == null) {
 					notifyView(LoginStatus.FAILED_ACCESS);
-					return true;
+					return;
 				}
 
 				session.setCookie(response.cookie);
@@ -60,31 +60,26 @@ public class LoginModel extends Model<LoginStatus> {
 						new ResponseHandler() {
 
 							@Override
-							public boolean handle(Session session,
+							public void handle(Session session,
 									Request request, ServerReply response) {
 								System.out.println("Logincookie: "
 										+ response.cookie);
 								if (!response.cookie.contains("PHPSESSID=")) {
 									// Failure to login
 									notifyView(LoginStatus.FAILED_LOGIN);
-									return true;
+									return;
 								}
 
 								notifyView(LoginStatus.SUCCESS);
 
 								session.setCookie(response.cookie);
 								Request game = new Request("main.php", new GameHandler(context));
-								// Request game = new
-								// Request("craft.php?mode=combine",
-								// ResponseHandler.none);
 								game.makeAsync(session);
-								return true;
 							}
 
 						});
 
 				login.makeAsync(session);
-				return true;
 			}
 		});
 		this.makeRequest(req);
