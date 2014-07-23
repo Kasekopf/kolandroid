@@ -9,10 +9,10 @@ import com.starfish.kol.android.dialogs.WebDialog;
 import com.starfish.kol.android.game.BaseGameFragment;
 import com.starfish.kol.android.game.GameFragment;
 import com.starfish.kol.android.util.CustomFragmentTabHost;
+import com.starfish.kol.model.LiveMessage;
 import com.starfish.kol.model.models.CraftingModel;
 import com.starfish.kol.model.models.CraftingModel.CraftingSubModel;
 import com.starfish.kol.model.models.WebModel;
-import com.starfish.kol.model.util.LiveModel.LiveMessage;
 
 public class CraftingFragment extends BaseGameFragment<Void, CraftingModel> {
 	public CraftingFragment() {

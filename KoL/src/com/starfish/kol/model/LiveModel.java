@@ -1,9 +1,7 @@
-package com.starfish.kol.model.util;
+package com.starfish.kol.model;
 
-import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.model.Model;
-import com.starfish.kol.model.util.LiveModel.LiveMessage;
 import com.starfish.kol.request.ResponseHandler;
 import com.starfish.kol.request.Request;
 
@@ -59,10 +57,6 @@ public abstract class LiveModel extends Model<LiveMessage> {
 		this.filling = true;
 
 		this.update();
-	}
-
-	public static enum LiveMessage {
-		REFRESH
 	}
 
 }

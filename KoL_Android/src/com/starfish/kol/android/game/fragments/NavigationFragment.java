@@ -23,9 +23,9 @@ import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.connection.Session;
+import com.starfish.kol.model.LiveMessage;
 import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.models.NavigationModel;
-import com.starfish.kol.model.util.LiveModel.LiveMessage;
 
 /**
  * Note that due to a bug (?) this CANNOT be a DialogFragment and so cannot use BaseGameFragment.

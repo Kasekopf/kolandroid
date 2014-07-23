@@ -9,8 +9,8 @@ import android.widget.TextView;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.game.BaseGameFragment;
 import com.starfish.kol.android.util.ProgressBar;
+import com.starfish.kol.model.LiveMessage;
 import com.starfish.kol.model.models.StatsModel;
-import com.starfish.kol.model.util.LiveModel.LiveMessage;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass. Activities that

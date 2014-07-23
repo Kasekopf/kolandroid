@@ -15,10 +15,10 @@ import com.starfish.kol.android.game.BaseGameFragment;
 import com.starfish.kol.android.util.listbuilders.SubtextBuilder;
 import com.starfish.kol.android.util.searchlist.GroupSearchListFragment;
 import com.starfish.kol.android.util.searchlist.SerializableSelector;
+import com.starfish.kol.model.LiveMessage;
 import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.models.inventory.EquipmentPocketModel;
 import com.starfish.kol.model.models.inventory.InventoryItem;
-import com.starfish.kol.model.util.LiveModel.LiveMessage;
 
 @SuppressLint("ValidFragment")
 public class EquipmentPaneFragment extends BaseGameFragment<LiveMessage, EquipmentPocketModel> {
