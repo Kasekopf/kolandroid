@@ -1,6 +1,6 @@
 package com.starfish.kol.request;
 
-import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 
 public interface ResponseHandler {

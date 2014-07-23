@@ -1,6 +1,6 @@
 package com.starfish.kol.model.models;
 
-import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 
 public abstract class FilteredWebModel extends WebModel {

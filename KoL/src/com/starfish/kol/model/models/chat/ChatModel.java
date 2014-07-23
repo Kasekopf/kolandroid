@@ -16,7 +16,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.GameHandler;
 import com.starfish.kol.gamehandler.ViewContext;
@@ -239,12 +239,6 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 			@Override
 			public boolean handle(Session session, Request request,
 					ServerReply response) {
-				if (response == null) {
-					notifyView(ChatStatus.NOCHAT);
-					hasChat = false;
-					return true;
-				}
-
 				if (!response.url.contains("mchat.php"))
 					return true;
 
@@ -254,6 +248,15 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 				processInitial(response);
 				return true;
 			}
+		}, new ResponseHandler() {
+			@Override
+			public boolean handle(Session session, Request request,
+					ServerReply response) {
+				notifyView(ChatStatus.NOCHAT);
+				hasChat = false;
+				return true;
+			}
+			
 		});
 		this.makeRequest(req);
 		this.refreshChannels();
@@ -315,6 +318,10 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		return hasChat;
 	}
 
+	protected void makeRequest(Request req) {
+		super.makeRequest(req);
+	}
+	
 	public void displayRejectionMessage(ViewContext context) {
 		String html = "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"https://images.kingdomofloathing.com/styles.css\"></head><body><span class=small>You may not enter the chat until you have proven yourself literate. You can do so at the <a target=mainpane href=\"town_altar.php\">Temple of Literacy</a> in the Big Mountains.</body></html>";
 		ServerReply reject = new ServerReply(200, "", "", html,

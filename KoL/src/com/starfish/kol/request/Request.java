@@ -4,8 +4,8 @@ import java.net.MalformedURLException;
 import java.util.HashSet;
 
 import com.starfish.kol.connection.Connection;
-import com.starfish.kol.connection.Connection.ConnectionException;
-import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.ConnectionException;
+import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 
 public class Request {
@@ -13,62 +13,50 @@ public class Request {
 	private ResponseHandler handler;
 
 	private HashSet<String> tags;
-	
-	private String[] formNames;
-	private String[] formVals;
-	
-	public Request(String url, ResponseHandler handler) {
-		this(url, new String[0], new String[0], handler);
-	}
 
-	 protected Request(String url, String[] names, String[] vals,
-			ResponseHandler handler) {
+	public Request(String url, ResponseHandler handler) {
 		this.url = url;
 		this.handler = handler;
-		this.formNames = names;
-		this.formVals = vals;
-		
+
 		this.tags = new HashSet<String>();
 	}
 
 	public void addTag(String tag) {
 		tags.add(tag);
 	}
-	
+
 	public boolean hasTag(String tag) {
 		return tags.contains(tag);
 	}
-	
+
 	public void makeAsync(final Session session) {
 		Thread t = new Thread() {
 			public void run() {
-				Request.this.make(session, session.getServer(),
-						session.getCookie());
+				make(session, session.getServer(), session.getCookie());
 			}
 		};
 		t.start();
 	}
-	
+
 	/**
-	 * Actually make the request and return a response.
-	 * This should be run on a background thread only!
-	 *  
-	 * @param session	Session passed to the response handler.
-	 * @param server	Server to use for this request
-	 * @param cookie	Cookie to use with this request
-	 * @return	An unhandled ServerReply. Null if the reply has already been handled.
+	 * Actually make the request and return a response. This should be run on a
+	 * background thread only!
+	 * 
+	 * @param session
+	 *            Session passed to the response handler.
+	 * @param server
+	 *            Server to use for this request
+	 * @param cookie
+	 *            Cookie to use with this request
 	 */
 	protected void make(Session session, String server, String cookie) {
 		try {
-			Connection con = new Connection("http://" + server
-					+ ".kingdomofloathing.com/" + getURL());
-			this.prepare(con);
-
-			System.out.println("Making request to " + getURL());
+			Connection con = getConnection(server);
 			ServerReply response = con.connect(cookie);
 			boolean done = getHandler().handle(session, this, response);
 			if (!done) {
-				throw new RuntimeException("No valid handler for: " + this.toString());
+				throw new RuntimeException("No valid handler for: "
+						+ this.toString());
 			}
 		} catch (MalformedURLException | ConnectionException e) {
 			System.out.println("Error: " + e);
@@ -76,21 +64,16 @@ public class Request {
 		}
 	}
 
-	public String getURL() {
-		return url;
+	protected Connection getConnection(String server) {
+		return new Connection("http://" + server + ".kingdomofloathing.com/"
+				+ url);
 	}
 
-	public void prepare(Connection c) {
-		for (int i = 0; i < formNames.length; i++) {
-			c.addFormField(formNames[i], formVals[i]);
-		}
-	}
-
-	public ResponseHandler getHandler() {
+	protected ResponseHandler getHandler() {
 		return handler;
 	}
-	
+
 	public String toString() {
-		return "$Request[" + getURL() + "]";
+		return "$Request[" + url + "]";
 	}
 }

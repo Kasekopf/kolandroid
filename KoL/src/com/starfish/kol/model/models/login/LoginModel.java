@@ -1,6 +1,6 @@
 package com.starfish.kol.model.models.login;
 
-import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.GameHandler;
 import com.starfish.kol.gamehandler.ViewContext;

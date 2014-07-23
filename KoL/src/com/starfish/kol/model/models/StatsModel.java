@@ -1,8 +1,8 @@
 package com.starfish.kol.model.models;
 
-import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.model.util.LiveModel;
+import com.starfish.kol.model.LiveModel;
 import com.starfish.kol.request.Request;
 import com.starfish.kol.request.SimulatedRequest;
 import com.starfish.kol.util.Regex;

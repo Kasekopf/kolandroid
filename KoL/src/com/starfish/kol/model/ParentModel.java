@@ -1,6 +1,6 @@
 package com.starfish.kol.model;
 
-import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 
 public abstract class ParentModel<Callback> extends Model<Callback> {

@@ -2,12 +2,12 @@ package com.starfish.kol.model.models.inventory;
 
 import java.util.ArrayList;
 
-import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
+import com.starfish.kol.model.LiveModel;
 import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.elements.basic.BasicGroup;
 import com.starfish.kol.model.elements.interfaces.ModelGroup;
-import com.starfish.kol.model.util.LiveModel;
 import com.starfish.kol.util.Regex;
 
 

@@ -2,10 +2,10 @@ package com.starfish.kol.model.models;
 
 import java.util.ArrayList;
 
-import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
+import com.starfish.kol.model.LiveModel;
 import com.starfish.kol.model.elements.ActionElement;
-import com.starfish.kol.model.util.LiveModel;
 
 public class NavigationModel extends LiveModel {
 	/**

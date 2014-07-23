@@ -1,6 +1,6 @@
 package com.starfish.kol.gamehandler;
 
-import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.ChoiceModel;

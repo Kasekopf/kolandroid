@@ -2,7 +2,7 @@ package com.starfish.kol.model;
 
 import java.io.Serializable;
 
-import com.starfish.kol.connection.Connection.ServerReply;
+import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.GameHandler;
 import com.starfish.kol.gamehandler.ViewContext;
@@ -19,7 +19,7 @@ public abstract class Model<Callback> implements Serializable {
 	private transient ProgressHandler<Callback> view;
 	private transient GameHandler mainGame;
 
-	private Session session;
+	private final Session session;
 	private ServerReply lastReply;
 	
 	public Model(Session s) {
@@ -54,7 +54,7 @@ public abstract class Model<Callback> implements Serializable {
 			this.view.reportProgress(message);
 	}
 	
-	public final void makeRequest(Request req) {
+	protected void makeRequest(Request req) {
 		req.makeAsync(session);
 	}
 	
