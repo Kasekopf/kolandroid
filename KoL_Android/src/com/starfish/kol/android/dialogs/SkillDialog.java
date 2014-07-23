@@ -14,11 +14,11 @@ import android.widget.TextView;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.view.AndroidViewContext;
+import com.starfish.kol.model.elements.SkillElement;
 import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
-import com.starfish.kol.model.models.SkillsModel.SkillItem;
 
 public class SkillDialog extends DialogFragment {
-	public static SkillDialog create(SkillItem base) {
+	public static SkillDialog create(SkillElement base) {
 		SkillDialog dialog = new SkillDialog();
 		Bundle args = new Bundle();
 		args.putSerializable("skill", base);
@@ -39,7 +39,7 @@ public class SkillDialog extends DialogFragment {
 		final View rootView = (View)inflater.inflate(R.layout.dialog_skill_screen,
 				container, false);
 
-		final SkillItem skill = (SkillItem) this.getArguments().getSerializable("skill");
+		final SkillElement skill = (SkillElement) this.getArguments().getSerializable("skill");
 		
 	    TextView text = (TextView)rootView.findViewById(R.id.dialog_skill_text);
 	    text.setText(skill.getText());

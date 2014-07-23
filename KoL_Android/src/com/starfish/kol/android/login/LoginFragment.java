@@ -21,9 +21,9 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.chat.ChatService;
 import com.starfish.kol.android.game.BaseGameFragment;
 import com.starfish.kol.android.view.AndroidViewContext;
-import com.starfish.kol.model.models.LoginModel;
-import com.starfish.kol.model.models.LoginModel.LoginStatus;
-import com.starfish.kol.model.models.LoginModel.PasswordHash;
+import com.starfish.kol.model.models.login.LoginModel;
+import com.starfish.kol.model.models.login.LoginStatus;
+import com.starfish.kol.model.models.login.PasswordHash;
 
 public class LoginFragment extends BaseGameFragment<LoginStatus, LoginModel> {
 	protected static final String LOGIN_STORAGE = "KoLLogin";

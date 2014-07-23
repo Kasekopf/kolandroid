@@ -13,8 +13,8 @@ import com.starfish.kol.android.dialogs.FunkslingingDialog;
 import com.starfish.kol.android.util.searchlist.SearchListFragment;
 import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.model.elements.ActionElement;
+import com.starfish.kol.model.elements.FightItem;
 import com.starfish.kol.model.models.FightModel;
-import com.starfish.kol.model.models.FightModel.GameItem;
 
 public class FightFragment extends WebFragment<FightModel> {	
 	public FightFragment() {
@@ -49,7 +49,7 @@ public class FightFragment extends WebFragment<FightModel> {
 		useitem.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View btn) {
-				ArrayList<GameItem> items = getModel().getItems();
+				ArrayList<FightItem> items = getModel().getItems();
 				
 				DialogFragment newFragment;
 				

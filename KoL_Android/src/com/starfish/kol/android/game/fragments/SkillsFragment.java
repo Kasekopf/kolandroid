@@ -18,9 +18,9 @@ import com.starfish.kol.android.util.listbuilders.SkillsBuilder;
 import com.starfish.kol.android.util.searchlist.GroupSearchListFragment;
 import com.starfish.kol.android.util.searchlist.OnListSelection;
 import com.starfish.kol.android.util.searchlist.SearchListFragment;
+import com.starfish.kol.model.elements.RestorerItem;
+import com.starfish.kol.model.elements.SkillElement;
 import com.starfish.kol.model.models.SkillsModel;
-import com.starfish.kol.model.models.SkillsModel.RestorerItem;
-import com.starfish.kol.model.models.SkillsModel.SkillItem;
 import com.starfish.kol.model.models.WebModel;
 
 public class SkillsFragment extends BaseGameFragment<Void, SkillsModel> implements OnCreateFragmentListener {
@@ -66,10 +66,10 @@ public class SkillsFragment extends BaseGameFragment<Void, SkillsModel> implemen
 		switch(tag) {
 		case "skills":
 			@SuppressWarnings("unchecked")
-			final GroupSearchListFragment<SkillItem> fragment = (GroupSearchListFragment<SkillItem>)f;
-			fragment.setOnSelectionX(new OnListSelection<SkillItem>() {
+			final GroupSearchListFragment<SkillElement> fragment = (GroupSearchListFragment<SkillElement>)f;
+			fragment.setOnSelectionX(new OnListSelection<SkillElement>() {
 				@Override
-				public boolean selectItem(DialogFragment list, final SkillItem item) {
+				public boolean selectItem(DialogFragment list, final SkillElement item) {
 					if(item.getIsDisabled()) return false;
 					
 					SkillDialog.create(item).show(getFragmentManager(), "skilloptions");

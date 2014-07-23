@@ -21,10 +21,10 @@ import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.android.util.searchlist.OnListSelection;
 import com.starfish.kol.android.util.searchlist.SearchListFragment;
 import com.starfish.kol.android.view.AndroidViewContext;
-import com.starfish.kol.model.models.FightModel.GameItem;
+import com.starfish.kol.model.elements.FightItem;
 
 public class FunkslingingDialog extends DialogFragment {
-	public static FunkslingingDialog create(ArrayList<GameItem> items) {
+	public static FunkslingingDialog create(ArrayList<FightItem> items) {
 		FunkslingingDialog dialog = new FunkslingingDialog();
 		Bundle args = new Bundle();
 		args.putSerializable("items", items);
@@ -39,8 +39,8 @@ public class FunkslingingDialog extends DialogFragment {
 		return dialog;
 	}
 
-	private ListElementFragment<GameItem> item1Frag, item2Frag;
-	private ListElementFragment<GameItem> selected;
+	private ListElementFragment<FightItem> item1Frag, item2Frag;
+	private ListElementFragment<FightItem> selected;
 	
 	private void swapSelected() {
 		if(selected == item1Frag)
@@ -49,7 +49,7 @@ public class FunkslingingDialog extends DialogFragment {
 			setSelected(item1Frag);
 	}
 	
-	private void setSelected(ListElementFragment<GameItem> frag) {
+	private void setSelected(ListElementFragment<FightItem> frag) {
 		if(this.selected != null) {
 			this.selected.getView().setPressed(false);
 		}
@@ -64,9 +64,9 @@ public class FunkslingingDialog extends DialogFragment {
 		View rootView = (View)inflater.inflate(R.layout.dialog_funkslinging,
 				container, false);
 		@SuppressWarnings("unchecked")
-		ArrayList<GameItem> items = (ArrayList<GameItem>)this.getArguments().getSerializable("items");
+		ArrayList<FightItem> items = (ArrayList<FightItem>)this.getArguments().getSerializable("items");
 		
-		item1Frag = ListElementFragment.newInstance(new DefaultBuilder<GameItem>(), GameItem.NONE);
+		item1Frag = ListElementFragment.newInstance(new DefaultBuilder<FightItem>(), FightItem.NONE);
 		item1Frag.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View arg0, MotionEvent arg1) {
@@ -85,7 +85,7 @@ public class FunkslingingDialog extends DialogFragment {
 		FragmentTransaction trans = getChildFragmentManager().beginTransaction().replace(R.id.funksling_item1, item1Frag);
 		trans.commit();
 
-		item2Frag = ListElementFragment.newInstance(new DefaultBuilder<GameItem>(), GameItem.NONE);
+		item2Frag = ListElementFragment.newInstance(new DefaultBuilder<FightItem>(), FightItem.NONE);
 		item2Frag.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View arg0, MotionEvent arg1) {
@@ -98,14 +98,14 @@ public class FunkslingingDialog extends DialogFragment {
 		
 		//setSelected(item1Frag);
 				
-		SearchListFragment<GameItem> listfrag = SearchListFragment.newInstance("", items);
+		SearchListFragment<FightItem> listfrag = SearchListFragment.newInstance("", items);
 		trans = getChildFragmentManager()
 				.beginTransaction().replace(R.id.funksling_list, listfrag);
 		trans.commit();
 		
-		listfrag.setOnSelectionX(new OnListSelection<GameItem>() {
+		listfrag.setOnSelectionX(new OnListSelection<FightItem>() {
 			@Override
-			public boolean selectItem(DialogFragment list, GameItem item) {
+			public boolean selectItem(DialogFragment list, FightItem item) {
 				selected.setValue(item);
 				swapSelected();
 				return true;
@@ -116,8 +116,8 @@ public class FunkslingingDialog extends DialogFragment {
 		submit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				GameItem item1 = item1Frag.getValue();
-				GameItem item2 = item2Frag.getValue();
+				FightItem item1 = item1Frag.getValue();
+				FightItem item2 = item2Frag.getValue();
 				
 				boolean submitted = item1.useWith(new AndroidViewContext(getActivity()), item2);
 				if(submitted)

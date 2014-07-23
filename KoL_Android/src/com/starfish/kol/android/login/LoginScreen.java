@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.chat.ChatService;
-import com.starfish.kol.model.models.LoginModel;
+import com.starfish.kol.model.models.login.LoginModel;
 
 public class LoginScreen extends ActionBarActivity {	
 	@Override
