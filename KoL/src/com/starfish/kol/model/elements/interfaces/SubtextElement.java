@@ -1,5 +1,5 @@
 package com.starfish.kol.model.elements.interfaces;
 
-public interface SubtextItem extends ModelElement{
+public interface SubtextElement extends ModelElement{
 	public String getSubtext();
 }
