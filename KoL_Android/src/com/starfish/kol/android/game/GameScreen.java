@@ -23,9 +23,10 @@ import com.starfish.kol.android.game.fragments.NavigationFragment;
 import com.starfish.kol.android.game.fragments.SkillsFragment;
 import com.starfish.kol.android.game.fragments.StatsFragment;
 import com.starfish.kol.android.game.fragments.StatsFragment.StatsCallbacks;
-import com.starfish.kol.android.game.fragments.inventory.InventoryFragment;
 import com.starfish.kol.android.game.fragments.WebFragment;
+import com.starfish.kol.android.game.fragments.inventory.InventoryFragment;
 import com.starfish.kol.android.view.AndroidViewContext;
+import com.starfish.kol.android.view.ModelWrapper;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.ChoiceModel;
@@ -69,7 +70,9 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 		mTitle = getTitle();
 
 		Intent intent = this.getIntent();
-		Model<?> model = (Model<?>)intent.getSerializableExtra("model");
+		ModelWrapper wrapper = new ModelWrapper(intent);		
+		Model<?> model = wrapper.getDisconnectedModel();
+		
 		Session session = model.getSession();
 		Log.i("GameScreen", "Session: " + session);
 		
@@ -105,23 +108,24 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 			dialog = null;
 		}
 		
-		if(!intent.hasExtra("modeltype")) {
+		ModelWrapper wrapper = new ModelWrapper(intent); //should this really be Void?
+		if(!wrapper.hasModel()) {
 			//the intent to launch this came from a back action
 			// i.e. back from the chat
 			//Do not shift the game view
+			Log.i("GameScreen", "GameScreen recieved intent without model");
 			return;
 		}
-
-		Bundle bundle = new Bundle();
-		bundle.putSerializable("model", intent.getSerializableExtra("model"));
-		bundle.putSerializable("modeltype", intent.getSerializableExtra("modeltype"));
 		
-		Class<?> type = (Class<?>) intent.getSerializableExtra("modeltype");
+		Bundle bundle = wrapper.toBundle();
+		Class<?> type = wrapper.getModelType();
+
+		Log.i("GameScreen", "GameScreen recieved intent with model " + type);
 		
 		GameFragment frag = null;
 		
 		if (type == WebModel.class) {
-			WebModel model = (WebModel)intent.getSerializableExtra("model");
+			WebModel model = (WebModel)wrapper.getDisconnectedModel();
 			if(model.isSmall()) {
 				dialog = new WebDialog();
 				dialog.setArguments(bundle);

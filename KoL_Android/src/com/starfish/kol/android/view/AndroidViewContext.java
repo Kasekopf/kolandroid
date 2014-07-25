@@ -5,6 +5,7 @@ import java.lang.ref.WeakReference;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
@@ -24,6 +25,8 @@ public class AndroidViewContext implements ViewContext {
 	private Handler activityLauncher;
 	
 	public AndroidViewContext(Context context) {
+		assert (Looper.getMainLooper().getThread() == Thread.currentThread()) : "AndroidViewContext should only be created from the main thread.";
+		
 		this.activityLauncher = new ActivityLauncher(context);
 	}
 	
@@ -59,13 +62,16 @@ public class AndroidViewContext implements ViewContext {
 				intent = new Intent(context, GameScreen.class);
 			}
 			
-			if(intent == null)
+			if(intent == null) {
+				Log.i("ViewContext", "Unable to display model of type " + type);
 				return;
+			}
 			
-			intent.putExtra("model", model);
-			intent.putExtra("modeltype", type);
+			ModelWrapper wrapper = new ModelWrapper(model);
+			wrapper.fillIntent(intent);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			
+			Log.i("ViewContext", "Launching activity for " + type);
 			context.startActivity(intent);
 		}
 	}

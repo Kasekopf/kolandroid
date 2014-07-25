@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.starfish.kol.android.view.ModelWrapper;
 import com.starfish.kol.model.Model;
 
 public abstract class GameFragment extends DialogFragment {
@@ -19,10 +20,8 @@ public abstract class GameFragment extends DialogFragment {
 	}
 	
 	public static Bundle getModelBundle(Model<?> m) {
-		Bundle bundle = new Bundle();
-		bundle.putSerializable("modeltype", m.getClass());
-		bundle.putSerializable("model", m);
-		return bundle;
+		ModelWrapper wrapper = new ModelWrapper(m);
+		return wrapper.toBundle();
 	}
 	
 	@Override
@@ -40,7 +39,9 @@ public abstract class GameFragment extends DialogFragment {
 		View rootView = inflater.inflate(layoutid, container, false);
 
 		Log.i("GameFragment", "Loaded new view " + this.getClass().toString());
-		Model<?> model = (Model<?>) this.getArguments().getSerializable("model");
+		
+		ModelWrapper wrapper = new ModelWrapper(this.getArguments());
+		Model<?> model = wrapper.getDisconnectedModel();
 		if(model == null) {
 			Log.i("BaseGameFragment", "Model was null in " + this.getClass());
 			return rootView;

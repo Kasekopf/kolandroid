@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.chat.ChatService;
+import com.starfish.kol.android.view.ModelWrapper;
 import com.starfish.kol.model.models.login.LoginModel;
 
 public class LoginScreen extends ActionBarActivity {	
@@ -17,13 +18,14 @@ public class LoginScreen extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login_screen);
 
-		LoginModel login = new LoginModel();
 		
 		if (savedInstanceState == null) {
-			Bundle bundle = new Bundle();
-			bundle.putSerializable("model", login);
+
+			LoginModel login = new LoginModel();
+			ModelWrapper wrapper = new ModelWrapper(login);
+			
 			LoginFragment frag = new LoginFragment();
-			frag.setArguments(bundle);
+			frag.setArguments(wrapper.toBundle());
 
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.game_mainfragment, frag).commit();
