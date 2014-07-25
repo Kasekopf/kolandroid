@@ -27,8 +27,8 @@ public class HighlightableListAdapter<E> extends ListAdapter<E>{
 		this.setElements(base);
 	}
 	
-	public void changeFilter(String newValue) {
-		filter = new Regex(newValue);
+	public void changeFilter(String newValue) {		
+		filter = new Regex("(?i)\\Q" + newValue + "\\E");
 		displayed.clear();
 		this.setElements(base);
 	}
