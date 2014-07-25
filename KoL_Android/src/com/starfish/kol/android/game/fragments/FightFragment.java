@@ -10,10 +10,12 @@ import android.widget.Button;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.dialogs.FunkslingingDialog;
+import com.starfish.kol.android.util.listbuilders.SubtextBuilder;
 import com.starfish.kol.android.util.searchlist.SearchListFragment;
 import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.elements.FightItem;
+import com.starfish.kol.model.elements.FightSkillElement;
 import com.starfish.kol.model.models.FightModel;
 
 public class FightFragment extends WebFragment<FightModel> {	
@@ -38,9 +40,10 @@ public class FightFragment extends WebFragment<FightModel> {
 		useskill.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View btn) {
-				ArrayList<ActionElement> skills = getModel().getSkills();
-
-				SearchListFragment<ActionElement> newFragment = SearchListFragment.newInstance("Choose a skill to use:", skills);
+				ArrayList<FightSkillElement> skills = getModel().getSkills();
+				SubtextBuilder<FightSkillElement> builder = new SubtextBuilder<FightSkillElement>();
+				
+				SearchListFragment<FightSkillElement> newFragment = SearchListFragment.newInstance("Choose a skill to use:", builder, skills);
 			    newFragment.show(getFragmentManager(), "dialog");
 			}
 		});

@@ -36,6 +36,18 @@ public class SearchListFragment<E extends ModelElement> extends DialogFragment {
         return frag;
 	}
 	
+
+	public static <E extends ActionElement> SearchListFragment<E> newInstance(String title, ListElementBuilder<E> builder, ArrayList<E> elements) {
+		SearchListFragment<E> frag = new SearchListFragment<E>();
+        Bundle args = new Bundle();
+        args.putString("title", title);
+        args.putSerializable("list", elements);
+        args.putSerializable("builder", builder);
+        args.putSerializable("selector", new ActionSelector<E>());
+        frag.setArguments(args);
+        return frag;
+	}
+	
 	private OnListSelection<E> selector;
 	private HighlightableListAdapter<E> adapter;
 	private ArrayList<E> base;

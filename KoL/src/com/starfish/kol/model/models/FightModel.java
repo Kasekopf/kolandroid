@@ -6,6 +6,7 @@ import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.elements.FightItem;
+import com.starfish.kol.model.elements.FightSkillElement;
 import com.starfish.kol.model.elements.OptionElement;
 import com.starfish.kol.util.Regex;
 
@@ -25,7 +26,8 @@ public class FightModel extends FilteredWebModel {
 			"<input[^<>]*type=[\"']?hidden[\"']?[^<>]*value=[\"']?([^\"']*?)[\"']?>.*?<input[^<>]*value=[\"']?([^\"<>]*?)[\"']?>",
 			1, 2);
 
-	private static final Regex ALL_SKILLS = OptionElement.regexFor("whichskill");
+	private static final Regex ALL_SKILLS = OptionElement
+			.regexFor("whichskill");
 	private static final Regex ALL_ITEMS = OptionElement.regexFor("whichitem");
 
 	private static final Regex ACTION_BAR = new Regex(
@@ -36,9 +38,10 @@ public class FightModel extends FilteredWebModel {
 			"<a[^>]*>\\(show old combat form\\)</a>");
 	private static final Regex BUTTONS = new Regex("<form[^>]*>.*?</form>");
 
-	private static final Regex HAS_FUNKSLINGING = new Regex("<select[^>]*whichitem2[^>]*>");
-	
-	private ArrayList<ActionElement> skills;
+	private static final Regex HAS_FUNKSLINGING = new Regex(
+			"<select[^>]*whichitem2[^>]*>");
+
+	private ArrayList<FightSkillElement> skills;
 	private ArrayList<FightItem> items;
 
 	private boolean fightFinished = false;
@@ -46,7 +49,7 @@ public class FightModel extends FilteredWebModel {
 			"fight.php?action=attack");
 
 	private boolean funkslinging;
-	
+
 	public FightModel(Session s, ServerReply text) {
 		super(s, text);
 
@@ -58,7 +61,7 @@ public class FightModel extends FilteredWebModel {
 	}
 
 	private void processSkills(String html) {
-		this.skills = new ArrayList<ActionElement>();
+		this.skills = new ArrayList<FightSkillElement>();
 
 		ArrayList<String[]> buttons = ACTION_BTN.extractAll(html);
 		for (String[] button : buttons) {
@@ -84,14 +87,16 @@ public class FightModel extends FilteredWebModel {
 				break;
 			}
 
-			this.skills.add(new ActionElement(getSession(), text, img, "fight.php?action="
-					+ action));
+			this.skills.add(new FightSkillElement(getSession(), text, img,
+					"fight.php?action=" + action));
 		}
 
 		String dropdown = ALL_SKILLS.extractSingle(html);
-		ArrayList<OptionElement> dropdown_skills = OptionElement.extractOptions(dropdown);
-		for(OptionElement option : dropdown_skills) {
-			skills.add(new ActionElement(getSession(), option.text, option.img, "fight.php?action=skill&whichskill=" + option.value));
+		ArrayList<OptionElement> dropdown_skills = OptionElement
+				.extractOptions(dropdown);
+		for (OptionElement option : dropdown_skills) {
+			skills.add(new FightSkillElement(getSession(), option.text, option.img,
+					"fight.php?action=skill&whichskill=" + option.value));
 		}
 	}
 
@@ -99,18 +104,18 @@ public class FightModel extends FilteredWebModel {
 		this.items = new ArrayList<FightItem>();
 
 		String dropdown = ALL_ITEMS.extractSingle(html);
-		
 
-		ArrayList<OptionElement> dropdown_items = OptionElement.extractOptions(dropdown);
-		for(OptionElement option : dropdown_items) {
-			items.add(new FightItem(getSession(), option.text, option.img, option.value));
+		ArrayList<OptionElement> dropdown_items = OptionElement
+				.extractOptions(dropdown);
+		for (OptionElement option : dropdown_items) {
+			items.add(new FightItem(getSession(), option.text, option.img,
+					option.value));
 		}
-		
+
 		this.funkslinging = HAS_FUNKSLINGING.matches(html);
 	}
 
-
-	public ArrayList<ActionElement> getSkills() {
+	public ArrayList<FightSkillElement> getSkills() {
 		return this.skills;
 	}
 
@@ -125,7 +130,7 @@ public class FightModel extends FilteredWebModel {
 	public ActionElement getAttack() {
 		return attack;
 	}
-	
+
 	public boolean hasFunkslinging() {
 		return funkslinging;
 	}
