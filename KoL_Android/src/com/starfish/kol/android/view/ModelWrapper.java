@@ -32,7 +32,11 @@ public class ModelWrapper {
 		return model != null;
 	}
 
-	public Model<?> getDisconnectedModel() {
+	public Model<?> peekModel() {
+		return model;
+	}
+	
+	public Model<?> extractModel() {
 		return model;
 	}
 	
@@ -59,5 +63,10 @@ public class ModelWrapper {
 
 	public void fillIntent(Intent intent) {
 		intent.putExtra("model", model);
+	}
+	
+	public static Bundle bundle(Model<?> model) {
+		ModelWrapper wrapper = new ModelWrapper(model);
+		return wrapper.toBundle();
 	}
 }

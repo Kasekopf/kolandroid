@@ -11,7 +11,7 @@ import android.widget.Button;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.dialogs.ItemDialog;
 import com.starfish.kol.android.dialogs.SaveOutfitDialog;
-import com.starfish.kol.android.game.BaseGameFragment;
+import com.starfish.kol.android.game.GameFragment;
 import com.starfish.kol.android.util.listbuilders.SubtextBuilder;
 import com.starfish.kol.android.util.searchlist.GroupSearchListFragment;
 import com.starfish.kol.android.util.searchlist.SerializableSelector;
@@ -21,7 +21,7 @@ import com.starfish.kol.model.models.inventory.EquipmentPocketModel;
 import com.starfish.kol.model.models.inventory.InventoryItem;
 
 @SuppressLint("ValidFragment")
-public class EquipmentPaneFragment extends BaseGameFragment<LiveMessage, EquipmentPocketModel> {
+public class EquipmentPaneFragment extends GameFragment<LiveMessage, EquipmentPocketModel> {
 	public EquipmentPaneFragment() {
 		super(R.layout.fragment_equipment_pane);
 	}

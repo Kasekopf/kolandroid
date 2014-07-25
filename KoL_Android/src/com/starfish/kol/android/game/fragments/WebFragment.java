@@ -12,13 +12,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.android.game.BaseGameFragment;
 import com.starfish.kol.android.game.GameFragment;
+import com.starfish.kol.android.view.ModelWrapper;
 import com.starfish.kol.model.models.WebModel;
 import com.starfish.kol.util.Regex;
 
 @SuppressLint("ValidFragment")
-public class WebFragment<E extends WebModel> extends BaseGameFragment<Void, E>{
+public class WebFragment<E extends WebModel> extends GameFragment<Void, E>{
 	private WebView web;
 	private final static Regex BODY_TAG = new Regex("<body[^>]*?>");
 	
@@ -73,7 +73,7 @@ public class WebFragment<E extends WebModel> extends BaseGameFragment<Void, E>{
 
 	public void updateModel(E base) {
 		if(web == null) {
-			this.setArguments(GameFragment.getModelBundle(base));
+			this.setArguments(ModelWrapper.bundle(base));
 		} else if(web != null) {
 			String fixedHtml = BODY_TAG.replaceAll(base.getHTML(), "$0<meta name=\"viewport\" content=\"width=device-width, initial-scale=0.5\">");
 			web.loadData(fixedHtml, "text/html", null);

@@ -22,10 +22,9 @@ public class LoginScreen extends ActionBarActivity {
 		if (savedInstanceState == null) {
 
 			LoginModel login = new LoginModel();
-			ModelWrapper wrapper = new ModelWrapper(login);
 			
 			LoginFragment frag = new LoginFragment();
-			frag.setArguments(wrapper.toBundle());
+			frag.setArguments(ModelWrapper.bundle(login));
 
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.game_mainfragment, frag).commit();

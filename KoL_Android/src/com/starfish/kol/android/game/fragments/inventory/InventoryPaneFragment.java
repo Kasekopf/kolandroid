@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.dialogs.ItemDialog;
-import com.starfish.kol.android.game.BaseGameFragment;
+import com.starfish.kol.android.game.GameFragment;
 import com.starfish.kol.android.util.listbuilders.SubtextBuilder;
 import com.starfish.kol.android.util.searchlist.GroupSearchListFragment;
 import com.starfish.kol.android.util.searchlist.SerializableSelector;
@@ -17,7 +17,7 @@ import com.starfish.kol.model.models.inventory.InventoryItem;
 import com.starfish.kol.model.models.inventory.InventoryPocketModel;
 
 @SuppressLint("ValidFragment")
-public class InventoryPaneFragment extends BaseGameFragment<LiveMessage, InventoryPocketModel> {
+public class InventoryPaneFragment extends GameFragment<LiveMessage, InventoryPocketModel> {
 	public InventoryPaneFragment() {
 		super(R.layout.fragment_inventory_pane);
 	}

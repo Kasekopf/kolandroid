@@ -9,7 +9,6 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.dialogs.MultiUseDialog;
 import com.starfish.kol.android.dialogs.SkillDialog;
 import com.starfish.kol.android.dialogs.WebDialog;
-import com.starfish.kol.android.game.BaseGameFragment;
 import com.starfish.kol.android.game.GameFragment;
 import com.starfish.kol.android.util.CustomFragmentTabHost;
 import com.starfish.kol.android.util.CustomFragmentTabHost.OnCreateFragmentListener;
@@ -18,12 +17,13 @@ import com.starfish.kol.android.util.listbuilders.SkillsBuilder;
 import com.starfish.kol.android.util.searchlist.GroupSearchListFragment;
 import com.starfish.kol.android.util.searchlist.OnListSelection;
 import com.starfish.kol.android.util.searchlist.SearchListFragment;
+import com.starfish.kol.android.view.ModelWrapper;
 import com.starfish.kol.model.elements.RestorerItem;
 import com.starfish.kol.model.elements.SkillElement;
 import com.starfish.kol.model.models.SkillsModel;
 import com.starfish.kol.model.models.WebModel;
 
-public class SkillsFragment extends BaseGameFragment<Void, SkillsModel> implements OnCreateFragmentListener {
+public class SkillsFragment extends GameFragment<Void, SkillsModel> implements OnCreateFragmentListener {
 	public SkillsFragment() {
 		super(R.layout.fragment_tabs_screen);
 	}
@@ -55,7 +55,7 @@ public class SkillsFragment extends BaseGameFragment<Void, SkillsModel> implemen
 		WebModel results = base.getResultsPane();
 		if(results != null) {
 			DialogFragment newFragment = new WebDialog();
-			newFragment.setArguments(GameFragment.getModelBundle(results));
+			newFragment.setArguments(ModelWrapper.bundle(results));
 		    newFragment.show(getFragmentManager(), "dialog");
 		}
 	}

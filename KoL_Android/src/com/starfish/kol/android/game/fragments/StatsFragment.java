@@ -7,7 +7,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.android.game.BaseGameFragment;
+import com.starfish.kol.android.game.GameFragment;
 import com.starfish.kol.android.util.ProgressBar;
 import com.starfish.kol.model.LiveMessage;
 import com.starfish.kol.model.models.StatsModel;
@@ -20,7 +20,7 @@ import com.starfish.kol.model.models.StatsModel;
  * to create an instance of this fragment.
  * 
  */
-public class StatsFragment extends BaseGameFragment<LiveMessage, StatsModel> {
+public class StatsFragment extends GameFragment<LiveMessage, StatsModel> {
 	public StatsFragment() {
 		super(R.layout.fragment_stats_small);
 	}

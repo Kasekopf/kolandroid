@@ -6,15 +6,15 @@ import android.view.View;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.dialogs.WebDialog;
-import com.starfish.kol.android.game.BaseGameFragment;
 import com.starfish.kol.android.game.GameFragment;
 import com.starfish.kol.android.util.CustomFragmentTabHost;
+import com.starfish.kol.android.view.ModelWrapper;
 import com.starfish.kol.model.LiveMessage;
 import com.starfish.kol.model.models.CraftingModel;
 import com.starfish.kol.model.models.CraftingModel.CraftingSubModel;
 import com.starfish.kol.model.models.WebModel;
 
-public class CraftingFragment extends BaseGameFragment<Void, CraftingModel> {
+public class CraftingFragment extends GameFragment<Void, CraftingModel> {
 	public CraftingFragment() {
 		super(R.layout.fragment_tabs_screen);
 	}
@@ -31,7 +31,7 @@ public class CraftingFragment extends BaseGameFragment<Void, CraftingModel> {
 			CraftingSubModel model = base.getSlot(i);
 			
 			host.addTab(host.newTabSpec(model.getTitle()).setIndicator(model.getTitle()),
-					CraftingSubFragment.class, GameFragment.getModelBundle(model));
+					CraftingSubFragment.class, ModelWrapper.bundle(model));
 		}
 
 		host.setCurrentTab(base.getInitialSlot());
@@ -39,7 +39,7 @@ public class CraftingFragment extends BaseGameFragment<Void, CraftingModel> {
 		WebModel results = base.getResultsPane();
 		if (results != null) {
 			DialogFragment newFragment = new WebDialog();
-			newFragment.setArguments(GameFragment.getModelBundle(results));
+			newFragment.setArguments(ModelWrapper.bundle(results));
 			newFragment.show(getChildFragmentManager(), "dialog");
 		}
 	}
@@ -50,7 +50,7 @@ public class CraftingFragment extends BaseGameFragment<Void, CraftingModel> {
 	}
 
 	public static class CraftingSubFragment extends
-			BaseGameFragment<LiveMessage, CraftingSubModel> {
+			GameFragment<LiveMessage, CraftingSubModel> {
 		private WebFragment<WebModel> fragment;
 		
 		public CraftingSubFragment() {
@@ -61,7 +61,7 @@ public class CraftingFragment extends BaseGameFragment<Void, CraftingModel> {
 		public void onCreateSetup(View view, CraftingSubModel base,
 				Bundle savedInstanceState) {
 			fragment = new WebFragment<WebModel>();
-			fragment.setArguments(GameFragment.getModelBundle(base.getBaseModel()));
+			fragment.setArguments(ModelWrapper.bundle(base.getBaseModel()));
 			this.getChildFragmentManager().beginTransaction()
 					.add(R.id.crafting_web, fragment).commit();
 		}

@@ -15,7 +15,6 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.chat.ChatService;
 import com.starfish.kol.android.chat.ChatService.ChatCallback;
 import com.starfish.kol.android.dialogs.WebDialog;
-import com.starfish.kol.android.game.GameFragment.GameCallbacks;
 import com.starfish.kol.android.game.fragments.ChoiceFragment;
 import com.starfish.kol.android.game.fragments.CraftingFragment;
 import com.starfish.kol.android.game.fragments.FightFragment;
@@ -37,8 +36,7 @@ import com.starfish.kol.model.models.StatsModel;
 import com.starfish.kol.model.models.WebModel;
 import com.starfish.kol.model.models.inventory.InventoryModel;
 
-public class GameScreen extends ActionBarActivity implements StatsCallbacks,
-		GameCallbacks {
+public class GameScreen extends ActionBarActivity implements StatsCallbacks {
 
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
@@ -49,7 +47,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 	private DialogFragment dialog;
 	
 	private StatsFragment mStatsFragment;
-	private GameFragment mainFragment;
+	private GameFragment<?, ?> mainFragment;
 	
 	private ChatCallback chat;
 	
@@ -71,7 +69,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 
 		Intent intent = this.getIntent();
 		ModelWrapper wrapper = new ModelWrapper(intent);		
-		Model<?> model = wrapper.getDisconnectedModel();
+		Model<?> model = wrapper.peekModel();
 		
 		Session session = model.getSession();
 		Log.i("GameScreen", "Session: " + session);
@@ -81,7 +79,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 
 		mStatsFragment = new StatsFragment();
-		mStatsFragment.setArguments(GameFragment.getModelBundle(new StatsModel(session)));
+		mStatsFragment.setArguments(ModelWrapper.bundle(new StatsModel(session)));
 		getSupportFragmentManager().beginTransaction()
 				.add(R.id.game_statsfragment, mStatsFragment).commit();
 
@@ -122,10 +120,10 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 
 		Log.i("GameScreen", "GameScreen recieved intent with model " + type);
 		
-		GameFragment frag = null;
+		GameFragment<?, ?> frag = null;
 		
 		if (type == WebModel.class) {
-			WebModel model = (WebModel)wrapper.getDisconnectedModel();
+			WebModel model = (WebModel)wrapper.peekModel();
 			if(model.isSmall()) {
 				dialog = new WebDialog();
 				dialog.setArguments(bundle);
@@ -211,10 +209,5 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setTitle(username);
 		actionBar.setSubtitle(subtext);
-	}
-
-	@Override
-	public void refreshStats() {
-		mStatsFragment.refresh();
 	}
 }

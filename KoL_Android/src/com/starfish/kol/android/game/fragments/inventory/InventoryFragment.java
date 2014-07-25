@@ -7,14 +7,14 @@ import android.widget.TabHost.TabSpec;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.dialogs.WebDialog;
-import com.starfish.kol.android.game.BaseGameFragment;
 import com.starfish.kol.android.game.GameFragment;
 import com.starfish.kol.android.util.CustomFragmentTabHost;
+import com.starfish.kol.android.view.ModelWrapper;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.WebModel;
 import com.starfish.kol.model.models.inventory.InventoryModel;
 
-public class InventoryFragment extends BaseGameFragment<Void, InventoryModel> {
+public class InventoryFragment extends GameFragment<Void, InventoryModel> {
 	public InventoryFragment() {
 		super(R.layout.fragment_tabs_screen);
 	}
@@ -42,13 +42,13 @@ public class InventoryFragment extends BaseGameFragment<Void, InventoryModel> {
 		WebModel results = base.getResultsPane();
 		if(results != null) {
 			DialogFragment newFragment = new WebDialog();
-			newFragment.setArguments(GameFragment.getModelBundle(results));
+			newFragment.setArguments(ModelWrapper.bundle(results));
 		    newFragment.show(getFragmentManager(), "dialog");
 		}
 	}
 	
-	private <S, T extends Model<S>, U extends BaseGameFragment<S, T>> void addTab(CustomFragmentTabHost host, String name, T model, Class<U> tabType) {
-		Bundle bundle = BaseGameFragment.getModelBundle(model);
+	private <S, T extends Model<S>, U extends GameFragment<S, T>> void addTab(CustomFragmentTabHost host, String name, T model, Class<U> tabType) {
+		Bundle bundle = ModelWrapper.bundle(model);
 		TabSpec tab = host.newTabSpec(name).setIndicator(name);
 		host.addTab(tab, tabType, bundle);
 	}
