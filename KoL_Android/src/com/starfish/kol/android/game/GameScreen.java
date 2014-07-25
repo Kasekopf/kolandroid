@@ -69,7 +69,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks {
 
 		Intent intent = this.getIntent();
 		ModelWrapper wrapper = new ModelWrapper(intent);		
-		Model<?> model = wrapper.peekModel();
+		Model<?> model = wrapper.getModel();
 		
 		Session session = model.getSession();
 		Log.i("GameScreen", "Session: " + session);
@@ -123,7 +123,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks {
 		GameFragment<?, ?> frag = null;
 		
 		if (type == WebModel.class) {
-			WebModel model = (WebModel)wrapper.peekModel();
+			WebModel model = (WebModel)wrapper.getModel();
 			if(model.isSmall()) {
 				dialog = new WebDialog();
 				dialog.setArguments(bundle);
@@ -187,10 +187,6 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks {
 		// Handle action bar item clicks here.
 		int id = item.getItemId();
 		switch (id) {
-		case R.id.menu_checkweb:
-			if (mainFragment != null)
-				mainFragment.getModel().simulateWebRequest();
-			return true;
 		case R.id.action_quests:
 			if (mStatsFragment != null)
 				mStatsFragment.showQuests();

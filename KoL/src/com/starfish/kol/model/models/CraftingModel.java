@@ -16,11 +16,7 @@ public class CraftingModel extends Model<Void> {
 
 	private CraftingSubModel[] crafts;
 	
-	private static final Regex RESULTS_PANE = new Regex(
-			"<table[^>]*><tr><td[^>]*><b>Results:.*?</table>", 0);
-	private static final Regex PAGE_BODY = new Regex(
-			"(<body[^>]*>)(.*?)(</body>)", 2);
-	private String resultsPane;
+	private WebModel resultsPane;
 	
 	private static final Regex TOP_BAR = new Regex("(<body>.*?)<table.*?</table>.*?</table>", 0);
 	
@@ -31,7 +27,7 @@ public class CraftingModel extends Model<Void> {
 	private int initialSlot;
 	
 	public CraftingModel(Session s, ServerReply reply) {
-		super(s, reply);
+		super(s);
 		
 		ArrayList<String> options = SELECTION.extractAllSingle(TOP_BAR.extractSingle(reply.html));
 		
@@ -54,21 +50,13 @@ public class CraftingModel extends Model<Void> {
 		}
 		System.out.println("Loaded " + crafts.length + " crafts; selected " + initialSlot);
 		
-		resultsPane = RESULTS_PANE.extractSingle(reply.html);
 		crafts[initialSlot].process(reply);
+		
+		this.resultsPane = extractResultsPane(s, reply);
 	}
 
 	public WebModel getResultsPane() {
-		if (resultsPane == null)
-			return null;
-
-		ServerReply base = this.getBase();
-		String html = PAGE_BODY.replaceAll(base.html, "$1<center>"
-				+ resultsPane + "</center>$3");
-		ServerReply newRep = new ServerReply(base.responseCode,
-				base.redirectLocation, base.date, html, "small/craftingresults.php",
-				base.cookie);
-		return new WebModel(getSession(), newRep);
+		return resultsPane;
 	}
 	
 	public int getNumberSlots() {

@@ -41,7 +41,6 @@ public abstract class LiveModel extends Model<LiveMessage> {
 			public void handle(Session session, Request request,
 					ServerReply response) {
 				if (response.url.contains(updateUrl)) {
-					updateBase(response);
 					process(response);
 				} else {
 					if(shouldRedirect)

@@ -61,7 +61,7 @@ public class WebModel extends Model<Void> {
 	private String html;
 
 	public WebModel(Session s, ServerReply text) {
-		super(s, text);
+		super(s);
 
 		System.out.println("Loading webmodel for " + text.url);
 		this.setHTML(text.html);

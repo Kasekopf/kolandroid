@@ -20,12 +20,7 @@ public class InventoryModel extends ParentModel<Void> {
 
 	private int chosen;
 
-	private static final Regex RESULTS_PANE = new Regex(
-			"<div[^>]*id=[\"']?effdiv.*?</div>", 0);
-	private static final Regex PAGE_BODY = new Regex(
-			"(<body[^>]*>)(.*?)(</body>)");
-
-	private String resultsPane;
+	private WebModel resultsPane;
 
 	private InventoryPocketModel consume;
 	private EquipmentPocketModel equip;
@@ -33,7 +28,7 @@ public class InventoryModel extends ParentModel<Void> {
 	private InventoryPocketModel recent;
 
 	public InventoryModel(Session s, ServerReply text) {
-		super(s, text);
+		super(s);
 
 		consume = new InventoryPocketModel(s, "inventory.php?which=1");
 		equip = new EquipmentPocketModel(s, "inventory.php?which=2");
@@ -51,7 +46,7 @@ public class InventoryModel extends ParentModel<Void> {
 			return false;
 		}
 
-		resultsPane = RESULTS_PANE.extractSingle(text.html);
+		resultsPane = extractResultsPane(getSession(), text);
 
 		if (CHOSEN_CONSUME.matches(text.html)) {
 			chosen = 0;
@@ -71,16 +66,7 @@ public class InventoryModel extends ParentModel<Void> {
 	}
 
 	public WebModel getResultsPane() {
-		if (resultsPane == null)
-			return null;
-
-		ServerReply base = this.getBase();
-		String html = PAGE_BODY.replaceAll(base.html, "$1<center>"
-				+ resultsPane + "</center>$3");
-		ServerReply newRep = new ServerReply(base.responseCode,
-				base.redirectLocation, base.date, html, "small/invresults.php",
-				base.cookie);
-		return new WebModel(getSession(), newRep);
+		return resultsPane;
 	}
 
 	public int getInitialChosen() {

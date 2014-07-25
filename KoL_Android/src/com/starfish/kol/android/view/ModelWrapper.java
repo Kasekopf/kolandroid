@@ -7,12 +7,12 @@ import com.starfish.kol.model.Model;
 
 public class ModelWrapper {
 	private final Model<?> model;
-
+	
 	public ModelWrapper(Model<?> model) {
 		this.model = model;
 	}
 
-	public ModelWrapper(Intent intent) {
+	public ModelWrapper(Intent intent) {		
 		if (intent.hasExtra("model")) {
 			model = (Model<?>) intent.getSerializableExtra("model");
 		} else {
@@ -32,22 +32,9 @@ public class ModelWrapper {
 		return model != null;
 	}
 
-	public Model<?> peekModel() {
+	public Model<?> getModel() {
 		return model;
 	}
-	
-	public Model<?> extractModel() {
-		return model;
-	}
-	
-	/*
-	public <E> Model<E> getModel(ProgressHandler<E> view, ViewContext context) {
-		@SuppressWarnings("unchecked")
-		Model<E> realModel = (Model<E>)model;
-		realModel.connectView(view, context);
-		return realModel;
-	}
-	*/
 
 	public Class<?> getModelType() {
 		if (model == null)

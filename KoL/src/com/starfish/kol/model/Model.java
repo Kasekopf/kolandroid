@@ -6,9 +6,10 @@ import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.GameHandler;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.request.ResponseHandler;
+import com.starfish.kol.model.models.WebModel;
 import com.starfish.kol.request.Request;
-import com.starfish.kol.request.SimulatedRequest;
+import com.starfish.kol.request.ResponseHandler;
+import com.starfish.kol.util.Regex;
 
 /**
  * This class interfaces between kol pages and the corresponding views. It is
@@ -35,63 +36,15 @@ public abstract class Model<Callback> implements Serializable {
 
 	// The current user session information.
 	private final Session session;
-	// The most recent page parsed by this model.
-	private ServerReply lastReply;
 
 	/**
-	 * Create a new model in the provided session from scratch, with no
-	 * associated server reply.
+	 * Create a new model in the provided session.
 	 * 
 	 * @param s
 	 *            Session to use in all future requests by this model.
 	 */
 	public Model(Session s) {
 		this.session = s;
-		this.lastReply = null;
-	}
-
-	/**
-	 * Create a new model in the provided session, based on the provided server
-	 * reply.
-	 * 
-	 * @param s
-	 *            Session to use in all future requests by this model.
-	 * @param base
-	 *            Server reply which underlies this model.
-	 */
-	public Model(Session s, ServerReply base) {
-		this.session = s;
-		this.lastReply = base;
-	}
-
-	/**
-	 * Update the server reply which underlies this model.
-	 * 
-	 * @param newBase
-	 *            The new server reply which now underlies this model.
-	 */
-	protected void updateBase(ServerReply newBase) {
-		this.lastReply = newBase;
-	}
-
-	/**
-	 * Get the server reply which underlies this model.
-	 * 
-	 * @return The server reply which underlies this model.
-	 */
-	protected ServerReply getBase() {
-		return lastReply;
-	}
-
-	/**
-	 * Make a new request which will ultimately redisplay this model as a
-	 * WebModel. This can be used to spot check the accuracy of the model
-	 * parsing by comparing it to the corresponding WebModel.
-	 */
-	public void simulateWebRequest() {
-		this.makeRequest(new SimulatedRequest(lastReply,
-				"http://www.kingdomofloathing.com/fake.php", lastReply.html,
-				mainLoop));
 	}
 
 	/**
@@ -122,17 +75,48 @@ public abstract class Model<Callback> implements Serializable {
 	/**
 	 * Make a new request in the context of this model.
 	 * 
-	 * @param req	The request to make.
+	 * @param req
+	 *            The request to make.
 	 */
 	protected void makeRequest(Request req) {
 		req.makeAsync(session);
 	}
 
+	// Regex to find the top results pane of any page
+	private static final Regex RESULTS_PANE = new Regex(
+			"<table[^>]*><tr><td[^>]*><b>Results:.*?</table>", 0);
+	// Regex to find contents of the <body> tag of any page
+	private static final Regex PAGE_BODY = new Regex(
+			"(<body[^>]*>)(.*?)(</body>)", 2);
+
 	/**
-	 * Get the default handler for any requests which cannot be
-	 *  directly handled by the new model.
+	 * Extract a model for the results pane of this page, if any exists.
 	 * 
-	 * @return	A handler
+	 * @param s
+	 *            Session in which to create the new model.
+	 * @param base
+	 *            Page to parse
+	 * @return A model representing the results pane; null if no results pane
+	 *         was found.
+	 */
+	protected static WebModel extractResultsPane(Session s, ServerReply base) {
+		String resultsPane = RESULTS_PANE.extractSingle(base.html);
+		if (resultsPane == null)
+			return null;
+
+		String html = PAGE_BODY.replaceAll(base.html, "$1<center>"
+				+ resultsPane + "</center>$3");
+		ServerReply newRep = new ServerReply(base.responseCode,
+				base.redirectLocation, base.date, html,
+				"small/craftingresults.php", base.cookie);
+		return new WebModel(s, newRep);
+	}
+
+	/**
+	 * Get the default handler for any requests which cannot be directly handled
+	 * by the new model.
+	 * 
+	 * @return A handler
 	 */
 	protected ResponseHandler getGameHandler() {
 		return mainLoop;

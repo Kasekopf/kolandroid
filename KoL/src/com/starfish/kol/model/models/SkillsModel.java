@@ -18,12 +18,6 @@ public class SkillsModel extends Model<Void> {
 	 */
 	private static final long serialVersionUID = 295714863597L;
 
-	private static final Regex RESULTS_PANE = new Regex(
-			"<table[^>]*>.*?Results:.*?</table>", 0);
-	private static final Regex PAGE_BODY = new Regex(
-			"(<body[^>]*>)(.*?)(</body>)", 2);
-	private String resultsPane;
-
 	private static final Regex ITEMS_FORM = new Regex(
 			"<form[^>]*restorerform[^>]*>.*?</form>", 0);
 	
@@ -40,10 +34,11 @@ public class SkillsModel extends Model<Void> {
 
 	private final ArrayList<RestorerItem> items;
 	private final ArrayList<ModelGroup<SkillElement>> skills;
+	private WebModel resultsPane;
 
 	private final boolean usedItem;
 	public SkillsModel(Session s, ServerReply text) {
-		super(s, text);
+		super(s);
 		this.loadContent(text);
 
 		this.skills = processSkills(text.html);
@@ -115,22 +110,13 @@ public class SkillsModel extends Model<Void> {
 			return false;
 		}
 
-		resultsPane = RESULTS_PANE.extractSingle(text.html);
+		resultsPane = extractResultsPane(getSession(), text);
 
 		return true;
 	}
 
 	public WebModel getResultsPane() {
-		if (resultsPane == null)
-			return null;
-
-		ServerReply base = this.getBase();
-		String html = PAGE_BODY.replaceAll(base.html, "$1<center>"
-				+ resultsPane + "</center>$3");
-		ServerReply newRep = new ServerReply(base.responseCode,
-				base.redirectLocation, base.date, html, "small/skillresults.php",
-				base.cookie);
-		return new WebModel(getSession(), newRep);
+		return resultsPane;
 	}
 
 	public ArrayList<ModelGroup<SkillElement>> getSkills() {

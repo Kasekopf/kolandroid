@@ -44,7 +44,7 @@ public abstract class GameFragment<C, M extends Model<C>> extends DialogFragment
 		if(this.base == null) {
 			//Fragment created from scratch 
 			ModelWrapper wrapper = new ModelWrapper(this.getArguments());
-			this.base = (M)wrapper.extractModel();
+			this.base = (M)wrapper.getModel();
 			if(this.base == null) {
 				Log.i("BaseGameFragment", "Model was null in " + this.getClass());
 				return rootView;
