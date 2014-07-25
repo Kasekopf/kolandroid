@@ -46,7 +46,6 @@ public class OptionElement {
 			String name = OPTION_GROUP_NAME.extractSingle(group);
 			if(name == null) name = defaultName;
 			
-			System.out.println(group);
 			ArrayList<OptionElement> option_group = extractOptions(group);
 			BasicGroup<OptionElement> section = new BasicGroup<OptionElement>(name, option_group);
 			options.add(section);

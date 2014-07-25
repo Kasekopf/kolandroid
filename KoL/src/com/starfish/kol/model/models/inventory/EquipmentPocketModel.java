@@ -51,7 +51,6 @@ public class EquipmentPocketModel extends InventoryPocketModel {
 		ArrayList<ModelGroup<OptionElement>> outfit_options = OptionElement.extractOptionGroups(outfit_select, "Outfits");
 		for(ModelGroup<OptionElement> outfit_group : outfit_options) {
 			BasicGroup<ActionElement> group = new BasicGroup<ActionElement>(outfit_group.getName());
-			System.out.println("Found new outfit group of size " + outfit_group.size());
 			for(OptionElement option : outfit_group) {
 				if(option.text.contains("(select an outfit)")) continue;
 				
