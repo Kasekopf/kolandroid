@@ -19,7 +19,7 @@ public class TentativeRequest extends Request {
 		try {
 			Connection con = getConnection(server);
 			PartialServerReply reply = con.complete(cookie);
-			getHandler().handle(session, this, reply.complete());
+			getHandler().handle(session, this, reply);
 		} catch (ConnectionException e) {
 			failure.handle(session, this, null);
 		}

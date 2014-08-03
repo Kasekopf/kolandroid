@@ -26,7 +26,9 @@ import com.starfish.kol.android.game.fragments.WebFragment;
 import com.starfish.kol.android.game.fragments.inventory.InventoryFragment;
 import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.android.view.ModelWrapper;
+import com.starfish.kol.android.view.ToastLoader;
 import com.starfish.kol.connection.Session;
+import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.ChoiceModel;
@@ -50,6 +52,8 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 	private StatsFragment mStatsFragment;
 	
 	private ViewContext baseContext;
+	private LoadingContext loader;
+	
 	private ChatCallback chat;
 	
 	/**
@@ -64,6 +68,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		setContentView(R.layout.activity_game_screen);
 		
 		this.baseContext = new AndroidViewContext(this);
+		this.loader = new ToastLoader(this);
 		
 		mNavigationDrawerFragment = (NavigationFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
@@ -211,5 +216,10 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 	@Override
 	public <E extends Model<?>> void display(E model) {
 		baseContext.display(model);
+	}
+
+	@Override
+	public LoadingContext createLoadingContext() {
+		return loader;
 	}
 }

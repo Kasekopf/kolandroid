@@ -53,7 +53,7 @@ public class Request {
 		try {
 			Connection con = getConnection(server);
 			PartialServerReply reply = con.complete(cookie);
-			getHandler().handle(session, this, reply.complete());
+			getHandler().handle(session, this, reply);
 		} catch (ConnectionException e) {
 			System.out.println("Error: " + e);
 			e.printStackTrace();

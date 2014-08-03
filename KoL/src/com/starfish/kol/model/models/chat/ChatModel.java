@@ -16,6 +16,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.starfish.kol.connection.PartialServerReply;
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.GameHandler;
@@ -102,19 +103,23 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 	}
 
 	@Override
-	public void handle(Session session, Request request, ServerReply response) {
+	public void handle(Session session, Request request, PartialServerReply response) {
 		if (!response.url.contains("newchatmessages.php")
 				&& !response.url.contains("submitnewchat.php")) {
 			notifyView(ChatStatus.STOPPED);
 			return;
 		}
 
-		if (response.html.length() < 5) {
+		ServerReply fullResponse = response.complete();
+		if(fullResponse == null)
+			return; //error
+		
+		if (fullResponse.html.length() < 5) {
 			notifyView(ChatStatus.STOPPED);
 			return;
 		}
 
-		RawMessageList update = parser.fromJson(response.html,
+		RawMessageList update = parser.fromJson(fullResponse.html,
 				RawMessageList.class);
 
 		//System.out.println(response.html);
@@ -237,19 +242,23 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		Request req = new TentativeRequest("mchat.php", new ResponseHandler() {
 			@Override
 			public void handle(Session session, Request request,
-					ServerReply response) {
+					PartialServerReply response) {
 				if (!response.url.contains("mchat.php"))
 					return;
 
 				notifyView(ChatStatus.LOADED);
 				hasChat = true;
 
-				processInitial(response);
+				ServerReply fullResponse = response.complete();
+				if(fullResponse == null)
+					return; //error
+				
+				processInitial(fullResponse);
 			}
 		}, new ResponseHandler() {
 			@Override
 			public void handle(Session session, Request request,
-					ServerReply response) {
+					PartialServerReply response) {
 				notifyView(ChatStatus.NOCHAT);
 				hasChat = false;
 			}

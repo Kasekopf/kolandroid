@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.starfish.kol.android.game.GameScreen;
 import com.starfish.kol.android.login.LoginScreen;
+import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.ChoiceModel;
@@ -35,6 +36,11 @@ public class AndroidViewContext implements ViewContext {
 		Message.obtain(activityLauncher, 0, model).sendToTarget();		
 	}
 
+	@Override
+	public LoadingContext createLoadingContext() {
+		return LoadingContext.NONE;
+	}
+	
 	private static class ActivityLauncher extends Handler
 	{
 		WeakReference<Context> parent;

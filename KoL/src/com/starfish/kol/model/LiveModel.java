@@ -1,9 +1,11 @@
 package com.starfish.kol.model;
 
+import com.starfish.kol.connection.PartialServerReply;
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.request.ResponseHandler;
+import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.request.Request;
+import com.starfish.kol.request.ResponseHandler;
 
 /**
  * A model which can update its contents with a single base url.
@@ -39,9 +41,14 @@ public abstract class LiveModel extends Model<LiveMessage> {
 		Request update = new Request(this.updateUrl, new ResponseHandler() {
 			@Override
 			public void handle(Session session, Request request,
-					ServerReply response) {
+					PartialServerReply response) {
 				if (response.url.contains(updateUrl)) {
-					process(response);
+					LoadingContext loading = shouldRedirect ? getLoadingContext() : LoadingContext.NONE;				
+					ServerReply fullResponse = response.complete(loading);
+					if(fullResponse == null) {
+						return; //error
+					}
+					process(fullResponse);
 				} else {
 					if(shouldRedirect)
 						getGameHandler().handle(session, request, response);

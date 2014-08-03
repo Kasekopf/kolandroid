@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.GameHandler;
+import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.models.WebModel;
 import com.starfish.kol.request.Request;
@@ -34,6 +35,9 @@ public abstract class Model<Callback> implements Serializable {
 	// directly handled by the model.
 	private transient GameHandler mainLoop;
 
+	// The current context this model is displayed in.
+	private transient ViewContext context;
+	
 	// The current user session information.
 	private final Session session;
 
@@ -58,6 +62,7 @@ public abstract class Model<Callback> implements Serializable {
 	public void connectView(ProgressHandler<Callback> view, ViewContext context) {
 		this.view = view;
 		this.mainLoop = new GameHandler(context);
+		this.context = context;
 	}
 
 	/**
@@ -122,6 +127,12 @@ public abstract class Model<Callback> implements Serializable {
 		return mainLoop;
 	}
 
+	protected LoadingContext getLoadingContext() {
+		if(context == null)
+			return LoadingContext.NONE;
+		return context.createLoadingContext();
+	}
+	
 	public Session getSession() {
 		return session;
 	}

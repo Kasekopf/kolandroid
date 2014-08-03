@@ -14,4 +14,11 @@ public interface ViewContext {
 	 *            The model to display.
 	 */
 	public <E extends Model<?>> void display(E model);
+
+	/*
+	 * Provide a context to display loading information.
+	 * 
+	 * @returns A reference to a new progress indicator.
+	 */
+	public LoadingContext createLoadingContext();
 }

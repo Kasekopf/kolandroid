@@ -1,5 +1,6 @@
 package com.starfish.kol.gamehandler;
 
+import com.starfish.kol.connection.PartialServerReply;
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.Model;
@@ -99,8 +100,14 @@ public class GameHandler implements ResponseHandler {
 	 *            The response recieved from the server.
 	 */
 	@Override
-	public void handle(Session session, Request request, ServerReply response) {
-		Model<?> model = loadModel(session, response);
+	public void handle(Session session, Request request, PartialServerReply response) {
+		ServerReply fullResponse = response.complete(view.createLoadingContext());
+		if(fullResponse == null) {
+			//error
+			return;
+		}
+		
+		Model<?> model = loadModel(session, fullResponse);
 		view.display(model);
 	}
 }

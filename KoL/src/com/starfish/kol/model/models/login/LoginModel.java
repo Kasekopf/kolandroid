@@ -1,5 +1,6 @@
 package com.starfish.kol.model.models.login;
 
+import com.starfish.kol.connection.PartialServerReply;
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.GameHandler;
@@ -26,30 +27,35 @@ public class LoginModel extends Model<LoginStatus> {
 	public LoginModel() {
 		super(new Session());
 	}
-	
+
 	public void cheat(ViewContext context) {
-		Request req = new Request("static.php?id=whatiskol",
-				new GameHandler(context));
+		Request req = new Request("static.php?id=whatiskol", new GameHandler(
+				context));
 		this.makeRequest(req);
 	}
 
-	public void login(final ViewContext context, final String username, final PasswordHash hash) {
+	public void login(final ViewContext context, final String username,
+			final PasswordHash hash) {
 		this.notifyView(LoginStatus.STARTING);
 
 		Request req = new Request("login.php", new ResponseHandler() {
 			@Override
 			public void handle(Session session, Request request,
-					ServerReply response) {
-				String loginId = LOGIN_ID.extractSingle(response.url);
-				String challenge = CHALLENGE.extractSingle(response.html);
-				String server = SERVER.extractSingle(response.cookie);
+					PartialServerReply response) {
+				ServerReply fullResponse = response.complete();
+				if(fullResponse == null)
+					return;
+
+				String loginId = LOGIN_ID.extractSingle(fullResponse.url);
+				String challenge = CHALLENGE.extractSingle(fullResponse.html);
+				String server = SERVER.extractSingle(fullResponse.cookie);
 
 				if (loginId == null || challenge == null || server == null) {
 					notifyView(LoginStatus.FAILED_ACCESS);
 					return;
 				}
 
-				session.setCookie(response.cookie);
+				session.setCookie(fullResponse.cookie);
 				String[] names = { "loginid", "loginname", "password",
 						"loggingin", "challenge", "response", "secure" };
 				String[] vals = { loginId, username, "", "Yup.", challenge,
@@ -61,7 +67,7 @@ public class LoginModel extends Model<LoginStatus> {
 
 							@Override
 							public void handle(Session session,
-									Request request, ServerReply response) {
+									Request request, PartialServerReply response) {
 								System.out.println("Logincookie: "
 										+ response.cookie);
 								if (!response.cookie.contains("PHPSESSID=")) {
@@ -73,7 +79,8 @@ public class LoginModel extends Model<LoginStatus> {
 								notifyView(LoginStatus.SUCCESS);
 
 								session.setCookie(response.cookie);
-								Request game = new Request("main.php", new GameHandler(context));
+								Request game = new Request("main.php",
+										new GameHandler(context));
 								game.makeAsync(session);
 							}
 

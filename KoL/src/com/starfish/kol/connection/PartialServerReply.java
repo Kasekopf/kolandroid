@@ -3,6 +3,8 @@ package com.starfish.kol.connection;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
+import com.starfish.kol.gamehandler.LoadingContext;
+
 public class PartialServerReply {
 	public final int responseCode;
 	public final String redirectLocation;
@@ -51,11 +53,15 @@ public class PartialServerReply {
 	}
 
 	public ServerReply complete() {
+		return this.complete(LoadingContext.NONE);
+	}
+	
+	public ServerReply complete(LoadingContext loading) {
 		if(simulatedBase != null)
 			return simulatedBase;
 		
 		try {
-			return new ServerReply(this, base);
+			return new ServerReply(this, base, loading);
 		} catch (IOException e) {
 			System.out.println("Error: " + e);
 			e.printStackTrace();

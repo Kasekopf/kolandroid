@@ -1,6 +1,6 @@
 package com.starfish.kol.request;
 
-import com.starfish.kol.connection.ServerReply;
+import com.starfish.kol.connection.PartialServerReply;
 import com.starfish.kol.connection.Session;
 
 /**
@@ -17,5 +17,5 @@ public interface ResponseHandler {
 	 * @param response
 	 *            The response recieved from the server.
 	 */
-	public void handle(Session session, Request request, ServerReply response);
+	public void handle(Session session, Request request, PartialServerReply response);
 }
