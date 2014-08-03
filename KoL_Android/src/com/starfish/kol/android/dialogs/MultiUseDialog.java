@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.ImageDownloader;
-import com.starfish.kol.android.view.AndroidViewContext;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
 import com.starfish.kol.model.elements.interfaces.MultiUseableItem;
@@ -77,7 +77,7 @@ public class MultiUseDialog extends DialogFragment {
 					return;
 
 				DeferredGameAction action = item.use(num);
-				action.submit(new AndroidViewContext(getActivity()));
+				action.submit((ViewContext)getActivity());
 
 				MultiUseDialog.this.dismiss();
 			}

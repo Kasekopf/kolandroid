@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.chat.ChatService;
 import com.starfish.kol.android.game.GameFragment;
-import com.starfish.kol.android.view.AndroidViewContext;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.models.login.LoginModel;
 import com.starfish.kol.model.models.login.LoginStatus;
 import com.starfish.kol.model.models.login.PasswordHash;
@@ -98,7 +98,7 @@ public class LoginFragment extends GameFragment<LoginStatus, LoginModel> {
 						.getCurrentFocus().getWindowToken(),
 						InputMethodManager.HIDE_NOT_ALWAYS);
 
-				getModel().login(new AndroidViewContext(LoginFragment.this.getActivity()), username, pass);
+				getModel().login((ViewContext)getActivity(), username, pass);
 				
 
 			    SharedPreferences settings = getActivity().getSharedPreferences(LOGIN_STORAGE, 0);

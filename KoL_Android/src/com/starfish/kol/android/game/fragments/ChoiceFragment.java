@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.android.view.AndroidViewContext;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.models.ChoiceModel;
 
@@ -31,7 +31,7 @@ public class ChoiceFragment extends WebFragment<ChoiceModel> {
 			optionBtn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					thisOption.submit(new AndroidViewContext(getActivity()));
+					thisOption.submit((ViewContext)getActivity());
 				}
 			});
 			options.addView(optionBtn);

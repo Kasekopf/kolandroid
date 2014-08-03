@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.android.view.AndroidViewContext;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
 import com.starfish.kol.model.models.inventory.EquipmentPocketModel.CustomOutfitBuilder;
 
@@ -48,7 +48,7 @@ public class SaveOutfitDialog extends DialogFragment {
 				if(name == "") return;
 				
 				DeferredGameAction action = builder.saveOutfit(name);
-				action.submit(new AndroidViewContext(getActivity()));
+				action.submit((ViewContext)getActivity());
 				SaveOutfitDialog.this.dismiss();
 			}
 		});

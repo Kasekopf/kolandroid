@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.android.view.AndroidViewContext;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.elements.SkillElement;
 import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
 
@@ -67,7 +67,7 @@ public class SkillDialog extends DialogFragment {
 		    		play = "";
 		    	
 		    	DeferredGameAction action = skill.cast(num, play);
-		    	action.submit(new AndroidViewContext(getActivity()));
+		    	action.submit((ViewContext)getActivity());
 		    	
 				SkillDialog.this.dismiss();
 			}	    	

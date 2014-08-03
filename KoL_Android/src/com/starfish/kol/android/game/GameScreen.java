@@ -27,6 +27,7 @@ import com.starfish.kol.android.game.fragments.inventory.InventoryFragment;
 import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.android.view.ModelWrapper;
 import com.starfish.kol.connection.Session;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.ChoiceModel;
 import com.starfish.kol.model.models.CraftingModel;
@@ -36,7 +37,7 @@ import com.starfish.kol.model.models.StatsModel;
 import com.starfish.kol.model.models.WebModel;
 import com.starfish.kol.model.models.inventory.InventoryModel;
 
-public class GameScreen extends ActionBarActivity implements StatsCallbacks {
+public class GameScreen extends ActionBarActivity implements StatsCallbacks, ViewContext {
 
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
@@ -47,8 +48,8 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks {
 	private DialogFragment dialog;
 	
 	private StatsFragment mStatsFragment;
-	private GameFragment<?, ?> mainFragment;
 	
+	private ViewContext baseContext;
 	private ChatCallback chat;
 	
 	/**
@@ -61,6 +62,8 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_screen);
+		
+		this.baseContext = new AndroidViewContext(this);
 		
 		mNavigationDrawerFragment = (NavigationFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
@@ -152,8 +155,6 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks {
 		if(addToBackStack)
 			trans = trans.addToBackStack(null);
 		trans.commit();
-
-		mainFragment = frag;
 		mStatsFragment.refresh();
 	}
 	
@@ -193,7 +194,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks {
 			return true;
 		case R.id.action_chat:
 			if(chat.getService() != null)
-				chat.getService().openChat(new AndroidViewContext(this));
+				chat.getService().openChat(this);
 			return true;
 		}
 
@@ -205,5 +206,10 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks {
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setTitle(username);
 		actionBar.setSubtitle(subtext);
+	}
+
+	@Override
+	public <E extends Model<?>> void display(E model) {
+		baseContext.display(model);
 	}
 }

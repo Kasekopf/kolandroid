@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import android.support.v4.app.DialogFragment;
 
-import com.starfish.kol.android.view.AndroidViewContext;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.elements.ActionElement;
 
 public class ActionSelector<E extends ActionElement> implements OnListSelection<E>, Serializable{
@@ -15,7 +15,7 @@ public class ActionSelector<E extends ActionElement> implements OnListSelection<
 
 	@Override
 	public boolean selectItem(DialogFragment list, E item) {		
-		item.submit(new AndroidViewContext(list.getActivity()));
+		item.submit((ViewContext)list.getActivity());
 		return true;
 	}
 }

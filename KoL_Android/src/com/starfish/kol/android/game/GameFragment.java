@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import com.starfish.kol.android.util.AndroidProgressHandler;
-import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.android.view.ModelWrapper;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
 
 public abstract class GameFragment<C, M extends Model<C>> extends DialogFragment {
@@ -58,7 +58,7 @@ public abstract class GameFragment<C, M extends Model<C>> extends DialogFragment
 			}
 		};
 		
-		base.connectView(callback, new AndroidViewContext(this.getActivity()));
+		base.connectView(callback, (ViewContext)getActivity());
 		this.onCreateSetup(rootView, base, savedInstanceState);
 		
 		return rootView;

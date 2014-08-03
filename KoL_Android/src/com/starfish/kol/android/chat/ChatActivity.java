@@ -27,7 +27,10 @@ import com.starfish.kol.android.chat.ChatroomFragment.ChatroomHost;
 import com.starfish.kol.android.util.AndroidProgressHandler;
 import com.starfish.kol.android.util.CustomFragmentTabHost;
 import com.starfish.kol.android.util.CustomFragmentTabHost.TabInfo;
+import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.connection.Session;
+import com.starfish.kol.gamehandler.ViewContext;
+import com.starfish.kol.model.Model;
 import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.elements.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChatAction;
@@ -37,12 +40,13 @@ import com.starfish.kol.model.models.chat.ChatModel;
 import com.starfish.kol.model.models.chat.ChatText;
 
 public class ChatActivity extends ActionBarActivity implements
-		ChatroomHost, ChatChannelDialogCallback {
+		ChatroomHost, ChatChannelDialogCallback, ViewContext {
 	private ChatCallback chat;
 	private EditText text;
 	private CustomFragmentTabHost host;
 	
 	private ChatChannelDialog dialog = null;
+	private ViewContext baseContext;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,8 @@ public class ChatActivity extends ActionBarActivity implements
 		setContentView(R.layout.fragment_chat_screen);
 		overridePendingTransition(R.anim.inleftanim, R.anim.outleftanim);
 
+		this.baseContext = new AndroidViewContext(this);
+		
 		Session session = (Session)this.getIntent().getSerializableExtra("session");
 		
 		chat = new ChatCallback() {
@@ -264,5 +270,10 @@ public class ChatActivity extends ActionBarActivity implements
 	public void onChannelSelect(ChatChannel channel) {
 		if(channel.isActive())
 			host.setCurrentTabByTag(channel.getName());
+	}
+
+	@Override
+	public <E extends Model<?>> void display(E model) {
+		baseContext.display(model);
 	}
 }

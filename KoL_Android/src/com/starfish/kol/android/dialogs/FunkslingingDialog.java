@@ -20,7 +20,7 @@ import com.starfish.kol.android.util.ListElementFragment.OnViewCompleted;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.android.util.searchlist.OnListSelection;
 import com.starfish.kol.android.util.searchlist.SearchListFragment;
-import com.starfish.kol.android.view.AndroidViewContext;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.elements.FightItem;
 
 public class FunkslingingDialog extends DialogFragment {
@@ -119,7 +119,7 @@ public class FunkslingingDialog extends DialogFragment {
 				FightItem item1 = item1Frag.getValue();
 				FightItem item2 = item2Frag.getValue();
 				
-				boolean submitted = item1.useWith(new AndroidViewContext(getActivity()), item2);
+				boolean submitted = item1.useWith((ViewContext)getActivity(), item2);
 				if(submitted)
 					FunkslingingDialog.this.dismiss();
 			}			

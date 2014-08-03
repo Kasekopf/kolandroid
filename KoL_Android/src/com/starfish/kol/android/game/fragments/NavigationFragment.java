@@ -21,8 +21,8 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.AndroidProgressHandler;
 import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
-import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.connection.Session;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.LiveMessage;
 import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.models.NavigationModel;
@@ -196,7 +196,7 @@ public class NavigationFragment extends Fragment {
 			}
 		};
 		
-		model.connectView(callback, new AndroidViewContext(getActivity()));
+		model.connectView(callback, (ViewContext)getActivity());
 		
 		ListView mDrawerListView = (ListView)this.getView().findViewById(R.id.navigation_list);
 		
@@ -207,7 +207,7 @@ public class NavigationFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ActionElement choice = (ActionElement)parent.getItemAtPosition(position);
-				choice.submit(new AndroidViewContext(getActivity()));
+				choice.submit((ViewContext)getActivity());
 		        if (mDrawerLayout != null) {
 		            mDrawerLayout.closeDrawer(mFragmentContainerView);
 		        }

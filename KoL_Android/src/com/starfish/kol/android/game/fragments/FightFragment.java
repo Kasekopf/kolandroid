@@ -12,7 +12,7 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.dialogs.FunkslingingDialog;
 import com.starfish.kol.android.util.listbuilders.SubtextBuilder;
 import com.starfish.kol.android.util.searchlist.SearchListFragment;
-import com.starfish.kol.android.view.AndroidViewContext;
+import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.elements.FightItem;
 import com.starfish.kol.model.elements.FightSkillElement;
@@ -32,7 +32,7 @@ public class FightFragment extends WebFragment<FightModel> {
 			public void onClick(View arg0) {
 				ActionElement action = getModel().getAttack();
 				if(action != null)
-					action.submit(new AndroidViewContext(getActivity()));
+					action.submit((ViewContext)getActivity());
 			}
 		});
 		

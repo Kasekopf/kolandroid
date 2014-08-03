@@ -9,15 +9,21 @@ import android.view.MenuItem;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.chat.ChatService;
+import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.android.view.ModelWrapper;
+import com.starfish.kol.gamehandler.ViewContext;
+import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.login.LoginModel;
 
-public class LoginScreen extends ActionBarActivity {	
+public class LoginScreen extends ActionBarActivity implements ViewContext {
+	private ViewContext baseContext;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login_screen);
 
+		this.baseContext = new AndroidViewContext(this);
 		
 		if (savedInstanceState == null) {
 
@@ -54,6 +60,11 @@ public class LoginScreen extends ActionBarActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public <E extends Model<?>> void display(E model) {
+		baseContext.display(model);
 	}
 
 
