@@ -1,7 +1,8 @@
 package com.starfish.kol.request;
 
+import com.starfish.kol.connection.Connection;
 import com.starfish.kol.connection.ServerReply;
-import com.starfish.kol.connection.Session;
+import com.starfish.kol.connection.SimulatedConnection;
 
 public class SimulatedRequest extends Request{
 	private ServerReply toReply;
@@ -15,17 +16,8 @@ public class SimulatedRequest extends Request{
 		
 		this.toReply = toReply;
 	}
-
-	/**
-	 * Pretend to make the request and return a response.
-	 * Only returns the ServerReply provided at construction.
-	 *  
-	 * @param session	Session passed to the response handler.
-	 * @param server	ignored
-	 * @param cookie	ignored
-	 * @return	An unhandled ServerReply. Null if the reply has already been handled.
-	 */
-	public void make(Session session, String server, String cookie) {
-		this.getHandler().handle(session, this, toReply);
+	
+	protected Connection getConnection(String server) {
+		return new SimulatedConnection(toReply);
 	}
 }

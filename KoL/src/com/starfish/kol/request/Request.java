@@ -1,11 +1,11 @@
 package com.starfish.kol.request;
 
-import java.net.MalformedURLException;
 import java.util.HashSet;
 
 import com.starfish.kol.connection.Connection;
 import com.starfish.kol.connection.ConnectionException;
-import com.starfish.kol.connection.ServerReply;
+import com.starfish.kol.connection.PartialServerReply;
+import com.starfish.kol.connection.RealConnection;
 import com.starfish.kol.connection.Session;
 
 public class Request {
@@ -52,16 +52,16 @@ public class Request {
 	protected void make(Session session, String server, String cookie) {
 		try {
 			Connection con = getConnection(server);
-			ServerReply response = con.connect(cookie);
-			getHandler().handle(session, this, response);
-		} catch (MalformedURLException | ConnectionException e) {
+			PartialServerReply reply = con.complete(cookie);
+			getHandler().handle(session, this, reply.complete());
+		} catch (ConnectionException e) {
 			System.out.println("Error: " + e);
 			e.printStackTrace();
 		}
 	}
 
 	protected Connection getConnection(String server) {
-		return new Connection("http://" + server + ".kingdomofloathing.com/"
+		return new RealConnection("http://" + server + ".kingdomofloathing.com/"
 				+ url);
 	}
 

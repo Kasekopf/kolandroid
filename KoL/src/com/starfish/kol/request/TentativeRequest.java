@@ -1,10 +1,8 @@
 package com.starfish.kol.request;
 
-import java.net.MalformedURLException;
-
 import com.starfish.kol.connection.Connection;
 import com.starfish.kol.connection.ConnectionException;
-import com.starfish.kol.connection.ServerReply;
+import com.starfish.kol.connection.PartialServerReply;
 import com.starfish.kol.connection.Session;
 
 public class TentativeRequest extends Request {	
@@ -20,9 +18,9 @@ public class TentativeRequest extends Request {
 	public void make(Session session, String server, String cookie) {
 		try {
 			Connection con = getConnection(server);
-			ServerReply response = con.connect(cookie);
-			getHandler().handle(session, this, response);
-		} catch (MalformedURLException | ConnectionException e) {
+			PartialServerReply reply = con.complete(cookie);
+			getHandler().handle(session, this, reply.complete());
+		} catch (ConnectionException e) {
 			failure.handle(session, this, null);
 		}
 	}
