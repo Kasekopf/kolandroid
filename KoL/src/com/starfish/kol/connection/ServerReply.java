@@ -58,20 +58,23 @@ public class ServerReply implements Serializable {
 
 		String url = base.getURL().toString();
 
-		try {
-			loading.reportProgress(url, 0, 100);
+		loading.start(url);
 
+		try {
 			StringWriter sw = new StringWriter();
+
 			BufferedReader r = new BufferedReader(new InputStreamReader(is));
 			String s;
+
 			while ((s = r.readLine()) != null) {
 				sw.append(s + '\n');
 			}
 
-			loading.complete(url, false);
+			loading.complete(url);
+			r.close();
 			return sw.toString();
-		} catch(Exception e) {
-			loading.complete(url, true);
+		} catch (IOException e) {
+			loading.error(url);
 			throw e;
 		}
 	}

@@ -6,48 +6,64 @@
     android:layout_height="match_parent"
     tools:context="com.starfish.kol.android.game.GameScreen" >
 
-    <!--
-         As the main content view, the view below consumes the entire
-         space available using match_parent in both dimensions.
-    --> 
-    
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-    	android:layout_height="match_parent"
-   		android:orientation="vertical">
-        
-	    <FrameLayout
-	        android:id="@+id/game_statsfragment"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content" />
-	    
-	    <View
-	        android:layout_width="match_parent"
-	        android:layout_height="1dp"
-	        android:background="#000"/>
-        
-        
-	    <FrameLayout
-	        android:id="@+id/game_mainfragment"
-	        android:layout_width="match_parent"
-	        android:layout_height="0dp" 
-	        android:layout_weight="1" />
-    </LinearLayout>
-    
-    
-    
+        android:layout_height="match_parent" >
 
-    <!--
-         android:layout_gravity="start" tells DrawerLayout to treat
-         this as a sliding drawer on the left side for left-to-right
-         languages and on the right side for right-to-left languages.
-         If you're not building against API 17 or higher, use
-         android:layout_gravity="left" instead.
-    -->
-    <!--
-         The drawer is given a fixed width in dp and extends the full height of
-         the container.
-    -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:id="@+id/game_statsfragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000" />
+
+            <FrameLayout
+                android:id="@+id/game_mainfragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/game_progress_popup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="5dp"
+            android:background="#EEEEEE"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true" >
+
+            <ProgressBar
+                android:id="@+id/game_progress_bar"
+                style="@android:style/Widget.ProgressBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:paddingBottom="5dp"
+                android:paddingLeft="5dp"
+                android:paddingTop="6dp" />
+
+            <TextView
+                android:id="@+id/game_progress_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:singleLine="true"
+                android:text="hello" />
+        </LinearLayout>
+    </RelativeLayout>
 
     <fragment
         android:id="@+id/navigation_drawer"

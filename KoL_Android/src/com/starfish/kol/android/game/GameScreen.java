@@ -10,6 +10,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.chat.ChatService;
@@ -26,7 +29,7 @@ import com.starfish.kol.android.game.fragments.WebFragment;
 import com.starfish.kol.android.game.fragments.inventory.InventoryFragment;
 import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.android.view.ModelWrapper;
-import com.starfish.kol.android.view.ToastLoader;
+import com.starfish.kol.android.view.ProgressLoader;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
@@ -68,7 +71,13 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		setContentView(R.layout.activity_game_screen);
 		
 		this.baseContext = new AndroidViewContext(this);
-		this.loader = new ToastLoader(this);
+
+		View base = (View)this.findViewById(R.id.game_progress_popup);
+		ProgressBar bar = (ProgressBar)this.findViewById(R.id.game_progress_bar);
+		TextView text = (TextView)this.findViewById(R.id.game_progress_text);
+		bar.setProgress(50);
+		text.setText("[NONE]");
+		this.loader = new ProgressLoader(base, bar, text);
 		
 		mNavigationDrawerFragment = (NavigationFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);

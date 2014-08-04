@@ -19,14 +19,14 @@ public abstract class LiveModel extends Model<LiveMessage> {
 
 	private final String updateUrl;
 	private boolean filling;
-	private boolean shouldRedirect;
+	private boolean foreground;
 
-	public LiveModel(Session s, String updateUrl, boolean redirectOnUnknownResponse) {
+	public LiveModel(Session s, String updateUrl, boolean foreground) {
 		super(s);
 		
 		this.filling = false;
 		this.updateUrl = updateUrl;
-		this.shouldRedirect = redirectOnUnknownResponse;
+		this.foreground = foreground;
 	}
 	
 	public final void process(ServerReply response) {
@@ -43,14 +43,14 @@ public abstract class LiveModel extends Model<LiveMessage> {
 			public void handle(Session session, Request request,
 					PartialServerReply response) {
 				if (response.url.contains(updateUrl)) {
-					LoadingContext loading = shouldRedirect ? getLoadingContext() : LoadingContext.NONE;				
+					LoadingContext loading = foreground ? getLoadingContext() : LoadingContext.NONE;				
 					ServerReply fullResponse = response.complete(loading);
 					if(fullResponse == null) {
 						return; //error
 					}
 					process(fullResponse);
 				} else {
-					if(shouldRedirect)
+					if(foreground)
 						getGameHandler().handle(session, request, response);
 					else
 						System.out.println("LiveModel expected " + updateUrl + " but was redirected to " + response.url);

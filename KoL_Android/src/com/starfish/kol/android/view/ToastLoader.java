@@ -17,17 +17,20 @@ public class ToastLoader implements LoadingContext {
 	}
 
 	@Override
-	public void reportProgress(String page, int current, int total) {
+	public void start(String page) {
 		Message.obtain(toastLauncher, 0, "Loading " + page).sendToTarget();
 	}
 
 	@Override
-	public void complete(String page, boolean error) {
-		if (error) {
-			Message.obtain(toastLauncher, 0, "Loading completed with error").sendToTarget();
-		}
+	public void complete(String page) {
+		// do nothing
 	}
 
+	@Override
+	public void error(String page) {
+		Message.obtain(toastLauncher, 0, "Loading completed with error").sendToTarget();		
+	}
+	
 	private static class ToastLauncher extends Handler {
 		private WeakReference<Context> base;
 

@@ -2,7 +2,6 @@ package com.starfish.kol.android.chat;
 
 import java.util.ArrayList;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import android.app.Activity;
 import android.app.Service;
@@ -77,7 +76,9 @@ public class ChatService extends Service {
 		if (updateTimer != null)
 			updateTimer.cancel();
 		
+		/*
 		updateTimer = new Timer("ChatUpdater", true);
+		
 		updateTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
@@ -85,7 +86,7 @@ public class ChatService extends Service {
 					base.triggerUpdate();
 			}
 		}, 1000, 5000);
-		
+		*/
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
 		return START_REDELIVER_INTENT;
