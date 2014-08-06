@@ -1,6 +1,5 @@
 package com.starfish.kol.model.models.login;
 
-import com.starfish.kol.connection.PartialServerReply;
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.GameHandler;
@@ -41,21 +40,17 @@ public class LoginModel extends Model<LoginStatus> {
 		Request req = new Request("login.php", new ResponseHandler() {
 			@Override
 			public void handle(Session session, Request request,
-					PartialServerReply response) {
-				ServerReply fullResponse = response.complete();
-				if(fullResponse == null)
-					return;
-
-				String loginId = LOGIN_ID.extractSingle(fullResponse.url);
-				String challenge = CHALLENGE.extractSingle(fullResponse.html);
-				String server = SERVER.extractSingle(fullResponse.cookie);
+					ServerReply response) {
+				String loginId = LOGIN_ID.extractSingle(response.url);
+				String challenge = CHALLENGE.extractSingle(response.html);
+				String server = SERVER.extractSingle(response.cookie);
 
 				if (loginId == null || challenge == null || server == null) {
 					notifyView(LoginStatus.FAILED_ACCESS);
 					return;
 				}
 
-				session.setCookie(fullResponse.cookie);
+				session.setCookie(response.cookie);
 				String[] names = { "loginid", "loginname", "password",
 						"loggingin", "challenge", "response", "secure" };
 				String[] vals = { loginId, username, "", "Yup.", challenge,
@@ -67,7 +62,7 @@ public class LoginModel extends Model<LoginStatus> {
 
 							@Override
 							public void handle(Session session,
-									Request request, PartialServerReply response) {
+									Request request, ServerReply response) {
 								System.out.println("Logincookie: "
 										+ response.cookie);
 								if (!response.cookie.contains("PHPSESSID=")) {
@@ -81,12 +76,12 @@ public class LoginModel extends Model<LoginStatus> {
 								session.setCookie(response.cookie);
 								Request game = new Request("main.php",
 										new GameHandler(context));
-								game.makeAsync(session);
+								game.makeAsync(session, context.createLoadingContext());
 							}
 
 						});
 
-				login.makeAsync(session);
+				login.makeAsync(session, context.createLoadingContext());
 			}
 		});
 		this.makeRequest(req);

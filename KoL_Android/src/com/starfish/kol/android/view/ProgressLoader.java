@@ -64,6 +64,7 @@ public class ProgressLoader implements LoadingContext {
 
 			switch (m.what) {
 			case START:
+				base.setVisibility(View.VISIBLE);
 				text.setText((String) m.obj);
 				base.setBackgroundColor(Color.LTGRAY);
 				break;

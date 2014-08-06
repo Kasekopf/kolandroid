@@ -44,10 +44,10 @@ public class RealConnection implements Connection {
 		redirect = false;
 	}
 
-	public PartialServerReply complete(String cookie) throws ConnectionException {
+	public ServerReply complete(String cookie) throws ConnectionException {
 		try {
 			HttpURLConnection connection = this.connect(cookie);
-			return new PartialServerReply(connection);
+			return new ServerReply(connection);
 		} catch (IOException e) {
 			throw new ConnectionException(e);
 		}
@@ -69,5 +69,10 @@ public class RealConnection implements Connection {
 		connection.setDoOutput(false);
 		connection.connect();
 		return connection;
+	}
+
+	@Override
+	public String getUrl() {
+		return URLbase;
 	}
 }

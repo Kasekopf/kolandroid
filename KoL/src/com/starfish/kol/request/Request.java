@@ -4,9 +4,10 @@ import java.util.HashSet;
 
 import com.starfish.kol.connection.Connection;
 import com.starfish.kol.connection.ConnectionException;
-import com.starfish.kol.connection.PartialServerReply;
 import com.starfish.kol.connection.RealConnection;
+import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
+import com.starfish.kol.gamehandler.LoadingContext;
 
 public class Request {
 	private String url;
@@ -29,10 +30,10 @@ public class Request {
 		return tags.contains(tag);
 	}
 
-	public void makeAsync(final Session session) {
+	public void makeAsync(final Session session, final LoadingContext loading) {
 		Thread t = new Thread() {
 			public void run() {
-				make(session, session.getServer(), session.getCookie());
+				make(session, loading, session.getServer(), session.getCookie());
 			}
 		};
 		t.start();
@@ -49,20 +50,25 @@ public class Request {
 	 * @param cookie
 	 *            Cookie to use with this request
 	 */
-	protected void make(Session session, String server, String cookie) {
+	protected void make(Session session, LoadingContext loading, String server,
+			String cookie) {
+		Connection con = getConnection(server);
+		String url = con.getUrl();
+		loading.start(con.getUrl());
 		try {
-			Connection con = getConnection(server);
-			PartialServerReply reply = con.complete(cookie);
+			ServerReply reply = con.complete(cookie);
+			loading.complete(url);
 			getHandler().handle(session, this, reply);
 		} catch (ConnectionException e) {
 			System.out.println("Error: " + e);
 			e.printStackTrace();
+			loading.error(url);
 		}
 	}
 
 	protected Connection getConnection(String server) {
-		return new RealConnection("http://" + server + ".kingdomofloathing.com/"
-				+ url);
+		return new RealConnection("http://" + server
+				+ ".kingdomofloathing.com/" + url);
 	}
 
 	protected ResponseHandler getHandler() {

@@ -13,12 +13,17 @@ public class SimulatedConnection implements Connection {
 	}
 
 	@Override
-	public PartialServerReply complete(String cookie) throws ConnectionException {
-		return new PartialServerReply(base);
+	public ServerReply complete(String cookie) throws ConnectionException {
+		return base;
 	}
 
 	@Override
 	public void disableRedirects() {
 		//do nothing
+	}
+
+	@Override
+	public String getUrl() {
+		return base.url;
 	}
 }

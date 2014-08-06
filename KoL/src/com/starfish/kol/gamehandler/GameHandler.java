@@ -1,6 +1,5 @@
 package com.starfish.kol.gamehandler;
 
-import com.starfish.kol.connection.PartialServerReply;
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.Model;
@@ -11,8 +10,8 @@ import com.starfish.kol.model.models.SkillsModel;
 import com.starfish.kol.model.models.WebModel;
 import com.starfish.kol.model.models.inventory.InventoryModel;
 import com.starfish.kol.model.models.login.LoginModel;
-import com.starfish.kol.request.ResponseHandler;
 import com.starfish.kol.request.Request;
+import com.starfish.kol.request.ResponseHandler;
 
 /**
  * The standard ResponseHandler for most of the app, used to display an
@@ -100,14 +99,8 @@ public class GameHandler implements ResponseHandler {
 	 *            The response recieved from the server.
 	 */
 	@Override
-	public void handle(Session session, Request request, PartialServerReply response) {
-		ServerReply fullResponse = response.complete(view.createLoadingContext());
-		if(fullResponse == null) {
-			//error
-			return;
-		}
-		
-		Model<?> model = loadModel(session, fullResponse);
+	public void handle(Session session, Request request, ServerReply response) {
+		Model<?> model = loadModel(session, response);
 		view.display(model);
 	}
 }

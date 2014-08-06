@@ -75,9 +75,9 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		View base = (View)this.findViewById(R.id.game_progress_popup);
 		ProgressBar bar = (ProgressBar)this.findViewById(R.id.game_progress_bar);
 		TextView text = (TextView)this.findViewById(R.id.game_progress_text);
-		bar.setProgress(50);
-		text.setText("[NONE]");
+		
 		this.loader = new ProgressLoader(base, bar, text);
+		base.setVisibility(View.GONE);
 		
 		mNavigationDrawerFragment = (NavigationFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);

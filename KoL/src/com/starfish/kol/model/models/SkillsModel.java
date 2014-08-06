@@ -20,23 +20,27 @@ public class SkillsModel extends Model<Void> {
 
 	private static final Regex ITEMS_FORM = new Regex(
 			"<form[^>]*restorerform[^>]*>.*?</form>", 0);
-	
+
 	private static final Regex SKILLS_FORM = new Regex(
 			"<form[^>]*skillform[^>]*>.*?</form>", 0);
-	private static final Regex BUFFS_FORM = new Regex("<form[^>]*buffform[^>]*>.*?</form>", 0);
-	private static final Regex BUFFS_LIST = OptionElement.regexFor("whichskill");
-	
+	private static final Regex BUFFS_FORM = new Regex(
+			"<form[^>]*buffform[^>]*>.*?</form>", 0);
+	private static final Regex BUFFS_LIST = OptionElement
+			.regexFor("whichskill");
+
 	private static final Regex PWD = new Regex("<input[^>]*pwd[^>]*>", 0);
 	private static final Regex EXTRACT_VALUE = new Regex(
 			"value=[\"']?([0-9a-fA-F]*)", 1);
-		
-	private static final Regex OPTION_YOURSELF = new Regex("<option value=[\"']?(\\d+)[\"']?>\\(yourself\\)</option>", 1);
+
+	private static final Regex OPTION_YOURSELF = new Regex(
+			"<option value=[\"']?(\\d+)[\"']?>\\(yourself\\)</option>", 1);
 
 	private final ArrayList<RestorerItem> items;
 	private final ArrayList<ModelGroup<SkillElement>> skills;
 	private WebModel resultsPane;
 
 	private final boolean usedItem;
+
 	public SkillsModel(Session s, ServerReply text) {
 		super(s);
 		this.loadContent(text);
@@ -45,23 +49,28 @@ public class SkillsModel extends Model<Void> {
 		this.items = processItems(text.html);
 		usedItem = text.url.contains("useditem");
 	}
-	
+
 	private ArrayList<RestorerItem> processItems(String html) {
 		ArrayList<RestorerItem> items = new ArrayList<RestorerItem>();
 
 		String all_items = ITEMS_FORM.extractSingle(html);
-		System.out.println(all_items);
+		if (all_items == null)
+			return new ArrayList<RestorerItem>();
+
 		String pwd = EXTRACT_VALUE.extractSingle(PWD.extractSingle(all_items));
-		String actionBase = "inv_use.php?pwd=" + pwd + "&action=useitem&bounce=skills.php%3Faction%3Duseditem";
-		
-		ArrayList<OptionElement> options = OptionElement.extractOptions(all_items);
-		for(OptionElement option : options) {
-			items.add(new RestorerItem(getSession(), option.text, actionBase + "&whichitem=" + option.value));
+		String actionBase = "inv_use.php?pwd=" + pwd
+				+ "&action=useitem&bounce=skills.php%3Faction%3Duseditem";
+
+		ArrayList<OptionElement> options = OptionElement
+				.extractOptions(all_items);
+		for (OptionElement option : options) {
+			items.add(new RestorerItem(getSession(), option.text, actionBase
+					+ "&whichitem=" + option.value));
 		}
-		
+
 		return items;
 	}
-	
+
 	private ArrayList<ModelGroup<SkillElement>> processSkills(String html) {
 		ArrayList<ModelGroup<SkillElement>> skills = new ArrayList<ModelGroup<SkillElement>>();
 
@@ -69,36 +78,45 @@ public class SkillsModel extends Model<Void> {
 		String pwd = EXTRACT_VALUE.extractSingle(PWD.extractSingle(all_skills));
 		String actionBase = "skills.php?pwd=" + pwd + "&action=Skillz";
 
-		ArrayList<ModelGroup<OptionElement>> options = OptionElement.extractOptionGroups(all_skills, "Skills");
+		ArrayList<ModelGroup<OptionElement>> options = OptionElement
+				.extractOptionGroups(all_skills, "Skills");
 		System.out.println(all_skills);
 		System.out.println("Found " + options.size() + " skill options");
-		for(ModelGroup<OptionElement> optiongroup : options) {
-			BasicGroup<SkillElement> group = new BasicGroup<SkillElement>(optiongroup.getName());
-			System.out.println("Found group with " + options.size() + " skills");
-			for(OptionElement option : optiongroup) {
-				if(option.text.contains("(select a skill)")) continue;
-				
-				SkillElement skill = SkillElement.make(getSession(), option, actionBase, false);
+		for (ModelGroup<OptionElement> optiongroup : options) {
+			BasicGroup<SkillElement> group = new BasicGroup<SkillElement>(
+					optiongroup.getName());
+			System.out
+					.println("Found group with " + options.size() + " skills");
+			for (OptionElement option : optiongroup) {
+				if (option.text.contains("(select a skill)"))
+					continue;
+
+				SkillElement skill = SkillElement.make(getSession(), option,
+						actionBase, false);
 				group.add(skill);
 			}
 			skills.add(group);
 		}
-		
-		
-		String all_buffs = BUFFS_LIST.extractSingle(BUFFS_FORM.extractSingle(html));
+
+		String all_buffs = BUFFS_LIST.extractSingle(BUFFS_FORM
+				.extractSingle(html));
 		String yourself = OPTION_YOURSELF.extractSingle(all_buffs);
 		pwd = EXTRACT_VALUE.extractSingle(PWD.extractSingle(all_buffs));
-		actionBase = "skills.php?pwd=" + pwd + "&action=Skillz&targetplayer=" + yourself;
-		ArrayList<OptionElement> buffsoptions = OptionElement.extractOptions(all_buffs);
+		actionBase = "skills.php?pwd=" + pwd + "&action=Skillz&targetplayer="
+				+ yourself;
+		ArrayList<OptionElement> buffsoptions = OptionElement
+				.extractOptions(all_buffs);
 		BasicGroup<SkillElement> buffs = new BasicGroup<SkillElement>("Buffs");
-		for(OptionElement option : buffsoptions) {
-			if(option.text.contains("(select a buff)")) continue;
-			
-			SkillElement skill = SkillElement.make(getSession(), option, actionBase, false);
+		for (OptionElement option : buffsoptions) {
+			if (option.text.contains("(select a buff)"))
+				continue;
+
+			SkillElement skill = SkillElement.make(getSession(), option,
+					actionBase, false);
 			buffs.add(skill);
 		}
 		skills.add(buffs);
-		
+
 		return skills;
 	}
 

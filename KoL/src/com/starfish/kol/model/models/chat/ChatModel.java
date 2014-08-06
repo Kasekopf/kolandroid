@@ -16,15 +16,14 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.starfish.kol.connection.PartialServerReply;
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.GameHandler;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.chat.ChatModel.ChatStatus;
-import com.starfish.kol.request.ResponseHandler;
 import com.starfish.kol.request.Request;
+import com.starfish.kol.request.ResponseHandler;
 import com.starfish.kol.request.SimulatedRequest;
 import com.starfish.kol.request.TentativeRequest;
 import com.starfish.kol.util.Regex;
@@ -103,23 +102,19 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 	}
 
 	@Override
-	public void handle(Session session, Request request, PartialServerReply response) {
+	public void handle(Session session, Request request, ServerReply response) {
 		if (!response.url.contains("newchatmessages.php")
 				&& !response.url.contains("submitnewchat.php")) {
 			notifyView(ChatStatus.STOPPED);
 			return;
 		}
 
-		ServerReply fullResponse = response.complete();
-		if(fullResponse == null)
-			return; //error
-		
-		if (fullResponse.html.length() < 5) {
+		if (response.html.length() < 5) {
 			notifyView(ChatStatus.STOPPED);
 			return;
 		}
 
-		RawMessageList update = parser.fromJson(fullResponse.html,
+		RawMessageList update = parser.fromJson(response.html,
 				RawMessageList.class);
 
 		//System.out.println(response.html);
@@ -242,23 +237,19 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		Request req = new TentativeRequest("mchat.php", new ResponseHandler() {
 			@Override
 			public void handle(Session session, Request request,
-					PartialServerReply response) {
+					ServerReply response) {
 				if (!response.url.contains("mchat.php"))
 					return;
 
 				notifyView(ChatStatus.LOADED);
 				hasChat = true;
 
-				ServerReply fullResponse = response.complete();
-				if(fullResponse == null)
-					return; //error
-				
-				processInitial(fullResponse);
+				processInitial(response);
 			}
 		}, new ResponseHandler() {
 			@Override
 			public void handle(Session session, Request request,
-					PartialServerReply response) {
+					ServerReply response) {
 				notifyView(ChatStatus.NOCHAT);
 				hasChat = false;
 			}

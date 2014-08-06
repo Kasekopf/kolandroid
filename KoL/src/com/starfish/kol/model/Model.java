@@ -84,7 +84,18 @@ public abstract class Model<Callback> implements Serializable {
 	 *            The request to make.
 	 */
 	protected void makeRequest(Request req) {
-		req.makeAsync(session);
+		req.makeAsync(session, context.createLoadingContext());
+	}
+
+	/**
+	 * Make a new request in the context of this model, without
+	 *  immediately informing the view of the request.
+	 * 
+	 * @param req
+	 *            The request to make.
+	 */
+	protected void makeRequestBackground(Request req) {
+		req.makeAsync(session, LoadingContext.NONE);
 	}
 
 	// Regex to find the top results pane of any page
@@ -125,12 +136,6 @@ public abstract class Model<Callback> implements Serializable {
 	 */
 	protected ResponseHandler getGameHandler() {
 		return mainLoop;
-	}
-
-	protected LoadingContext getLoadingContext() {
-		if(context == null)
-			return LoadingContext.NONE;
-		return context.createLoadingContext();
 	}
 	
 	public Session getSession() {

@@ -22,7 +22,7 @@ public class BasicAction implements DeferredGameAction {
 	
 	protected void submit(ViewContext context, String urloverride) {
 		Request r = new Request(urloverride, new GameHandler(context));
-		r.makeAsync(session);
+		r.makeAsync(session, context.createLoadingContext());
 	}
 	
 	@Override
