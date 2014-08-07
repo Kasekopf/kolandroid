@@ -18,7 +18,7 @@ import com.starfish.kol.android.util.ImageDownloader;
 import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.model.elements.ActionElement;
+import com.starfish.kol.model.models.inventory.InventoryActionElement;
 import com.starfish.kol.model.models.inventory.InventoryItem;
 
 public class ItemDialog extends DialogFragment {
@@ -45,7 +45,7 @@ public class ItemDialog extends DialogFragment {
 
 		InventoryItem item = (InventoryItem) this.getArguments().getSerializable("item");
 
-	    ListAdapter<ActionElement> adapter = new ListAdapter<ActionElement>(this.getActivity(), item.getActions(), new DefaultBuilder<ActionElement>());
+	    ListAdapter<InventoryActionElement> adapter = new ListAdapter<InventoryActionElement>(this.getActivity(), item.getActions(), new DefaultBuilder<InventoryActionElement>());
 	    
 	    ListView list = (ListView)rootView.findViewById(R.id.dialog_item_list);
 	    list.setAdapter(adapter);
@@ -53,10 +53,10 @@ public class ItemDialog extends DialogFragment {
 			@Override
 			public void onItemClick(AdapterView<?> ad, View list, int pos,
 					long arg3) {
-				ActionElement select = (ActionElement)ad.getItemAtPosition(pos);
+				InventoryActionElement select = (InventoryActionElement)ad.getItemAtPosition(pos);
 				
 				if(select != null) {
-					select.submit((ViewContext)getActivity());
+					select.submit((ViewContext)getActivity(), null);
 					ItemDialog.this.dismiss();
 				}
 			}

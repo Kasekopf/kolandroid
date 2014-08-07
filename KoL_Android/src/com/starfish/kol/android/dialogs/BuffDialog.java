@@ -14,12 +14,12 @@ import android.widget.TextView;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.model.elements.SkillElement;
 import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
+import com.starfish.kol.model.models.skill.SkillModelElement.Buff;
 
-public class SkillDialog extends DialogFragment {
-	public static SkillDialog create(SkillElement base) {
-		SkillDialog dialog = new SkillDialog();
+public class BuffDialog extends DialogFragment {
+	public static BuffDialog create(Buff base) {
+		BuffDialog dialog = new BuffDialog();
 		Bundle args = new Bundle();
 		args.putSerializable("skill", base);
 		dialog.setArguments(args);
@@ -39,19 +39,14 @@ public class SkillDialog extends DialogFragment {
 		final View rootView = (View)inflater.inflate(R.layout.dialog_skill_screen,
 				container, false);
 
-		final SkillElement skill = (SkillElement) this.getArguments().getSerializable("skill");
+		final Buff skill = (Buff) this.getArguments().getSerializable("skill");
 		
 	    TextView text = (TextView)rootView.findViewById(R.id.dialog_skill_text);
 	    text.setText(skill.getText());
 	    
 	    TextView subtext = (TextView)rootView.findViewById(R.id.dialog_skill_subtext);
 	    subtext.setText(skill.getSubtext());
-	    
-	    if(!skill.isBuff()) {
-	    	EditText player = (EditText)rootView.findViewById(R.id.dialog_skill_player);
-	    	player.setEnabled(false);
-	    }
-	    
+	    	    
 	    Button submit = (Button)rootView.findViewById(R.id.dialog_skill_submit);
 	    submit.setOnClickListener(new OnClickListener() {
 			@Override
@@ -69,7 +64,7 @@ public class SkillDialog extends DialogFragment {
 		    	DeferredGameAction action = skill.cast(num, play);
 		    	action.submit((ViewContext)getActivity());
 		    	
-				SkillDialog.this.dismiss();
+				BuffDialog.this.dismiss();
 			}	    	
 	    });
 		return rootView;

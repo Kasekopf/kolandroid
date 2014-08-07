@@ -37,10 +37,10 @@ import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.ChoiceModel;
 import com.starfish.kol.model.models.CraftingModel;
 import com.starfish.kol.model.models.FightModel;
-import com.starfish.kol.model.models.SkillsModel;
 import com.starfish.kol.model.models.StatsModel;
 import com.starfish.kol.model.models.WebModel;
 import com.starfish.kol.model.models.inventory.InventoryModel;
+import com.starfish.kol.model.models.skill.SkillsModel;
 
 public class GameScreen extends ActionBarActivity implements StatsCallbacks, ViewContext {
 

@@ -21,41 +21,73 @@ public class OptionElement {
 
 	private static final Regex OPTION_DISABLED = new Regex(
 			"<option[^>]*disabled[^>]*>", 0);
-	
+
 	public final String text;
 	public final String img;
 	public final String value;
 	public final boolean disabled;
-	
-	private OptionElement(String text, String img, String value, boolean disabled) {
+
+	private OptionElement(String text, String img, String value,
+			boolean disabled) {
 		this.text = text;
 		this.img = img;
 		this.value = value;
 		this.disabled = disabled;
 	}
-	
+
 	public static Regex regexFor(String select) {
-		return new Regex(
-				"<select name=" + select + ">(.*?)</select>", 1);
+		return new Regex("<select name=" + select + ">(.*?)</select>", 1);
 	}
-	
-	public static ArrayList<ModelGroup<OptionElement>> extractOptionGroups(String dropdown, String defaultName) {
+
+	public static <T> ArrayList<ModelGroup<T>> extractObjectGroups(
+			String dropdown, String defaultName, OptionElementParser<T> parser) {
+		ArrayList<ModelGroup<T>> result = new ArrayList<ModelGroup<T>>();
+		for (ModelGroup<OptionElement> optionGroup : extractOptionGroups(
+				dropdown, defaultName)) {
+			BasicGroup<T> group = new BasicGroup<T>(optionGroup.getName());
+			for (OptionElement option : optionGroup) {
+				if (parser.toExclude != null
+						&& option.text.contains(parser.toExclude))
+					continue;
+				group.add(parser.make(option));
+			}
+			result.add(group);
+		}
+		return result;
+	}
+
+	public static <T> ArrayList<T> extractObjects(String dropdown,
+			OptionElementParser<T> parser) {
+		ArrayList<T> result = new ArrayList<T>();
+		for (OptionElement option : extractOptions(dropdown)) {
+			if (parser.toExclude != null
+					&& option.text.contains(parser.toExclude))
+				continue;
+			result.add(parser.make(option));
+		}
+		return result;
+	}
+
+	public static ArrayList<ModelGroup<OptionElement>> extractOptionGroups(
+			String dropdown, String defaultName) {
 		ArrayList<ModelGroup<OptionElement>> options = new ArrayList<ModelGroup<OptionElement>>();
-		
+
 		for (String group : OPTION_GROUP.extractAllSingle(dropdown)) {
 			String name = OPTION_GROUP_NAME.extractSingle(group);
-			if(name == null) name = defaultName;
-			
+			if (name == null)
+				name = defaultName;
+
 			ArrayList<OptionElement> option_group = extractOptions(group);
-			BasicGroup<OptionElement> section = new BasicGroup<OptionElement>(name, option_group);
+			BasicGroup<OptionElement> section = new BasicGroup<OptionElement>(
+					name, option_group);
 			options.add(section);
 		}
 		return options;
 	}
-	
+
 	public static ArrayList<OptionElement> extractOptions(String dropdown) {
 		ArrayList<OptionElement> result = new ArrayList<OptionElement>();
-		
+
 		ArrayList<String[]> options = OPTION.extractAll(dropdown);
 
 		for (String[] option : options) {
@@ -69,8 +101,8 @@ public class OptionElement {
 
 			if (num == null || num.length() == 0)
 				continue;
-			
-			if(img == null) {
+
+			if (img == null) {
 				img = "";
 			} else {
 				if (!img.contains("images.kingdomofloathing.com"))
@@ -78,9 +110,23 @@ public class OptionElement {
 				if (!img.endsWith(".gif") && !img.endsWith(".png"))
 					img += ".gif";
 			}
-			
+
 			result.add(new OptionElement(text, img, num, disabled));
 		}
 		return result;
+	}
+
+	public static abstract class OptionElementParser<T> {
+		private String toExclude;
+
+		public OptionElementParser() {
+			this("");
+		}
+
+		public OptionElementParser(String toExclude) {
+			this.toExclude = toExclude;
+		}
+
+		public abstract T make(OptionElement base);
 	}
 }

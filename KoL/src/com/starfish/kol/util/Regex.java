@@ -44,11 +44,15 @@ public class Regex {
 	}
 
 	public String extractSingle(String text) {
+		return extractSingle(text, null);
+	}
+
+	public String extractSingle(String text, String defaultValue) {
 		if (text == null)
-			return null;
+			return defaultValue;
 		Matcher m = pattern.matcher(text);
 		if (!m.find())
-			return null;
+			return defaultValue;
 		return m.group(groups[0]);
 	}
 

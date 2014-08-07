@@ -25,7 +25,7 @@ import com.starfish.kol.model.elements.interfaces.ModelElement;
  * A simple {@link android.support.v4.app.Fragment} subclass.
  * 
  */
-public class SearchListFragment<E extends ModelElement> extends DialogFragment {
+public class SearchListFragment<E extends ModelElement> extends DialogFragment implements ListFragment<E> {
 	public static <E extends ActionElement> SearchListFragment<E> newInstance(String title, ArrayList<E> elements) {
 		SearchListFragment<E> frag = new SearchListFragment<E>();
         Bundle args = new Bundle();

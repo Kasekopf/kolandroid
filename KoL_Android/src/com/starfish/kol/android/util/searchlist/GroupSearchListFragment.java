@@ -19,8 +19,8 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.adapters.ListFullBuilder;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.model.elements.ActionElement;
-import com.starfish.kol.model.elements.interfaces.ModelGroup;
 import com.starfish.kol.model.elements.interfaces.ModelElement;
+import com.starfish.kol.model.elements.interfaces.ModelGroup;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
@@ -28,7 +28,7 @@ import com.starfish.kol.model.elements.interfaces.ModelElement;
  */
 @SuppressLint("ValidFragment")
 public class GroupSearchListFragment<F extends ModelElement> extends
-		DialogFragment {
+		DialogFragment implements ListFragment<F> {
 	public static <F extends ActionElement> GroupSearchListFragment<F> newInstance(
 			String title, ArrayList<ModelGroup<F>> elements) {
 		GroupSearchListFragment<F> frag = new GroupSearchListFragment<F>();

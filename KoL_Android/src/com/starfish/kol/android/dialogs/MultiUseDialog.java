@@ -16,21 +16,15 @@ import android.widget.TextView;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.ImageDownloader;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.model.Model;
 import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
 import com.starfish.kol.model.elements.interfaces.MultiUseableItem;
 
 public class MultiUseDialog extends DialogFragment {
-	public static MultiUseDialog create(final Model<?> context,
-			final MultiUseableItem item) {
-		MultiUseDialog dialog = MultiUseDialog.create(item);
-		return dialog;
-	}
-
-	private static MultiUseDialog create(MultiUseableItem base) {
+	public static MultiUseDialog create(MultiUseableItem base, String buttonText) {
 		MultiUseDialog dialog = new MultiUseDialog();
 		Bundle args = new Bundle();
 		args.putSerializable("item", base);
+		args.putString("button", buttonText);
 		dialog.setArguments(args);
 		return dialog;
 	}
@@ -66,6 +60,8 @@ public class MultiUseDialog extends DialogFragment {
 
 		Button submit = (Button) rootView
 				.findViewById(R.id.dialog_multiuse_submit);
+		submit.setText(this.getArguments().getString("button"));
+		
 		submit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
