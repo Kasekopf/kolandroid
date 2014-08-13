@@ -83,16 +83,7 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 				FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 	}
 
-	public void reset() {
-		this.seenMessages.clear();
-		messages.clear();
-		channels.clear();
-		channelsByName.clear();
-
-		lasttime = "0";
-	}
-
-	public void refreshChannels() {
+	private void refreshChannels() {
 		this.submitCommand("/channels");
 		this.submitCommand("/l");
 	}
@@ -100,7 +91,7 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 	protected void notifyChange() {
 		notifyView(ChatStatus.UPDATE);
 	}
-
+	
 	@Override
 	public void handle(Session session, Request request, ServerReply response) {
 		if (!response.url.contains("newchatmessages.php")
@@ -241,29 +232,28 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 				if (!response.url.contains("mchat.php"))
 					return;
 
-				notifyView(ChatStatus.LOADED);
 				hasChat = true;
-
 				processInitial(response);
+				notifyView(ChatStatus.LOADED);
+				refreshChannels();
 			}
 		}, new ResponseHandler() {
 			@Override
 			public void handle(Session session, Request request,
 					ServerReply response) {
-				notifyView(ChatStatus.NOCHAT);
 				hasChat = false;
+				notifyView(ChatStatus.NOCHAT);
 			}
 			
 		});
 		this.makeRequest(req);
-		this.refreshChannels();
 	}
 
 	public void setCurrentRoom(String room) {
 		this.visibleChannel = room;
 	}
 
-	public void submitChat(String msg) {
+	protected void submitChat(String msg) {
 		submitChat(msg, false);
 	}
 
@@ -326,12 +316,8 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		this.makeRequest(new SimulatedRequest(reject, new GameHandler(context)));
 	}
 
-	public ArrayList<ChatChannel> getChannels() {
-		return new ArrayList<ChatChannel>(channels);
-	}
-
-	public ArrayList<ChatText> getMessages() {
-		return new ArrayList<ChatText>(messages);
+	public ChatState getState() {
+		return new ChatState(new ArrayList<ChatChannel>(channels));
 	}
 
 	@Override

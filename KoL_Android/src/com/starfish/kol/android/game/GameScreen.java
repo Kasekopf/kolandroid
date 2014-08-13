@@ -15,8 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.android.chat.ChatService;
-import com.starfish.kol.android.chat.ChatService.ChatCallback;
+import com.starfish.kol.android.chat.ChatConnection;
 import com.starfish.kol.android.dialogs.WebDialog;
 import com.starfish.kol.android.game.fragments.ChoiceFragment;
 import com.starfish.kol.android.game.fragments.CraftingFragment;
@@ -39,6 +38,7 @@ import com.starfish.kol.model.models.CraftingModel;
 import com.starfish.kol.model.models.FightModel;
 import com.starfish.kol.model.models.StatsModel;
 import com.starfish.kol.model.models.WebModel;
+import com.starfish.kol.model.models.chat.ChatState;
 import com.starfish.kol.model.models.inventory.InventoryModel;
 import com.starfish.kol.model.models.skill.SkillsModel;
 
@@ -57,7 +57,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 	private ViewContext baseContext;
 	private LoadingContext loader;
 	
-	private ChatCallback chat;
+	private ChatConnection chat;
 	
 	/**
 	 * Used to store the last screen title. For use in
@@ -100,14 +100,12 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		getSupportFragmentManager().beginTransaction()
 				.add(R.id.game_statsfragment, mStatsFragment).commit();
 
-		chat = new ChatCallback() {
+		chat = new ChatConnection(session, this) {
 			@Override
-			public void updateMessages(ChatService base) {
+			public void updateMessages(ChatState base) {
 				//do nothing
 			}			
 		};
-        
-		chat.open(session, this);
 		displayIntent(this.getIntent(), false);
 	}
 
@@ -177,11 +175,17 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		super.onDestroy();
 		chat.close(this);
 	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		chat.pause();
+	}
 	
 	@Override
 	public void onStart() {
 		super.onStart();
-		chat.refresh();
+		chat.unpause();
 	}
 	
 	public void restoreActionBar() {
@@ -207,8 +211,8 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 				mStatsFragment.showQuests();
 			return true;
 		case R.id.action_chat:
-			if(chat.getService() != null)
-				chat.getService().openChat(this);
+			if(chat != null)
+				chat.openChat(this, this);
 			return true;
 		}
 

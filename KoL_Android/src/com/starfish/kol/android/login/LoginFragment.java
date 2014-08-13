@@ -30,6 +30,7 @@ public class LoginFragment extends GameFragment<LoginStatus, LoginModel> {
 	
 	private String savedUser = null;
 	private PasswordHash savedPass = null;
+	private boolean enterChatImmediately = true;
 	
 	public LoginFragment() {
 		super(R.layout.fragment_login_screen);
@@ -44,11 +45,13 @@ public class LoginFragment extends GameFragment<LoginStatus, LoginModel> {
 				.findViewById(R.id.login_password);
 		final Button login = (Button) view
 				.findViewById(R.id.login_btnlogin);
-		final CheckBox check = (CheckBox) view.findViewById(R.id.login_savepassword);			
+		final CheckBox checkpass = (CheckBox) view.findViewById(R.id.login_savepassword);	
+		final CheckBox checkchat = (CheckBox) view.findViewById(R.id.login_enterchat);			
 		
         SharedPreferences settings = getActivity().getSharedPreferences(LOGIN_STORAGE, 0);
         user.setText(settings.getString("username", ""));
-        check.setChecked(settings.getBoolean("savepass", true));
+        checkpass.setChecked(settings.getBoolean("savepass", true));
+        checkchat.setChecked(settings.getBoolean("enterchat", true));
         
         if(settings.contains("password")) {
         	pass.setHint("\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"); //unicode dot x10
@@ -103,8 +106,12 @@ public class LoginFragment extends GameFragment<LoginStatus, LoginModel> {
 
 			    SharedPreferences settings = getActivity().getSharedPreferences(LOGIN_STORAGE, 0);
 			    SharedPreferences.Editor editor = settings.edit();
-			    editor.putBoolean("savepass", check.isChecked());
-			    if(check.isChecked()) {
+			    editor.putBoolean("savepass", checkpass.isChecked());
+			    editor.putBoolean("enterchat", checkchat.isChecked());
+			    
+			    enterChatImmediately = checkchat.isChecked();
+			    
+			    if(checkpass.isChecked()) {
 					Log.i("Credentials", "Saving username: " + username);
 					Log.i("Credentials", "Saving password hash: " + pass.getBaseHash());
 			    	editor.putString("username", username);
@@ -130,6 +137,7 @@ public class LoginFragment extends GameFragment<LoginStatus, LoginModel> {
 			
 			Intent i = new Intent(context, ChatService.class);
 			i.putExtra("session", getModel().getSession());
+			i.putExtra("start", enterChatImmediately);
 			context.startService(i);
 			
 			break;

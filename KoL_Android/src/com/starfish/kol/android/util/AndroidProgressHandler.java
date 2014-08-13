@@ -5,9 +5,7 @@ import java.lang.ref.WeakReference;
 import android.os.Handler;
 import android.os.Message;
 
-import com.starfish.kol.model.ProgressHandler;
-
-public abstract class AndroidProgressHandler<E> implements ProgressHandler<E> {
+public abstract class AndroidProgressHandler<E> implements LatchedCallback<E> {
 	private TypedHandler<E> base;
 	private boolean closed;
 
@@ -27,8 +25,12 @@ public abstract class AndroidProgressHandler<E> implements ProgressHandler<E> {
 		closed = true;
 		base.close();
 	}
+	
+	public boolean isClosed() {
+		return closed;
+	}
 
-	public abstract void recieveProgress(E message);
+	protected abstract void recieveProgress(E message);
 
 	private static class TypedHandler<E> extends Handler {
 		WeakReference<AndroidProgressHandler<E>> parent;
