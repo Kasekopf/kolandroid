@@ -100,11 +100,11 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		getSupportFragmentManager().beginTransaction()
 				.add(R.id.game_statsfragment, mStatsFragment).commit();
 
-		chat = new ChatConnection(session, this) {
+		chat = new ChatConnection(session) {
 			@Override
 			public void updateMessages(ChatState base) {
 				//do nothing
-			}			
+			}
 		};
 		displayIntent(this.getIntent(), false);
 	}
@@ -169,23 +169,17 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		trans.commit();
 		mStatsFragment.refresh();
 	}
-	
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		chat.close(this);
-	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-		chat.pause();
+		chat.stop(this);
 	}
 	
 	@Override
 	public void onStart() {
 		super.onStart();
-		chat.unpause();
+		chat.start(this);
 	}
 	
 	public void restoreActionBar() {

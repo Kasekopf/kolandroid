@@ -24,7 +24,8 @@ public class ChatService extends Service {
 
 		if (intent != null) {
 			Session session = (Session) intent.getSerializableExtra("session");
-			ViewContext context = new AndroidViewContext(this.getApplicationContext());
+			ViewContext context = new AndroidViewContext(
+					this.getApplicationContext());
 			chat = new ChatManager(session, context);
 
 			boolean shouldstart = intent.getBooleanExtra("start", false);
@@ -43,10 +44,10 @@ public class ChatService extends Service {
 		// Tell the user we stopped.
 		Toast.makeText(this, "Chat Service Stopped", Toast.LENGTH_SHORT).show();
 
-		if(chat != null)
+		if (chat != null)
 			chat.stop();
 	}
-	
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		return chat;

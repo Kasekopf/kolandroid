@@ -42,15 +42,15 @@ import com.starfish.kol.model.models.chat.ChatText;
 import com.starfish.kol.model.models.chat.actions.SetCurrentRoomAction;
 import com.starfish.kol.model.models.chat.actions.SubmitChatAction;
 
-public class ChatActivity extends ActionBarActivity implements
-		ChatroomHost, ChatChannelDialogCallback, ViewContext {
+public class ChatActivity extends ActionBarActivity implements ChatroomHost,
+		ChatChannelDialogCallback, ViewContext {
 	private ChatConnection chat;
 	private EditText text;
 	private CustomFragmentTabHost host;
-	
+
 	private ChatChannelDialog dialog = null;
 	private ViewContext baseContext;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,16 +58,17 @@ public class ChatActivity extends ActionBarActivity implements
 		overridePendingTransition(R.anim.inleftanim, R.anim.outleftanim);
 
 		this.baseContext = new AndroidViewContext(this);
-		
-		Session session = (Session)this.getIntent().getSerializableExtra("session");
-		
-		chat = new ChatConnection(session, this) {
+
+		Session session = (Session) this.getIntent().getSerializableExtra(
+				"session");
+
+		chat = new ChatConnection(session) {
 			@Override
 			public void updateMessages(ChatState state) {
 				ChatActivity.this.updateMessages(state);
 			}
 		};
-		
+
 		host = (CustomFragmentTabHost) findViewById(R.id.tabs_tabhost);
 
 		host.setup(this, getSupportFragmentManager());
@@ -79,30 +80,30 @@ public class ChatActivity extends ActionBarActivity implements
 				System.out.println("Tab changed to " + tabid);
 				chat.execute(new SetCurrentRoomAction(tabid));
 			}
-			
+
 		});
 
 		text = (EditText) findViewById(R.id.chatroom_text_input);
-		
 
-		Button submit = (Button)findViewById(R.id.chatroom_submit);
+		Button submit = (Button) findViewById(R.id.chatroom_submit);
 		submit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				String msg = text.getText().toString();
 				String channel = host.getCurrentTabTag();
-				
-				if(chat.execute(new SubmitChatAction(channel, msg))) {
-					// Only delete the chat text after the chat connection exists
+
+				if (chat.execute(new SubmitChatAction(channel, msg))) {
+					// Only delete the chat text after the chat connection
+					// exists
 					text.setText("");
 				}
 				InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
 				inputManager.hideSoftInputFromWindow(getCurrentFocus()
 						.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-			}			
+			}
 		});
-		
+
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
@@ -123,7 +124,8 @@ public class ChatActivity extends ActionBarActivity implements
 
 				@Override
 				public void submit(ChatModel context) {
-					dialog = ChatChannelDialog.create(context.getState().getChannels());
+					dialog = ChatChannelDialog.create(context.getState()
+							.getChannels());
 					dialog.show(getSupportFragmentManager(), "channeldialog");
 				}
 			};
@@ -142,67 +144,61 @@ public class ChatActivity extends ActionBarActivity implements
 	@Override
 	public void onStart() {
 		super.onStart();
-		chat.unpause();
+		chat.start(this);
 	}
-	
+
 	@Override
 	public void onStop() {
 		super.onStop();
-		chat.pause();
-	}
-	
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		chat.close(this);
+		chat.stop(this);
 	}
 
 	private void addTab(final ChatChannel base) {
 		String tag = base.getName();
-		
+
 		Log.i("ChatService", "Making new tab for '" + tag + "'");
 		Bundle bund = new Bundle();
 		bund.putSerializable("base", base);
 		host.addTab(host.newTabSpec(tag).setIndicator(tag),
 				ChatroomFragment.class, bund);
-		
+
 		View tabTitle = host.getTabByTag(tag);
 		tabTitle.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
 				new AlertDialog.Builder(ChatActivity.this)
-		        .setTitle("Close " + base.getName() + "?")
-		        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-		            @Override
-		            public void onClick(DialogInterface dialog, int which) {
-						chat.execute(base.leave());
-		            	dialog.dismiss();		            	
-		            }
+						.setTitle("Close " + base.getName() + "?")
+						.setPositiveButton("Ok",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										chat.execute(base.leave());
+										dialog.dismiss();
+									}
 
-		        })
-		        .setNegativeButton("Cancel", null)
-		        .show();
+								}).setNegativeButton("Cancel", null).show();
 				return true;
 			}
 		});
 	}
-	
-	public void updateMessages(ChatState base) {		
+
+	public void updateMessages(ChatState base) {
 		ArrayList<ChatChannel> channels = base.getChannels();
-		if(dialog != null)
+		if (dialog != null)
 			dialog.updateChannels(channels);
-		
+
 		for (ChatChannel channel : channels) {
 			String tag = channel.getName();
 			TabInfo ti = host.getChildByTag(tag);
-			
+
 			if (ti == null) {
-				if(!channel.isActive()) {
-					//Do not make a tab for an inactive channel.
+				if (!channel.isActive()) {
+					// Do not make a tab for an inactive channel.
 					continue;
 				}
-				
-				this.addTab(channel);				
+
+				this.addTab(channel);
 			} else if (ti.getFragment() == null) {
 				// Tab exists, but fragment has not been created.
 				// update the list of messages in the arguments.
@@ -212,44 +208,44 @@ public class ChatActivity extends ActionBarActivity implements
 				room.updateChannel(channel);
 			}
 		}
-		
+
 		ArrayList<TabInfo> tabs = host.getTabs();
 		TabWidget tabViews = host.getTabWidget();
 		ChatChannel channel;
-		
+
 		boolean currentRemoved = false;
-		
-		for(int index = 0; index < tabs.size(); index++) {
+
+		for (int index = 0; index < tabs.size(); index++) {
 			TabInfo tab = tabs.get(index);
-			
-			if(tab.getFragment() == null) {
-				channel = (ChatChannel)tab.getArgs().getSerializable("base");
+
+			if (tab.getFragment() == null) {
+				channel = (ChatChannel) tab.getArgs().getSerializable("base");
 			} else {
 				ChatroomFragment room = (ChatroomFragment) tab.getFragment();
 				channel = room.getChannel();
 			}
-			
+
 			int visibility = channel.isActive() ? View.VISIBLE : View.GONE;
 			tabViews.getChildTabViewAt(index).setVisibility(visibility);
-			
-			if(!channel.isActive() && index == host.getCurrentTab()) {
+
+			if (!channel.isActive() && index == host.getCurrentTab()) {
 				currentRemoved = true;
 			}
 		}
-		
-		//If the current tab was removed, transition to a nearby tab
-		if(currentRemoved) {
-			for(int j = host.getCurrentTab() + 1; j < tabs.size(); j++) {
-				if(tabViews.getChildTabViewAt(j).getVisibility() == View.VISIBLE) {
+
+		// If the current tab was removed, transition to a nearby tab
+		if (currentRemoved) {
+			for (int j = host.getCurrentTab() + 1; j < tabs.size(); j++) {
+				if (tabViews.getChildTabViewAt(j).getVisibility() == View.VISIBLE) {
 					host.setCurrentTab(j);
 					currentRemoved = false;
 					break;
 				}
 			}
-			
-			if(currentRemoved) {
-				for(int j = host.getCurrentTab() - 1; j >= 0; j--) {
-					if(tabViews.getChildTabViewAt(j).getVisibility() == View.VISIBLE) {
+
+			if (currentRemoved) {
+				for (int j = host.getCurrentTab() - 1; j >= 0; j--) {
+					if (tabViews.getChildTabViewAt(j).getVisibility() == View.VISIBLE) {
 						host.setCurrentTab(j);
 						break;
 					}
@@ -260,14 +256,15 @@ public class ChatActivity extends ActionBarActivity implements
 
 	@Override
 	public void submitChatAction(ChatAction action, ChatText baseMessage) {
-		ProgressHandler<String> callback = new AndroidProgressHandler<String>(){
+		ProgressHandler<String> callback = new AndroidProgressHandler<String>() {
 			@Override
 			public void recieveProgress(String message) {
 				text.setText(message);
 			}
 		};
-		
-		ChatActionSubmission sub = action.getPartialSubmission(baseMessage, callback);
+
+		ChatActionSubmission sub = action.getPartialSubmission(baseMessage,
+				callback);
 		chat.execute(sub);
 	}
 
@@ -278,7 +275,7 @@ public class ChatActivity extends ActionBarActivity implements
 
 	@Override
 	public void onChannelSelect(ChatChannel channel) {
-		if(channel.isActive())
+		if (channel.isActive())
 			host.setCurrentTabByTag(channel.getName());
 	}
 
@@ -286,10 +283,10 @@ public class ChatActivity extends ActionBarActivity implements
 	public <E extends Model<?>> void display(E model) {
 		baseContext.display(model);
 	}
-	
+
 	@Override
 	public LoadingContext createLoadingContext() {
 		return LoadingContext.NONE;
 	}
-	
+
 }

@@ -1,5 +1,6 @@
 package com.starfish.kol.android.chat;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Timer;
@@ -21,20 +22,18 @@ public class ChatManager extends Binder {
 
 	private ChatModel model;
 	private boolean started;
-	
-	private ArrayList<LatchedCallback<ChatState>> listeners;
+
+	private ArrayList<WeakReference<LatchedCallback<ChatState>>> listeners;
 	private DeferredAction<ChatModel> onLoad = null;
-	
-	
+
 	public ChatManager(Session s, ViewContext context) {
 		this.model = new ChatModel(s);
-		this.listeners = new ArrayList<LatchedCallback<ChatState>>();
-		this.updateTimer = new Timer("ChatUpdater", true);
-		
+		this.listeners = new ArrayList<WeakReference<LatchedCallback<ChatState>>>();
+
 		this.model.connectView(new ProgressHandler<ChatStatus>() {
 			@Override
 			public void reportProgress(ChatStatus message) {
-				switch(message) {
+				switch (message) {
 				case UPDATE:
 					updateListeners();
 					break;
@@ -43,32 +42,33 @@ public class ChatManager extends Binder {
 					break;
 				case LOADED:
 				case NOCHAT:
-					if(onLoad != null)
+					if (onLoad != null)
 						onLoad.submit(model);
 					break;
 				}
-				
+
 				if (message == ChatStatus.UPDATE)
 					updateListeners();
-				
-			}			
+
+			}
 		}, context);
 	}
-	
+
 	public void addListener(LatchedCallback<ChatState> listener) {
-		this.listeners.add(listener);
+		this.listeners.add(new WeakReference<LatchedCallback<ChatState>>(listener));
+		listener.reportProgress(model.getState());
 	}
 
 	private void updateListeners() {
-		if(!this.started)
+		if (!this.started)
 			return;
-		
-		Iterator<LatchedCallback<ChatState>> it = listeners.iterator();
-		while(it.hasNext()) {
-			LatchedCallback<ChatState> listener = it.next();
-			if(listener.isClosed())
+
+		Iterator<WeakReference<LatchedCallback<ChatState>>> it = listeners.iterator();
+		while (it.hasNext()) {
+			LatchedCallback<ChatState> listener = it.next().get();
+			if (listener == null || listener.isClosed())
 				it.remove();
-			
+
 			listener.reportProgress(model.getState());
 		}
 	}
@@ -76,14 +76,21 @@ public class ChatManager extends Binder {
 	protected void start() {
 		this.start(null);
 	}
-	
+
 	protected void start(DeferredAction<ChatModel> onLoad) {
-		if (this.started)
+		if (this.started) {
+			if (onLoad != null)
+				onLoad.submit(model);
 			return;
-		
+		}
+
 		this.onLoad = onLoad;
 		this.model.start();
 		this.started = true;
+		if (this.updateTimer != null)
+			this.updateTimer.cancel();
+
+		this.updateTimer = new Timer("ChatUpdater", true);
 		this.updateTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
@@ -91,15 +98,18 @@ public class ChatManager extends Binder {
 			}
 		}, 1000, 5000);
 	}
-	
+
 	protected void stop() {
-		if(!this.started)
+		if (!this.started)
 			return;
 		this.started = false;
-		
-		this.updateTimer.cancel();
+
+		if (this.updateTimer != null) {
+			this.updateTimer.cancel();
+			this.updateTimer = null;
+		}
 	}
-	
+
 	public void execute(DeferredAction<ChatModel> action) {
 		action.submit(model);
 	}
