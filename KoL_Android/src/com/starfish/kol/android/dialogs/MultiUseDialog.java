@@ -17,10 +17,10 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.util.ImageDownloader;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
-import com.starfish.kol.model.elements.interfaces.MultiUseableItem;
+import com.starfish.kol.model.elements.interfaces.Multiuseable;
 
 public class MultiUseDialog extends DialogFragment {
-	public static MultiUseDialog create(MultiUseableItem base, String buttonText) {
+	public static MultiUseDialog create(Multiuseable base, String buttonText) {
 		MultiUseDialog dialog = new MultiUseDialog();
 		Bundle args = new Bundle();
 		args.putSerializable("item", base);
@@ -42,7 +42,7 @@ public class MultiUseDialog extends DialogFragment {
 		final View rootView = (View) inflater.inflate(
 				R.layout.dialog_multiuse_screen, container, false);
 
-		final MultiUseableItem item = (MultiUseableItem) this.getArguments()
+		final Multiuseable item = (Multiuseable) this.getArguments()
 				.getSerializable("item");
 
 		TextView text = (TextView) rootView

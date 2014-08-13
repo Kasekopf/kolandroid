@@ -35,11 +35,13 @@ public class EquipmentPocketModel extends InventoryPocketModel {
 
 	protected void loadContent(ServerReply reply) {
 		super.loadContent(reply);
+
+		String pwd = PWD.extractSingle(reply.html);
 		
 		String equipment = EQUIPMENT.extractSingle(reply.html);
 		if (equipment != null) {
 			ModelGroup<InventoryItem> equipped = parseItems("Equipped",
-					ITEM_EQUIPPED.extractAllSingle(equipment));
+					ITEM_EQUIPPED.extractAllSingle(equipment), pwd);
 			if (equipped.size() > 0)
 				items.add(0, equipped);
 		}

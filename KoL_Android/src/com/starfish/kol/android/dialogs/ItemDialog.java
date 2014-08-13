@@ -18,7 +18,10 @@ import com.starfish.kol.android.util.ImageDownloader;
 import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.model.models.inventory.InventoryActionElement;
+import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
+import com.starfish.kol.model.elements.interfaces.Multiuseable;
+import com.starfish.kol.model.models.inventory.InventoryAction;
+import com.starfish.kol.model.models.inventory.InventoryActionVisitor;
 import com.starfish.kol.model.models.inventory.InventoryItem;
 
 public class ItemDialog extends DialogFragment {
@@ -45,7 +48,26 @@ public class ItemDialog extends DialogFragment {
 
 		InventoryItem item = (InventoryItem) this.getArguments().getSerializable("item");
 
-	    ListAdapter<InventoryActionElement> adapter = new ListAdapter<InventoryActionElement>(this.getActivity(), item.getActions(), new DefaultBuilder<InventoryActionElement>());
+	    ListAdapter<InventoryAction> adapter = new ListAdapter<InventoryAction>(this.getActivity(), item.getActions(), new DefaultBuilder<InventoryAction>());
+	    
+	    final InventoryActionVisitor visitor = new InventoryActionVisitor() {
+			@Override
+			public void executeRequest(DeferredGameAction action) {
+				action.submit((ViewContext)getActivity());
+			}
+
+			@Override
+			public void displayAutosell(Multiuseable item) {
+				MultiUseDialog.create(item, "Sell").show(getFragmentManager(),
+						"multiuseitem");
+			}
+
+			@Override
+			public void displayMultiuse(Multiuseable item) {
+				MultiUseDialog.create(item, "Use").show(getFragmentManager(),
+						"multiuseitem");
+			}	    	
+	    };
 	    
 	    ListView list = (ListView)rootView.findViewById(R.id.dialog_item_list);
 	    list.setAdapter(adapter);
@@ -53,10 +75,10 @@ public class ItemDialog extends DialogFragment {
 			@Override
 			public void onItemClick(AdapterView<?> ad, View list, int pos,
 					long arg3) {
-				InventoryActionElement select = (InventoryActionElement)ad.getItemAtPosition(pos);
+				InventoryAction select = (InventoryAction)ad.getItemAtPosition(pos);
 				
 				if(select != null) {
-					select.submit((ViewContext)getActivity(), null);
+					select.select(visitor);
 					ItemDialog.this.dismiss();
 				}
 			}
