@@ -66,9 +66,11 @@ public class ChatManager extends Binder {
 		Iterator<WeakReference<LatchedCallback<ChatState>>> it = listeners.iterator();
 		while (it.hasNext()) {
 			LatchedCallback<ChatState> listener = it.next().get();
-			if (listener == null || listener.isClosed())
+			if (listener == null || listener.isClosed()) {
 				it.remove();
-
+				continue;
+			}
+			
 			listener.reportProgress(model.getState());
 		}
 	}
