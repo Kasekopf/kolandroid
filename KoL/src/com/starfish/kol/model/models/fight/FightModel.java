@@ -1,13 +1,12 @@
-package com.starfish.kol.model.models;
+package com.starfish.kol.model.models.fight;
 
 import java.util.ArrayList;
 
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.model.elements.ActionElement;
-import com.starfish.kol.model.elements.FightItem;
-import com.starfish.kol.model.elements.FightSkillElement;
 import com.starfish.kol.model.elements.OptionElement;
+import com.starfish.kol.model.models.FilteredWebModel;
 import com.starfish.kol.util.Regex;
 
 public class FightModel extends FilteredWebModel {
@@ -41,7 +40,7 @@ public class FightModel extends FilteredWebModel {
 	private static final Regex HAS_FUNKSLINGING = new Regex(
 			"<select[^>]*whichitem2[^>]*>");
 
-	private ArrayList<FightSkillElement> skills;
+	private ArrayList<FightSkill> skills;
 	private ArrayList<FightItem> items;
 
 	private boolean fightFinished = false;
@@ -61,7 +60,7 @@ public class FightModel extends FilteredWebModel {
 	}
 
 	private void processSkills(String html) {
-		this.skills = new ArrayList<FightSkillElement>();
+		this.skills = new ArrayList<FightSkill>();
 
 		ArrayList<String[]> buttons = ACTION_BTN.extractAll(html);
 		for (String[] button : buttons) {
@@ -87,7 +86,7 @@ public class FightModel extends FilteredWebModel {
 				break;
 			}
 
-			this.skills.add(new FightSkillElement(getSession(), text, img,
+			this.skills.add(new FightSkill(getSession(), text, img,
 					"fight.php?action=" + action));
 		}
 
@@ -95,7 +94,7 @@ public class FightModel extends FilteredWebModel {
 		ArrayList<OptionElement> dropdown_skills = OptionElement
 				.extractOptions(dropdown);
 		for (OptionElement option : dropdown_skills) {
-			skills.add(new FightSkillElement(getSession(), option.text, option.img,
+			skills.add(new FightSkill(getSession(), option.text, option.img,
 					"fight.php?action=skill&whichskill=" + option.value));
 		}
 	}
@@ -115,7 +114,7 @@ public class FightModel extends FilteredWebModel {
 		this.funkslinging = HAS_FUNKSLINGING.matches(html);
 	}
 
-	public ArrayList<FightSkillElement> getSkills() {
+	public ArrayList<FightSkill> getSkills() {
 		return this.skills;
 	}
 

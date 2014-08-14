@@ -21,7 +21,7 @@ import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.android.util.searchlist.OnListSelection;
 import com.starfish.kol.android.util.searchlist.SearchListFragment;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.model.elements.FightItem;
+import com.starfish.kol.model.models.fight.FightItem;
 
 public class FunkslingingDialog extends DialogFragment {
 	public static FunkslingingDialog create(ArrayList<FightItem> items) {

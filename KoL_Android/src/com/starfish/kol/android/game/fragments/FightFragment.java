@@ -14,9 +14,9 @@ import com.starfish.kol.android.util.listbuilders.SubtextBuilder;
 import com.starfish.kol.android.util.searchlist.SearchListFragment;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.elements.ActionElement;
-import com.starfish.kol.model.elements.FightItem;
-import com.starfish.kol.model.elements.FightSkillElement;
-import com.starfish.kol.model.models.FightModel;
+import com.starfish.kol.model.models.fight.FightItem;
+import com.starfish.kol.model.models.fight.FightModel;
+import com.starfish.kol.model.models.fight.FightSkill;
 
 public class FightFragment extends WebFragment<FightModel> {	
 	public FightFragment() {
@@ -40,10 +40,10 @@ public class FightFragment extends WebFragment<FightModel> {
 		useskill.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View btn) {
-				ArrayList<FightSkillElement> skills = getModel().getSkills();
-				SubtextBuilder<FightSkillElement> builder = new SubtextBuilder<FightSkillElement>();
+				ArrayList<FightSkill> skills = getModel().getSkills();
+				SubtextBuilder<FightSkill> builder = new SubtextBuilder<FightSkill>();
 				
-				SearchListFragment<FightSkillElement> newFragment = SearchListFragment.newInstance("Choose a skill to use:", builder, skills);
+				SearchListFragment<FightSkill> newFragment = SearchListFragment.newInstance("Choose a skill to use:", builder, skills);
 			    newFragment.show(getFragmentManager(), "dialog");
 			}
 		});

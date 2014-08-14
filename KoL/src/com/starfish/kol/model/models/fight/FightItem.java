@@ -1,7 +1,8 @@
-package com.starfish.kol.model.elements;
+package com.starfish.kol.model.models.fight;
 
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.ViewContext;
+import com.starfish.kol.model.elements.ActionElement;
 
 public class FightItem extends ActionElement 
 {

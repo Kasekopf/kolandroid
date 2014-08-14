@@ -36,10 +36,10 @@ import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.ChoiceModel;
 import com.starfish.kol.model.models.CraftingModel;
-import com.starfish.kol.model.models.FightModel;
 import com.starfish.kol.model.models.StatsModel;
 import com.starfish.kol.model.models.WebModel;
 import com.starfish.kol.model.models.chat.ChatState;
+import com.starfish.kol.model.models.fight.FightModel;
 import com.starfish.kol.model.models.inventory.InventoryModel;
 import com.starfish.kol.model.models.skill.SkillsModel;
 
