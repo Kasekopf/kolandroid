@@ -11,6 +11,7 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.chat.ChatService;
 import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.android.view.ModelWrapper;
+import com.starfish.kol.gamehandler.DataContext;
 import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
@@ -71,5 +72,10 @@ public class LoginScreen extends ActionBarActivity implements ViewContext {
 	@Override
 	public LoadingContext createLoadingContext() {
 		return LoadingContext.NONE;
+	}
+
+	@Override
+	public DataContext getDataContext() {
+		return baseContext.getDataContext();
 	}
 }

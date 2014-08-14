@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.starfish.kol.android.game.GameScreen;
 import com.starfish.kol.android.login.LoginScreen;
+import com.starfish.kol.gamehandler.DataContext;
 import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
@@ -24,11 +25,14 @@ import com.starfish.kol.model.models.skill.SkillsModel;
 
 public class AndroidViewContext implements ViewContext {
 	private Handler activityLauncher;
+	private AndroidDataContext data;
+	
 	
 	public AndroidViewContext(Context context) {
 		assert (Looper.getMainLooper().getThread() == Thread.currentThread()) : "AndroidViewContext should only be created from the main thread.";
 		
 		this.activityLauncher = new ActivityLauncher(context);
+		this.data = new AndroidDataContext(context);
 	}
 	
 	@Override
@@ -80,5 +84,10 @@ public class AndroidViewContext implements ViewContext {
 			Log.i("ViewContext", "Launching activity for " + type);
 			context.startActivity(intent);
 		}
+	}
+
+	@Override
+	public DataContext getDataContext() {
+		return data;
 	}
 }

@@ -21,4 +21,11 @@ public interface ViewContext {
 	 * @returns A reference to a new progress indicator.
 	 */
 	public LoadingContext createLoadingContext();
+	
+	/*
+	 * Provide a context for accessing game data.
+	 * 
+	 * @returns A reference to a new context for game data.
+	 */
+	public DataContext getDataContext();
 }

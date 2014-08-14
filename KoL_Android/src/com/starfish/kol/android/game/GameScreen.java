@@ -30,6 +30,7 @@ import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.android.view.ModelWrapper;
 import com.starfish.kol.android.view.ProgressLoader;
 import com.starfish.kol.connection.Session;
+import com.starfish.kol.gamehandler.DataContext;
 import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
@@ -228,5 +229,10 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 	@Override
 	public LoadingContext createLoadingContext() {
 		return loader;
+	}
+
+	@Override
+	public DataContext getDataContext() {
+		return baseContext.getDataContext();
 	}
 }
