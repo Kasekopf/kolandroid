@@ -23,6 +23,8 @@ public class WebController extends ModelController<Void, WebModel> {
 
 	private final static Regex BODY_TAG = new Regex("<body[^>]*?>");
 	
+	private transient WebView web;
+	
 	public WebController(WebModel model) {
 		super(model);
 	}
@@ -39,6 +41,14 @@ public class WebController extends ModelController<Void, WebModel> {
     		getModel().makeRequest(formData);
         }
     }
+
+	public void updateModel(WebModel base) {
+		this.changeModel(base);
+		if(web != null) {
+			String fixedHtml = BODY_TAG.replaceAll(base.getHTML(), "$0<meta name=\"viewport\" content=\"width=device-width, initial-scale=0.5\">");
+			web.loadData(fixedHtml, "text/html", null);
+		}
+	}
 	
 	@Override
 	public int getView() {
@@ -79,7 +89,7 @@ public class WebController extends ModelController<Void, WebModel> {
 		};
 		
 
-		WebView web = (WebView)view.findViewById(R.id.webview);
+		web = (WebView)view.findViewById(R.id.webview);
 		//Fix the viewport size by inserting a viewport tag
 		String fixedHtml = BODY_TAG.replaceAll(model.getHTML(), "$0<meta name=\"viewport\" content=\"width=device-width, initial-scale=0.5\">");
 		Log.i("WebFragment", "Loading content of size " + fixedHtml.length());

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.controller.GameFragmentController;
 import com.starfish.kol.android.controllers.ChoiceController;
+import com.starfish.kol.android.controllers.CraftingController;
 import com.starfish.kol.android.controllers.FightController;
 import com.starfish.kol.android.controllers.WebController;
 import com.starfish.kol.android.controllers.inventory.InventoryController;
@@ -79,7 +80,7 @@ public class PrimaryRoute implements ResponseHandler {
 		
 		if(response.url.contains("craft.php")) {
 			CraftingModel model = new CraftingModel(session, response);
-			return new GameFragmentController<Void, CraftingModel>(model);
+			return new CraftingController(model);
 		}
 		
 		WebModel model = new WebModel(session, response);

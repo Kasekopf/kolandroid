@@ -29,10 +29,10 @@ public class InventoryModel extends GroupModel<InventoryPocketModel> {
 	public InventoryModel(Session s, ServerReply text) {
 		super(s);
 
-		consume = new InventoryPocketModel(s, "inventory.php?which=1");
-		equip = new EquipmentPocketModel(s, "inventory.php?which=2");
-		misc = new InventoryPocketModel(s, "inventory.php?which=3");
-		recent = new InventoryPocketModel(s, "inventory.php?which=f-1");
+		consume = new InventoryPocketModel("Consume", s, "inventory.php?which=1");
+		equip = new EquipmentPocketModel("Equip", s, "inventory.php?which=2");
+		misc = new InventoryPocketModel("Misc", s, "inventory.php?which=3");
+		recent = new InventoryPocketModel("Recent", s, "inventory.php?which=f-1");
 
 		loadContent(text);
 	}
@@ -72,11 +72,6 @@ public class InventoryModel extends GroupModel<InventoryPocketModel> {
 	@Override
 	public InventoryPocketModel[] getChildren() {
 		return new InventoryPocketModel[] { recent, consume, equip, misc };
-	}
-
-	@Override
-	public String[] getNames() {
-		return new String[] { "Recent", "Consume", "Equip", "Misc" };
 	}
 
 	@Override

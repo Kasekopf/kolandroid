@@ -29,8 +29,8 @@ public class EquipmentPocketModel extends InventoryPocketModel {
 	
 	private ArrayList<ModelGroup<ActionElement>> outfits = new ArrayList<ModelGroup<ActionElement>>();
 	
-	public EquipmentPocketModel(Session s, String updateUrl) {
-		super(s, updateUrl);
+	public EquipmentPocketModel(String name, Session s, String updateUrl) {
+		super(name, s, updateUrl);
 	}
 
 	protected void loadContent(ServerReply reply) {

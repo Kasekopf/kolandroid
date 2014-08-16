@@ -6,7 +6,6 @@ import android.view.View;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.game.GameFragment;
-import com.starfish.kol.android.game.fragments.CraftingFragment;
 import com.starfish.kol.android.game.fragments.SkillsFragment;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
@@ -61,7 +60,7 @@ public class GameFragmentController<C, M extends Model<C>> extends ModelControll
 		} else if (type == SkillsModel.class) {
 			fragment = new SkillsFragment();
 		} else if (type == CraftingModel.class) {
-			fragment = new CraftingFragment();
+			throw new RuntimeException("CraftingModel should not be using this controller any more");
 		} else {
 			Log.e("FragmentStack", "Unable to match view to model " + type);
 			return;

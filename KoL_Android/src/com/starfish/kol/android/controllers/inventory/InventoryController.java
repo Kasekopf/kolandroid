@@ -51,6 +51,7 @@ public class InventoryController extends GroupController<InventoryPocketModel, I
 			DialogScreen.display(web, host);
 		}
 	}
+	
 	@Override
 	public Controller getController(InventoryPocketModel child) {
 		return child.execute(childRoute);

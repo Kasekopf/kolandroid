@@ -38,6 +38,10 @@ public abstract class ModelController<C, M extends Model<C>> implements Controll
 		// do nothing by default.
 	}
 	
+	protected void changeModel(M model) {
+		this.model = model;
+	}
+	
 	@Override
 	public void disconnect() {
 		callback.close();
