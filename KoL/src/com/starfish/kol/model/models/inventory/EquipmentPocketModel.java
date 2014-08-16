@@ -66,6 +66,10 @@ public class EquipmentPocketModel extends InventoryPocketModel {
 		this.access();
 		return outfits;
 	}
+
+	public <Result> Result execute(InventoryVisitor<Result> visitor) {
+		return visitor.display(this);
+	}
 	
 	public CustomOutfitBuilder saveOutfit() {
 		return new CustomOutfitBuilder();

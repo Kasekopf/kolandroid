@@ -1,4 +1,4 @@
-package com.starfish.kol.android.controller;
+package com.starfish.kol.android.controllers;
 
 import java.util.ArrayList;
 
@@ -8,12 +8,16 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.controller.Controller;
+import com.starfish.kol.android.controller.ModelController;
 import com.starfish.kol.android.dialogs.FunkslingingDialog;
+import com.starfish.kol.android.screen.DialogScreen;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.android.screen.ViewScreen;
+import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.android.util.listbuilders.SubtextBuilder;
-import com.starfish.kol.android.util.searchlist.SearchListFragment;
+import com.starfish.kol.android.util.searchlist.SearchListController;
 import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.models.fight.FightItem;
 import com.starfish.kol.model.models.fight.FightModel;
@@ -40,53 +44,59 @@ public class FightController extends ModelController<Void, FightModel> {
 	}
 
 	@Override
-	public void connect(View view, FightModel model, final Screen host) {
-		final Button attack = (Button)view.findViewById(R.id.fight_attack);
+	public void connect(View view, final FightModel model, final Screen host) {
+		final Button attack = (Button) view.findViewById(R.id.fight_attack);
 		attack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				ActionElement action = getModel().getAttack();
-				if(action != null)
+				ActionElement action = model.getAttack();
+				if (action != null)
 					action.submit(host.getViewContext());
 			}
 		});
-		
-		final Button useskill = (Button)view.findViewById(R.id.fight_skill);
+
+		final Button useskill = (Button) view.findViewById(R.id.fight_skill);
 		useskill.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View btn) {
-				ArrayList<FightSkill> skills = getModel().getSkills();
+				ArrayList<FightSkill> skills = model.getSkills();
 				SubtextBuilder<FightSkill> builder = new SubtextBuilder<FightSkill>();
-				
-				SearchListFragment<FightSkill> newFragment = SearchListFragment.newInstance("Choose a skill to use:", builder, skills);
-			    newFragment.show(host.getFragmentManager(), "dialog");
+
+				Controller skillsController = new SearchListController<FightSkill>(
+						skills, builder);
+				DialogScreen.display(skillsController, host,
+						"Choose a skill to use:");
 			}
 		});
-		
-		final Button useitem = (Button)view.findViewById(R.id.fight_items);
+
+		final Button useitem = (Button) view.findViewById(R.id.fight_items);
 		useitem.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View btn) {
-				ArrayList<FightItem> items = getModel().getItems();
-				
-				DialogFragment newFragment;
-				
-				if(getModel().hasFunkslinging())
-					newFragment = FunkslingingDialog.create(items);
-				else
-					newFragment = SearchListFragment.newInstance("Choose an item to use:", items);
-				
-			    newFragment.show(host.getFragmentManager(), "dialog");
-			}			
+				ArrayList<FightItem> items = model.getItems();
+
+				if (getModel().hasFunkslinging()) {
+					DialogFragment newFragment = FunkslingingDialog
+							.create(items);
+					newFragment.show(host.getFragmentManager(), "dialog");
+				} else {
+					DefaultBuilder<FightItem> builder = new DefaultBuilder<FightItem>();
+					Controller itemsController = new SearchListController<FightItem>(
+							items, builder);
+					DialogScreen.display(itemsController, host,
+							"Choose an item to use:");
+				}
+			}
 		});
-		
-		if(model.isFightOver()) {
+
+		if (model.isFightOver()) {
 			attack.setEnabled(false);
 			useskill.setEnabled(false);
 			useitem.setEnabled(false);
 		}
-		
-		ViewScreen webscreen = (ViewScreen)view.findViewById(R.id.fight_webscreen);
+
+		ViewScreen webscreen = (ViewScreen) view
+				.findViewById(R.id.fight_webscreen);
 		WebController web = new WebController(model);
 		webscreen.display(web, host);
 	}

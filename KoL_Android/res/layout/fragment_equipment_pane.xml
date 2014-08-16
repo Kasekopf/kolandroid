@@ -18,11 +18,10 @@
             android:background="#000"
             />
         
-	    <FrameLayout
-	        android:id="@+id/inventory_list"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        />
+    <com.starfish.kol.android.screen.ViewScreen
+        android:id="@+id/inventory_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     </LinearLayout>
 
     <LinearLayout 

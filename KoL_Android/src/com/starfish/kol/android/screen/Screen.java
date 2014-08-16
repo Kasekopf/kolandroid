@@ -7,6 +7,9 @@ import com.starfish.kol.gamehandler.ViewContext;
 
 public interface Screen {
 	public FragmentManager getFragmentManager();
+	public FragmentManager getChildFragmentManager();
 	public Activity getActivity();
 	public ViewContext getViewContext();
+	
+	public void dismiss();
 }

@@ -138,4 +138,8 @@ public class InventoryPocketModel extends LiveModel {
 				this.items.add(newsection);
 		}
 	}
+	
+	public <Result> Result execute(InventoryVisitor<Result> visitor) {
+		return visitor.display(this);
+	}
 }

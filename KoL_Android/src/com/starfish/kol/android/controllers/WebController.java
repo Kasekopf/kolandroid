@@ -1,4 +1,4 @@
-package com.starfish.kol.android.controller;
+package com.starfish.kol.android.controllers;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -9,6 +9,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.controller.ModelController;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.model.models.WebModel;

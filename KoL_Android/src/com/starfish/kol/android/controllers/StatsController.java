@@ -1,10 +1,11 @@
-package com.starfish.kol.android.controller;
+package com.starfish.kol.android.controllers;
 
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.controller.ModelController;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.android.util.ProgressBar;

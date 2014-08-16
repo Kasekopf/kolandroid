@@ -12,27 +12,37 @@ import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.gamehandler.ViewContext;
 
 public class ViewScreen extends FrameLayout implements Screen {
-    public ViewScreen(Context context) {
-        super(context);
-    }
+	public ViewScreen(Context context) {
+		super(context);
+	}
 
-    public ViewScreen(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
+	public ViewScreen(Context context, AttributeSet attrs) {
+		this(context, attrs, 0);
+	}
 
-    public ViewScreen(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
-    
-    private Screen base;
-    
-    public void display(Controller c, Screen base) {
-    	this.base = base;
-    	
-    	LayoutInflater inflater = base.getActivity().getLayoutInflater();
-    	View view = inflater.inflate(c.getView(), this, true);
-    	c.connect(view, this);
-    }
+	public ViewScreen(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+	}
+
+	private Controller controller;
+	private Screen base;
+
+	public void display(Controller c, Screen base) {
+		this.base = base;
+		this.controller = c;
+
+		LayoutInflater inflater = base.getActivity().getLayoutInflater();
+		View view = inflater.inflate(controller.getView(), this, true);
+		controller.connect(view, this);
+	}
+
+	@Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+		// View is now detached, and about to be destroyed
+		if (controller != null)
+			controller.disconnect();
+	}
 
 	@Override
 	public FragmentManager getFragmentManager() {
@@ -47,6 +57,16 @@ public class ViewScreen extends FrameLayout implements Screen {
 	@Override
 	public ViewContext getViewContext() {
 		return base.getViewContext();
+	}
+
+	@Override
+	public FragmentManager getChildFragmentManager() {
+		return base.getChildFragmentManager();
+	}
+
+	@Override
+	public void dismiss() {
+		// do nothing...?
 	}
 
 }

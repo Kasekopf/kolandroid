@@ -2,11 +2,12 @@ package com.starfish.kol.android.view;
 
 import android.util.Log;
 
-import com.starfish.kol.android.controller.ChoiceController;
 import com.starfish.kol.android.controller.Controller;
-import com.starfish.kol.android.controller.FightController;
 import com.starfish.kol.android.controller.GameFragmentController;
-import com.starfish.kol.android.controller.WebController;
+import com.starfish.kol.android.controllers.ChoiceController;
+import com.starfish.kol.android.controllers.FightController;
+import com.starfish.kol.android.controllers.WebController;
+import com.starfish.kol.android.controllers.inventory.InventoryController;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
@@ -68,7 +69,7 @@ public class PrimaryRoute implements ResponseHandler {
 		
 		if(response.url.contains("inventory.php")) {
 			InventoryModel model = new InventoryModel(session, response);
-			return new GameFragmentController<Void, InventoryModel>(model);
+			return new InventoryController(model);
 		}
 		
 		if(response.url.contains("skills.php")) {

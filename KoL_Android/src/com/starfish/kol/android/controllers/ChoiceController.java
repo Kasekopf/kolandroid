@@ -1,4 +1,4 @@
-package com.starfish.kol.android.controller;
+package com.starfish.kol.android.controllers;
 
 import android.util.Log;
 import android.view.View;
@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.controller.ModelController;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.android.screen.ViewScreen;

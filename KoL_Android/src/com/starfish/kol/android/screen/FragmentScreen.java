@@ -1,7 +1,7 @@
 package com.starfish.kol.android.screen;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.gamehandler.ViewContext;
 
-public class FragmentScreen extends Fragment implements Screen {
+public class FragmentScreen extends DialogFragment implements Screen {
 	private Controller controller = null;
 	
 	@Override
@@ -31,11 +31,15 @@ public class FragmentScreen extends Fragment implements Screen {
 		super.onDestroyView();
 	}
 	
-	public static FragmentScreen create(Controller controller) {
+	public static Bundle prepare(Controller controller) {
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("controller", controller);
+		return bundle;
+	}
+	
+	public static FragmentScreen create(Controller controller) {
 		FragmentScreen res = new FragmentScreen();
-		res.setArguments(bundle);
+		res.setArguments(FragmentScreen.prepare(controller));
 		return res;
 	}
 

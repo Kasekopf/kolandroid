@@ -20,8 +20,8 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.chat.ChatConnection;
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.controller.ModelController;
-import com.starfish.kol.android.controller.StatsController;
-import com.starfish.kol.android.controller.StatsController.StatsCallbacks;
+import com.starfish.kol.android.controllers.StatsController;
+import com.starfish.kol.android.controllers.StatsController.StatsCallbacks;
 import com.starfish.kol.android.game.fragments.NavigationFragment;
 import com.starfish.kol.android.screen.FragmentScreen;
 import com.starfish.kol.android.screen.Screen;
@@ -37,7 +37,8 @@ import com.starfish.kol.model.models.StatsModel;
 import com.starfish.kol.model.models.chat.ChatState;
 import com.starfish.kol.request.ResponseHandler;
 
-public class GameScreen extends ActionBarActivity implements StatsCallbacks, ViewContext {
+public class GameScreen extends ActionBarActivity implements StatsCallbacks,
+		ViewContext {
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
 	 * navigation drawer.
@@ -45,53 +46,55 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 	private NavigationFragment mNavigationDrawerFragment;
 
 	private DialogFragment dialog;
-	
+
 	private StatsController stats;
-	
+
 	private ViewContext baseContext;
 	private LoadingContext loader;
-	
+
 	private ChatConnection chat;
-	
+
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_screen);
-		
+
 		this.baseContext = new AndroidViewContext(this);
 
-		View base = (View)this.findViewById(R.id.game_progress_popup);
-		ProgressBar bar = (ProgressBar)this.findViewById(R.id.game_progress_bar);
-		TextView text = (TextView)this.findViewById(R.id.game_progress_text);
-		
+		View base = (View) this.findViewById(R.id.game_progress_popup);
+		ProgressBar bar = (ProgressBar) this
+				.findViewById(R.id.game_progress_bar);
+		TextView text = (TextView) this.findViewById(R.id.game_progress_text);
+
 		this.loader = new ProgressLoader(base, bar, text);
 		base.setVisibility(View.GONE);
-		
+
 		mNavigationDrawerFragment = (NavigationFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
-		
+
 		mTitle = getTitle();
 
 		Intent intent = this.getIntent();
-		
+
 		@SuppressWarnings("unchecked")
-		ModelController<?, Model<?>> c = (ModelController<?, Model<?>>)intent.getSerializableExtra("controller");
+		ModelController<?, Model<?>> c = (ModelController<?, Model<?>>) intent
+				.getSerializableExtra("controller");
 		Model<?> model = c.getModel();
 		Session session = model.getSession();
 		Log.i("GameScreen", "Session: " + session);
-		
+
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(session, R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 
 		this.stats = new StatsController(new StatsModel(session));
-		ViewScreen statsScreen = (ViewScreen)findViewById(R.id.game_statsscreen);
+		ViewScreen statsScreen = (ViewScreen) findViewById(R.id.game_statsscreen);
 		statsScreen.display(stats, new Screen() {
 			@Override
 			public FragmentManager getFragmentManager() {
@@ -107,13 +110,22 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 			public ViewContext getViewContext() {
 				return GameScreen.this;
 			}
-			
+
+			@Override
+			public FragmentManager getChildFragmentManager() {
+				return GameScreen.this.getSupportFragmentManager();
+			}
+
+			@Override
+			public void dismiss() {
+				// do nothing...?
+			}
 		});
 
 		chat = new ChatConnection(session) {
 			@Override
 			public void updateMessages(ChatState base) {
-				//do nothing
+				// do nothing
 			}
 		};
 		displayIntent(this.getIntent(), false);
@@ -126,29 +138,30 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 	}
 
 	private void displayIntent(Intent intent, boolean addToBackStack) {
-		if(dialog != null) {
+		if (dialog != null) {
 			dialog.dismiss();
 			dialog = null;
 		}
-	
-		if(!intent.hasExtra("controller")) {
-			//the intent to launch this came from a back action
+
+		if (!intent.hasExtra("controller")) {
+			// the intent to launch this came from a back action
 			// i.e. back from the chat
-			//Do not shift the game view
+			// Do not shift the game view
 			Log.i("GameScreen", "GameScreen recieved intent without model");
 			return;
 		}
-		
-		Controller controller = (Controller)intent.getSerializableExtra("controller");
+
+		Controller controller = (Controller) intent
+				.getSerializableExtra("controller");
 		FragmentScreen screen = FragmentScreen.create(controller);
-		
-		FragmentTransaction trans = getSupportFragmentManager().beginTransaction()
-				.replace(R.id.game_mainfragment, screen);
-		if(addToBackStack)
+
+		FragmentTransaction trans = getSupportFragmentManager()
+				.beginTransaction().replace(R.id.game_mainfragment, screen);
+		if (addToBackStack)
 			trans = trans.addToBackStack(null);
 		trans.commit();
-		
-		if(stats != null)
+
+		if (stats != null)
 			stats.refresh();
 	}
 
@@ -157,13 +170,13 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		super.onStop();
 		chat.stop(this);
 	}
-	
+
 	@Override
 	public void onStart() {
 		super.onStart();
 		chat.start(this);
 	}
-	
+
 	public void restoreActionBar() {
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -187,7 +200,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 				stats.showQuests();
 			return true;
 		case R.id.action_chat:
-			if(chat != null)
+			if (chat != null)
 				chat.openChat(this, this);
 			return true;
 		}
@@ -201,12 +214,12 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		actionBar.setTitle(username);
 		actionBar.setSubtitle(subtext);
 	}
-	
+
 	@Override
 	public ResponseHandler getPrimaryRoute() {
 		return baseContext.getPrimaryRoute();
 	}
-	
+
 	@Override
 	public LoadingContext createLoadingContext() {
 		return loader;

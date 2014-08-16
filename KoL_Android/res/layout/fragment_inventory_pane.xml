@@ -5,7 +5,7 @@
     android:orientation="vertical"
     tools:context="com.starfish.kol.android.dialogs.InventoryPaneFragment" >
 
-    <FrameLayout
+    <com.starfish.kol.android.screen.ViewScreen
         android:id="@+id/inventory_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
