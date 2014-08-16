@@ -6,11 +6,8 @@
     android:background="#fff"
     tools:context="com.starfish.kol.android.game.fragments.FightFragment" >
 
-    <!-- TODO: Update blank fragment layout -->
-    
-	
-    <WebView
-        android:id="@+id/webview"
+    <com.starfish.kol.android.screen.ViewScreen
+        android:id="@+id/fight_webscreen"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
