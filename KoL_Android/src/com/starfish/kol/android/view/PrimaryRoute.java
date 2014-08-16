@@ -2,7 +2,9 @@ package com.starfish.kol.android.view;
 
 import android.util.Log;
 
+import com.starfish.kol.android.controller.ChoiceController;
 import com.starfish.kol.android.controller.Controller;
+import com.starfish.kol.android.controller.FightController;
 import com.starfish.kol.android.controller.GameFragmentController;
 import com.starfish.kol.android.controller.WebController;
 import com.starfish.kol.android.screen.ScreenSelection;
@@ -56,12 +58,12 @@ public class PrimaryRoute implements ResponseHandler {
 		
 		if(response.url.contains("fight.php")) {
 			FightModel model = new FightModel(session, response);
-			return new GameFragmentController<Void, FightModel>(model);
+			return new FightController(model);
 		}
 		
 		if(response.url.contains("choice.php")) {
 			ChoiceModel model = new ChoiceModel(session, response);
-			return new GameFragmentController<Void, ChoiceModel>(model);
+			return new ChoiceController(model);
 		}
 		
 		if(response.url.contains("inventory.php")) {

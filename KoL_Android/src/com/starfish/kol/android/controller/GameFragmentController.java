@@ -6,9 +6,7 @@ import android.view.View;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.game.GameFragment;
-import com.starfish.kol.android.game.fragments.ChoiceFragment;
 import com.starfish.kol.android.game.fragments.CraftingFragment;
-import com.starfish.kol.android.game.fragments.FightFragment;
 import com.starfish.kol.android.game.fragments.SkillsFragment;
 import com.starfish.kol.android.game.fragments.inventory.InventoryFragment;
 import com.starfish.kol.android.screen.Screen;
@@ -56,9 +54,9 @@ public class GameFragmentController<C, M extends Model<C>> extends ModelControll
 		if (type == WebModel.class) {
 			throw new RuntimeException("WebModel should not be using this controller any more");
 		} else if (type == FightModel.class) {
-			fragment = new FightFragment();
+			throw new RuntimeException("FightModel should not be using this controller any more");
 		} else if (type == ChoiceModel.class) {
-			fragment = new ChoiceFragment();
+			throw new RuntimeException("ChoiceModel should not be using this controller any more");
 		} else if (type == InventoryModel.class) {
 			fragment = new InventoryFragment();
 		} else if (type == SkillsModel.class) {

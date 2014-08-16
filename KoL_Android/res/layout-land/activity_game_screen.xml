@@ -19,8 +19,8 @@
 	    	android:layout_height="match_parent"
 	   		android:orientation="horizontal">
 	        
-		    <FrameLayout
-		        android:id="@+id/game_statsfragment"
+            <com.starfish.kol.android.screen.ViewScreen
+                android:id="@+id/game_statsscreen"
 		        android:layout_width="wrap_content"
 		        android:layout_height="match_parent" />
 		    

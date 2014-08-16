@@ -1,8 +1,10 @@
 package com.starfish.kol.android.game;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -22,6 +24,8 @@ import com.starfish.kol.android.controller.StatsController;
 import com.starfish.kol.android.controller.StatsController.StatsCallbacks;
 import com.starfish.kol.android.game.fragments.NavigationFragment;
 import com.starfish.kol.android.screen.FragmentScreen;
+import com.starfish.kol.android.screen.Screen;
+import com.starfish.kol.android.screen.ViewScreen;
 import com.starfish.kol.android.view.AndroidViewContext;
 import com.starfish.kol.android.view.ProgressLoader;
 import com.starfish.kol.connection.Session;
@@ -86,10 +90,25 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		mNavigationDrawerFragment.setUp(session, R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 
-		StatsController controller = new StatsController(new StatsModel(session));
-		FragmentScreen screen = FragmentScreen.create(controller);
-		getSupportFragmentManager().beginTransaction()
-				.add(R.id.game_statsfragment, screen).commit();
+		this.stats = new StatsController(new StatsModel(session));
+		ViewScreen statsScreen = (ViewScreen)findViewById(R.id.game_statsscreen);
+		statsScreen.display(stats, new Screen() {
+			@Override
+			public FragmentManager getFragmentManager() {
+				return GameScreen.this.getSupportFragmentManager();
+			}
+
+			@Override
+			public Activity getActivity() {
+				return GameScreen.this;
+			}
+
+			@Override
+			public ViewContext getViewContext() {
+				return GameScreen.this;
+			}
+			
+		});
 
 		chat = new ChatConnection(session) {
 			@Override
