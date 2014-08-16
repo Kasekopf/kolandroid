@@ -117,7 +117,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 			}
 
 			@Override
-			public void dismiss() {
+			public void close() {
 				// do nothing...?
 			}
 		});

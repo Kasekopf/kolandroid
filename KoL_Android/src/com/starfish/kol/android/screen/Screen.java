@@ -11,5 +11,5 @@ public interface Screen {
 	public Activity getActivity();
 	public ViewContext getViewContext();
 	
-	public void dismiss();
+	public void close();
 }

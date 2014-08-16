@@ -62,8 +62,7 @@ public class FightController extends ModelController<Void, FightModel> {
 				ArrayList<FightSkill> skills = model.getSkills();
 				SubtextBuilder<FightSkill> builder = new SubtextBuilder<FightSkill>();
 
-				Controller skillsController = new SearchListController<FightSkill>(
-						skills, builder);
+				Controller skillsController = SearchListController.create(skills, builder);
 				DialogScreen.display(skillsController, host,
 						"Choose a skill to use:");
 			}
@@ -81,8 +80,7 @@ public class FightController extends ModelController<Void, FightModel> {
 					newFragment.show(host.getFragmentManager(), "dialog");
 				} else {
 					DefaultBuilder<FightItem> builder = new DefaultBuilder<FightItem>();
-					Controller itemsController = new SearchListController<FightItem>(
-							items, builder);
+					Controller itemsController = SearchListController.create(items, builder);
 					DialogScreen.display(itemsController, host,
 							"Choose an item to use:");
 				}

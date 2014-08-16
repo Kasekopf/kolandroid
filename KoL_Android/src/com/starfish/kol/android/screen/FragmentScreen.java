@@ -47,4 +47,10 @@ public class FragmentScreen extends DialogFragment implements Screen {
 	public ViewContext getViewContext() {
 		return (ViewContext)this.getActivity();
 	}
+
+
+	@Override
+	public void close() {
+		// do nothing
+	}
 }
