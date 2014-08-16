@@ -9,12 +9,11 @@ import android.view.MenuItem;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.chat.ChatService;
+import com.starfish.kol.android.screen.FragmentScreen;
 import com.starfish.kol.android.view.AndroidViewContext;
-import com.starfish.kol.android.view.ModelWrapper;
 import com.starfish.kol.gamehandler.DataContext;
 import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.model.models.login.LoginModel;
 import com.starfish.kol.request.ResponseHandler;
 
 public class LoginScreen extends ActionBarActivity implements ViewContext {
@@ -28,12 +27,8 @@ public class LoginScreen extends ActionBarActivity implements ViewContext {
 		this.baseContext = new AndroidViewContext(this);
 		
 		if (savedInstanceState == null) {
-
-			LoginModel login = new LoginModel();
-			
-			LoginFragment frag = new LoginFragment();
-			frag.setArguments(ModelWrapper.bundle(login));
-
+			LoginController login = new LoginController();
+			FragmentScreen frag = FragmentScreen.create(login);
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.game_mainfragment, frag).commit();
 		}
