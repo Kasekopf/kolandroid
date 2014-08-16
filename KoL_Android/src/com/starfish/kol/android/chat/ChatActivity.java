@@ -31,7 +31,6 @@ import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.DataContext;
 import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.model.Model;
 import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.elements.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChatAction;
@@ -42,6 +41,7 @@ import com.starfish.kol.model.models.chat.ChatState;
 import com.starfish.kol.model.models.chat.ChatText;
 import com.starfish.kol.model.models.chat.actions.SetCurrentRoomAction;
 import com.starfish.kol.model.models.chat.actions.SubmitChatAction;
+import com.starfish.kol.request.ResponseHandler;
 
 public class ChatActivity extends ActionBarActivity implements ChatroomHost,
 		ChatChannelDialogCallback, ViewContext {
@@ -281,11 +281,6 @@ public class ChatActivity extends ActionBarActivity implements ChatroomHost,
 	}
 
 	@Override
-	public <E extends Model<?>> void display(E model) {
-		baseContext.display(model);
-	}
-
-	@Override
 	public LoadingContext createLoadingContext() {
 		return LoadingContext.NONE;
 	}
@@ -293,5 +288,10 @@ public class ChatActivity extends ActionBarActivity implements ChatroomHost,
 	@Override
 	public DataContext getDataContext() {
 		return baseContext.getDataContext();
+	}
+
+	@Override
+	public ResponseHandler getPrimaryRoute() {
+		return baseContext.getPrimaryRoute();
 	}
 }

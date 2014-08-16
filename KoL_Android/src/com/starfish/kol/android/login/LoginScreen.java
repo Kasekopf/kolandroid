@@ -14,8 +14,8 @@ import com.starfish.kol.android.view.ModelWrapper;
 import com.starfish.kol.gamehandler.DataContext;
 import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.login.LoginModel;
+import com.starfish.kol.request.ResponseHandler;
 
 public class LoginScreen extends ActionBarActivity implements ViewContext {
 	private ViewContext baseContext;
@@ -65,8 +65,8 @@ public class LoginScreen extends ActionBarActivity implements ViewContext {
 	}
 
 	@Override
-	public <E extends Model<?>> void display(E model) {
-		baseContext.display(model);
+	public ResponseHandler getPrimaryRoute() {
+		return baseContext.getPrimaryRoute();
 	}
 
 	@Override

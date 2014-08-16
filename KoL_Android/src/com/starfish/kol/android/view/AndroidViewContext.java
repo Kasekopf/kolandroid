@@ -9,40 +9,76 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
+import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.game.GameScreen;
 import com.starfish.kol.android.login.LoginScreen;
+import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.gamehandler.DataContext;
 import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.model.Model;
-import com.starfish.kol.model.models.ChoiceModel;
-import com.starfish.kol.model.models.CraftingModel;
-import com.starfish.kol.model.models.WebModel;
-import com.starfish.kol.model.models.fight.FightModel;
-import com.starfish.kol.model.models.inventory.InventoryModel;
-import com.starfish.kol.model.models.login.LoginModel;
-import com.starfish.kol.model.models.skill.SkillsModel;
+import com.starfish.kol.request.ResponseHandler;
 
 public class AndroidViewContext implements ViewContext {
 	private Handler activityLauncher;
 	private AndroidDataContext data;
 	
+	private ResponseHandler primaryRoute;
 	
 	public AndroidViewContext(Context context) {
 		assert (Looper.getMainLooper().getThread() == Thread.currentThread()) : "AndroidViewContext should only be created from the main thread.";
 		
 		this.activityLauncher = new ActivityLauncher(context);
 		this.data = new AndroidDataContext(context);
+		
+		ScreenSelection screens = new ScreenSelection() {
+			@Override
+			public void displayExternal(Controller c) {
+				IntentBuilder builder = new IntentBuilder(LoginScreen.class, c);
+				Message.obtain(activityLauncher, 0, builder).sendToTarget();
+			}
+
+			@Override
+			public void displayPrimary(Controller c) {
+				IntentBuilder builder = new IntentBuilder(GameScreen.class, c);
+				Message.obtain(activityLauncher, 0, builder).sendToTarget();
+			}
+
+			@Override
+			public void displayDialog(Controller c) {
+				IntentBuilder builder = new IntentBuilder(GameScreen.class, c);
+				Message.obtain(activityLauncher, 0, builder).sendToTarget();
+			}			
+		};
+		this.primaryRoute = new PrimaryRoute(screens);		
 	}
-	
+
 	@Override
-	public <E extends Model<?>> void display(E model) {
-		Message.obtain(activityLauncher, 0, model).sendToTarget();		
+	public ResponseHandler getPrimaryRoute() {
+		return primaryRoute;
 	}
 
 	@Override
 	public LoadingContext createLoadingContext() {
 		return LoadingContext.NONE;
+	}
+	
+	private static class IntentBuilder
+	{
+		private final Class<?> toLaunch;
+		private final Controller toInclude;
+		public IntentBuilder(Class<?> toLaunch, Controller toInclude) {
+			this.toLaunch = toLaunch;
+			this.toInclude = toInclude;
+		}
+		
+		public Intent build(Context context) {
+			Intent intent = new Intent(context, toLaunch);
+			intent.putExtra("controller", toInclude);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			Log.i("ViewContext", "Constructing new intent for " + toInclude.getClass());
+			return intent;
+		}
+		
 	}
 	
 	private static class ActivityLauncher extends Handler
@@ -61,27 +97,8 @@ public class AndroidViewContext implements ViewContext {
 				return;
 			}
 			
-			Model<?> model = (Model<?>)m.obj;
-
-			Intent intent = null;
-			Class<?> type = model.getClass();
-			
-			if(type == LoginModel.class) {
-				intent = new Intent(context, LoginScreen.class);
-			} else if(type == WebModel.class || type == FightModel.class || type == ChoiceModel.class || type == InventoryModel.class || type == SkillsModel.class || type == CraftingModel.class) {
-				intent = new Intent(context, GameScreen.class);
-			}
-			
-			if(intent == null) {
-				Log.i("ViewContext", "Unable to display model of type " + type);
-				return;
-			}
-			
-			ModelWrapper wrapper = new ModelWrapper(model);
-			wrapper.fillIntent(intent);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			
-			Log.i("ViewContext", "Launching activity for " + type);
+			IntentBuilder builder = (IntentBuilder)m.obj;
+			Intent intent = builder.build(context);
 			context.startActivity(intent);
 		}
 	}

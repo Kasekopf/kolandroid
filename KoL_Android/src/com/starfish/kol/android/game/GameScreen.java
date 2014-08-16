@@ -16,35 +16,24 @@ import android.widget.TextView;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.chat.ChatConnection;
-import com.starfish.kol.android.dialogs.WebDialog;
-import com.starfish.kol.android.game.fragments.ChoiceFragment;
-import com.starfish.kol.android.game.fragments.CraftingFragment;
-import com.starfish.kol.android.game.fragments.FightFragment;
+import com.starfish.kol.android.controller.Controller;
+import com.starfish.kol.android.controller.ModelController;
+import com.starfish.kol.android.controller.StatsController;
+import com.starfish.kol.android.controller.StatsController.StatsCallbacks;
 import com.starfish.kol.android.game.fragments.NavigationFragment;
-import com.starfish.kol.android.game.fragments.SkillsFragment;
-import com.starfish.kol.android.game.fragments.StatsFragment;
-import com.starfish.kol.android.game.fragments.StatsFragment.StatsCallbacks;
-import com.starfish.kol.android.game.fragments.WebFragment;
-import com.starfish.kol.android.game.fragments.inventory.InventoryFragment;
+import com.starfish.kol.android.screen.FragmentScreen;
 import com.starfish.kol.android.view.AndroidViewContext;
-import com.starfish.kol.android.view.ModelWrapper;
 import com.starfish.kol.android.view.ProgressLoader;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.DataContext;
 import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
-import com.starfish.kol.model.models.ChoiceModel;
-import com.starfish.kol.model.models.CraftingModel;
 import com.starfish.kol.model.models.StatsModel;
-import com.starfish.kol.model.models.WebModel;
 import com.starfish.kol.model.models.chat.ChatState;
-import com.starfish.kol.model.models.fight.FightModel;
-import com.starfish.kol.model.models.inventory.InventoryModel;
-import com.starfish.kol.model.models.skill.SkillsModel;
+import com.starfish.kol.request.ResponseHandler;
 
 public class GameScreen extends ActionBarActivity implements StatsCallbacks, ViewContext {
-
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
 	 * navigation drawer.
@@ -53,7 +42,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 
 	private DialogFragment dialog;
 	
-	private StatsFragment mStatsFragment;
+	private StatsController stats;
 	
 	private ViewContext baseContext;
 	private LoadingContext loader;
@@ -86,9 +75,10 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		mTitle = getTitle();
 
 		Intent intent = this.getIntent();
-		ModelWrapper wrapper = new ModelWrapper(intent);		
-		Model<?> model = wrapper.getModel();
 		
+		@SuppressWarnings("unchecked")
+		ModelController<?, Model<?>> c = (ModelController<?, Model<?>>)intent.getSerializableExtra("controller");
+		Model<?> model = c.getModel();
 		Session session = model.getSession();
 		Log.i("GameScreen", "Session: " + session);
 		
@@ -96,10 +86,10 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		mNavigationDrawerFragment.setUp(session, R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 
-		mStatsFragment = new StatsFragment();
-		mStatsFragment.setArguments(ModelWrapper.bundle(new StatsModel(session)));
+		StatsController controller = new StatsController(new StatsModel(session));
+		FragmentScreen screen = FragmentScreen.create(controller);
 		getSupportFragmentManager().beginTransaction()
-				.add(R.id.game_statsfragment, mStatsFragment).commit();
+				.add(R.id.game_statsfragment, screen).commit();
 
 		chat = new ChatConnection(session) {
 			@Override
@@ -121,9 +111,8 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 			dialog.dismiss();
 			dialog = null;
 		}
-		
-		ModelWrapper wrapper = new ModelWrapper(intent); //should this really be Void?
-		if(!wrapper.hasModel()) {
+	
+		if(!intent.hasExtra("controller")) {
 			//the intent to launch this came from a back action
 			// i.e. back from the chat
 			//Do not shift the game view
@@ -131,44 +120,17 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 			return;
 		}
 		
-		Bundle bundle = wrapper.toBundle();
-		Class<?> type = wrapper.getModelType();
-
-		Log.i("GameScreen", "GameScreen recieved intent with model " + type);
+		Controller controller = (Controller)intent.getSerializableExtra("controller");
+		FragmentScreen screen = FragmentScreen.create(controller);
 		
-		GameFragment<?, ?> frag = null;
-		
-		if (type == WebModel.class) {
-			WebModel model = (WebModel)wrapper.getModel();
-			if(model.isSmall()) {
-				dialog = new WebDialog();
-				dialog.setArguments(bundle);
-			    dialog.show(getSupportFragmentManager(), "dialog");
-			    return;
-			}
-			frag = new WebFragment<WebModel>();
-		} else if (type == FightModel.class) {
-			frag = new FightFragment();
-		} else if (type == ChoiceModel.class) {
-			frag = new ChoiceFragment();
-		} else if (type == InventoryModel.class) {
-			frag = new InventoryFragment();
-		} else if (type == SkillsModel.class) {
-			frag = new SkillsFragment();
-		} else if (type == CraftingModel.class) {
-			frag = new CraftingFragment();
-		} else {
-			Log.e("FragmentStack", "Unable to match view to model " + type);
-			return;
-		}
-		frag.setArguments(bundle);
-				
 		FragmentTransaction trans = getSupportFragmentManager().beginTransaction()
-				.replace(R.id.game_mainfragment, frag);
+				.replace(R.id.game_mainfragment, screen);
 		if(addToBackStack)
 			trans = trans.addToBackStack(null);
 		trans.commit();
-		mStatsFragment.refresh();
+		
+		if(stats != null)
+			stats.refresh();
 	}
 
 	@Override
@@ -202,8 +164,8 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		int id = item.getItemId();
 		switch (id) {
 		case R.id.action_quests:
-			if (mStatsFragment != null)
-				mStatsFragment.showQuests();
+			if (stats != null)
+				stats.showQuests();
 			return true;
 		case R.id.action_chat:
 			if(chat != null)
@@ -220,12 +182,12 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 		actionBar.setTitle(username);
 		actionBar.setSubtitle(subtext);
 	}
-
+	
 	@Override
-	public <E extends Model<?>> void display(E model) {
-		baseContext.display(model);
+	public ResponseHandler getPrimaryRoute() {
+		return baseContext.getPrimaryRoute();
 	}
-
+	
 	@Override
 	public LoadingContext createLoadingContext() {
 		return loader;
@@ -234,5 +196,10 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks, Vie
 	@Override
 	public DataContext getDataContext() {
 		return baseContext.getDataContext();
+	}
+
+	@Override
+	public void register(StatsController statController) {
+		this.stats = statController;
 	}
 }

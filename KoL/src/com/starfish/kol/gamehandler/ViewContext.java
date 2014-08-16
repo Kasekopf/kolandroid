@@ -1,6 +1,6 @@
 package com.starfish.kol.gamehandler;
 
-import com.starfish.kol.model.Model;
+import com.starfish.kol.request.ResponseHandler;
 
 /**
  * A representation of the current view context. This interface can create new
@@ -8,13 +8,13 @@ import com.starfish.kol.model.Model;
  */
 public interface ViewContext {
 	/**
-	 * Display the provided model.
+	 * Get a handler to the primary route.
 	 * 
-	 * @param model
-	 *            The model to display.
+	 * @return
+	 * 		The primary route.
 	 */
-	public <E extends Model<?>> void display(E model);
-
+	public ResponseHandler getPrimaryRoute();
+	
 	/*
 	 * Provide a context to display loading information.
 	 * 
