@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.controller.ModelController;
-import com.starfish.kol.android.dialogs.ItemDialog;
+import com.starfish.kol.android.screen.DialogScreen;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.android.screen.ViewScreen;
@@ -59,9 +59,9 @@ public class InventoryPocketController extends
 
 		@Override
 		public boolean selectItem(Screen host, InventoryItem item) {
-			ItemDialog.create(item).show(host.getFragmentManager(),
-					"itemoptions");
-			return true;
+			ItemController controller = new ItemController(item);
+			DialogScreen.display(controller, host);
+			return false;
 		}
 	};
 }

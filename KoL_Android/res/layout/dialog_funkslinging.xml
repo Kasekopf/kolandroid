@@ -15,7 +15,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_weight="1"
 	        android:orientation="vertical">
-		    <FrameLayout
+    		<com.starfish.kol.android.screen.ViewScreen
 		        android:id="@+id/funksling_item1"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content" />
@@ -26,7 +26,7 @@
 		        android:background="#000"
 		       />  
 		       
-		    <FrameLayout
+    		<com.starfish.kol.android.screen.ViewScreen
 		        android:id="@+id/funksling_item2"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content" />
@@ -58,8 +58,8 @@
         android:background="#000"
        />  
        
-    <FrameLayout
-        android:id="@+id/funksling_list"
+    <com.starfish.kol.android.screen.ViewScreen
+        android:id="@+id/funkslinging_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

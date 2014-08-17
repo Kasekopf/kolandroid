@@ -1,8 +1,7 @@
-package com.starfish.kol.android.controllers;
+package com.starfish.kol.android.controllers.fight;
 
 import java.util.ArrayList;
 
-import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -10,7 +9,7 @@ import android.widget.Button;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.controller.ModelController;
-import com.starfish.kol.android.dialogs.FunkslingingDialog;
+import com.starfish.kol.android.controllers.WebController;
 import com.starfish.kol.android.screen.DialogScreen;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
@@ -75,9 +74,8 @@ public class FightController extends ModelController<Void, FightModel> {
 				ArrayList<FightItem> items = model.getItems();
 
 				if (getModel().hasFunkslinging()) {
-					DialogFragment newFragment = FunkslingingDialog
-							.create(items);
-					newFragment.show(host.getFragmentManager(), "dialog");
+					Controller itemsController = new FunkslingingController(items);
+					DialogScreen.display(itemsController, host, "Select items to use:");
 				} else {
 					DefaultBuilder<FightItem> builder = new DefaultBuilder<FightItem>();
 					Controller itemsController = SearchListController.create(items, builder);

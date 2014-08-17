@@ -5,9 +5,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.controller.ModelController;
-import com.starfish.kol.android.dialogs.ItemDialog;
-import com.starfish.kol.android.dialogs.SaveOutfitDialog;
+import com.starfish.kol.android.screen.DialogScreen;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.android.screen.ViewScreen;
@@ -49,7 +49,7 @@ public class EquipmentPocketController extends ModelController<LiveMessage, Equi
 	}
 	
 	@Override
-	public void connect(View view, EquipmentPocketModel model, final Screen host) {
+	public void connect(View view, final EquipmentPocketModel model, final Screen host) {
 
 		ViewScreen screen = (ViewScreen)view.findViewById(R.id.inventory_list);
 		list = new GroupSearchListController<InventoryItem>(model.getItems(), new SubtextBuilder<InventoryItem>(), displayPossibleActions);
@@ -68,8 +68,8 @@ public class EquipmentPocketController extends ModelController<LiveMessage, Equi
 		saveoutfit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				SaveOutfitDialog saveoutfit = SaveOutfitDialog.create(getModel().saveOutfit());
-				saveoutfit.show(host.getFragmentManager(), "saveoutfit");
+				Controller c = new CustomOutfitController(model.saveOutfit());
+				DialogScreen.display(c, host);
 			}
 		});
 	}
@@ -82,8 +82,9 @@ public class EquipmentPocketController extends ModelController<LiveMessage, Equi
 
 		@Override
 		public boolean selectItem(Screen host, InventoryItem item) {
-			ItemDialog.create(item).show(host.getFragmentManager(), "itemoptions");
-			return true;
+			ItemController controller = new ItemController(item);
+			DialogScreen.display(controller, host);
+			return false;
 		}		
 	};
 }

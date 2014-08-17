@@ -1,4 +1,4 @@
-package com.starfish.kol.android.controllers;
+package com.starfish.kol.android.controllers.skills;
 
 import java.util.ArrayList;
 
@@ -6,8 +6,8 @@ import android.view.View;
 
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.controller.GroupController;
-import com.starfish.kol.android.dialogs.BuffDialog;
-import com.starfish.kol.android.dialogs.MultiUseDialog;
+import com.starfish.kol.android.controllers.MultiusableController;
+import com.starfish.kol.android.controllers.WebController;
 import com.starfish.kol.android.screen.DialogScreen;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
@@ -55,19 +55,20 @@ public class SkillsController extends GroupController<SkillsSubmodel, SkillsMode
 			item.select(new SkillModelVisitor() {
 				@Override
 				public void display(Skill skill) {
-					MultiUseDialog.create(skill, "Cast").show(host.getFragmentManager(),
-							"skilloptions");
+					Controller controller = new MultiusableController(skill, "Cast");
+					DialogScreen.display(controller, host);
 				}
 
 				@Override
 				public void display(Buff buff) {
-					BuffDialog.create(buff).show(host.getFragmentManager(), "buffoptions");
+					BuffController controller = new BuffController(buff);
+					DialogScreen.display(controller, host);
 				}
 
 				@Override
 				public void display(RestorerItem item) {
-					MultiUseDialog.create(item, "Use").show(host.getFragmentManager(),
-							"multiuseitem");
+					Controller controller = new MultiusableController(item, "Use");
+					DialogScreen.display(controller, host);
 				}
 			});
 			return false;
