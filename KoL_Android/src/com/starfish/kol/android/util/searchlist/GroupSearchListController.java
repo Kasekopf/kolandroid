@@ -10,10 +10,10 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.binders.Binder;
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
-import com.starfish.kol.android.util.adapters.ListFullBuilder;
 import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.elements.interfaces.ModelGroup;
 
@@ -25,19 +25,19 @@ public class GroupSearchListController<F> implements Controller {
 
 	private ArrayList<ModelGroup<F>> base;
 	private ListSelector<F> selector;
-	private ListFullBuilder<ModelGroup<F>, F> builder;
+	private Binder<? super F> childBinder;
 	
 	private transient HighlightableListGroupAdapter<F> adapter;
 	private transient ExpandableListView list;
 
-	public GroupSearchListController(ArrayList<ModelGroup<F>> items, ListFullBuilder<ModelGroup<F>, F> builder, ListSelector<F> selector) {
+	public GroupSearchListController(ArrayList<ModelGroup<F>> items, Binder<? super F> childBinder, ListSelector<F> selector) {
 		this.base = items;
-		this.builder = builder;
+		this.childBinder = childBinder;
 		this.selector = selector;
 	}
 
-	public static <F extends ActionElement> GroupSearchListController<F> create(ArrayList<ModelGroup<F>> items, ListFullBuilder<ModelGroup<F>, F> builder) {
-		return new GroupSearchListController<F>(items, builder, new ActionSelector<F>());
+	public static <F extends ActionElement> GroupSearchListController<F> create(ArrayList<ModelGroup<F>> items, Binder<? super F> childBinder) {
+		return new GroupSearchListController<F>(items, childBinder, new ActionSelector<F>());
 	}
 	
 	@Override
@@ -47,7 +47,7 @@ public class GroupSearchListController<F> implements Controller {
 
 	@Override
 	public void connect(View view, final Screen host) {
-		adapter = new HighlightableListGroupAdapter<F>(view.getContext(), base, builder);
+		adapter = new HighlightableListGroupAdapter<F>(view.getContext(), base, childBinder);
 		list = (ExpandableListView) view.findViewById(R.id.list_display_list);
 		list.setOnChildClickListener(new OnChildClickListener() {
 			@Override

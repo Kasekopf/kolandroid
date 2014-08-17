@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.view.View;
 
+import com.starfish.kol.android.binders.SkillsBinder;
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.controller.GroupController;
 import com.starfish.kol.android.controllers.MultiusableController;
@@ -11,11 +12,10 @@ import com.starfish.kol.android.controllers.WebController;
 import com.starfish.kol.android.screen.DialogScreen;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
-import com.starfish.kol.android.util.listbuilders.SkillsBuilder;
-import com.starfish.kol.android.util.searchlist.ListSelector;
-import com.starfish.kol.android.util.searchlist.SerializableSelector;
 import com.starfish.kol.android.util.searchlist.GroupSearchListController;
+import com.starfish.kol.android.util.searchlist.ListSelector;
 import com.starfish.kol.android.util.searchlist.SearchListController;
+import com.starfish.kol.android.util.searchlist.SerializableSelector;
 import com.starfish.kol.model.elements.interfaces.ModelGroup;
 import com.starfish.kol.model.models.WebModel;
 import com.starfish.kol.model.models.skill.ItemsListModel;
@@ -79,15 +79,13 @@ public class SkillsController extends GroupController<SkillsSubmodel, SkillsMode
 		@Override
 		public Controller execute(SkillsListModel model) {
 			ArrayList<ModelGroup<SkillModelElement>> list = model.getSkills();
-			SkillsBuilder builder = new SkillsBuilder();
-			return new GroupSearchListController<SkillModelElement>(list, builder, selector);
+			return new GroupSearchListController<SkillModelElement>(list, SkillsBinder.ONLY, selector);
 		}
 
 		@Override
 		public Controller execute(ItemsListModel model) {
 			ArrayList<SkillModelElement> list = model.getItems();
-			SkillsBuilder builder = new SkillsBuilder();
-			return new SearchListController<SkillModelElement>(list, builder, selector);
+			return new SearchListController<SkillModelElement>(list, SkillsBinder.ONLY, selector);
 		}
 	};
 	

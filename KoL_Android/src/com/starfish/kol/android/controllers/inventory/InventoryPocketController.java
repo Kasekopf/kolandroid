@@ -3,14 +3,14 @@ package com.starfish.kol.android.controllers.inventory;
 import android.view.View;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.binders.SubtextBinder;
 import com.starfish.kol.android.controller.ModelController;
 import com.starfish.kol.android.screen.DialogScreen;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.android.screen.ViewScreen;
-import com.starfish.kol.android.util.listbuilders.SubtextBuilder;
-import com.starfish.kol.android.util.searchlist.SerializableSelector;
 import com.starfish.kol.android.util.searchlist.GroupSearchListController;
+import com.starfish.kol.android.util.searchlist.SerializableSelector;
 import com.starfish.kol.model.LiveMessage;
 import com.starfish.kol.model.models.inventory.InventoryItem;
 import com.starfish.kol.model.models.inventory.InventoryPocketModel;
@@ -47,7 +47,7 @@ public class InventoryPocketController extends
 	@Override
 	public void connect(View view, InventoryPocketModel model, Screen host) {
 		ViewScreen screen = (ViewScreen)view.findViewById(R.id.inventory_list);
-		list = new GroupSearchListController<InventoryItem>(model.getItems(), new SubtextBuilder<InventoryItem>(), displayPossibleActions);
+		list = new GroupSearchListController<InventoryItem>(model.getItems(), SubtextBinder.ONLY, displayPossibleActions);
 		screen.display(list, host);
 	}
 

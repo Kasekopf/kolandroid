@@ -11,10 +11,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.binders.Binder;
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
-import com.starfish.kol.android.util.adapters.ListElementBuilder;
 import com.starfish.kol.model.elements.ActionElement;
 
 public class SearchListController<E> implements Controller {
@@ -24,18 +24,18 @@ public class SearchListController<E> implements Controller {
 	private static final long serialVersionUID = -327422277247085374L;
 
 	private ArrayList<E> initial;
-	private ListElementBuilder<E> builder;
+	private Binder<? super E> binder;
 	private ListSelector<E> selector;
 
 	public SearchListController(ArrayList<E> initial,
-			ListElementBuilder<E> builder, ListSelector<E> selector) {
-		this.builder = builder;
+			Binder<? super E> binder,  ListSelector<E> selector) {
+		this.binder = binder;
 		this.initial = initial;
 		this.selector = selector;
 	}
 
-	public static <E extends ActionElement> SearchListController<E> create(ArrayList<E> items, ListElementBuilder<E> builder) {
-		return new SearchListController<E>(items, builder, new ActionSelector<E>());
+	public static <E extends ActionElement> SearchListController<E> create(ArrayList<E> items, Binder<? super E> binder) {
+		return new SearchListController<E>(items, binder, new ActionSelector<E>());
 	}
 	
 
@@ -48,7 +48,7 @@ public class SearchListController<E> implements Controller {
 
 	@Override
 	public void connect(View view, final Screen host) {
-		adapter = new HighlightableListAdapter<E>(view.getContext(), initial, builder);
+		adapter = new HighlightableListAdapter<E>(view.getContext(), initial, binder);
 
 		ListView list = (ListView)view.findViewById(R.id.list_display_list);
 		list.setOnItemClickListener(new OnItemClickListener() {

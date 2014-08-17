@@ -7,6 +7,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.binders.ElementBinder;
+import com.starfish.kol.android.binders.SubtextBinder;
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.controller.ModelController;
 import com.starfish.kol.android.controllers.WebController;
@@ -14,8 +16,6 @@ import com.starfish.kol.android.screen.DialogScreen;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.android.screen.ViewScreen;
-import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
-import com.starfish.kol.android.util.listbuilders.SubtextBuilder;
 import com.starfish.kol.android.util.searchlist.SearchListController;
 import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.models.fight.FightItem;
@@ -59,9 +59,7 @@ public class FightController extends ModelController<Void, FightModel> {
 			@Override
 			public void onClick(View btn) {
 				ArrayList<FightSkill> skills = model.getSkills();
-				SubtextBuilder<FightSkill> builder = new SubtextBuilder<FightSkill>();
-
-				Controller skillsController = SearchListController.create(skills, builder);
+				Controller skillsController = SearchListController.create(skills, SubtextBinder.ONLY);
 				DialogScreen.display(skillsController, host,
 						"Choose a skill to use:");
 			}
@@ -77,8 +75,7 @@ public class FightController extends ModelController<Void, FightModel> {
 					Controller itemsController = new FunkslingingController(items);
 					DialogScreen.display(itemsController, host, "Select items to use:");
 				} else {
-					DefaultBuilder<FightItem> builder = new DefaultBuilder<FightItem>();
-					Controller itemsController = SearchListController.create(items, builder);
+					Controller itemsController = SearchListController.create(items, ElementBinder.ONLY);
 					DialogScreen.display(itemsController, host,
 							"Choose an item to use:");
 				}

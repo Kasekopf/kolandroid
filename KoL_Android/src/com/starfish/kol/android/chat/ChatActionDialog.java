@@ -11,9 +11,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.binders.TextBinder;
 import com.starfish.kol.android.chat.ChatroomFragment.ChatroomHost;
 import com.starfish.kol.android.util.adapters.ListAdapter;
-import com.starfish.kol.android.util.listbuilders.TextBuilder;
 import com.starfish.kol.model.models.chat.ChatAction;
 import com.starfish.kol.model.models.chat.ChatText;
 
@@ -44,7 +44,7 @@ public class ChatActionDialog extends DialogFragment {
 
 		final ChatText base = (ChatText)this.getArguments().getSerializable("base");
 
-	    ListAdapter<ChatAction> adapter = new ListAdapter<ChatAction>(this.getActivity(), base.getActions(), new TextBuilder<ChatAction>());
+	    ListAdapter<ChatAction> adapter = new ListAdapter<ChatAction>(this.getActivity(), base.getActions(), TextBinder.ONLY);
 	    
 	    ListView list = (ListView)rootView.findViewById(R.id.dialog_chat_list);
 	    list.setAdapter(adapter);

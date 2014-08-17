@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.binders.ChannelBinder;
 import com.starfish.kol.android.util.adapters.ListAdapter;
-import com.starfish.kol.android.util.listbuilders.ChannelBuilder;
 import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.elements.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChatChannel;
@@ -72,7 +72,7 @@ public class ChatChannelDialog extends DialogFragment {
 			}	
 		};
 		
-	    adapter = new ListAdapter<ChatChannel>(this.getActivity(), base, new ChannelBuilder(localChannelSelector, localActionSelector));
+	    adapter = new ListAdapter<ChatChannel>(this.getActivity(), base, new ChannelBinder(localChannelSelector, localActionSelector));
 	    
 	    ListView list = (ListView)rootView.findViewById(R.id.dialog_chat_list);
 	    list.setAdapter(adapter);

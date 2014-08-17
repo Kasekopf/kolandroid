@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.android.util.adapters.ListFullBuilder;
+import com.starfish.kol.android.binders.Binder;
 import com.starfish.kol.android.util.adapters.ListGroupAdapter;
 import com.starfish.kol.model.elements.basic.BasicGroup;
 import com.starfish.kol.model.elements.interfaces.ModelGroup;
@@ -21,8 +21,8 @@ public class HighlightableListGroupAdapter<F> extends ListGroupAdapter<ModelGrou
 	private List<ModelGroup<F>> base;
 	private Regex filter;
 	
-	public HighlightableListGroupAdapter(Context context, List<ModelGroup<F>> base, ListFullBuilder<ModelGroup<F>, F> builder) {
-		super(context, builder);
+	public HighlightableListGroupAdapter(Context context, List<ModelGroup<F>> base, Binder<? super F> childBinder) {
+		super(context, childBinder);
 		
 		this.displayed = new ArrayList<ModelGroup<F>>();
 		this.filter = new Regex("");

@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.binders.Binder;
 import com.starfish.kol.android.util.adapters.ListAdapter;
-import com.starfish.kol.android.util.adapters.ListElementBuilder;
 import com.starfish.kol.util.Regex;
 
 public class HighlightableListAdapter<E> extends ListAdapter<E>{
@@ -19,8 +19,8 @@ public class HighlightableListAdapter<E> extends ListAdapter<E>{
 	private List<E> base;
 	private Regex filter;
 	
-	public HighlightableListAdapter(Context context, List<E> base, ListElementBuilder<E> builder) {
-		super(context, builder);
+	public HighlightableListAdapter(Context context, List<E> base, Binder<? super E> childBinder) {
+		super(context, childBinder);
 		
 		this.displayed = new ArrayList<E>();
 		this.filter = new Regex("");

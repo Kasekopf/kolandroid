@@ -9,22 +9,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 
+import com.starfish.kol.android.binders.Binder;
+import com.starfish.kol.android.binders.DefaultGroupBinder;
 import com.starfish.kol.model.elements.interfaces.ModelGroup;
 
 public class ListGroupAdapter<E extends ModelGroup<F>, F>
 		extends BaseExpandableListAdapter {
 	private List<E> baseList;
 	private Context context;
-	private ListFullBuilder<E, F> builder;
-
-	public ListGroupAdapter(Context c, ListFullBuilder<E, F> builder) {
-		this(c, new ArrayList<E>(), builder);
+	
+	private Binder<? super F> elementBinding;
+	private Binder<? super E> groupBinding;
+	
+	public ListGroupAdapter(Context c, Binder<? super F> elementBinding) {
+		this(c, new ArrayList<E>(), elementBinding);
 	}
 
-	public ListGroupAdapter(Context c, List<E> baseList, ListFullBuilder<E, F> builder) {
+	public ListGroupAdapter(Context c, List<E> baseList, Binder<? super F> elementBinding) {
 		this.baseList = baseList;
 		this.context = c;
-		this.builder = builder;
+		this.elementBinding = elementBinding;
+		this.groupBinding = DefaultGroupBinder.ONLY;
 	}
 
 	public void setElements(List<E> baseList) {
@@ -73,14 +78,14 @@ public class ListGroupAdapter<E extends ModelGroup<F>, F>
 		if(convertView != null && "isChild".equals(convertView.getTag())) {
 			view = convertView;
 		} else {
-			view = LayoutInflater.from(context).inflate(builder.getChildLayout(), parent, false);
+			view = LayoutInflater.from(context).inflate(elementBinding.getView(), parent, false);
 		}
 
 		view.setTag("isChild");
 		
 		@SuppressWarnings("unchecked")
 		F item = (F)getChild(groupPosition, childPosition);
-		builder.fillChild(view, item);
+		elementBinding.bind(view, item);
 		return view;
 	}
 
@@ -91,14 +96,14 @@ public class ListGroupAdapter<E extends ModelGroup<F>, F>
 		if(convertView != null && "isGroup".equals(convertView.getTag())) {
 			view = convertView;
 		} else {
-			view = LayoutInflater.from(context).inflate(builder.getGroupLayout(), parent, false);
+			view = LayoutInflater.from(context).inflate(groupBinding.getView(), parent, false);
 		}
 
 		view.setTag("isGroup");
 		
 		@SuppressWarnings("unchecked")
 		E item = (E)getGroup(groupPosition);
-		builder.fillGroup(view, item);
+		groupBinding.bind(view, item);
 		return view;
 	}
 

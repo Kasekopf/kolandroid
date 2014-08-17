@@ -8,6 +8,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.binders.ElementBinder;
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.controllers.MultiusableController;
 import com.starfish.kol.android.screen.DialogScreen;
@@ -15,7 +16,6 @@ import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.android.util.ImageDownloader;
 import com.starfish.kol.android.util.adapters.ListAdapter;
-import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
 import com.starfish.kol.model.elements.interfaces.Multiuseable;
 import com.starfish.kol.model.models.inventory.InventoryAction;
@@ -41,7 +41,7 @@ public class ItemController implements Controller {
 
 	@Override
 	public void connect(View view, final Screen host) {
-	    ListAdapter<InventoryAction> adapter = new ListAdapter<InventoryAction>(host.getActivity(), base.getActions(), new DefaultBuilder<InventoryAction>());
+	    ListAdapter<InventoryAction> adapter = new ListAdapter<InventoryAction>(host.getActivity(), base.getActions(), ElementBinder.ONLY);
 	    
 	    final InventoryActionVisitor visitor = new InventoryActionVisitor() {
 			@Override

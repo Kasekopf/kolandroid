@@ -9,19 +9,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.starfish.kol.android.binders.Binder;
+
 public class ListAdapter<E> extends BaseAdapter{
 	private List<E> baseList;
 	private Context context;
-	private ListElementBuilder<E> builder;
+	private Binder<? super E> binder;
 
-	public ListAdapter(Context c, ListElementBuilder<E> builder){
-		this(c, new ArrayList<E>(), builder);
+	public ListAdapter(Context c, Binder<? super E> binder){
+		this(c, new ArrayList<E>(), binder);
 	}
 	
-	public ListAdapter(Context c, List<E> baseList, ListElementBuilder<E> builder){
+	public ListAdapter(Context c, List<E> baseList, Binder<? super E> binder){
 		this.baseList = new ArrayList<E>(baseList);
 		this.context = c;
-		this.builder = builder;
+		this.binder = binder;
 	}
 	
 	public void setElements(List<E> base) {
@@ -63,11 +65,11 @@ public class ListAdapter<E> extends BaseAdapter{
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view;
 		if(convertView == null)
-			view = LayoutInflater.from(context).inflate(builder.getChildLayout(), parent, false);
+			view = LayoutInflater.from(context).inflate(binder.getView(), parent, false);
 		else
 			view = convertView;
 		
-		builder.fillChild(view, (E)this.getItem(position));
+		binder.bind(view, (E)this.getItem(position));
 		return view;
 	}
 }

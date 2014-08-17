@@ -5,18 +5,17 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.binders.ElementBinder;
+import com.starfish.kol.android.binders.SubtextBinder;
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.controller.ModelController;
 import com.starfish.kol.android.screen.DialogScreen;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.android.screen.ViewScreen;
-import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
-import com.starfish.kol.android.util.listbuilders.SubtextBuilder;
-import com.starfish.kol.android.util.searchlist.SerializableSelector;
 import com.starfish.kol.android.util.searchlist.GroupSearchListController;
+import com.starfish.kol.android.util.searchlist.SerializableSelector;
 import com.starfish.kol.model.LiveMessage;
-import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.models.inventory.EquipmentPocketModel;
 import com.starfish.kol.model.models.inventory.InventoryItem;
 
@@ -52,14 +51,14 @@ public class EquipmentPocketController extends ModelController<LiveMessage, Equi
 	public void connect(View view, final EquipmentPocketModel model, final Screen host) {
 
 		ViewScreen screen = (ViewScreen)view.findViewById(R.id.inventory_list);
-		list = new GroupSearchListController<InventoryItem>(model.getItems(), new SubtextBuilder<InventoryItem>(), displayPossibleActions);
+		list = new GroupSearchListController<InventoryItem>(model.getItems(), SubtextBinder.ONLY, displayPossibleActions);
 		screen.display(list, host);
 		
 		Button equipoutfit = (Button)view.findViewById(R.id.equipment_equipoutfit);
 		equipoutfit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Controller c = GroupSearchListController.create(model.getOutfits(), new DefaultBuilder<ActionElement>());
+				Controller c = GroupSearchListController.create(model.getOutfits(), ElementBinder.ONLY);
 				DialogScreen.display(c, host, "Equip outfit");
 			}			
 		});

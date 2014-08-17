@@ -18,9 +18,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.binders.ElementBinder;
 import com.starfish.kol.android.util.AndroidProgressHandler;
 import com.starfish.kol.android.util.adapters.ListAdapter;
-import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.LiveMessage;
@@ -200,7 +200,7 @@ public class NavigationFragment extends Fragment {
 		
 		ListView mDrawerListView = (ListView)this.getView().findViewById(R.id.navigation_list);
 		
-        adapter = new ListAdapter<ActionElement>(getActionBar().getThemedContext(), model.getLocations(), new DefaultBuilder<ActionElement>());
+        adapter = new ListAdapter<ActionElement>(getActionBar().getThemedContext(), model.getLocations(), ElementBinder.ONLY);
         mDrawerListView.setAdapter(adapter);
         
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

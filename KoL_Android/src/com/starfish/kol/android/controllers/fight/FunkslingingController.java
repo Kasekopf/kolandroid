@@ -9,13 +9,12 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 
 import com.starfish.kol.android.R;
+import com.starfish.kol.android.binders.ElementBinder;
 import com.starfish.kol.android.controller.Controller;
-import com.starfish.kol.android.controller.ListElementController;
+import com.starfish.kol.android.controller.BinderController;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.android.screen.ViewScreen;
-import com.starfish.kol.android.util.adapters.ListElementBuilder;
-import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
 import com.starfish.kol.android.util.searchlist.ListSelector;
 import com.starfish.kol.android.util.searchlist.SearchListController;
 import com.starfish.kol.model.models.fight.FightItem;
@@ -27,45 +26,47 @@ public class FunkslingingController implements Controller {
 	private static final long serialVersionUID = 2042614583620187701L;
 
 	private final ArrayList<FightItem> base;
-	
-	private final ListElementController<FightItem> itemSlot1, itemSlot2;
-	private ListElementController<FightItem> selected;
+
+	private final BinderController<FightItem> itemSlot1, itemSlot2;
+	private BinderController<FightItem> selected;
 	private View selectedView;
-	
+
 	public FunkslingingController(ArrayList<FightItem> base) {
 		this.base = base;
-		
-		ListElementBuilder<FightItem> itemBuilder = new DefaultBuilder<FightItem>();
-		this.itemSlot1 = new ListElementController<FightItem>(itemBuilder, FightItem.NONE);
-		this.itemSlot2 = new ListElementController<FightItem>(itemBuilder, FightItem.NONE);
+
+		this.itemSlot1 = new BinderController<FightItem>(
+				ElementBinder.ONLY, FightItem.NONE);
+		this.itemSlot2 = new BinderController<FightItem>(
+				ElementBinder.ONLY, FightItem.NONE);
 	}
-	
+
 	@Override
 	public int getView() {
 		return R.layout.dialog_funkslinging;
 	}
 
 	private void swapSelected(View view1, View view2) {
-		if(selected == itemSlot1)
+		if (selected == itemSlot1)
 			setSelected(itemSlot2, view2);
 		else
 			setSelected(itemSlot1, view1);
 	}
-	
-	private void setSelected(ListElementController<FightItem> controller, View view) {
-		if(selectedView != null) {
+
+	private void setSelected(BinderController<FightItem> controller,
+			View view) {
+		if (selectedView != null) {
 			selectedView.setPressed(false);
 		}
-		
+
 		this.selected = controller;
 		this.selectedView = view;
 		view.setPressed(true);
 	}
-	
-	
+
 	@Override
 	public void connect(View view, final Screen host) {
-		final ViewScreen itemScreen1 = (ViewScreen)view.findViewById(R.id.funksling_item1);
+		final ViewScreen itemScreen1 = (ViewScreen) view
+				.findViewById(R.id.funksling_item1);
 		itemScreen1.display(itemSlot1, host);
 		itemScreen1.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -74,8 +75,9 @@ public class FunkslingingController implements Controller {
 				return true;
 			}
 		});
-		
-		final ViewScreen itemScreen2 = (ViewScreen)view.findViewById(R.id.funksling_item2);
+
+		final ViewScreen itemScreen2 = (ViewScreen) view
+				.findViewById(R.id.funksling_item2);
 		itemScreen2.display(itemSlot2, host);
 		itemScreen2.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -84,34 +86,35 @@ public class FunkslingingController implements Controller {
 				return true;
 			}
 		});
-		
+
 		this.setSelected(itemSlot1, itemScreen1);
-		
-		ListElementBuilder<FightItem> builder = new DefaultBuilder<FightItem>();
-		ListSelector<FightItem> selector = new ListSelector<FightItem>(){
+
+		ListSelector<FightItem> selector = new ListSelector<FightItem>() {
 			@Override
 			public boolean selectItem(Screen host, FightItem item) {
 				selected.setValue(item);
 				swapSelected(itemScreen1, itemScreen2);
 				return false;
 			}
-			
+
 		};
-		SearchListController<FightItem> list = new SearchListController<FightItem>(base, builder, selector);
-		ViewScreen listscreen = (ViewScreen)view.findViewById(R.id.funkslinging_list);
+		SearchListController<FightItem> list = new SearchListController<FightItem>(
+				base, ElementBinder.ONLY, selector);
+		ViewScreen listscreen = (ViewScreen) view
+				.findViewById(R.id.funkslinging_list);
 		listscreen.display(list, host);
-		
-		Button submit = (Button)view.findViewById(R.id.funksling_submit);
+
+		Button submit = (Button) view.findViewById(R.id.funksling_submit);
 		submit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				FightItem item1 = itemSlot1.getValue();
 				FightItem item2 = itemSlot2.getValue();
-				
+
 				boolean submitted = item1.useWith(host.getViewContext(), item2);
-				if(submitted)
+				if (submitted)
 					host.close();
-			}			
+			}
 		});
 	}
 
