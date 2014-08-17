@@ -24,20 +24,20 @@ public class GroupSearchListController<F> implements Controller {
 	private static final long serialVersionUID = -3034860712134386719L;
 
 	private ArrayList<ModelGroup<F>> base;
-	private ControllerOnListSelection<F> selector;
+	private ListSelector<F> selector;
 	private ListFullBuilder<ModelGroup<F>, F> builder;
 	
 	private transient HighlightableListGroupAdapter<F> adapter;
 	private transient ExpandableListView list;
 
-	public GroupSearchListController(ArrayList<ModelGroup<F>> items, ListFullBuilder<ModelGroup<F>, F> builder, ControllerOnListSelection<F> selector) {
+	public GroupSearchListController(ArrayList<ModelGroup<F>> items, ListFullBuilder<ModelGroup<F>, F> builder, ListSelector<F> selector) {
 		this.base = items;
 		this.builder = builder;
 		this.selector = selector;
 	}
 
 	public static <F extends ActionElement> GroupSearchListController<F> create(ArrayList<ModelGroup<F>> items, ListFullBuilder<ModelGroup<F>, F> builder) {
-		return new GroupSearchListController<F>(items, builder, new ControllerActionSelector<F>());
+		return new GroupSearchListController<F>(items, builder, new ActionSelector<F>());
 	}
 	
 	@Override

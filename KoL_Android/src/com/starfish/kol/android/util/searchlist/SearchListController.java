@@ -25,17 +25,17 @@ public class SearchListController<E> implements Controller {
 
 	private ArrayList<E> initial;
 	private ListElementBuilder<E> builder;
-	private ControllerOnListSelection<E> selector;
+	private ListSelector<E> selector;
 
 	public SearchListController(ArrayList<E> initial,
-			ListElementBuilder<E> builder, ControllerOnListSelection<E> selector) {
+			ListElementBuilder<E> builder, ListSelector<E> selector) {
 		this.builder = builder;
 		this.initial = initial;
 		this.selector = selector;
 	}
 
 	public static <E extends ActionElement> SearchListController<E> create(ArrayList<E> items, ListElementBuilder<E> builder) {
-		return new SearchListController<E>(items, builder, new ControllerActionSelector<E>());
+		return new SearchListController<E>(items, builder, new ActionSelector<E>());
 	}
 	
 

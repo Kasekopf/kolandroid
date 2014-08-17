@@ -16,7 +16,7 @@ import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.android.screen.ViewScreen;
 import com.starfish.kol.android.util.adapters.ListElementBuilder;
 import com.starfish.kol.android.util.listbuilders.DefaultBuilder;
-import com.starfish.kol.android.util.searchlist.ControllerOnListSelection;
+import com.starfish.kol.android.util.searchlist.ListSelector;
 import com.starfish.kol.android.util.searchlist.SearchListController;
 import com.starfish.kol.model.models.fight.FightItem;
 
@@ -88,7 +88,7 @@ public class FunkslingingController implements Controller {
 		this.setSelected(itemSlot1, itemScreen1);
 		
 		ListElementBuilder<FightItem> builder = new DefaultBuilder<FightItem>();
-		ControllerOnListSelection<FightItem> selector = new ControllerOnListSelection<FightItem>(){
+		ListSelector<FightItem> selector = new ListSelector<FightItem>(){
 			@Override
 			public boolean selectItem(Screen host, FightItem item) {
 				selected.setValue(item);
