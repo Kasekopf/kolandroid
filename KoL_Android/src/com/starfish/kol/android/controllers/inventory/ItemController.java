@@ -85,7 +85,7 @@ public class ItemController implements Controller {
 	}
 
 	@Override
-	public void disconnect() {
+	public void disconnect(Screen host) {
 		// do nothing
 	}
 

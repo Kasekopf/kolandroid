@@ -12,7 +12,7 @@ import com.starfish.kol.gamehandler.ViewContext;
 
 public class ChatService extends Service {
 	private ChatManager chat;
-
+	
 	@Override
 	public void onCreate() {
 

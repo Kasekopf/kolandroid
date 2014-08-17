@@ -10,7 +10,7 @@ import com.starfish.kol.android.screen.ScreenSelection;
 public interface Controller extends Serializable {
 	public int getView();
 	public void connect(View view, Screen host);
-	public void disconnect();
+	public void disconnect(Screen host);
 	
 	public void chooseScreen(ScreenSelection choice);
 }

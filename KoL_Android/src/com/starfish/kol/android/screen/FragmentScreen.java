@@ -22,12 +22,15 @@ public class FragmentScreen extends DialogFragment implements Screen {
 		controller.connect(view, this);
 		return view;
 	}
-
+	
+	public Controller getController() {
+		return controller;
+	}
 
 	@Override
 	public void onDestroyView() {
 		if(controller != null)
-			controller.disconnect();
+			controller.disconnect(this);
 		super.onDestroyView();
 	}
 	
@@ -47,7 +50,6 @@ public class FragmentScreen extends DialogFragment implements Screen {
 	public ViewContext getViewContext() {
 		return (ViewContext)this.getActivity();
 	}
-
 
 	@Override
 	public void close() {

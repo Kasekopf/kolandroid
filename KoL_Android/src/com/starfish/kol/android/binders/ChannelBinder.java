@@ -9,14 +9,14 @@ import android.widget.TextView;
 import com.starfish.kol.android.R;
 import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.elements.interfaces.DeferredAction;
-import com.starfish.kol.model.models.chat.ChatChannel;
+import com.starfish.kol.model.models.chat.ChannelModel;
 import com.starfish.kol.model.models.chat.ChatModel;
 
-public class ChannelBinder implements Binder<ChatChannel> {
-	private ProgressHandler<ChatChannel> channelHandler;
+public class ChannelBinder implements Binder<ChannelModel> {
+	private ProgressHandler<ChannelModel> channelHandler;
 	private ProgressHandler<DeferredAction<ChatModel>> actionHandler;
 	
-	public ChannelBinder(ProgressHandler<ChatChannel> channelHandler, ProgressHandler<DeferredAction<ChatModel>> actionHandler) {
+	public ChannelBinder(ProgressHandler<ChannelModel> channelHandler, ProgressHandler<DeferredAction<ChatModel>> actionHandler) {
 		this.channelHandler = channelHandler;
 		this.actionHandler = actionHandler;
 	}
@@ -27,7 +27,7 @@ public class ChannelBinder implements Binder<ChatChannel> {
 	}
 
 	@Override
-	public void bind(View view, final ChatChannel model) {
+	public void bind(View view, final ChannelModel model) {
 		TextView text = (TextView)view.findViewById(R.id.list_item_text);
 		text.setText(Html.fromHtml(model.getName()));
 		text.setOnClickListener(new OnClickListener() {

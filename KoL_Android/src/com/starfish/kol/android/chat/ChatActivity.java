@@ -33,9 +33,9 @@ import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.elements.interfaces.DeferredAction;
+import com.starfish.kol.model.models.chat.ChannelModel;
 import com.starfish.kol.model.models.chat.ChatAction;
 import com.starfish.kol.model.models.chat.ChatAction.ChatActionSubmission;
-import com.starfish.kol.model.models.chat.ChatChannel;
 import com.starfish.kol.model.models.chat.ChatModel;
 import com.starfish.kol.model.models.chat.ChatState;
 import com.starfish.kol.model.models.chat.ChatText;
@@ -154,7 +154,7 @@ public class ChatActivity extends ActionBarActivity implements ChatroomHost,
 		chat.stop(this);
 	}
 
-	private void addTab(final ChatChannel base) {
+	private void addTab(final ChannelModel base) {
 		String tag = base.getName();
 
 		Log.i("ChatService", "Making new tab for '" + tag + "'");
@@ -185,11 +185,11 @@ public class ChatActivity extends ActionBarActivity implements ChatroomHost,
 	}
 
 	public void updateMessages(ChatState base) {
-		ArrayList<ChatChannel> channels = base.getChannels();
+		ArrayList<ChannelModel> channels = base.getChannels();
 		if (dialog != null)
 			dialog.updateChannels(channels);
 
-		for (ChatChannel channel : channels) {
+		for (ChannelModel channel : channels) {
 			String tag = channel.getName();
 			TabInfo ti = host.getChildByTag(tag);
 
@@ -212,7 +212,7 @@ public class ChatActivity extends ActionBarActivity implements ChatroomHost,
 
 		ArrayList<TabInfo> tabs = host.getTabs();
 		TabWidget tabViews = host.getTabWidget();
-		ChatChannel channel;
+		ChannelModel channel;
 
 		boolean currentRemoved = false;
 
@@ -220,7 +220,7 @@ public class ChatActivity extends ActionBarActivity implements ChatroomHost,
 			TabInfo tab = tabs.get(index);
 
 			if (tab.getFragment() == null) {
-				channel = (ChatChannel) tab.getArgs().getSerializable("base");
+				channel = (ChannelModel) tab.getArgs().getSerializable("base");
 			} else {
 				ChatroomFragment room = (ChatroomFragment) tab.getFragment();
 				channel = room.getChannel();
@@ -275,7 +275,7 @@ public class ChatActivity extends ActionBarActivity implements ChatroomHost,
 	}
 
 	@Override
-	public void onChannelSelect(ChatChannel channel) {
+	public void onChannelSelect(ChannelModel channel) {
 		if (channel.isActive())
 			host.setCurrentTabByTag(channel.getName());
 	}

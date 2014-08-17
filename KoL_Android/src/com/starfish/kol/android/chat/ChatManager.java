@@ -101,6 +101,10 @@ public class ChatManager extends Binder {
 		}, 1000, 5000);
 	}
 
+	public ChatModel getModel() {
+		return model;
+	}
+	
 	protected void stop() {
 		if (!this.started)
 			return;

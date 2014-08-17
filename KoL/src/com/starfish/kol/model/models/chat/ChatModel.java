@@ -56,8 +56,8 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 
 	private ArrayList<ChatText> messages;
 
-	private Map<String, ChatChannel> channelsByName;
-	private ArrayList<ChatChannel> channels;
+	private Map<String, ChannelModel> channelsByName;
+	private ArrayList<ChannelModel> channels;
 
 	private ArrayList<ChatAction> baseActions;
 
@@ -72,8 +72,8 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		seenMessages = new HashSet<Integer>();
 		messages = new ArrayList<ChatText>();
 
-		channels = new ArrayList<ChatChannel>();
-		channelsByName = new HashMap<String, ChatChannel>();
+		channels = new ArrayList<ChannelModel>();
+		channelsByName = new HashMap<String, ChannelModel>();
 
 		lasttime = "0";
 		GsonBuilder builder = new GsonBuilder();
@@ -130,16 +130,16 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 			lasttime = update.last;
 	}
 
-	protected ChatChannel getChannel(String name) {
+	public ChannelModel getChannel(String name) {
 		return channelsByName.get(name);
 	}
 	
-	private ChatChannel getOrCreateChannel(String name) {
-		ChatChannel channel;
+	private ChannelModel getOrCreateChannel(String name) {
+		ChannelModel channel;
 		if (channelsByName.containsKey(name)) {
 			channel = channelsByName.get(name);
 		} else {
-			channel = new ChatChannel(name);
+			channel = new ChannelModel(name, this.getSession());
 			channels.add(channel);
 			channelsByName.put(name, channel);
 			System.out.println("Added new chat channel: " + name);
@@ -159,21 +159,21 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		}
 		else if(output.contains("<font color=green>Currently listening to channels:")) {
 			//Loading result of /listen
-			ArrayList<ChatChannel> active = new ArrayList<ChatChannel>();
+			ArrayList<ChannelModel> active = new ArrayList<ChannelModel>();
 			for (String channel : CHANNEL.extractAllSingle(output)) {
 				if (channel.contains("<b>")) {
 					channel = channel.replace("<b>", "")
 							.replace("</b>", "");
 				}
 
-				ChatChannel c = getOrCreateChannel(channel);
+				ChannelModel c = getOrCreateChannel(channel);
 				c.setActive(true);
 				active.add(c);
 			}
 
 			for(int i = 0; i < channels.size(); i++) {
 				//Avoid foreach loop to avoid concurrent modification issues.
-				ChatChannel c = channels.get(i);
+				ChannelModel c = channels.get(i);
 				c.setActive(active.contains(c));
 			}
 			
@@ -194,7 +194,7 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		message.prepare(baseActions, visibleChannel);
 
 		String channelName = message.getChannel();
-		ChatChannel channel = getOrCreateChannel(channelName);		
+		ChannelModel channel = getOrCreateChannel(channelName);		
 		messages.add(message);
 		channel.addMessage(message);
 		return true;
@@ -317,7 +317,11 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 	}
 
 	public ChatState getState() {
-		return new ChatState(new ArrayList<ChatChannel>(channels));
+		return new ChatState(new ArrayList<ChannelModel>(channels));
+	}
+	
+	public ArrayList<ChannelModel> getChannels() {
+		return new ArrayList<ChannelModel>(channels);
 	}
 
 	@Override

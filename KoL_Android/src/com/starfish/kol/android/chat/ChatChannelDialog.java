@@ -15,11 +15,11 @@ import com.starfish.kol.android.binders.ChannelBinder;
 import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.elements.interfaces.DeferredAction;
-import com.starfish.kol.model.models.chat.ChatChannel;
+import com.starfish.kol.model.models.chat.ChannelModel;
 import com.starfish.kol.model.models.chat.ChatModel;
 
 public class ChatChannelDialog extends DialogFragment {
-	public static ChatChannelDialog create(ArrayList<ChatChannel> base) {
+	public static ChatChannelDialog create(ArrayList<ChannelModel> base) {
 		ChatChannelDialog dialog = new ChatChannelDialog();
 		Bundle args = new Bundle();
 		
@@ -28,7 +28,7 @@ public class ChatChannelDialog extends DialogFragment {
 		return dialog;
 	}
 
-	private ListAdapter<ChatChannel> adapter;
+	private ListAdapter<ChannelModel> adapter;
 		
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class ChatChannelDialog extends DialogFragment {
 		return dialog;
 	}
 
-	public void updateChannels(ArrayList<ChatChannel> channels) {
+	public void updateChannels(ArrayList<ChannelModel> channels) {
 		this.getArguments().putSerializable("base", channels);
 		
 		if(adapter != null) {
@@ -53,13 +53,13 @@ public class ChatChannelDialog extends DialogFragment {
 				container, false);
 
 		@SuppressWarnings("unchecked")
-		ArrayList<ChatChannel> base = (ArrayList<ChatChannel>)this.getArguments().getSerializable("base");
+		ArrayList<ChannelModel> base = (ArrayList<ChannelModel>)this.getArguments().getSerializable("base");
 		
 		final ChatChannelDialogCallback callback = (ChatChannelDialogCallback)getActivity();
 		
-		ProgressHandler<ChatChannel> localChannelSelector = new ProgressHandler<ChatChannel>() {
+		ProgressHandler<ChannelModel> localChannelSelector = new ProgressHandler<ChannelModel>() {
 			@Override
-			public void reportProgress(ChatChannel item) {
+			public void reportProgress(ChannelModel item) {
 				callback.onChannelSelect(item);
 				if(item.isActive())
 					ChatChannelDialog.this.dismiss();
@@ -72,7 +72,7 @@ public class ChatChannelDialog extends DialogFragment {
 			}	
 		};
 		
-	    adapter = new ListAdapter<ChatChannel>(this.getActivity(), base, new ChannelBinder(localChannelSelector, localActionSelector));
+	    adapter = new ListAdapter<ChannelModel>(this.getActivity(), base, new ChannelBinder(localChannelSelector, localActionSelector));
 	    
 	    ListView list = (ListView)rootView.findViewById(R.id.dialog_chat_list);
 	    list.setAdapter(adapter);
@@ -82,6 +82,6 @@ public class ChatChannelDialog extends DialogFragment {
 	public interface ChatChannelDialogCallback
 	{
 		public void onChannelAction(DeferredAction<ChatModel> action);
-		public void onChannelSelect(ChatChannel channel);
+		public void onChannelSelect(ChannelModel channel);
 	}
 }

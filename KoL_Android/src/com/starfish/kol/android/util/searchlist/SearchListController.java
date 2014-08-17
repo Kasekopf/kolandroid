@@ -86,7 +86,7 @@ public class SearchListController<E> implements Controller {
 	}
 
 	@Override
-	public void disconnect() {
+	public void disconnect(Screen host) {
 		// do nothing
 	}
 

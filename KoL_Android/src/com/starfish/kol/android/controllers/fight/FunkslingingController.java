@@ -92,7 +92,7 @@ public class FunkslingingController implements Controller {
 		ListSelector<FightItem> selector = new ListSelector<FightItem>() {
 			@Override
 			public boolean selectItem(Screen host, FightItem item) {
-				selected.setValue(item);
+				selected.updateModel(item);
 				swapSelected(itemScreen1, itemScreen2);
 				return false;
 			}
@@ -119,7 +119,7 @@ public class FunkslingingController implements Controller {
 	}
 
 	@Override
-	public void disconnect() {
+	public void disconnect(Screen host) {
 		// do nothing
 	}
 

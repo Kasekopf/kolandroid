@@ -8,12 +8,32 @@
     <com.starfish.kol.android.util.CustomFragmentTabHost
         android:id="@+id/tabs_tabhost"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </com.starfish.kol.android.util.CustomFragmentTabHost>
-
-    <FrameLayout
-        android:id="@+id/tabs_tabcontent"
-        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <HorizontalScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:scrollbars="none" >
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </com.starfish.kol.android.util.CustomFragmentTabHost>
 </LinearLayout>

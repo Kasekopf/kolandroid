@@ -41,7 +41,7 @@ public class ViewScreen extends FrameLayout implements Screen {
 		super.onDetachedFromWindow();
 		// View is now detached, and about to be destroyed
 		if (controller != null)
-			controller.disconnect();
+			controller.disconnect(this);
 	}
 
 	@Override

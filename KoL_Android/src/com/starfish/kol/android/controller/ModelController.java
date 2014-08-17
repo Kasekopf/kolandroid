@@ -21,6 +21,10 @@ public abstract class ModelController<C, M extends Model<C>> implements Controll
 	
 	@Override
 	public void connect(final View view, final Screen host) {
+		if(callback != null) {
+			callback.close();
+		}
+		
 		this.callback = new AndroidProgressHandler<C>() {
 			@Override
 			public void recieveProgress(C message) {
@@ -34,19 +38,21 @@ public abstract class ModelController<C, M extends Model<C>> implements Controll
 	}
 	
 	public abstract void connect(View view, M model, Screen host);
-	public void recieveProgress(View view, M model, C message, Screen host) {
-		// do nothing by default.
-	}
+	public abstract void recieveProgress(View view, M model, C message, Screen host);
 	
-	protected void changeModel(M model) {
-		this.model = model;
+	public void recieveProgress(View view, M model, Void message, Screen host) {
+		// do nothing by default, if the message type is void.
 	}
-	
+		
 	@Override
-	public void disconnect() {
+	public void disconnect(Screen host) {
 		callback.close();
 	}
 
+	protected void setModel(M model) {
+		this.model = model;
+	}
+	
 	public M getModel() {
 		return model;
 	}

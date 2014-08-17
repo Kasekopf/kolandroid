@@ -14,8 +14,8 @@ import android.widget.ListView;
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.binders.ChatBinder;
 import com.starfish.kol.android.util.adapters.ListAdapter;
+import com.starfish.kol.model.models.chat.ChannelModel;
 import com.starfish.kol.model.models.chat.ChatAction;
-import com.starfish.kol.model.models.chat.ChatChannel;
 import com.starfish.kol.model.models.chat.ChatText;
 
 /**
@@ -25,7 +25,7 @@ import com.starfish.kol.model.models.chat.ChatText;
  * 
  */
 public class ChatroomFragment extends Fragment {
-	private ChatChannel base;
+	private ChannelModel base;
 	private ListAdapter<ChatText> adapter;
 	
 	@Override
@@ -38,7 +38,7 @@ public class ChatroomFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_chatroom, container, false);
 
-		this.base = (ChatChannel)getArguments().getSerializable("base");
+		this.base = (ChannelModel)getArguments().getSerializable("base");
 		
 		List<ChatText> messages = base.getMessages();
 		adapter = new ListAdapter<ChatText>(view.getContext(), messages, ChatBinder.ONLY);
@@ -59,7 +59,7 @@ public class ChatroomFragment extends Fragment {
 		return view;
 	}
 	
-	public void updateChannel(ChatChannel channel) {
+	public void updateChannel(ChannelModel channel) {
 		getArguments().putSerializable("base", channel);
 		this.base = channel;
 		
@@ -68,10 +68,10 @@ public class ChatroomFragment extends Fragment {
 		}
 	}
 	
-	public ChatChannel getChannel() {
+	public ChannelModel getChannel() {
 		if(this.base != null)
 			return base;
-		return (ChatChannel)getArguments().getSerializable("base");
+		return (ChannelModel)getArguments().getSerializable("base");
 	}
 		
 	public interface ChatroomHost {
