@@ -8,7 +8,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.starfish.kol.android.chat.newchat.NewChatActivity;
+import com.starfish.kol.android.chat.newchat.ChatActivity;
 import com.starfish.kol.android.util.AndroidProgressHandler;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.ViewContext;
@@ -91,7 +91,7 @@ public abstract class ChatConnection {
 				public void submit(ChatModel model) {
 					if (model.getChatExists()) {
 						Intent intent = new Intent(appContext,
-								NewChatActivity.class);
+								ChatActivity.class);
 						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						intent.putExtra("session", session);
 						appContext.startActivity(intent);

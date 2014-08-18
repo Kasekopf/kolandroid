@@ -37,7 +37,7 @@
         </service>
 
         <activity
-            android:name="com.starfish.kol.android.chat.newchat.NewChatActivity"
+            android:name="com.starfish.kol.android.chat.newchat.ChatActivity"
             android:label="@string/title_activity_chat"
             android:parentActivityName="com.starfish.kol.android.game.GameScreen" >
             <meta-data

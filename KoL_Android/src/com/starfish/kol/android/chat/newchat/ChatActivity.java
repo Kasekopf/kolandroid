@@ -21,28 +21,28 @@ import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.request.ResponseHandler;
 
-public class NewChatActivity extends ActionBarActivity implements ViewContext,
+public class ChatActivity extends ActionBarActivity implements ViewContext,
 		ChatActionsControllerHost, ChatSubmissionControllerHost {
 	private ViewContext baseContext;
 	private Screen baseScreen = new Screen() {
 		@Override
 		public FragmentManager getFragmentManager() {
-			return NewChatActivity.this.getSupportFragmentManager();
+			return ChatActivity.this.getSupportFragmentManager();
 		}
 
 		@Override
 		public Activity getActivity() {
-			return NewChatActivity.this;
+			return ChatActivity.this;
 		}
 
 		@Override
 		public ViewContext getViewContext() {
-			return NewChatActivity.this;
+			return ChatActivity.this;
 		}
 
 		@Override
 		public FragmentManager getChildFragmentManager() {
-			return NewChatActivity.this.getSupportFragmentManager();
+			return ChatActivity.this.getSupportFragmentManager();
 		}
 
 		@Override
