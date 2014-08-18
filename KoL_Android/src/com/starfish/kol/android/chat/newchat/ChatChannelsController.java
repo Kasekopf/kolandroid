@@ -32,12 +32,14 @@ public class ChatChannelsController implements Controller {
 	}
 
 	@Override
-	public void connect(View view, Screen host) {
+	public void connect(View view, final Screen host) {
 		ProgressHandler<ChannelModel> localChannelSelector = new ProgressHandler<ChannelModel>() {
 			@Override
 			public void reportProgress(ChannelModel item) {
-				// do nothing
-			}			
+				ChatChannelsControllerHost activity = (ChatChannelsControllerHost)host.getActivity();
+				activity.switchChannel(item.getName());
+				host.close();
+			}
 		};
 		ProgressHandler<DeferredAction<ChatModel>> localActionSelector = new ProgressHandler<DeferredAction<ChatModel>>() {
 			@Override
@@ -93,5 +95,10 @@ public class ChatChannelsController implements Controller {
 	@Override
 	public void chooseScreen(ScreenSelection choice) {
 		choice.displayDialog(this);
+	}
+	
+	public interface ChatChannelsControllerHost
+	{
+		public void switchChannel(String to);
 	}
 }

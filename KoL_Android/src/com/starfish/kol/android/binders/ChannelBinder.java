@@ -15,12 +15,13 @@ import com.starfish.kol.model.models.chat.ChatModel;
 public class ChannelBinder implements Binder<ChannelModel> {
 	private ProgressHandler<ChannelModel> channelHandler;
 	private ProgressHandler<DeferredAction<ChatModel>> actionHandler;
-	
-	public ChannelBinder(ProgressHandler<ChannelModel> channelHandler, ProgressHandler<DeferredAction<ChatModel>> actionHandler) {
+
+	public ChannelBinder(ProgressHandler<ChannelModel> channelHandler,
+			ProgressHandler<DeferredAction<ChatModel>> actionHandler) {
 		this.channelHandler = channelHandler;
 		this.actionHandler = actionHandler;
 	}
-	
+
 	@Override
 	public int getView() {
 		return R.layout.list_chat_channel_item;
@@ -28,26 +29,27 @@ public class ChannelBinder implements Binder<ChannelModel> {
 
 	@Override
 	public void bind(View view, final ChannelModel model) {
-		TextView text = (TextView)view.findViewById(R.id.list_item_text);
+		TextView text = (TextView) view.findViewById(R.id.list_item_text);
 		text.setText(Html.fromHtml(model.getName()));
-		text.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				if(channelHandler != null)
-					channelHandler.reportProgress(model);
-			}			
-		});
-		
-		Button enter = (Button)view.findViewById(R.id.chat_channel_enter);
-		Button leave = (Button)view.findViewById(R.id.chat_channel_leave);
-		
-		if(model.isActive()) {
+
+		Button enter = (Button) view.findViewById(R.id.chat_channel_enter);
+		Button leave = (Button) view.findViewById(R.id.chat_channel_leave);
+
+		if (model.isActive()) {
+			text.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					if (channelHandler != null)
+						channelHandler.reportProgress(model);
+				}
+			});
+
 			enter.setEnabled(false);
 			leave.setEnabled(true);
 			leave.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					if(actionHandler != null)
+					if (actionHandler != null)
 						actionHandler.reportProgress(model.leave());
 				}
 			});
@@ -57,7 +59,7 @@ public class ChannelBinder implements Binder<ChannelModel> {
 			enter.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					if(actionHandler != null)
+					if (actionHandler != null)
 						actionHandler.reportProgress(model.enter());
 				}
 			});

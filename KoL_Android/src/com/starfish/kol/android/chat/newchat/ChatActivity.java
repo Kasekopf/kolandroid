@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.chat.newchat.ChatActionsController.ChatActionsControllerHost;
+import com.starfish.kol.android.chat.newchat.ChatChannelsController.ChatChannelsControllerHost;
 import com.starfish.kol.android.chat.newchat.ChatSubmissionController.ChatSubmissionControllerHost;
 import com.starfish.kol.android.screen.DialogScreen;
 import com.starfish.kol.android.screen.FragmentScreen;
@@ -22,7 +23,7 @@ import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.request.ResponseHandler;
 
 public class ChatActivity extends ActionBarActivity implements ViewContext,
-		ChatActionsControllerHost, ChatSubmissionControllerHost {
+		ChatActionsControllerHost, ChatSubmissionControllerHost, ChatChannelsControllerHost {
 	private ViewContext baseContext;
 	private Screen baseScreen = new Screen() {
 		@Override
@@ -121,5 +122,10 @@ public class ChatActivity extends ActionBarActivity implements ViewContext,
 	@Override
 	public String getCurrentChannel() {
 		return mainChat.getCurrentChannel();
+	}
+
+	@Override
+	public void switchChannel(String to) {
+		mainChat.switchChannel(to);
 	}
 }

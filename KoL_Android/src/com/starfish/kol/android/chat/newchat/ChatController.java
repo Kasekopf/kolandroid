@@ -163,6 +163,14 @@ public class ChatController implements Controller {
 			return "";
 		return tabs.getCurrentTabTag();
 	}
+	
+	public void switchChannel(String to) {
+		if(tabs == null)
+			return;
+		
+		if(currentTabs.contains(to))
+			tabs.setCurrentTabByTag(to);
+	}
 
 	@Override
 	public void disconnect(Screen host) {
