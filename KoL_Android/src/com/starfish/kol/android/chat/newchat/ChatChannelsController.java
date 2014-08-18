@@ -48,7 +48,7 @@ public class ChatChannelsController implements Controller {
 			}	
 		};
 		
-		ArrayList<ChannelModel> channels = (base == null) ? new ArrayList<ChannelModel>() : base.getChannels();
+		ArrayList<ChannelModel> channels = getAvailableChannels(base);
 		ChannelBinder binder = new ChannelBinder(localChannelSelector, localActionSelector);
 	    adapter = new ListAdapter<ChannelModel>(host.getActivity(), channels, binder);
 
@@ -65,13 +65,25 @@ public class ChatChannelsController implements Controller {
 			@Override
 			public void recievedRefresh() {
 				if(adapter != null) {
-					adapter.setElements(base.getChannels());
+					adapter.setElements(getAvailableChannels(base));
 				}
 			}			
 		};
 	    connection.connect(host.getActivity());
 	}
 
+	private ArrayList<ChannelModel> getAvailableChannels(ChatModel model) {
+		ArrayList<ChannelModel> result = new ArrayList<ChannelModel>();
+		if(model == null)
+			return result;
+		
+		for(ChannelModel channel : model.getChannels()) {
+			if(channel.isActive() || !channel.getName().contains("@"))
+				result.add(channel);
+		}
+		return result;
+	}
+	
 	@Override
 	public void disconnect(Screen host) {
 		if(connection != null)
