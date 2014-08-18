@@ -15,7 +15,6 @@ import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.elements.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChatModel;
 import com.starfish.kol.model.models.chat.ChatModel.ChatStatus;
-import com.starfish.kol.model.models.chat.ChatState;
 
 public class ChatManager extends Binder {
 	private Timer updateTimer;
@@ -23,12 +22,12 @@ public class ChatManager extends Binder {
 	private ChatModel model;
 	private boolean started;
 
-	private ArrayList<WeakReference<LatchedCallback<ChatState>>> listeners;
+	private ArrayList<WeakReference<LatchedCallback<Void>>> listeners;
 	private DeferredAction<ChatModel> onLoad = null;
 
 	public ChatManager(Session s, ViewContext context) {
 		this.model = new ChatModel(s);
-		this.listeners = new ArrayList<WeakReference<LatchedCallback<ChatState>>>();
+		this.listeners = new ArrayList<WeakReference<LatchedCallback<Void>>>();
 
 		this.model.connectView(new ProgressHandler<ChatStatus>() {
 			@Override
@@ -54,24 +53,24 @@ public class ChatManager extends Binder {
 		}, context);
 	}
 
-	public void addListener(LatchedCallback<ChatState> listener) {
-		this.listeners.add(new WeakReference<LatchedCallback<ChatState>>(listener));
-		listener.reportProgress(model.getState());
+	public void addListener(LatchedCallback<Void> listener) {
+		this.listeners.add(new WeakReference<LatchedCallback<Void>>(listener));
+		listener.reportProgress(null);
 	}
 
 	private void updateListeners() {
 		if (!this.started)
 			return;
 
-		Iterator<WeakReference<LatchedCallback<ChatState>>> it = listeners.iterator();
+		Iterator<WeakReference<LatchedCallback<Void>>> it = listeners.iterator();
 		while (it.hasNext()) {
-			LatchedCallback<ChatState> listener = it.next().get();
+			LatchedCallback<Void> listener = it.next().get();
 			if (listener == null || listener.isClosed()) {
 				it.remove();
 				continue;
 			}
 			
-			listener.reportProgress(model.getState());
+			listener.reportProgress(null);
 		}
 	}
 
@@ -114,9 +113,5 @@ public class ChatManager extends Binder {
 			this.updateTimer.cancel();
 			this.updateTimer = null;
 		}
-	}
-
-	public void execute(DeferredAction<ChatModel> action) {
-		action.submit(model);
 	}
 }

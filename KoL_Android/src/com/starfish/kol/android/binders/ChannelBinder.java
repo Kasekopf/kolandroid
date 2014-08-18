@@ -8,18 +8,13 @@ import android.widget.TextView;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.model.ProgressHandler;
-import com.starfish.kol.model.elements.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChannelModel;
-import com.starfish.kol.model.models.chat.ChatModel;
 
 public class ChannelBinder implements Binder<ChannelModel> {
 	private ProgressHandler<ChannelModel> channelHandler;
-	private ProgressHandler<DeferredAction<ChatModel>> actionHandler;
 
-	public ChannelBinder(ProgressHandler<ChannelModel> channelHandler,
-			ProgressHandler<DeferredAction<ChatModel>> actionHandler) {
+	public ChannelBinder(ProgressHandler<ChannelModel> channelHandler) {
 		this.channelHandler = channelHandler;
-		this.actionHandler = actionHandler;
 	}
 
 	@Override
@@ -49,8 +44,7 @@ public class ChannelBinder implements Binder<ChannelModel> {
 			leave.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					if (actionHandler != null)
-						actionHandler.reportProgress(model.leave());
+					model.leave();
 				}
 			});
 		} else {
@@ -59,8 +53,7 @@ public class ChannelBinder implements Binder<ChannelModel> {
 			enter.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					if (actionHandler != null)
-						actionHandler.reportProgress(model.enter());
+					model.enter();
 				}
 			});
 		}

@@ -26,46 +26,56 @@ public class ChannelController implements Controller {
 	private static final long serialVersionUID = 2772987489714420525L;
 
 	private final String name;
-	
-	private transient LiveChatConnection connection;
-	private transient ChannelModel base = null;
+
+	private transient ChatConnection connection;
 	private transient ListAdapter<ChatText> adapter = null;
-	
+
 	public ChannelController(String tag) {
 		this.name = tag;
 	}
-		
+
 	@Override
 	public void connect(View view, final Screen host) {
-		List<ChatText> messages = (base == null) ? new ArrayList<ChatText>() : base.getMessages();
-		adapter = new ListAdapter<ChatText>(view.getContext(), messages, ChatBinder.ONLY);
-		
-		ListView list = (ListView)view.findViewById(R.id.chatroom_display_list);
+		List<ChatText> messages = new ArrayList<ChatText>();
+		adapter = new ListAdapter<ChatText>(view.getContext(), messages,
+				ChatBinder.ONLY);
+
+		ListView list = (ListView) view
+				.findViewById(R.id.chatroom_display_list);
 		list.setAdapter(adapter);
 		list.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
 		list.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
-				final ChatText choice = (ChatText)myAdapter.getItemAtPosition(myItemInt);
-				
-				if(choice.getActions().size() == 0) return;
-				
-				ChatActionsController controller = new ChatActionsController(choice);
+			public void onItemClick(AdapterView<?> myAdapter, View myView,
+					int myItemInt, long mylng) {
+				final ChatText choice = (ChatText) myAdapter
+						.getItemAtPosition(myItemInt);
+
+				if (choice.getActions().size() == 0)
+					return;
+
+				ChatActionsController controller = new ChatActionsController(
+						choice);
 				DialogScreen.display(controller, host);
 			}
 		});
 
-		connection = new LiveChatConnection(this.getClass().getSimpleName()) {
+		connection = new ChatConnection(this.getClass().getSimpleName()) {
 			@Override
 			public void onConnection(ChatModel model) {
-				base = model.getChannel(name);
+				recievedRefresh(model);
 			}
 
 			@Override
-			public void recievedRefresh() {
-				if(base != null && adapter != null) {
-					adapter.setElements(base.getMessages());
-				}
+			public void recievedRefresh(ChatModel model) {
+				if(model == null)
+					return;
+				if(adapter == null)
+					return;
+				
+				ChannelModel channel = model.getChannel(name);
+				if(channel != null)
+					adapter.setElements(channel.getMessages());
 			}
 		};
 		connection.connect(host.getActivity());
@@ -73,7 +83,7 @@ public class ChannelController implements Controller {
 
 	@Override
 	public void disconnect(Screen host) {
-		if(connection != null)
+		if (connection != null)
 			connection.close(host.getActivity());
 	}
 

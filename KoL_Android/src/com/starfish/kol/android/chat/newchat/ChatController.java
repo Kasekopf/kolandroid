@@ -26,9 +26,8 @@ public class ChatController implements Controller {
 
 	private HashSet<String> currentTabs;
 
-	private transient LiveChatConnection connection;
+	private transient ChatConnection connection;
 	private transient CustomFragmentTabHost tabs;
-	private transient ChatModel base = null;
 	private transient Screen host;
 
 	public ChatController() {
@@ -50,42 +49,38 @@ public class ChatController implements Controller {
 		tabs.setOnTabChangedListener(new OnTabChangeListener() {
 			@Override
 			public void onTabChanged(String tabId) {
-				if (base != null)
-					base.setCurrentRoom(tabId);
+				if (connection != null && connection != null)
+					connection.getModel().setCurrentRoom(tabId);
 			}
 		});
 
 		this.currentTabs = new HashSet<String>();
 
-		if (base != null) {
-			updateTabs();
-		}
-
-		this.connection = new LiveChatConnection(this.getClass()
+		this.connection = new ChatConnection(this.getClass()
 				.getSimpleName()) {
 			@Override
 			public void onConnection(ChatModel model) {
-				base = model;
+				recievedRefresh(model);
 			}
 
 			@Override
-			public void recievedRefresh() {
-				updateTabs();
+			public void recievedRefresh(ChatModel model) {
+				updateTabs(model);
 			}
 		};
 		connection.connect(host.getActivity());
 	}
 
-	private void updateTabs() {
+	private void updateTabs(ChatModel model) {
 		ArrayList<String> currentChannels = new ArrayList<String>();
-		for (ChannelModel child : base.getChannels()) {
+		for (ChannelModel child : model.getChannels()) {
 			if (child.isActive())
 				currentChannels.add(child.getName());
 		}
 
 		for (String channel : currentChannels) {
 			if (!currentTabs.contains(channel)) {
-				addTab(channel);
+				addTab(channel, model);
 			}
 		}
 
@@ -99,14 +94,14 @@ public class ChatController implements Controller {
 		for (String channel : toRemove) {
 			removeTab(channel);
 		}
-		
+
 		View current = tabs.getCurrentTabView();
-		if(current.getVisibility() == View.GONE && currentChannels.size() != 0) {
+		if (current.getVisibility() == View.GONE && currentChannels.size() != 0) {
 			tabs.setCurrentTabByTag(currentChannels.get(0));
 		}
 	}
 
-	private void addTab(final String tag) {
+	private void addTab(final String tag, final ChatModel chat) {
 		if (tabs == null)
 			return;
 
@@ -132,10 +127,10 @@ public class ChatController implements Controller {
 										public void onClick(
 												DialogInterface dialog,
 												int which) {
-											if (base != null) {
-												ChannelModel channel = base
+											if (chat != null) {
+												ChannelModel channel = chat
 														.getChannel(tag);
-												channel.leave().submit(base);
+												channel.leave();
 												dialog.dismiss();
 											}
 										}
@@ -163,12 +158,12 @@ public class ChatController implements Controller {
 			return "";
 		return tabs.getCurrentTabTag();
 	}
-	
+
 	public void switchChannel(String to) {
-		if(tabs == null)
+		if (tabs == null)
 			return;
-		
-		if(currentTabs.contains(to))
+
+		if (currentTabs.contains(to))
 			tabs.setCurrentTabByTag(to);
 	}
 

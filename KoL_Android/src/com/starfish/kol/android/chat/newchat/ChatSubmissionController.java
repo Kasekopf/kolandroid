@@ -20,8 +20,7 @@ public class ChatSubmissionController implements Controller {
 	private static final long serialVersionUID = -1682070095158477350L;
 
 	private transient EditText text;
-	private transient ChatModel chat;
-	private transient LiveChatConnection connection;
+	private transient ChatConnection connection;
 
 	@Override
 	public int getView() {
@@ -30,6 +29,10 @@ public class ChatSubmissionController implements Controller {
 
 	@Override
 	public void connect(View view, final Screen host) {
+		this.connection = ChatConnection.create(this.getClass()
+				.getSimpleName());
+		connection.connect(host.getActivity());
+
 		text = (EditText) view.findViewById(R.id.chatroom_text_input);
 
 		Button submit = (Button) view.findViewById(R.id.chatroom_submit);
@@ -41,11 +44,12 @@ public class ChatSubmissionController implements Controller {
 				String msg = text.getText().toString();
 				String channel = activity.getCurrentChannel();
 
-				if(chat != null) {
+				ChatModel chat = connection.getModel();
+				if (chat != null) {
 					chat.submitChat(channel, msg);
 					text.setText("");
 				}
-				
+
 				InputMethodManager inputManager = (InputMethodManager) host
 						.getActivity().getSystemService(
 								Context.INPUT_METHOD_SERVICE);
@@ -54,24 +58,11 @@ public class ChatSubmissionController implements Controller {
 						InputMethodManager.HIDE_NOT_ALWAYS);
 			}
 		});
-
-		this.connection = new LiveChatConnection(this.getClass().getSimpleName()) {
-			@Override
-			public void onConnection(ChatModel model) {
-				chat = model;
-			}
-
-			@Override
-			public void recievedRefresh() {
-				// do nothing
-			}			
-		};
-		connection.connect(host.getActivity());
 	}
 
 	@Override
 	public void disconnect(Screen host) {
-		if(connection != null)
+		if (connection != null)
 			connection.close(host.getActivity());
 	}
 
@@ -79,9 +70,9 @@ public class ChatSubmissionController implements Controller {
 	public void chooseScreen(ScreenSelection choice) {
 		choice.displayPrimary(this);
 	}
-	
+
 	public void fillChatText(String with) {
-		if(text != null) {
+		if (text != null) {
 			text.setText(with);
 		}
 	}

@@ -17,7 +17,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.android.chat.ChatConnection;
+import com.starfish.kol.android.chat.newchat.ChatActivity;
+import com.starfish.kol.android.chat.newchat.ChatConnection;
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.controller.ModelController;
 import com.starfish.kol.android.controllers.StatsController;
@@ -34,7 +35,7 @@ import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.StatsModel;
-import com.starfish.kol.model.models.chat.ChatState;
+import com.starfish.kol.model.models.chat.ChatModel;
 import com.starfish.kol.request.ResponseHandler;
 
 public class GameScreen extends ActionBarActivity implements StatsCallbacks,
@@ -122,12 +123,8 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 			}
 		});
 
-		chat = new ChatConnection(session) {
-			@Override
-			public void updateMessages(ChatState base) {
-				// do nothing
-			}
-		};
+		chat = ChatConnection.create(this.getClass().getSimpleName());
+		chat.connect(this);
 		displayIntent(this.getIntent(), false);
 	}
 
@@ -166,15 +163,9 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 	}
 
 	@Override
-	public void onStop() {
-		super.onStop();
-		chat.stop(this);
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		chat.start(this);
+	public void onDestroy() {
+		super.onDestroy();
+		chat.close(this);
 	}
 
 	public void restoreActionBar() {
@@ -200,8 +191,18 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 				stats.showQuests();
 			return true;
 		case R.id.action_chat:
-			if (chat != null)
-				chat.openChat(this, this);
+			if (chat == null)
+				return false;
+			ChatModel model = chat.getModel();
+			if (model == null)
+				return false;
+			if (model.getChatExists()) {
+				Intent intent = new Intent(this, ChatActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent);
+			} else {
+				model.displayRejectionMessage(this);
+			}
 			return true;
 		}
 

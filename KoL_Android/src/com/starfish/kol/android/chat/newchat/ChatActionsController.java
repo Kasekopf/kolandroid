@@ -17,7 +17,6 @@ import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.models.chat.ChatAction;
 import com.starfish.kol.model.models.chat.ChatAction.ChatActionSubmission;
-import com.starfish.kol.model.models.chat.ChatModel;
 import com.starfish.kol.model.models.chat.ChatText;
 
 public class ChatActionsController implements Controller {
@@ -28,8 +27,7 @@ public class ChatActionsController implements Controller {
 
 	private final ChatText base;
 	
-	private transient LiveChatConnection connection;
-	private transient ChatModel chatModel;
+	private transient ChatConnection connection;
 	
 	public ChatActionsController(ChatText base) {
 		this.base = base;
@@ -60,26 +58,20 @@ public class ChatActionsController implements Controller {
 			public void onItemClick(AdapterView<?> ad, View list, int pos,
 					long arg3) {
 				ChatAction select = (ChatAction)ad.getItemAtPosition(pos);
-
-				if(select != null && chatModel != null) {
-					ChatActionSubmission sub = select.getPartialSubmission(base, fillChatText);
-					sub.submit(chatModel);
-					host.close();
-				}
+				if(select == null)
+					return;
+				if(connection == null)
+					return;
+				if(connection.getModel() == null)
+					return;
+				
+				ChatActionSubmission sub = select.getPartialSubmission(base, fillChatText);
+				sub.submit(connection.getModel());
+				host.close();
 			}
 	    });
 
-		this.connection = new LiveChatConnection(this.getClass().getSimpleName()) {
-			@Override
-			public void onConnection(ChatModel model) {
-				chatModel = model;
-			}
-
-			@Override
-			public void recievedRefresh() {
-				// do nothing
-			}			
-		};
+		this.connection = ChatConnection.create(this.getClass().getSimpleName());
 	    connection.connect(host.getActivity());
 	}
 

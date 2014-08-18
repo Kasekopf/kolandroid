@@ -139,7 +139,7 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		if (channelsByName.containsKey(name)) {
 			channel = channelsByName.get(name);
 		} else {
-			channel = new ChannelModel(name, this.getSession());
+			channel = new ChannelModel(this, name, this.getSession());
 			channels.add(channel);
 			channelsByName.put(name, channel);
 			System.out.println("Added new chat channel: " + name);
@@ -314,10 +314,6 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		ServerReply reject = new ServerReply(200, "", "", html,
 				"small_chatreject.php", "");
 		this.makeRequest(new SimulatedRequest(reject, new GameHandler(context)));
-	}
-
-	public ChatState getState() {
-		return new ChatState(new ArrayList<ChannelModel>(channels));
 	}
 	
 	public ArrayList<ChannelModel> getChannels() {

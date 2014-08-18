@@ -12,7 +12,6 @@ import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.model.ProgressHandler;
-import com.starfish.kol.model.elements.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChannelModel;
 import com.starfish.kol.model.models.chat.ChatModel;
 
@@ -22,9 +21,8 @@ public class ChatChannelsController implements Controller {
 	 */
 	private static final long serialVersionUID = -7646035545611799838L;
 
-	private transient LiveChatConnection connection;
+	private transient ChatConnection connection;
 	private transient ListAdapter<ChannelModel> adapter;
-	private transient ChatModel base;
 		
 	@Override
 	public int getView() {
@@ -41,33 +39,24 @@ public class ChatChannelsController implements Controller {
 				host.close();
 			}
 		};
-		ProgressHandler<DeferredAction<ChatModel>> localActionSelector = new ProgressHandler<DeferredAction<ChatModel>>() {
-			@Override
-			public void reportProgress(DeferredAction<ChatModel> item) {
-				if(base != null) {
-					item.submit(base);
-				}
-			}	
-		};
 		
-		ArrayList<ChannelModel> channels = getAvailableChannels(base);
-		ChannelBinder binder = new ChannelBinder(localChannelSelector, localActionSelector);
+		ArrayList<ChannelModel> channels = new ArrayList<ChannelModel>();
+		ChannelBinder binder = new ChannelBinder(localChannelSelector);
 	    adapter = new ListAdapter<ChannelModel>(host.getActivity(), channels, binder);
 
 	    ListView list = (ListView)view.findViewById(R.id.dialog_chat_list);
 	    list.setAdapter(adapter);
 
-		this.connection = new LiveChatConnection(this.getClass().getSimpleName()) {
+		this.connection = new ChatConnection(this.getClass().getSimpleName()) {
 			@Override
 			public void onConnection(ChatModel model) {
-				base = model;
-				recievedRefresh();
+				recievedRefresh(model);
 			}
 
 			@Override
-			public void recievedRefresh() {
+			public void recievedRefresh(ChatModel model) {
 				if(adapter != null) {
-					adapter.setElements(getAvailableChannels(base));
+					adapter.setElements(getAvailableChannels(model));
 				}
 			}			
 		};
