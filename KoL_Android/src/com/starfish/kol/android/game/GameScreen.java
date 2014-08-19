@@ -19,10 +19,11 @@ import com.starfish.kol.android.chat.newchat.ChatActivity;
 import com.starfish.kol.android.chat.newchat.ChatConnection;
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.controller.ModelController;
+import com.starfish.kol.android.controllers.NavigationController;
 import com.starfish.kol.android.controllers.StatsController;
 import com.starfish.kol.android.controllers.StatsController.StatsCallbacks;
-import com.starfish.kol.android.game.fragments.NavigationFragment;
 import com.starfish.kol.android.screen.ActivityScreen;
+import com.starfish.kol.android.screen.DrawerScreen;
 import com.starfish.kol.android.screen.FragmentScreen;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ViewScreen;
@@ -33,18 +34,13 @@ import com.starfish.kol.gamehandler.DataContext;
 import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
+import com.starfish.kol.model.models.NavigationModel;
 import com.starfish.kol.model.models.StatsModel;
 import com.starfish.kol.model.models.chat.ChatModel;
 import com.starfish.kol.request.ResponseHandler;
 
 public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 		ViewContext {
-	/**
-	 * Fragment managing the behaviors, interactions and presentation of the
-	 * navigation drawer.
-	 */
-	private NavigationFragment mNavigationDrawerFragment;
-
 	private DialogFragment dialog;
 
 	private StatsController stats;
@@ -77,9 +73,6 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 		this.loader = new ProgressLoader(base, bar, text);
 		base.setVisibility(View.GONE);
 
-		mNavigationDrawerFragment = (NavigationFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.navigation_drawer);
-
 		mTitle = getTitle();
 
 		Intent intent = this.getIntent();
@@ -92,7 +85,11 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 		Log.i("GameScreen", "Session: " + session);
 
 		// Set up the drawer.
-		mNavigationDrawerFragment.setUp(session, R.id.navigation_drawer,
+		Controller nav = new NavigationController(new NavigationModel(session));
+		DrawerScreen drawer = DrawerScreen.create(nav);
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.navigation_drawer, drawer).commit();
+		drawer.setUp(this, R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 
 		this.stats = new StatsController(new StatsModel(session));

@@ -66,7 +66,7 @@ public class ViewScreen extends FrameLayout implements Screen {
 
 	@Override
 	public void close() {
-		// do nothing
+		base.close();
 	}
 
 }

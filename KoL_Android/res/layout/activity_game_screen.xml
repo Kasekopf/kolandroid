@@ -65,11 +65,9 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <fragment
+    <FrameLayout
         android:id="@+id/navigation_drawer"
-        android:name="com.starfish.kol.android.game.fragments.NavigationFragment"
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="left" />
-
 </android.support.v4.widget.DrawerLayout>
