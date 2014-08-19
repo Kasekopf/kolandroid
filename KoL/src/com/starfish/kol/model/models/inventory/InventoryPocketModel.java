@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.model.ChildModel;
+import com.starfish.kol.model.GroupModel.ChildModel;
 import com.starfish.kol.model.LiveModel;
 import com.starfish.kol.model.elements.basic.BasicGroup;
 import com.starfish.kol.model.elements.interfaces.ModelGroup;

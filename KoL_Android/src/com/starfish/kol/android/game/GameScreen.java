@@ -84,9 +84,9 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 		Intent intent = this.getIntent();
 
 		@SuppressWarnings("unchecked")
-		ModelController<?, Model<?>> c = (ModelController<?, Model<?>>) intent
+		ModelController<? extends Model> c = (ModelController<? extends Model>) intent
 				.getSerializableExtra("controller");
-		Model<?> model = c.getModel();
+		Model model = c.getModel();
 		Session session = model.getSession();
 		Log.i("GameScreen", "Session: " + session);
 

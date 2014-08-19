@@ -7,13 +7,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.starfish.kol.android.R;
-import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.models.chat.ChannelModel;
+import com.starfish.kol.util.Callback;
 
 public class ChannelBinder implements Binder<ChannelModel> {
-	private ProgressHandler<ChannelModel> channelHandler;
+	private Callback<ChannelModel> channelHandler;
 
-	public ChannelBinder(ProgressHandler<ChannelModel> channelHandler) {
+	public ChannelBinder(Callback<ChannelModel> channelHandler) {
 		this.channelHandler = channelHandler;
 	}
 
@@ -35,7 +35,7 @@ public class ChannelBinder implements Binder<ChannelModel> {
 				@Override
 				public void onClick(View arg0) {
 					if (channelHandler != null)
-						channelHandler.reportProgress(model);
+						channelHandler.execute(model);
 				}
 			});
 

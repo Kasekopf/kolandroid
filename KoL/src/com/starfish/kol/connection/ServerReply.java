@@ -45,8 +45,7 @@ public class ServerReply implements Serializable {
 
 	}
 
-	protected ServerReply(ServerReply prototype, String html)
-			throws IOException {
+	public ServerReply(ServerReply prototype, String html) {
 		this.responseCode = prototype.responseCode;
 		this.redirectLocation = prototype.redirectLocation;
 		this.date = prototype.date;

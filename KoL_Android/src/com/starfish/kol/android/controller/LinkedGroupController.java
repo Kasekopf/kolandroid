@@ -8,8 +8,8 @@ import com.starfish.kol.android.screen.FragmentScreen;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.util.CustomFragmentTabHost;
 import com.starfish.kol.android.util.CustomFragmentTabHost.OnCreateFragmentListener;
-import com.starfish.kol.model.ChildModel;
 import com.starfish.kol.model.GroupModel;
+import com.starfish.kol.model.GroupModel.ChildModel;
 
 public abstract class LinkedGroupController<C extends ChildModel, M extends GroupModel<C>> extends GroupController<C, M> {
 	/**

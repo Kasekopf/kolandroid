@@ -10,12 +10,12 @@ import android.util.Log;
 
 import com.starfish.kol.android.chat.ChatManager;
 import com.starfish.kol.android.chat.ChatService;
-import com.starfish.kol.android.util.AndroidProgressHandler;
+import com.starfish.kol.android.util.HandlerCallback;
 import com.starfish.kol.model.models.chat.ChatModel;
 
 public abstract class ChatConnection {
 	private final ServiceConnection service;
-	private AndroidProgressHandler<Void> callback;
+	private HandlerCallback<Void> callback;
 	private ChatModel model;
 
 	public ChatConnection(final String connectionName) {
@@ -29,7 +29,7 @@ public abstract class ChatConnection {
 				model = manager.getModel();
 				onConnection(model);
 
-				callback = new AndroidProgressHandler<Void>() {
+				callback = new HandlerCallback<Void>() {
 					@Override
 					protected void recieveProgress(Void arg) {
 						recievedRefresh(model);

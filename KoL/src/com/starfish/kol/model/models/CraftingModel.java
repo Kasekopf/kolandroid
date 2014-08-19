@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.model.ChildModel;
 import com.starfish.kol.model.GroupModel;
+import com.starfish.kol.model.GroupModel.ChildModel;
 import com.starfish.kol.model.LiveModel;
 import com.starfish.kol.model.models.CraftingModel.CraftingSubModel;
 import com.starfish.kol.util.Regex;

@@ -12,12 +12,11 @@ import com.starfish.kol.android.binders.TextBinder;
 import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
-import com.starfish.kol.android.util.AndroidProgressHandler;
+import com.starfish.kol.android.util.HandlerCallback;
 import com.starfish.kol.android.util.adapters.ListAdapter;
-import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.models.chat.ChatAction;
-import com.starfish.kol.model.models.chat.ChatAction.ChatActionSubmission;
 import com.starfish.kol.model.models.chat.ChatText;
+import com.starfish.kol.util.Callback;
 
 public class ChatActionsController implements Controller {
 	/**
@@ -43,7 +42,7 @@ public class ChatActionsController implements Controller {
 		ArrayList<ChatAction> actions = base.getActions();
 		 ListAdapter<ChatAction> adapter = new ListAdapter<ChatAction>(host.getActivity(), actions, TextBinder.ONLY);
 
-		final ProgressHandler<String> fillChatText = new AndroidProgressHandler<String>() {
+		final Callback<String> fillChatText = new HandlerCallback<String>() {
 			@Override
 			protected void recieveProgress(String message) {
 				ChatActionsControllerHost activity = (ChatActionsControllerHost)host.getActivity();
@@ -65,8 +64,7 @@ public class ChatActionsController implements Controller {
 				if(connection.getModel() == null)
 					return;
 				
-				ChatActionSubmission sub = select.getPartialSubmission(base, fillChatText);
-				sub.submit(connection.getModel());
+				select.submit(base, fillChatText, connection.getModel());
 				host.close();
 			}
 	    });

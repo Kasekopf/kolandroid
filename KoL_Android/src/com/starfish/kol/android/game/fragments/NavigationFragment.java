@@ -19,11 +19,11 @@ import android.widget.ListView;
 
 import com.starfish.kol.android.R;
 import com.starfish.kol.android.binders.ElementBinder;
-import com.starfish.kol.android.util.AndroidProgressHandler;
+import com.starfish.kol.android.util.HandlerCallback;
 import com.starfish.kol.android.util.adapters.ListAdapter;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.model.LiveMessage;
+import com.starfish.kol.model.LiveModel.LiveMessage;
 import com.starfish.kol.model.elements.ActionElement;
 import com.starfish.kol.model.models.NavigationModel;
 
@@ -56,7 +56,7 @@ public class NavigationFragment extends Fragment {
     private boolean mUserLearnedDrawer;
 
     private ListAdapter<ActionElement> adapter;
-	private AndroidProgressHandler<LiveMessage> callback;
+	private HandlerCallback<LiveMessage> callback;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -189,14 +189,15 @@ public class NavigationFragment extends Fragment {
     private void setupModel(Session session) {
     	final NavigationModel model = new NavigationModel(session);
 
-		this.callback = new AndroidProgressHandler<LiveMessage>() {
+		this.callback = new HandlerCallback<LiveMessage>() {
 			@Override
 			public void recieveProgress(LiveMessage message) {
 				adapter.setElements(model.getLocations());
 			}
 		};
 		
-		model.connectView(callback, (ViewContext)getActivity());
+		model.attachView((ViewContext)getActivity());
+		model.attachCallback(callback);
 		
 		ListView mDrawerListView = (ListView)this.getView().findViewById(R.id.navigation_list);
 		
@@ -218,7 +219,7 @@ public class NavigationFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, null, false);
+		View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
 		return rootView;
 	}
 

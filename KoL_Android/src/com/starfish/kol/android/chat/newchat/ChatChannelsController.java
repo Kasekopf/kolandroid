@@ -11,9 +11,9 @@ import com.starfish.kol.android.controller.Controller;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ScreenSelection;
 import com.starfish.kol.android.util.adapters.ListAdapter;
-import com.starfish.kol.model.ProgressHandler;
 import com.starfish.kol.model.models.chat.ChannelModel;
 import com.starfish.kol.model.models.chat.ChatModel;
+import com.starfish.kol.util.Callback;
 
 public class ChatChannelsController implements Controller {
 	/**
@@ -31,9 +31,9 @@ public class ChatChannelsController implements Controller {
 
 	@Override
 	public void connect(View view, final Screen host) {
-		ProgressHandler<ChannelModel> localChannelSelector = new ProgressHandler<ChannelModel>() {
+		Callback<ChannelModel> localChannelSelector = new Callback<ChannelModel>() {
 			@Override
-			public void reportProgress(ChannelModel item) {
+			public void execute(ChannelModel item) {
 				ChatChannelsControllerHost activity = (ChatChannelsControllerHost)host.getActivity();
 				activity.switchChannel(item.getName());
 				host.close();

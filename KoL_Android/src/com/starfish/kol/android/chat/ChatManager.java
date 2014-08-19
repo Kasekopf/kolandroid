@@ -11,10 +11,9 @@ import android.os.Binder;
 import com.starfish.kol.android.util.LatchedCallback;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.ViewContext;
-import com.starfish.kol.model.ProgressHandler;
-import com.starfish.kol.model.elements.interfaces.DeferredAction;
 import com.starfish.kol.model.models.chat.ChatModel;
 import com.starfish.kol.model.models.chat.ChatModel.ChatStatus;
+import com.starfish.kol.util.Callback;
 
 public class ChatManager extends Binder {
 	private Timer updateTimer;
@@ -23,15 +22,15 @@ public class ChatManager extends Binder {
 	private boolean started;
 
 	private ArrayList<WeakReference<LatchedCallback<Void>>> listeners;
-	private DeferredAction<ChatModel> onLoad = null;
-
+	
 	public ChatManager(Session s, ViewContext context) {
 		this.model = new ChatModel(s);
 		this.listeners = new ArrayList<WeakReference<LatchedCallback<Void>>>();
-
-		this.model.connectView(new ProgressHandler<ChatStatus>() {
+		
+		this.model.attachView(context);
+		this.model.attachCallback(new Callback<ChatStatus>() {
 			@Override
-			public void reportProgress(ChatStatus message) {
+			public void execute(ChatStatus message) {
 				switch (message) {
 				case UPDATE:
 					updateListeners();
@@ -41,8 +40,6 @@ public class ChatManager extends Binder {
 					break;
 				case LOADED:
 				case NOCHAT:
-					if (onLoad != null)
-						onLoad.submit(model);
 					break;
 				}
 
@@ -50,12 +47,12 @@ public class ChatManager extends Binder {
 					updateListeners();
 
 			}
-		}, context);
+		});
 	}
 
 	public void addListener(LatchedCallback<Void> listener) {
 		this.listeners.add(new WeakReference<LatchedCallback<Void>>(listener));
-		listener.reportProgress(null);
+		listener.execute(null);
 	}
 
 	private void updateListeners() {
@@ -70,22 +67,14 @@ public class ChatManager extends Binder {
 				continue;
 			}
 			
-			listener.reportProgress(null);
+			listener.execute(null);
 		}
 	}
 
 	protected void start() {
-		this.start(null);
-	}
-
-	protected void start(DeferredAction<ChatModel> onLoad) {
 		if (this.started) {
-			if (onLoad != null)
-				onLoad.submit(model);
 			return;
 		}
-
-		this.onLoad = onLoad;
 		this.model.start();
 		this.started = true;
 		if (this.updateTimer != null)

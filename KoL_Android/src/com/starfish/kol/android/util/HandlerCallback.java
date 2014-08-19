@@ -5,17 +5,17 @@ import java.lang.ref.WeakReference;
 import android.os.Handler;
 import android.os.Message;
 
-public abstract class AndroidProgressHandler<E> implements LatchedCallback<E> {
+public abstract class HandlerCallback<E> implements LatchedCallback<E> {
 	private TypedHandler<E> base;
 	private boolean closed;
 
-	public AndroidProgressHandler() {
+	public HandlerCallback() {
 		base = new TypedHandler<E>(this);
 		closed = false;
 	}
 
 	@Override
-	public void reportProgress(E item) {
+	public void execute(E item) {
 		if (closed)
 			return;
 		Message.obtain(base, 0, item).sendToTarget();
@@ -33,11 +33,11 @@ public abstract class AndroidProgressHandler<E> implements LatchedCallback<E> {
 	protected abstract void recieveProgress(E message);
 
 	private static class TypedHandler<E> extends Handler {
-		WeakReference<AndroidProgressHandler<E>> parent;
+		WeakReference<HandlerCallback<E>> parent;
 		private boolean closed;
 
-		public TypedHandler(AndroidProgressHandler<E> parent) {
-			this.parent = new WeakReference<AndroidProgressHandler<E>>(parent);
+		public TypedHandler(HandlerCallback<E> parent) {
+			this.parent = new WeakReference<HandlerCallback<E>>(parent);
 			this.closed = false;
 		}
 
@@ -52,7 +52,7 @@ public abstract class AndroidProgressHandler<E> implements LatchedCallback<E> {
 
 			@SuppressWarnings("unchecked")
 			E message = (E) m.obj;
-			AndroidProgressHandler<E> aph = parent.get();
+			HandlerCallback<E> aph = parent.get();
 			if (aph == null)
 				return;
 			aph.recieveProgress(message);
