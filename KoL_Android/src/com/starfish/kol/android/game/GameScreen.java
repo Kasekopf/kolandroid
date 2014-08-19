@@ -1,10 +1,8 @@
 package com.starfish.kol.android.game;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -24,6 +22,7 @@ import com.starfish.kol.android.controller.ModelController;
 import com.starfish.kol.android.controllers.StatsController;
 import com.starfish.kol.android.controllers.StatsController.StatsCallbacks;
 import com.starfish.kol.android.game.fragments.NavigationFragment;
+import com.starfish.kol.android.screen.ActivityScreen;
 import com.starfish.kol.android.screen.FragmentScreen;
 import com.starfish.kol.android.screen.Screen;
 import com.starfish.kol.android.screen.ViewScreen;
@@ -50,6 +49,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 
 	private StatsController stats;
 
+	private Screen baseScreen;
 	private ViewContext baseContext;
 	private LoadingContext loader;
 
@@ -66,6 +66,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_screen);
 
+		this.baseScreen = new ActivityScreen(this);
 		this.baseContext = new AndroidViewContext(this);
 
 		View base = (View) this.findViewById(R.id.game_progress_popup);
@@ -96,32 +97,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 
 		this.stats = new StatsController(new StatsModel(session));
 		ViewScreen statsScreen = (ViewScreen) findViewById(R.id.game_statsscreen);
-		statsScreen.display(stats, new Screen() {
-			@Override
-			public FragmentManager getFragmentManager() {
-				return GameScreen.this.getSupportFragmentManager();
-			}
-
-			@Override
-			public Activity getActivity() {
-				return GameScreen.this;
-			}
-
-			@Override
-			public ViewContext getViewContext() {
-				return GameScreen.this;
-			}
-
-			@Override
-			public FragmentManager getChildFragmentManager() {
-				return GameScreen.this.getSupportFragmentManager();
-			}
-
-			@Override
-			public void close() {
-				// do nothing...?
-			}
-		});
+		statsScreen.display(stats, baseScreen);
 
 		chat = ChatConnection.create(this.getClass().getSimpleName());
 		chat.connect(this);

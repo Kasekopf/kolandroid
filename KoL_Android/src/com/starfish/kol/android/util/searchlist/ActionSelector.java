@@ -3,7 +3,6 @@ package com.starfish.kol.android.util.searchlist;
 import java.io.Serializable;
 
 import com.starfish.kol.android.screen.Screen;
-import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.elements.ActionElement;
 
 public class ActionSelector<E extends ActionElement> implements ListSelector<E>, Serializable{
@@ -14,7 +13,7 @@ public class ActionSelector<E extends ActionElement> implements ListSelector<E>,
 
 	@Override
 	public boolean selectItem(Screen list, E item) {		
-		item.submit((ViewContext)list.getActivity());
+		item.submit(list.getViewContext());
 		return true;
 	}
 }

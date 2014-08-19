@@ -1,8 +1,6 @@
 package com.starfish.kol.android.chat.newchat;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
@@ -13,6 +11,7 @@ import com.starfish.kol.android.R;
 import com.starfish.kol.android.chat.newchat.ChatActionsController.ChatActionsControllerHost;
 import com.starfish.kol.android.chat.newchat.ChatChannelsController.ChatChannelsControllerHost;
 import com.starfish.kol.android.chat.newchat.ChatSubmissionController.ChatSubmissionControllerHost;
+import com.starfish.kol.android.screen.ActivityScreen;
 import com.starfish.kol.android.screen.DialogScreen;
 import com.starfish.kol.android.screen.FragmentScreen;
 import com.starfish.kol.android.screen.Screen;
@@ -24,33 +23,8 @@ import com.starfish.kol.request.ResponseHandler;
 
 public class ChatActivity extends ActionBarActivity implements ViewContext,
 		ChatActionsControllerHost, ChatSubmissionControllerHost, ChatChannelsControllerHost {
+	private Screen baseScreen;
 	private ViewContext baseContext;
-	private Screen baseScreen = new Screen() {
-		@Override
-		public FragmentManager getFragmentManager() {
-			return ChatActivity.this.getSupportFragmentManager();
-		}
-
-		@Override
-		public Activity getActivity() {
-			return ChatActivity.this;
-		}
-
-		@Override
-		public ViewContext getViewContext() {
-			return ChatActivity.this;
-		}
-
-		@Override
-		public FragmentManager getChildFragmentManager() {
-			return ChatActivity.this.getSupportFragmentManager();
-		}
-
-		@Override
-		public void close() {
-			// do nothing...?
-		}
-	};
 
 	private ChatController mainChat;
 	private ChatSubmissionController chatSubmission;
@@ -59,9 +33,10 @@ public class ChatActivity extends ActionBarActivity implements ViewContext,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat_screen);
-
+		
 		this.baseContext = new AndroidViewContext(this);
-
+		this.baseScreen = new ActivityScreen(this);
+		
 		mainChat = new ChatController();
 		FragmentScreen chatScreen = FragmentScreen.create(mainChat);
 		FragmentTransaction trans = getSupportFragmentManager()
