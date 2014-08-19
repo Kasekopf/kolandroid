@@ -24,10 +24,10 @@ public class TentativeRequest extends Request {
 		try {
 			ServerReply reply = con.complete(session.getCookie());
 			loading.complete(url);
-			handler.handle(session, this, reply);
+			handler.handle(session, reply);
 		} catch (ConnectionException e) {
 			loading.error(url);
-			failure.handle(session, this, null);
+			failure.handle(session, null);
 		}
 	}
 }

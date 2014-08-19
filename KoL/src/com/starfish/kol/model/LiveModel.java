@@ -40,13 +40,12 @@ public abstract class LiveModel extends Model<LiveMessage> {
 		
 		ResponseHandler listener = new ResponseHandler() {
 			@Override
-			public void handle(Session session, Request request,
-					ServerReply response) {
+			public void handle(Session session, ServerReply response) {
 				if (response.url.contains(updateUrl)) {
 					process(response);
 				} else {
 					if (foreground)
-						getGameHandler().handle(session, request, response);
+						getGameHandler().handle(session, response);
 					else
 						System.out.println("LiveModel expected " + updateUrl
 								+ " but was redirected to " + response.url);

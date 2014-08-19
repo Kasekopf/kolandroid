@@ -115,7 +115,7 @@ public class StatsModel extends LiveModel {
 
 	public StatsModel(Session s) {
 		super(s, "charpane.php", false);
-		
+
 		this.lastUpdate = new ServerReply(200, "", "", "", "", "");
 	}
 
@@ -215,15 +215,14 @@ public class StatsModel extends LiveModel {
 
 	public void loadQuests() {
 		String sideLog = QUEST_LOG.extractSingle(lastUpdate.html);
-		
+
 		Request req;
 		if (sideLog != null) {
 			String body = PAGE_BODY.replaceAll(lastUpdate.html, "$1" + sideLog
 					+ "$3");
 
-			if(this.lastUpdate == null)
+			if (this.lastUpdate == null)
 				return;
-			
 			req = new SimulatedRequest(this.lastUpdate,
 					"http://www.kingdomofloathing.com/questsidebar.php", body);
 		} else {
@@ -235,8 +234,7 @@ public class StatsModel extends LiveModel {
 
 	public void loadFull() {
 		String body = QUEST_LOG.replaceAll(lastUpdate.html, "");
-		Request r = new SimulatedRequest(lastUpdate,
-				"http://www.kingdomofloathing.com/fullsidebar.php", body);
-		this.makeRequest(r);
+		this.makeRequest(new SimulatedRequest(lastUpdate,
+				"http://www.kingdomofloathing.com/fullsidebar.php", body));
 	}
 }

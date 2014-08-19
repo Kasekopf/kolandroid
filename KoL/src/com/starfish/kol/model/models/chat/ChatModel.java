@@ -220,8 +220,7 @@ public class ChatModel extends Model<ChatStatus> {
 		Request r = new Request("newchatmessages.php?j=1&lasttime=" + lasttime);
 		this.makeRequest(r, new ResponseHandler() {
 			@Override
-			public void handle(Session session, Request request,
-					ServerReply response) {
+			public void handle(Session session, ServerReply response) {
 				ChatModel.this.handle(response, false);
 			}
 		});
@@ -230,8 +229,7 @@ public class ChatModel extends Model<ChatStatus> {
 	public void start() {
 		Request req = new TentativeRequest("mchat.php", new ResponseHandler() {
 			@Override
-			public void handle(Session session, Request request,
-					ServerReply response) {
+			public void handle(Session session, ServerReply response) {
 				if (!response.url.contains("mchat.php"))
 					return;
 
@@ -242,8 +240,7 @@ public class ChatModel extends Model<ChatStatus> {
 			}
 		}, new ResponseHandler() {
 			@Override
-			public void handle(Session session, Request request,
-					ServerReply response) {
+			public void handle(Session session, ServerReply response) {
 				hasChat = false;
 				notifyView(ChatStatus.NOCHAT);
 			}
@@ -297,8 +294,7 @@ public class ChatModel extends Model<ChatStatus> {
 		Request req = new Request(url);
 		this.makeRequest(req, new ResponseHandler() {
 			@Override
-			public void handle(Session session, Request request,
-					ServerReply response) {
+			public void handle(Session session, ServerReply response) {
 				ChatModel.this.handle(response, hiddencommand);
 			}			
 		});
@@ -320,9 +316,7 @@ public class ChatModel extends Model<ChatStatus> {
 		String html = "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"https://images.kingdomofloathing.com/styles.css\"></head><body><span class=small>You may not enter the chat until you have proven yourself literate. You can do so at the <a target=mainpane href=\"town_altar.php\">Temple of Literacy</a> in the Big Mountains.</body></html>";
 		ServerReply reject = new ServerReply(200, "", "", html,
 				"small_chatreject.php", "");
-		
-		Request r = new SimulatedRequest(reject);
-		this.makeRequest(r);
+		this.makeRequest(new SimulatedRequest(reject));
 	}
 
 	public ArrayList<ChannelModel> getChannels() {

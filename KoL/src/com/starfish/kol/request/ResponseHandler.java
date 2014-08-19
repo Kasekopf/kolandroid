@@ -12,10 +12,8 @@ public interface ResponseHandler {
 	 * 
 	 * @param session
 	 *            The session used when making the request.
-	 * @param request
-	 *            The request which generated this reply.
 	 * @param response
 	 *            The response recieved from the server.
 	 */
-	public void handle(Session session, Request request, ServerReply response);
+	public void handle(Session session, ServerReply response);
 }

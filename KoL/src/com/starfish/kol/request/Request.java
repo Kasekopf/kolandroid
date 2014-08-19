@@ -2,7 +2,6 @@ package com.starfish.kol.request;
 
 import com.starfish.kol.connection.Connection;
 import com.starfish.kol.connection.ConnectionException;
-import com.starfish.kol.connection.RealConnection;
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
 import com.starfish.kol.gamehandler.LoadingContext;
@@ -41,7 +40,7 @@ public class Request {
 		try {
 			ServerReply reply = con.complete(session.getCookie());
 			loading.complete(url);
-			handler.handle(session, this, reply);
+			handler.handle(session, reply);
 		} catch (ConnectionException e) {
 			System.out.println("Error: " + e);
 			e.printStackTrace();
@@ -50,7 +49,7 @@ public class Request {
 	}
 
 	protected Connection getConnection(String server) {
-		return new RealConnection("http://" + server
+		return new Connection("http://" + server
 				+ ".kingdomofloathing.com/" + url);
 	}
 

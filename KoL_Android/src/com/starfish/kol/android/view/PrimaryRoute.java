@@ -19,7 +19,6 @@ import com.starfish.kol.model.models.WebModel;
 import com.starfish.kol.model.models.fight.FightModel;
 import com.starfish.kol.model.models.inventory.InventoryModel;
 import com.starfish.kol.model.models.skill.SkillsModel;
-import com.starfish.kol.request.Request;
 import com.starfish.kol.request.ResponseHandler;
 
 public class PrimaryRoute implements ResponseHandler {
@@ -85,7 +84,7 @@ public class PrimaryRoute implements ResponseHandler {
 	}
 	
 	@Override
-	public void handle(Session session, Request request, ServerReply response) {
+	public void handle(Session session, ServerReply response) {
 		Controller controller = getController(session, response);
 		controller.chooseScreen(screens);
 	}

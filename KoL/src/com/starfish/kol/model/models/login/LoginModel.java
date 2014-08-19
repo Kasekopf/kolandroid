@@ -33,8 +33,7 @@ public class LoginModel extends Model<LoginStatus> {
 		Request req = new Request("login.php");
 		this.makeRequest(req, new ResponseHandler() {
 			@Override
-			public void handle(Session session, Request request,
-					ServerReply response) {
+			public void handle(Session session, ServerReply response) {
 				String loginId = LOGIN_ID.extractSingle(response.url);
 				String challenge = CHALLENGE.extractSingle(response.html);
 				String server = SERVER.extractSingle(response.cookie);
@@ -56,7 +55,7 @@ public class LoginModel extends Model<LoginStatus> {
 						new ResponseHandler() {
 							@Override
 							public void handle(Session session,
-									Request request, ServerReply response) {
+									ServerReply response) {
 								System.out.println("Logincookie: "
 										+ response.cookie);
 								if (!response.cookie.contains("PHPSESSID=")) {
