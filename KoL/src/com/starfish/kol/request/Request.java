@@ -1,7 +1,5 @@
 package com.starfish.kol.request;
 
-import java.util.HashSet;
-
 import com.starfish.kol.connection.Connection;
 import com.starfish.kol.connection.ConnectionException;
 import com.starfish.kol.connection.RealConnection;
@@ -11,20 +9,9 @@ import com.starfish.kol.gamehandler.LoadingContext;
 
 public class Request {
 	private String url;
-	private HashSet<String> tags;
 
 	public Request(String url) {
 		this.url = url;
-
-		this.tags = new HashSet<String>();
-	}
-	
-	public void addTag(String tag) {
-		tags.add(tag);
-	}
-
-	public boolean hasTag(String tag) {
-		return tags.contains(tag);
 	}
 
 	public void makeAsync(final Session session, final LoadingContext loading, final ResponseHandler handler) {
