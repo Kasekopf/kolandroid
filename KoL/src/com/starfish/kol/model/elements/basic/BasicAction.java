@@ -1,7 +1,6 @@
 package com.starfish.kol.model.elements.basic;
 
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.gamehandler.GameHandler;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.elements.interfaces.DeferredGameAction;
 import com.starfish.kol.request.Request;
@@ -21,8 +20,8 @@ public class BasicAction implements DeferredGameAction {
 	}
 	
 	protected void submit(ViewContext context, String urloverride) {
-		Request r = new Request(urloverride, new GameHandler(context));
-		r.makeAsync(session, context.createLoadingContext());
+		Request r = new Request(urloverride);
+		r.makeAsync(session, context.createLoadingContext(), context.getPrimaryRoute());
 	}
 	
 	@Override

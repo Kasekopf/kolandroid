@@ -203,7 +203,7 @@ public class WebModel extends Model<Void> {
 			url = currentBase + url;
 		}
 
-		Request req = new Request(url, this.getGameHandler());
+		Request req = new Request(url);
 		this.makeRequest(req);
 		return true;
 	}

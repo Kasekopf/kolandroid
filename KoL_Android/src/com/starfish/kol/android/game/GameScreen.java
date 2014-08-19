@@ -201,7 +201,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(intent);
 			} else {
-				model.displayRejectionMessage(this);
+				model.displayRejectionMessage();
 			}
 			return true;
 		}

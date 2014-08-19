@@ -11,17 +11,14 @@ import com.starfish.kol.gamehandler.LoadingContext;
 
 public class Request {
 	private String url;
-	private ResponseHandler handler;
-
 	private HashSet<String> tags;
 
-	public Request(String url, ResponseHandler handler) {
+	public Request(String url) {
 		this.url = url;
-		this.handler = handler;
 
 		this.tags = new HashSet<String>();
 	}
-
+	
 	public void addTag(String tag) {
 		tags.add(tag);
 	}
@@ -30,10 +27,10 @@ public class Request {
 		return tags.contains(tag);
 	}
 
-	public void makeAsync(final Session session, final LoadingContext loading) {
+	public void makeAsync(final Session session, final LoadingContext loading, final ResponseHandler handler) {
 		Thread t = new Thread() {
 			public void run() {
-				make(session, loading, session.getServer(), session.getCookie());
+				make(session, loading, handler);
 			}
 		};
 		t.start();
@@ -50,15 +47,14 @@ public class Request {
 	 * @param cookie
 	 *            Cookie to use with this request
 	 */
-	protected void make(Session session, LoadingContext loading, String server,
-			String cookie) {
-		Connection con = getConnection(server);
+	protected void make(Session session, LoadingContext loading, ResponseHandler handler) {
+		Connection con = getConnection(session.getServer());
 		String url = con.getUrl();
 		loading.start(con.getUrl());
 		try {
-			ServerReply reply = con.complete(cookie);
+			ServerReply reply = con.complete(session.getCookie());
 			loading.complete(url);
-			getHandler().handle(session, this, reply);
+			handler.handle(session, this, reply);
 		} catch (ConnectionException e) {
 			System.out.println("Error: " + e);
 			e.printStackTrace();
@@ -71,9 +67,6 @@ public class Request {
 				+ ".kingdomofloathing.com/" + url);
 	}
 
-	protected ResponseHandler getHandler() {
-		return handler;
-	}
 
 	public String toString() {
 		return "$Request[" + url + "]";

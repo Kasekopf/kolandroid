@@ -36,7 +36,9 @@ public abstract class LiveModel extends Model<LiveMessage> {
 	protected abstract void loadContent(ServerReply content);
 
 	public void update() {
-		Request update = new Request(this.updateUrl, new ResponseHandler() {
+		Request update = new Request(this.updateUrl);
+		
+		ResponseHandler listener = new ResponseHandler() {
 			@Override
 			public void handle(Session session, Request request,
 					ServerReply response) {
@@ -50,12 +52,12 @@ public abstract class LiveModel extends Model<LiveMessage> {
 								+ " but was redirected to " + response.url);
 				}
 			}
-		});
+		};
 
 		if (foreground)
-			this.makeRequest(update);
+			this.makeRequest(update, listener);
 		else
-			this.makeRequestBackground(update);
+			this.makeRequestBackground(update, listener);
 	}
 
 	public void access() {

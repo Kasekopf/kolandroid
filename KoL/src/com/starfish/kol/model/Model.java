@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.gamehandler.GameHandler;
 import com.starfish.kol.gamehandler.LoadingContext;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.models.WebModel;
@@ -31,13 +30,9 @@ public abstract class Model<Callback> implements Serializable {
 	// Callback from the model back to the view.
 	private transient ProgressHandler<Callback> view;
 
-	// An external handler, designed for use in all requests which are not
-	// directly handled by the model.
-	private transient GameHandler mainLoop;
-
 	// The current context this model is displayed in.
 	private transient ViewContext context;
-	
+
 	// The current user session information.
 	private final Session session;
 
@@ -61,7 +56,6 @@ public abstract class Model<Callback> implements Serializable {
 	 */
 	public void connectView(ProgressHandler<Callback> view, ViewContext context) {
 		this.view = view;
-		this.mainLoop = new GameHandler(context);
 		this.context = context;
 	}
 
@@ -84,18 +78,30 @@ public abstract class Model<Callback> implements Serializable {
 	 *            The request to make.
 	 */
 	protected void makeRequest(Request req) {
-		req.makeAsync(session, context.createLoadingContext());
+		this.makeRequest(req, context.getPrimaryRoute());
 	}
 
 	/**
-	 * Make a new request in the context of this model, without
-	 *  immediately informing the view of the request.
+	 * Make a new request in the context of this model.
+	 * 
+	 * @param req
+	 *            The request to make.
+	 * @param listener
+	 *            Response handler to use for the result.
+	 */
+	protected void makeRequest(Request req, ResponseHandler listener) {
+		req.makeAsync(session, context.createLoadingContext(), listener);
+	}
+
+	/**
+	 * Make a new request in the context of this model, without immediately
+	 * informing the view of the request.
 	 * 
 	 * @param req
 	 *            The request to make.
 	 */
-	protected void makeRequestBackground(Request req) {
-		req.makeAsync(session, LoadingContext.NONE);
+	protected void makeRequestBackground(Request req, ResponseHandler listener) {
+		req.makeAsync(session, LoadingContext.NONE, listener);
 	}
 
 	// Regex to find the top results pane of any page
@@ -135,9 +141,9 @@ public abstract class Model<Callback> implements Serializable {
 	 * @return A handler
 	 */
 	protected ResponseHandler getGameHandler() {
-		return mainLoop;
+		return context.getPrimaryRoute();
 	}
-	
+
 	public Session getSession() {
 		return session;
 	}

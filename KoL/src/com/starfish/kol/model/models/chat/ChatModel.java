@@ -18,8 +18,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.gamehandler.GameHandler;
-import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.model.models.chat.ChatModel.ChatStatus;
 import com.starfish.kol.request.Request;
@@ -45,7 +43,8 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 			"pwdhash  ?= ?[\"']?([0-9a-fA-F]+)[\"']?[,;]", 1);
 	private static final Regex BASEROOM = new Regex("active: \"([^\"]*)\"", 1);
 
-	private static final Regex CHANNEL = new Regex("<br>&nbsp;&nbsp;(.*?)(?=<br>|$)", 1);
+	private static final Regex CHANNEL = new Regex(
+			"<br>&nbsp;&nbsp;(.*?)(?=<br>|$)", 1);
 
 	private boolean hasChat;
 	private HashSet<Integer> seenMessages;
@@ -67,7 +66,7 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 
 	public ChatModel(Session s) {
 		super(s);
-		
+
 		hasChat = false;
 		seenMessages = new HashSet<Integer>();
 		messages = new ArrayList<ChatText>();
@@ -91,7 +90,7 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 	protected void notifyChange() {
 		notifyView(ChatStatus.UPDATE);
 	}
-	
+
 	@Override
 	public void handle(Session session, Request request, ServerReply response) {
 		if (!response.url.contains("newchatmessages.php")
@@ -108,16 +107,16 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		RawMessageList update = parser.fromJson(response.html,
 				RawMessageList.class);
 
-		//System.out.println(response.html);
+		// System.out.println(response.html);
 		boolean updated = false;
 		for (ChatText message : update.msgs) {
 			if (this.processMessage(message))
 				updated = true;
 		}
-		
+
 		if (update.output != null) {
 			boolean commandHandled = this.processCommand(update.output);
-			if(!commandHandled || !request.hasTag("hidden")) {
+			if (!commandHandled || !request.hasTag("hidden")) {
 				if (this.processMessage(new ChatText(update.output)))
 					updated = true;
 			}
@@ -126,14 +125,14 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		if (updated)
 			notifyChange();
 
-		if(update.last != null)
+		if (update.last != null)
 			lasttime = update.last;
 	}
 
 	public ChannelModel getChannel(String name) {
 		return channelsByName.get(name);
 	}
-	
+
 	private ChannelModel getOrCreateChannel(String name) {
 		ChannelModel channel;
 		if (channelsByName.containsKey(name)) {
@@ -149,21 +148,20 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 
 	private boolean processCommand(String output) {
 		output = output.replace("</font>", "");
-		
-		if(output.contains("<font color=green>Available channels:")) {
-			//Loading result of /channel
+
+		if (output.contains("<font color=green>Available channels:")) {
+			// Loading result of /channel
 			for (String channel : CHANNEL.extractAllSingle(output)) {
 				getOrCreateChannel(channel);
 			}
 			return true;
-		}
-		else if(output.contains("<font color=green>Currently listening to channels:")) {
-			//Loading result of /listen
+		} else if (output
+				.contains("<font color=green>Currently listening to channels:")) {
+			// Loading result of /listen
 			ArrayList<ChannelModel> active = new ArrayList<ChannelModel>();
 			for (String channel : CHANNEL.extractAllSingle(output)) {
 				if (channel.contains("<b>")) {
-					channel = channel.replace("<b>", "")
-							.replace("</b>", "");
+					channel = channel.replace("<b>", "").replace("</b>", "");
 				}
 
 				ChannelModel c = getOrCreateChannel(channel);
@@ -171,19 +169,19 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 				active.add(c);
 			}
 
-			for(int i = 0; i < channels.size(); i++) {
-				//Avoid foreach loop to avoid concurrent modification issues.
+			for (int i = 0; i < channels.size(); i++) {
+				// Avoid foreach loop to avoid concurrent modification issues.
 				ChannelModel c = channels.get(i);
 				c.setActive(active.contains(c));
 			}
-			
+
 			return true;
 		}
-		
+
 		System.out.println("Unknown command: " + output);
 		return false;
 	}
-	
+
 	private boolean processMessage(ChatText message) {
 		if (message.getID() != 0) {
 			if (seenMessages.contains(message.getID()))
@@ -194,7 +192,7 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		message.prepare(baseActions, visibleChannel);
 
 		String channelName = message.getChannel();
-		ChannelModel channel = getOrCreateChannel(channelName);		
+		ChannelModel channel = getOrCreateChannel(channelName);
 		messages.add(message);
 		channel.addMessage(message);
 		return true;
@@ -220,8 +218,8 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 	}
 
 	public void triggerUpdate() {
-		this.makeRequest(new Request("newchatmessages.php?j=1&lasttime="
-				+ lasttime, this));
+		Request r = new Request("newchatmessages.php?j=1&lasttime=" + lasttime);
+		this.makeRequest(r, this);
 	}
 
 	public void start() {
@@ -244,7 +242,7 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 				hasChat = false;
 				notifyView(ChatStatus.NOCHAT);
 			}
-			
+
 		});
 		this.makeRequest(req);
 	}
@@ -291,10 +289,10 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		String url = String.format(baseurl, playerid, pwd, encodedmsg);
 		System.out.println("Submitting chat for " + url);
 
-		Request req = new Request(url, this);
-		if(hiddencommand)
+		Request req = new Request(url);
+		if (hiddencommand)
 			req.addTag("hidden");
-		this.makeRequest(req);
+		this.makeRequest(req, this);
 	}
 
 	public static enum ChatStatus {
@@ -309,22 +307,24 @@ public class ChatModel extends Model<ChatStatus> implements ResponseHandler {
 		super.makeRequest(req);
 	}
 	
-	public void displayRejectionMessage(ViewContext context) {
+	public void displayRejectionMessage() {
 		String html = "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"https://images.kingdomofloathing.com/styles.css\"></head><body><span class=small>You may not enter the chat until you have proven yourself literate. You can do so at the <a target=mainpane href=\"town_altar.php\">Temple of Literacy</a> in the Big Mountains.</body></html>";
 		ServerReply reject = new ServerReply(200, "", "", html,
 				"small_chatreject.php", "");
-		this.makeRequest(new SimulatedRequest(reject, new GameHandler(context)));
+		
+		Request r = new SimulatedRequest(reject);
+		this.makeRequest(r);
 	}
-	
+
 	public ArrayList<ChannelModel> getChannels() {
 		return new ArrayList<ChannelModel>(channels);
 	}
 
-	@Override
-	protected ResponseHandler getGameHandler() {
-		return super.getGameHandler();
-	}
-	
+	/*
+	 * @Override protected ResponseHandler getGameHandler() { return
+	 * super.getGameHandler(); }
+	 */
+
 	public static class RawMessageList {
 		public ChatText[] msgs;
 		public String last;

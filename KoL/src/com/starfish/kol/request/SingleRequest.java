@@ -6,8 +6,8 @@ public class SingleRequest extends Request{
 	private final String[] formNames;
 	private final String[] formVals;
 	
-	public SingleRequest(String url, String[] names, String[] vals, ResponseHandler handler) {
-		super(url, handler);
+	public SingleRequest(String url, String[] names, String[] vals) {
+		super(url);
 		
 		this.formNames = names;
 		this.formVals = vals;

@@ -11,20 +11,20 @@ public class TentativeRequest extends Request {
 
 	public TentativeRequest(String url, ResponseHandler success,
 			ResponseHandler failure) {
-		super(url, success);
+		super(url);
 
 		this.failure = failure;
 	}
 
 	@Override
-	public void make(Session session, LoadingContext loading, String server, String cookie) {
-		Connection con = getConnection(server);
+	protected void make(Session session, LoadingContext loading, ResponseHandler handler) {
+		Connection con = getConnection(session.getServer());
 		String url = con.getUrl();
 		loading.start(con.getUrl());
 		try {
-			ServerReply reply = con.complete(cookie);
+			ServerReply reply = con.complete(session.getCookie());
 			loading.complete(url);
-			getHandler().handle(session, this, reply);
+			handler.handle(session, this, reply);
 		} catch (ConnectionException e) {
 			loading.error(url);
 			failure.handle(session, this, null);

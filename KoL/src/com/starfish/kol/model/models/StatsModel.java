@@ -225,11 +225,9 @@ public class StatsModel extends LiveModel {
 				return;
 			
 			req = new SimulatedRequest(this.lastUpdate,
-					"http://www.kingdomofloathing.com/questsidebar.php", body,
-					this.getGameHandler());
+					"http://www.kingdomofloathing.com/questsidebar.php", body);
 		} else {
-			req = new Request("http://www.kingdomofloathing.com/questlog.php",
-					this.getGameHandler());
+			req = new Request("http://www.kingdomofloathing.com/questlog.php");
 		}
 
 		this.makeRequest(req);
@@ -237,8 +235,8 @@ public class StatsModel extends LiveModel {
 
 	public void loadFull() {
 		String body = QUEST_LOG.replaceAll(lastUpdate.html, "");
-		this.makeRequest(new SimulatedRequest(lastUpdate,
-				"http://www.kingdomofloathing.com/fullsidebar.php", body, this
-						.getGameHandler()));
+		Request r = new SimulatedRequest(lastUpdate,
+				"http://www.kingdomofloathing.com/fullsidebar.php", body);
+		this.makeRequest(r);
 	}
 }

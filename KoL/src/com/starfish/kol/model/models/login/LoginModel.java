@@ -2,7 +2,6 @@ package com.starfish.kol.model.models.login;
 
 import com.starfish.kol.connection.ServerReply;
 import com.starfish.kol.connection.Session;
-import com.starfish.kol.gamehandler.GameHandler;
 import com.starfish.kol.gamehandler.ViewContext;
 import com.starfish.kol.model.Model;
 import com.starfish.kol.request.Request;
@@ -27,17 +26,12 @@ public class LoginModel extends Model<LoginStatus> {
 		super(new Session());
 	}
 
-	public void cheat(ViewContext context) {
-		Request req = new Request("static.php?id=whatiskol", new GameHandler(
-				context));
-		this.makeRequest(req);
-	}
-
 	public void login(final ViewContext context, final String username,
 			final PasswordHash hash) {
 		this.notifyView(LoginStatus.STARTING);
 
-		Request req = new Request("login.php", new ResponseHandler() {
+		Request req = new Request("login.php");
+		this.makeRequest(req, new ResponseHandler() {
 			@Override
 			public void handle(Session session, Request request,
 					ServerReply response) {
@@ -57,9 +51,9 @@ public class LoginModel extends Model<LoginStatus> {
 						hash.completeChallenge(challenge), "1" };
 				notifyView(LoginStatus.HALFWAY);
 
-				Request login = new SingleRequest("login.php", names, vals,
+				Request login = new SingleRequest("login.php", names, vals);
+				login.makeAsync(session, context.createLoadingContext(),
 						new ResponseHandler() {
-
 							@Override
 							public void handle(Session session,
 									Request request, ServerReply response) {
@@ -74,16 +68,13 @@ public class LoginModel extends Model<LoginStatus> {
 								notifyView(LoginStatus.SUCCESS);
 
 								session.setCookie(response.cookie);
-								Request game = new Request("main.php",
-										new GameHandler(context));
-								game.makeAsync(session, context.createLoadingContext());
+								Request game = new Request("main.php");
+								game.makeAsync(session,
+										context.createLoadingContext(),
+										context.getPrimaryRoute());
 							}
-
 						});
-
-				login.makeAsync(session, context.createLoadingContext());
 			}
 		});
-		this.makeRequest(req);
 	}
 }
