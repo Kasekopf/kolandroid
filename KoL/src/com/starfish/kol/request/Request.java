@@ -36,7 +36,7 @@ public class Request {
 	protected void make(Session session, LoadingContext loading, ResponseHandler handler) {
 		Connection con = getConnection(session.getServer());
 		String url = con.getUrl();
-		loading.start(con.getUrl());
+		loading.start(url);
 		try {
 			ServerReply reply = con.complete(session.getCookie());
 			loading.complete(url);

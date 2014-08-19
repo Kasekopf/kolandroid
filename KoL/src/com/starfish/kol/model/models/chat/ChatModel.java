@@ -224,6 +224,14 @@ public class ChatModel extends LinkedModel<ChatStatus> {
 		Request req = new TentativeRequest("mchat.php", new ResponseHandler() {
 			@Override
 			public void handle(Session session, ServerReply response) {
+				hasChat = false;
+				notifyView(ChatStatus.NOCHAT);
+			}
+
+		});
+		this.makeRequest(req, new ResponseHandler() {
+			@Override
+			public void handle(Session session, ServerReply response) {
 				if (!response.url.contains("mchat.php"))
 					return;
 
@@ -235,15 +243,7 @@ public class ChatModel extends LinkedModel<ChatStatus> {
 				submitChat("/channels", true);
 				submitChat("/l", true);
 			}
-		}, new ResponseHandler() {
-			@Override
-			public void handle(Session session, ServerReply response) {
-				hasChat = false;
-				notifyView(ChatStatus.NOCHAT);
-			}
-
 		});
-		this.makeRequest(req);
 	}
 
 	public void setCurrentRoom(String room) {

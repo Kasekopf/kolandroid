@@ -9,8 +9,7 @@ import com.starfish.kol.gamehandler.LoadingContext;
 public class TentativeRequest extends Request {
 	private ResponseHandler failure;
 
-	public TentativeRequest(String url, ResponseHandler success,
-			ResponseHandler failure) {
+	public TentativeRequest(String url, ResponseHandler failure) {
 		super(url);
 
 		this.failure = failure;
