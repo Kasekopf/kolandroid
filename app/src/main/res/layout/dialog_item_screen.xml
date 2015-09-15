@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.github.kolandroid.kol.android.dialogs.ItemDialog">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
+
+        <ImageView
+            android:id="@+id/dialog_item_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:contentDescription="Image"
+            android:paddingLeft="3dp" />
+
+        <TextView
+            android:id="@+id/dialog_item_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="3dp"
+            android:text="TextView"
+            android:textColor="#000"
+            android:textSize="25sp" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/dialog_item_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:choiceMode="singleChoice"
+        android:divider="#aaa"
+        android:dividerHeight="1dp"
+        tools:context="com.github.kolandroid.kol.android.game.ItemDialog" />
+
+</LinearLayout>

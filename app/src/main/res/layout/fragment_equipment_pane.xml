@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.github.kolandroid.kol.android.dialogs.EquipmentPaneFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <!-- Hack for layout purposes. Ensures buttons appear at bottom. -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="#000" />
+
+        <com.github.kolandroid.kol.android.screen.ViewScreen
+            android:id="@+id/inventory_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/equipment_equipoutfit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Equip Outfit" />
+
+        <Button
+            android:id="@+id/equipment_saveoutfit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Save Outfit" />
+
+    </LinearLayout>
+</LinearLayout>

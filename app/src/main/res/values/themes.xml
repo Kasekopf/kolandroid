@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- the theme applied to the application or activity -->
+    <style name="CustomActionBarTheme" parent="@style/Theme.AppCompat">
+        <item name="android:actionBarStyle" tools:targetApi="11">@style/MyActionBar</item>
+        <item name="android:actionBarTabTextStyle" tools:targetApi="11">@style/MyActionBarTabText
+        </item>
+        <item name="android:actionMenuTextColor" tools:targetApi="11">@color/actionbar_text</item>
+
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="actionBarTabTextStyle">@style/MyActionBarTabText</item>
+        <item name="actionMenuTextColor">@color/actionbar_text</item>
+    </style>
+</resources>
