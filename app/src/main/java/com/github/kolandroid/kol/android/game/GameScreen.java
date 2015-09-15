@@ -23,9 +23,11 @@ import com.github.kolandroid.kol.android.controllers.NavigationController;
 import com.github.kolandroid.kol.android.controllers.StatsController;
 import com.github.kolandroid.kol.android.controllers.StatsController.StatsCallbacks;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
+import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.DrawerScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
+import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
 import com.github.kolandroid.kol.android.view.ProgressLoader;
@@ -38,6 +40,7 @@ import com.github.kolandroid.kol.model.models.NavigationModel;
 import com.github.kolandroid.kol.model.models.StatsModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.request.ResponseHandler;
+import com.github.kolandroid.kol.util.Logger;
 
 public class GameScreen extends ActionBarActivity implements StatsCallbacks,
         ViewContext {
@@ -106,7 +109,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
         displayIntent(intent, true);
     }
 
-    private void displayIntent(Intent intent, boolean addToBackStack) {
+    private void displayIntent(Intent intent, final boolean addToBackStack) {
         if (dialog != null) {
             dialog.dismiss();
             dialog = null;
@@ -116,20 +119,41 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
             // the intent to launch this came from a back action
             // i.e. back from the chat
             // Do not shift the game view
-            Log.i("GameScreen", "GameScreen received intent without model");
+            Logger.log("GameScreen", "GameScreen received intent without model");
             return;
         }
 
-        Controller controller = (Controller) intent
+        final Controller controller = (Controller) intent
                 .getSerializableExtra("controller");
-        FragmentScreen screen = FragmentScreen.create(controller);
+        controller.chooseScreen(new ScreenSelection() {
+            @Override
+            public void displayExternal(Controller c) {
+                Logger.log("GameScreen", "ERROR: Controller " + c + " has chosen to appear on an external screen. Rerouting...");
+                displayPrimary(c);
+            }
 
-        FragmentTransaction trans = getSupportFragmentManager()
-                .beginTransaction().replace(R.id.game_mainfragment, screen);
-        if (addToBackStack)
-            trans = trans.addToBackStack(null);
-        trans.commit();
+            @Override
+            public void displayPrimary(Controller c) {
+                Logger.log("GameScreen", "Displaying " + c + " on primary pane");
+                FragmentScreen screen = FragmentScreen.create(controller);
 
+                FragmentTransaction trans = getSupportFragmentManager()
+                        .beginTransaction().replace(R.id.game_mainfragment, screen);
+                if (addToBackStack)
+                    trans = trans.addToBackStack(null);
+                trans.commit();
+                refreshStatsPane();
+            }
+
+            @Override
+            public void displayDialog(Controller c) {
+                Logger.log("GameScreen", "Displaying " + c + " on new dialog box");
+                dialog = DialogScreen.display(c, new ActivityScreen(GameScreen.this));
+            }
+        });
+    }
+
+    public void refreshStatsPane() {
         if (stats != null)
             stats.refresh();
     }

@@ -11,6 +11,7 @@ import android.webkit.WebViewClient;
 
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.UpdatableModelController;
+import com.github.kolandroid.kol.android.game.GameScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.model.models.WebModel;
@@ -18,6 +19,7 @@ import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 
 public class WebController extends UpdatableModelController<WebModel> {
     /**
@@ -111,7 +113,7 @@ public class WebController extends UpdatableModelController<WebModel> {
         web.getSettings().setLoadWithOverviewMode(true);
         web.getSettings().setUseWideViewPort(true);
         web.getSettings().setJavaScriptEnabled(true);
-        web.addJavascriptInterface(new JavaScriptInterface(), "FORMOUT");
+        web.addJavascriptInterface(new JavaScriptInterface(host), "ANDROIDAPP");
 
 		/*
         CookieSyncManager syncManager = CookieSyncManager.createInstance(web.getContext());
@@ -138,6 +140,12 @@ public class WebController extends UpdatableModelController<WebModel> {
     }
 
     class JavaScriptInterface {
+        private final WeakReference<Screen> host;
+
+        public JavaScriptInterface(Screen host) {
+            this.host = new WeakReference<>(host);
+        }
+
         @android.webkit.JavascriptInterface
         public void debug(String text) {
             Log.i("WebFragment Form", "Debug: " + text);
@@ -147,6 +155,16 @@ public class WebController extends UpdatableModelController<WebModel> {
         public void processFormData(String formData) {
             Log.i("WebFragment Form", "Res: " + formData);
             getModel().makeRequest(formData);
+        }
+
+        @android.webkit.JavascriptInterface
+        public void refreshStatsPane() {
+            Screen host = this.host.get();
+            if (host == null) return;
+
+            if (host instanceof GameScreen) {
+                ((GameScreen) host).refreshStatsPane();
+            }
         }
     }
 

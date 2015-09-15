@@ -85,7 +85,7 @@ public class WebModel extends Model {
                     "         tobegin = false;" +
                     "         data += encodeURIComponent(field.name) + '=' + encodeURIComponent(field.options[field.selectedIndex].value);" +
                     "    }" +
-                    "    window.FORMOUT.processFormData(data);" +
+                    "    window.ANDROIDAPP.processFormData(data);" +
                     "}";
     private final String url;
     private String html;
@@ -117,12 +117,20 @@ public class WebModel extends Model {
         html = replaceForms(html);
         html = FRAME_REDIRECT.replaceAll(html, "");
         html = doHacks(html);
+        html = fixPaneReferences(html);
 
         this.html = html;
     }
 
     public boolean isSmall() {
         return this.url.contains("small_");
+    }
+
+    private String fixPaneReferences(String html) {
+        html = html.replace("top.charpane.location.href=\"charpane.php\";", "window.ANDROIDAPP.refreshStatsPane();");
+
+        html = html.replace("top.mainpane.document", "document");
+        return html;
     }
 
     private String doHacks(String html) {
@@ -227,9 +235,11 @@ public class WebModel extends Model {
             Logger.log("WebModel", "[AJAX] Error loading " + url);
             html_result = "";
         } else {
-            Logger.log("WebModel", "[AJAX] Loaded " + url + " : " + result.html);
+            Logger.log("WebModel", "[AJAX] Loaded " + url + " : " + fixPaneReferences(result.html));
             html_result = result.html;
         }
+
+        fixPaneReferences(html_result);
 
         try {
             return new ByteArrayInputStream(html_result.getBytes("UTF-8"));
