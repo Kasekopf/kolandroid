@@ -36,8 +36,9 @@ public class ElementBinder implements Binder<ModelElement>, Serializable {
         if (model.getImage() == null || model.getImage().length() == 0) {
             img.setVisibility(View.GONE);
         } else {
-            img.setVisibility(View.VISIBLE);
+            img.setImageResource(R.drawable.blank);
             ImageDownloader.loadFromUrl(img, model.getImage());
+            img.setVisibility(View.VISIBLE);
         }
     }
 

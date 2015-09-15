@@ -12,7 +12,7 @@ import com.github.kolandroid.kol.util.Regex;
 
 import java.util.ArrayList;
 
-public class InventoryPocketModel extends LiveModel implements ChildModel {
+public class ItemPocketModel extends LiveModel implements ChildModel {
     protected static final Regex PWD = new Regex(
             "var\\s+pwd\\s*=\\s*\"([a-fA-F0-9]*)\";", 1);
     /**
@@ -33,7 +33,7 @@ public class InventoryPocketModel extends LiveModel implements ChildModel {
             "<img[^>]*descitem\\((\\d+)[,\\)]", 1);
     private static final Regex ITEM_NAME = new Regex("<b[^>]*>(.*?)</b>", 1);
     private static final Regex ITEM_QNTY = new Regex(
-            "<b class=\"ircm\">.*?</b>&nbsp;<span>\\((\\d+)\\)</span>", 1);
+            "<b[^>]*ircm[^>]*>.*?</b>&nbsp;<span>\\((\\d+)\\)</span>", 1);
 
     private static final Regex ITEM_SLOT = new Regex("<a[^>]*>([^<]*?)</a>:", 1);
 
@@ -47,7 +47,7 @@ public class InventoryPocketModel extends LiveModel implements ChildModel {
     private final String name;
     protected ArrayList<ModelGroup<InventoryItem>> items;
 
-    public InventoryPocketModel(String name, Session s, String updateUrl) {
+    public ItemPocketModel(String name, Session s, String updateUrl) {
         super(s, updateUrl, true);
         this.items = new ArrayList<ModelGroup<InventoryItem>>();
         this.name = name;
@@ -139,7 +139,7 @@ public class InventoryPocketModel extends LiveModel implements ChildModel {
         }
     }
 
-    public <Result> Result execute(InventoryVisitor<Result> visitor) {
+    public <Result> Result execute(PocketVisitor<Result> visitor) {
         return visitor.display(this);
     }
 

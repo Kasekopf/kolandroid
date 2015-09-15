@@ -6,7 +6,8 @@ import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controllers.ChoiceController;
 import com.github.kolandroid.kol.android.controllers.CraftingController;
 import com.github.kolandroid.kol.android.controllers.fight.FightController;
-import com.github.kolandroid.kol.android.controllers.inventory.InventoryController;
+import com.github.kolandroid.kol.android.controllers.inventory.ClosetController;
+import com.github.kolandroid.kol.android.controllers.inventory.ItemStorageController;
 import com.github.kolandroid.kol.android.controllers.skills.SkillsController;
 import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.login.LoginController;
@@ -17,6 +18,7 @@ import com.github.kolandroid.kol.model.models.ChoiceModel;
 import com.github.kolandroid.kol.model.models.CraftingModel;
 import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.model.models.fight.FightModel;
+import com.github.kolandroid.kol.model.models.inventory.ClosetModel;
 import com.github.kolandroid.kol.model.models.inventory.InventoryModel;
 import com.github.kolandroid.kol.model.models.skill.SkillsModel;
 import com.github.kolandroid.kol.request.ResponseHandler;
@@ -66,7 +68,12 @@ public class PrimaryRoute implements ResponseHandler {
 
         if (response.url.contains("inventory.php")) {
             InventoryModel model = new InventoryModel(session, response);
-            return new InventoryController(model);
+            return new ItemStorageController<>(model);
+        }
+
+        if (response.url.contains("closet.php")) {
+            ClosetModel model = new ClosetModel(session, response);
+            return new ClosetController(model);
         }
 
         if (response.url.contains("skills.php")) {

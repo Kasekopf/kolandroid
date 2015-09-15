@@ -43,7 +43,9 @@ public class WebController extends UpdatableModelController<WebModel> {
             String fixedHtml = BODY_TAG
                     .replaceAll(base.getHTML(),
                             "$0<meta name=\"viewport\" content=\"width=device-width\">");
-            web.loadData(fixedHtml, "text/html", null);
+            web.loadDataWithBaseURL(base.getURL(), fixedHtml, "text/html", null,
+                    null);
+            web.invalidate();
         }
     }
 
@@ -112,6 +114,9 @@ public class WebController extends UpdatableModelController<WebModel> {
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                if (url.startsWith("data:text/html"))
+                    return null;
+
                 if (url.contains(".php")) {
                     //All requests to .php must include the proper cookies
                     InputStream result = getModel().makeBlockingRequest(url);
