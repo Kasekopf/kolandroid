@@ -18,7 +18,7 @@ public class SkillsModel extends GroupModel<SkillsSubmodel> {
     public SkillsModel(Session s, ServerReply text) {
         super(s);
 
-        this.resultsPane = extractResultsPane(getSession(), text);
+        this.resultsPane = WebModel.extractResultsPane(getSession(), text);
         this.skills = new SkillsListModel(s, text);
         this.items = new ItemsListModel(s, text);
 

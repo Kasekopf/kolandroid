@@ -49,7 +49,7 @@ public class CraftingModel extends GroupModel<CraftingSubModel> {
 
         crafts[initialSlot].process(reply);
 
-        this.resultsPane = extractResultsPane(s, reply);
+        this.resultsPane = WebModel.extractResultsPane(s, reply);
     }
 
     public WebModel getResultsPane() {

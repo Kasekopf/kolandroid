@@ -42,7 +42,7 @@ public class InventoryModel extends GroupModel<InventoryPocketModel> {
             return;
         }
 
-        resultsPane = extractResultsPane(getSession(), text);
+        resultsPane = WebModel.extractResultsPane(getSession(), text);
 
         if (CHOSEN_CONSUME.matches(text.html)) {
             chosen = 1;

@@ -47,20 +47,39 @@ public class WebController extends UpdatableModelController<WebModel> {
 
     @Override
     public int getView() {
-        if (getModel().isSmall()) {
-            return R.layout.dialog_web_screen;
-        } else {
-            return R.layout.fragment_web_screen;
-        }
+        return getModel().visitType(new WebModel.WebModelTypeVisitor<Integer>() {
+            public Integer forRegular() {
+                return R.layout.fragment_web_screen;
+            }
+
+            public Integer forSmall() {
+                return R.layout.dialog_web_screen;
+            }
+
+            public Integer forResults() {
+                return R.layout.dialog_results_screen;
+            }
+        });
     }
 
     @Override
-    public void chooseScreen(ScreenSelection choice) {
-        if (getModel().isSmall()) {
-            choice.displayDialog(this);
-        } else {
-            choice.displayPrimary(this);
-        }
+    public void chooseScreen(final ScreenSelection choice) {
+        getModel().visitType(new WebModel.WebModelTypeVisitor<Void>() {
+            public Void forRegular() {
+                choice.displayPrimary(WebController.this);
+                return null;
+            }
+
+            public Void forSmall() {
+                choice.displayDialog(WebController.this);
+                return null;
+            }
+
+            public Void forResults() {
+                choice.displayDialog(WebController.this);
+                return null;
+            }
+        });
     }
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})

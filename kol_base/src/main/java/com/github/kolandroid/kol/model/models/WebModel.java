@@ -87,6 +87,12 @@ public class WebModel extends Model {
                     "    }" +
                     "    window.ANDROIDAPP.processFormData(data);" +
                     "}";
+    // Regex to find the top results pane of any page
+    private static final Regex RESULTS_PANE = new Regex(
+            "<table[^>]*><tr><td[^>]*><b>Results:.*?(<center>.*?)</table>", 1);
+    // Regex to find contents of the <body> tag of any page
+    private static final Regex PAGE_BODY = new Regex(
+            "(<body[^>]*>)(.*?)(</body>)", 2);
     private final String url;
     private String html;
 
@@ -97,6 +103,29 @@ public class WebModel extends Model {
 
         this.setHTML(text.html.replace("window.devicePixelRatio >= 2", "window.devicePixelRatio < 2"));
         this.url = text.url;
+    }
+
+    /**
+     * Extract a model for the results pane of this page, if any exists.
+     *
+     * @param s    Session in which to create the new model.
+     * @param base Page to parse
+     * @return A model representing the results pane; null if no results pane
+     * was found.
+     */
+    public static WebModel extractResultsPane(Session s, ServerReply base) {
+        String resultsPane = RESULTS_PANE.extractSingle(base.html);
+        if (resultsPane == null)
+            return null;
+
+        Logger.log("WebModel", "Loaded results pane: " + resultsPane);
+
+        String html = PAGE_BODY.replaceAll(base.html, "$1<center>"
+                + resultsPane + "</center>$3");
+        ServerReply newRep = new ServerReply(base.responseCode,
+                base.redirectLocation, base.date, html,
+                "results/" + base.url, base.cookie);
+        return new WebModel(s, newRep);
     }
 
     public String getURL() {
@@ -122,8 +151,13 @@ public class WebModel extends Model {
         this.html = html;
     }
 
-    public boolean isSmall() {
-        return this.url.contains("small_");
+    public <E> E visitType(WebModelTypeVisitor<E> visitor) {
+        if (this.url.contains("small/"))
+            return visitor.forSmall();
+        else if (this.url.contains("results/"))
+            return visitor.forResults();
+        else
+            return visitor.forRegular();
     }
 
     private String fixPaneReferences(String html) {
@@ -252,5 +286,13 @@ public class WebModel extends Model {
                 }
             };
         }
+    }
+
+    public interface WebModelTypeVisitor<E> {
+        E forRegular();
+
+        E forSmall();
+
+        E forResults();
     }
 }

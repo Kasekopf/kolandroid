@@ -295,7 +295,7 @@ public class ChatModel extends LinkedModel<ChatStatus> {
     public void displayRejectionMessage() {
         String html = "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"https://images.kingdomofloathing.com/styles.css\"></head><body><span class=small>You may not enter the chat until you have proven yourself literate. You can do so at the <a target=mainpane href=\"town_altar.php\">Temple of Literacy</a> in the Big Mountains.</body></html>";
         ServerReply reject = new ServerReply(200, "", "", html,
-                "small_chatreject.php", "");
+                "small/chatreject.php", "");
         this.makeRequest(new SimulatedRequest(reject));
     }
 

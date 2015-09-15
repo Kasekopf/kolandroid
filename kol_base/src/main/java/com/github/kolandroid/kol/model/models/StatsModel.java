@@ -224,7 +224,7 @@ public class StatsModel extends LiveModel {
             if (this.lastUpdate == null)
                 return;
             req = new SimulatedRequest(this.lastUpdate,
-                    "http://www.kingdomofloathing.com/small_questsidebar.php", body);
+                    "http://www.kingdomofloathing.com/results/questsidebar.php", body);
         } else {
             req = new Request("http://www.kingdomofloathing.com/questlog.php");
         }
