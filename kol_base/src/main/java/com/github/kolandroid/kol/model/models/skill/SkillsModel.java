@@ -13,7 +13,7 @@ public class SkillsModel extends GroupModel<SkillsSubmodel> {
     private final SkillsListModel skills;
     private final ItemsListModel items;
     private final boolean usedItem;
-    private WebModel resultsPane;
+    private final WebModel resultsPane;
 
     public SkillsModel(Session s, ServerReply text) {
         super(s);

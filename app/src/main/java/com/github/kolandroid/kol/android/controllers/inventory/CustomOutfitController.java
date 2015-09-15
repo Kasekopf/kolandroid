@@ -37,7 +37,7 @@ public class CustomOutfitController implements Controller {
             @Override
             public void onClick(View arg0) {
                 String name = nameentry.getText().toString();
-                if (name == "") return;
+                if (name.equals("")) return;
 
                 DeferredGameAction action = base.saveOutfit(name);
                 action.submit(host.getViewContext());

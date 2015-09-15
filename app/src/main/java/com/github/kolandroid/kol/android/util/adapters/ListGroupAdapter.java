@@ -15,11 +15,12 @@ import java.util.List;
 
 public class ListGroupAdapter<E extends ModelGroup<F>, F>
         extends BaseExpandableListAdapter {
-    private List<E> baseList;
-    private Context context;
+    private final Context context;
 
-    private Binder<? super F> elementBinding;
-    private Binder<? super E> groupBinding;
+    private final Binder<? super F> elementBinding;
+    private final Binder<? super E> groupBinding;
+
+    private List<E> baseList;
 
     public ListGroupAdapter(Context c, Binder<? super F> elementBinding) {
         this(c, new ArrayList<E>(), elementBinding);

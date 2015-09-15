@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.github.kolandroid.kol.android.R;
 
 public class ProgressBar extends TextView {
-    private String text = "";
     private float progress = 0f;
 
     private Paint backPaint;
@@ -64,7 +63,7 @@ public class ProgressBar extends TextView {
     }
 
     public void setProgress(int val, int max) {
-        text = val + " / " + max;
+        String text = val + " / " + max;
         progress = val / (float) max;
 
         if (progress < 0) progress = 0;

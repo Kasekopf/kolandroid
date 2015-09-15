@@ -23,9 +23,10 @@ public class GroupSearchListController<F> implements Controller {
      */
     private static final long serialVersionUID = -3034860712134386719L;
 
+    private final ListSelector<F> selector;
+    private final Binder<? super F> childBinder;
+
     private ArrayList<ModelGroup<F>> base;
-    private ListSelector<F> selector;
-    private Binder<? super F> childBinder;
 
     private transient HighlightableListGroupAdapter<F> adapter;
     private transient ExpandableListView list;

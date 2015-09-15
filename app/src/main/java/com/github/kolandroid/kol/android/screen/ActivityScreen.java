@@ -7,7 +7,7 @@ import android.support.v7.app.ActionBarActivity;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 
 public class ActivityScreen implements Screen {
-    private ActionBarActivity base;
+    private final ActionBarActivity base;
 
     public ActivityScreen(ActionBarActivity base) {
         this.base = base;

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HighlightableListAdapter<E> extends ListAdapter<E> {
-    private List<E> displayed;
+    private final List<E> displayed;
     private List<E> base;
     private Regex filter;
 

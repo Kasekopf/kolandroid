@@ -39,19 +39,16 @@ public class FightModel extends WebModel {
 
     private static final Regex HAS_FUNKSLINGING = new Regex(
             "<select[^>]*whichitem2[^>]*>");
-
+    private final ActionElement attack;
     private ArrayList<FightSkill> skills;
     private ArrayList<FightItem> items;
-
     private boolean fightFinished = false;
-    private ActionElement attack = new ActionElement(getSession(), "Attack",
-            "fight.php?action=attack");
-
     private boolean funkslinging;
 
     public FightModel(Session s, ServerReply text) {
         super(s, new ServerReply(text, filterHtml(text.html)));
 
+        attack = new ActionElement(s, "Attack", "fight.php?action=attack");
         processSkills(text.html);
         processItems(text.html);
 

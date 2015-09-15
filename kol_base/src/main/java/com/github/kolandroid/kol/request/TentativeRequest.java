@@ -7,7 +7,7 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 
 public class TentativeRequest extends Request {
-    private ResponseHandler failure;
+    private final ResponseHandler failure;
 
     public TentativeRequest(String url, ResponseHandler failure) {
         super(url);

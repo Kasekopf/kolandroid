@@ -46,14 +46,14 @@ public class ChatModel extends LinkedModel<ChatStatus> {
     private static final Regex CHANNEL = new Regex(
             "<br>&nbsp;&nbsp;(.*?)(?=<br>|$)", 1);
     private final Gson parser;
+    private final HashSet<Integer> seenMessages;
+    private final ArrayList<ChatText> messages;
+    private final Map<String, ChannelModel> channelsByName;
+    private final ArrayList<ChannelModel> channels;
     private boolean hasChat;
-    private HashSet<Integer> seenMessages;
     private String lasttime;
     private String playerid;
     private String pwd;
-    private ArrayList<ChatText> messages;
-    private Map<String, ChannelModel> channelsByName;
-    private ArrayList<ChannelModel> channels;
     private ArrayList<ChatAction> baseActions;
     private String visibleChannel;
 
@@ -314,7 +314,7 @@ public class ChatModel extends LinkedModel<ChatStatus> {
     }
 
     public static class RawActionList {
-        public ArrayList<ChatAction> actions;
+        public final ArrayList<ChatAction> actions;
 
         public RawActionList(ArrayList<ChatAction> actions) {
             this.actions = actions;

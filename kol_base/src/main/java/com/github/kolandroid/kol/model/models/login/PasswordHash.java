@@ -32,11 +32,9 @@ public class PasswordHash implements Serializable {
 
     private static String getHexString(final byte[] bytes) {
         byte[] output = new byte[bytes.length + 1];
-        for (int i = 0; i < bytes.length; ++i) {
-            output[i + 1] = bytes[i];
-        }
+        System.arraycopy(bytes, 0, output, 1, bytes.length);
 
-        StringBuffer result = new StringBuffer(
+        StringBuilder result = new StringBuilder(
                 (new BigInteger(output)).toString(16));
         int desiredLength = bytes.length * 2;
 

@@ -10,7 +10,7 @@ import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import java.lang.ref.WeakReference;
 
 public class ToastLoader implements LoadingContext {
-    private Handler toastLauncher;
+    private final Handler toastLauncher;
 
     public ToastLoader(Context base) {
         this.toastLauncher = new ToastLauncher(base);
@@ -32,7 +32,7 @@ public class ToastLoader implements LoadingContext {
     }
 
     private static class ToastLauncher extends Handler {
-        private WeakReference<Context> base;
+        private final WeakReference<Context> base;
 
         private ToastLauncher(Context context) {
             this.base = new WeakReference<Context>(context);

@@ -8,8 +8,8 @@ public class BasicElement implements ModelElement {
      */
     private static final long serialVersionUID = 8834750738130793384L;
 
-    private String text;
-    private String img;
+    private final String text;
+    private final String img;
 
     public BasicElement(String text) {
         this(text, "");

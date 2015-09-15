@@ -45,7 +45,6 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 
     private StatsController stats;
 
-    private Screen baseScreen;
     private ViewContext baseContext;
     private LoadingContext loader;
 
@@ -62,7 +61,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_screen);
 
-        this.baseScreen = new ActivityScreen(this);
+        final Screen baseScreen = new ActivityScreen(this);
         this.baseContext = new AndroidViewContext(this);
 
         View base = this.findViewById(R.id.game_progress_popup);

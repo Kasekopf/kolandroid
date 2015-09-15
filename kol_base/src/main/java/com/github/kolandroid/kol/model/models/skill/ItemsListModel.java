@@ -23,7 +23,7 @@ public class ItemsListModel extends Model implements SkillsSubmodel {
     private static final Regex EXTRACT_VALUE = new Regex(
             "value=[\"']?([0-9a-fA-F]*)", 1);
 
-    private ArrayList<SkillModelElement> items;
+    private final ArrayList<SkillModelElement> items;
 
     public ItemsListModel(Session s, ServerReply base) {
         super(s);

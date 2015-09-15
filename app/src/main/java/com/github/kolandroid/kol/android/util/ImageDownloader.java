@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.ImageView;
 
+import com.github.kolandroid.kol.android.BuildConfig;
+
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
@@ -17,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class ImageDownloader {
-    private static Hashtable<ImageSlot, String> pendingViews = new Hashtable<ImageSlot, String>();
-    private static Hashtable<String, ArrayList<ImageSlot>> pendingTasks = new Hashtable<String, ArrayList<ImageSlot>>();
-    private static Hashtable<String, Bitmap> cache = new Hashtable<String, Bitmap>();
+    private static final Hashtable<ImageSlot, String> pendingViews = new Hashtable<ImageSlot, String>();
+    private static final Hashtable<String, ArrayList<ImageSlot>> pendingTasks = new Hashtable<String, ArrayList<ImageSlot>>();
+    private static final Hashtable<String, Bitmap> cache = new Hashtable<String, Bitmap>();
 
     public static void loadIconFromUrl(Dialog dialog, String url) {
         ImageDownloader.loadFromUrl(new DialogIconSlot(dialog), url);
@@ -30,7 +32,9 @@ public class ImageDownloader {
     }
 
     private static void loadFromUrl(ImageSlot slot, String url) {
-        assert (Looper.getMainLooper().getThread() == Thread.currentThread()) : "loadFromUrl should only be called from the main thread.";
+        if (BuildConfig.DEBUG && Looper.getMainLooper().getThread() != Thread.currentThread()) {
+            throw new RuntimeException("AndroidViewContext should only be created from the main thread.");
+        }
 
         //todo add caching
         //see https://github.com/koush/UrlImageViewHelper/blob/master/UrlImageViewHelper/src/com/koushikdutta/urlimageviewhelper/UrlImageViewHelper.java
@@ -149,7 +153,6 @@ public class ImageDownloader {
             } catch (Exception e) {
                 Log.i("Image", url);
                 e.printStackTrace();
-            } finally {
             }
 
             return result;

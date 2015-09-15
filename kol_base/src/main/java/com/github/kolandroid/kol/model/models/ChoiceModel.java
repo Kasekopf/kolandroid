@@ -13,16 +13,16 @@ public class ChoiceModel extends WebModel {
      */
     private static final long serialVersionUID = -9107242519455349408L;
 
-    private static Regex OPTIONS = new Regex("<form[^>]*>(.*?)</form>", 1);
+    private static final Regex OPTIONS = new Regex("<form[^>]*>(.*?)</form>", 1);
 
-    private static Regex PWD_INPUT = new Regex("(<input[^>]*name=[\"']?pwd[^>]*>)", 1);
-    private static Regex WHICH_INPUT = new Regex("(<input[^>]*name=[\"']?whichchoice[^>]*>)", 1);
-    private static Regex OPTION_INPUT = new Regex("(<input[^>]*name=[\"']?option[^>]*>)", 1);
-    private static Regex SUBMIT_INPUT = new Regex("(<input[^>]*type=[\"']?submit[^>]*>)", 1);
+    private static final Regex PWD_INPUT = new Regex("(<input[^>]*name=[\"']?pwd[^>]*>)", 1);
+    private static final Regex WHICH_INPUT = new Regex("(<input[^>]*name=[\"']?whichchoice[^>]*>)", 1);
+    private static final Regex OPTION_INPUT = new Regex("(<input[^>]*name=[\"']?option[^>]*>)", 1);
+    private static final Regex SUBMIT_INPUT = new Regex("(<input[^>]*type=[\"']?submit[^>]*>)", 1);
 
-    private static Regex ALPHANUM_VALUE = new Regex("value=[\"']?([a-f0-9]+)[\"'>]", 1);
-    private static Regex NUM_VALUE = new Regex("value=[\"']?(\\d+)[\"'>]", 1);
-    private static Regex VALUE = new Regex("value=[\"]?(.*?)[\">]", 1);
+    private static final Regex ALPHANUM_VALUE = new Regex("value=[\"']?([a-f0-9]+)[\"'>]", 1);
+    private static final Regex NUM_VALUE = new Regex("value=[\"']?(\\d+)[\"'>]", 1);
+    private static final Regex VALUE = new Regex("value=[\"]?(.*?)[\">]", 1);
 
     private ArrayList<ActionElement> options;
 

@@ -61,21 +61,18 @@ public class ServerReply implements Serializable {
         if (is == null)
             return "";
 
-        try {
-            StringWriter sw = new StringWriter();
+        StringWriter sw = new StringWriter();
 
-            BufferedReader r = new BufferedReader(new InputStreamReader(is));
-            String s;
+        BufferedReader r = new BufferedReader(new InputStreamReader(is));
+        String s;
 
-            while ((s = r.readLine()) != null) {
-                sw.append(s + '\n');
-            }
-
-            r.close();
-            return sw.toString();
-        } catch (IOException e) {
-            throw e;
+        while ((s = r.readLine()) != null) {
+            sw.append(s);
+            sw.append('\n');
         }
+
+        r.close();
+        return sw.toString();
     }
 
     private static String getCookie(HttpURLConnection base) {

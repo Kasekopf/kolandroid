@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HighlightableListGroupAdapter<F> extends ListGroupAdapter<ModelGroup<F>, F> {
-    private List<ModelGroup<F>> displayed;
+    private final List<ModelGroup<F>> displayed;
     private List<ModelGroup<F>> base;
     private Regex filter;
 

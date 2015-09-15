@@ -11,8 +11,8 @@ public class BasicGroup<E> implements ModelGroup<E> {
      */
     private static final long serialVersionUID = 356357357356695L;
 
-    private ArrayList<E> items;
-    private String name;
+    private final ArrayList<E> items;
+    private final String name;
 
     public BasicGroup(String name) {
         this(name, new ArrayList<E>());

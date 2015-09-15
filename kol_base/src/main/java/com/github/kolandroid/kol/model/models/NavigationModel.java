@@ -13,7 +13,7 @@ public class NavigationModel extends LiveModel {
      */
     private static final long serialVersionUID = 1037526493595536003L;
 
-    private ArrayList<ActionElement> locations;
+    private final ArrayList<ActionElement> locations;
 
     public NavigationModel(Session session) {
         super(session, "topmenu.php", false);

@@ -23,9 +23,9 @@ public class SearchListController<E> implements Controller {
      */
     private static final long serialVersionUID = -327422277247085374L;
 
-    private ArrayList<E> initial;
-    private Binder<? super E> binder;
-    private ListSelector<E> selector;
+    private final ArrayList<E> initial;
+    private final Binder<? super E> binder;
+    private final ListSelector<E> selector;
     private transient HighlightableListAdapter<E> adapter;
 
     public SearchListController(ArrayList<E> initial,

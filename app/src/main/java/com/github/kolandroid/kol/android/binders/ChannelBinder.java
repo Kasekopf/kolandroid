@@ -11,7 +11,7 @@ import com.github.kolandroid.kol.model.models.chat.ChannelModel;
 import com.github.kolandroid.kol.util.Callback;
 
 public class ChannelBinder implements Binder<ChannelModel> {
-    private Callback<ChannelModel> channelHandler;
+    private final Callback<ChannelModel> channelHandler;
 
     public ChannelBinder(Callback<ChannelModel> channelHandler) {
         this.channelHandler = channelHandler;

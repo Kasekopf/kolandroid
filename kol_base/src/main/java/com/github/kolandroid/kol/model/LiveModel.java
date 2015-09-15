@@ -16,8 +16,9 @@ public abstract class LiveModel extends LinkedModel<LiveMessage> {
     private static final long serialVersionUID = 6439988316319232465L;
 
     private final String updateUrl;
+    private final boolean foreground;
+
     private boolean filling;
-    private boolean foreground;
 
     public LiveModel(Session s, String updateUrl, boolean foreground) {
         super(s);

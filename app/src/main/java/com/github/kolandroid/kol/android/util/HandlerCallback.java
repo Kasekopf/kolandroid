@@ -6,7 +6,7 @@ import android.os.Message;
 import java.lang.ref.WeakReference;
 
 public abstract class HandlerCallback<E> implements LatchedCallback<E> {
-    private TypedHandler<E> base;
+    private final TypedHandler<E> base;
     private boolean closed;
 
     public HandlerCallback() {
@@ -33,7 +33,7 @@ public abstract class HandlerCallback<E> implements LatchedCallback<E> {
     protected abstract void receiveProgress(E message);
 
     private static class TypedHandler<E> extends Handler {
-        WeakReference<HandlerCallback<E>> parent;
+        final WeakReference<HandlerCallback<E>> parent;
         private boolean closed;
 
         public TypedHandler(HandlerCallback<E> parent) {

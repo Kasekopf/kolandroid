@@ -61,7 +61,7 @@ public class WebController extends UpdatableModelController<WebModel> {
         }
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
+    @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     @Override
     public void connect(View view, WebModel model, final Screen host) {
 

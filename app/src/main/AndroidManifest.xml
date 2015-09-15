@@ -5,6 +5,7 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
@@ -20,12 +21,12 @@
         <activity
             android:name="com.github.kolandroid.kol.android.game.GameScreen"
             android:label="@string/title_activity_game_screen"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop" />
 
         <service
             android:name="com.github.kolandroid.kol.android.chat.ChatService"
             android:enabled="true"
-            android:permission="android.permission.INTERNET"></service>
+            android:permission="android.permission.INTERNET" />
 
         <activity
             android:name="com.github.kolandroid.kol.android.chat.newchat.ChatActivity"

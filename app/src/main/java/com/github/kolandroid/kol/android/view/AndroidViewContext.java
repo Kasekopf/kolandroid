@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
+import com.github.kolandroid.kol.android.BuildConfig;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.game.GameScreen;
 import com.github.kolandroid.kol.android.login.LoginScreen;
@@ -25,7 +26,9 @@ public class AndroidViewContext implements ViewContext {
     private ResponseHandler primaryRoute;
 
     public AndroidViewContext(Context context) {
-        assert (Looper.getMainLooper().getThread() == Thread.currentThread()) : "AndroidViewContext should only be created from the main thread.";
+        if (BuildConfig.DEBUG && Looper.getMainLooper().getThread() != Thread.currentThread()) {
+            throw new RuntimeException("AndroidViewContext should only be created from the main thread.");
+        }
 
         this.activityLauncher = new ActivityLauncher(context);
         this.data = new AndroidDataContext(context);
@@ -87,7 +90,7 @@ public class AndroidViewContext implements ViewContext {
     }
 
     private static class ActivityLauncher extends Handler {
-        WeakReference<Context> parent;
+        final WeakReference<Context> parent;
 
         public ActivityLauncher(Context parent) {
             this.parent = new WeakReference<Context>(parent);

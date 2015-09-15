@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Optional Search"
-        android:inputType="textNoSuggestions"></EditText>
+        android:inputType="textNoSuggestions" />
 
     <ListView
         android:id="@+id/list_display_list"

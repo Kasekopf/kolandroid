@@ -7,7 +7,7 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 
 public class Request {
-    private String url;
+    private final String url;
 
     public Request(String url) {
         this.url = url;

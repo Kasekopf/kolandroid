@@ -19,7 +19,7 @@ public class BuffController implements Controller {
      */
     private static final long serialVersionUID = 8802030177173483415L;
 
-    private Buff base;
+    private final Buff base;
 
     public BuffController(Buff base) {
         this.base = base;

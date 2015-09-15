@@ -1,7 +1,6 @@
 package com.github.kolandroid.kol.android.chat.newchat;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -39,15 +38,11 @@ public class ChatActivity extends ActionBarActivity implements ViewContext,
 
         mainChat = new ChatController();
         FragmentScreen chatScreen = FragmentScreen.create(mainChat);
-        FragmentTransaction trans = getSupportFragmentManager()
-                .beginTransaction().replace(R.id.chat_chatscreen, chatScreen);
-        trans.commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.chat_chatscreen, chatScreen).commit();
 
         chatSubmission = new ChatSubmissionController();
         FragmentScreen subScreen = FragmentScreen.create(chatSubmission);
-        FragmentTransaction trans2 = getSupportFragmentManager()
-                .beginTransaction().replace(R.id.chat_submissionscreen, subScreen);
-        trans2.commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.chat_submissionscreen, subScreen).commit();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

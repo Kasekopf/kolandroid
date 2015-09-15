@@ -6,6 +6,6 @@
     android:background="@drawable/item_selector"
     android:gravity="center_vertical"
     android:paddingLeft="3dp"
-    android:text="TextView"
+    android:text=""
     android:textColor="#000"
     android:textSize="14sp" />

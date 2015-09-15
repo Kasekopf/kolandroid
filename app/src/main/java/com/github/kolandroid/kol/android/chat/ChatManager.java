@@ -16,12 +16,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class ChatManager extends Binder {
-    private Timer updateTimer;
+    private final ChatModel model;
+    private final ArrayList<WeakReference<LatchedCallback<Void>>> listeners;
 
-    private ChatModel model;
+    private Timer updateTimer;
     private boolean started;
 
-    private ArrayList<WeakReference<LatchedCallback<Void>>> listeners;
 
     public ChatManager(Session s, ViewContext context) {
         this.model = new ChatModel(s);

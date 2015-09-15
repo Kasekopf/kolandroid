@@ -2,6 +2,7 @@ package com.github.kolandroid.kol.android.screen;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ public class DialogScreen extends DialogFragment implements Screen {
         return res;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog d = super.onCreateDialog(savedInstanceState);

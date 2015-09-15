@@ -32,7 +32,7 @@ public class SkillsListModel extends Model implements SkillsSubmodel {
     private static final Regex OPTION_YOURSELF = new Regex(
             "<option value=[\"']?(\\d+)[\"']?>\\(yourself\\)</option>", 1);
 
-    private ArrayList<ModelGroup<SkillModelElement>> skills;
+    private final ArrayList<ModelGroup<SkillModelElement>> skills;
 
     public SkillsListModel(Session s, ServerReply base) {
         super(s);

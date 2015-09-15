@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListAdapter<E> extends BaseAdapter {
+    private final Binder<? super E> binder;
+    private final Context context;
+
     private List<E> baseList;
-    private Context context;
-    private Binder<? super E> binder;
 
     public ListAdapter(Context c, Binder<? super E> binder) {
         this(c, new ArrayList<E>(), binder);

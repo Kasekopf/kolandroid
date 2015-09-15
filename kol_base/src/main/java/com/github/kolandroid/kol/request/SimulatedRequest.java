@@ -5,7 +5,7 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 
 public class SimulatedRequest extends Request {
-    private ServerReply toReply;
+    private final ServerReply toReply;
 
     public SimulatedRequest(ServerReply prototype, String newurl, String newhtml) {
         this(new ServerReply(prototype.responseCode, prototype.redirectLocation, prototype.date, newhtml, newurl, prototype.cookie));

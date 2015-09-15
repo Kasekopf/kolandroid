@@ -132,7 +132,7 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
                     editor.remove("username");
                     editor.remove("password");
                 }
-                editor.commit();
+                editor.apply();
             }
         });
     }

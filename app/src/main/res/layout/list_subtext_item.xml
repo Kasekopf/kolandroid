@@ -38,6 +38,6 @@
             android:paddingLeft="5dp"
             android:text="TextView"
             android:textColor="#666"
-            android:textSize="10sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 </LinearLayout>

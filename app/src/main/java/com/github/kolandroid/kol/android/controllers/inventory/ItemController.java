@@ -28,7 +28,7 @@ public class ItemController implements Controller {
      */
     private static final long serialVersionUID = 2863460893944088836L;
 
-    private InventoryItem base;
+    private final InventoryItem base;
 
     public ItemController(InventoryItem base) {
         this.base = base;

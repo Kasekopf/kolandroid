@@ -90,7 +90,7 @@ public class DrawerScreen extends FragmentScreen {
 
                 SharedPreferences sp = PreferenceManager
                         .getDefaultSharedPreferences(host);
-                sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).commit();
+                sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
                 host.supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
         };
@@ -123,11 +123,7 @@ public class DrawerScreen extends FragmentScreen {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     @Override

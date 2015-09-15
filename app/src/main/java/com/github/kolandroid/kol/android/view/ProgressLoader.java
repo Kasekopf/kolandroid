@@ -16,7 +16,7 @@ public class ProgressLoader implements LoadingContext {
     private static final int START = 0;
     private static final int COMPLETE = 1;
     private static final int ERROR = 2;
-    private Handler progressUpdater;
+    private final Handler progressUpdater;
 
     public ProgressLoader(View base, ProgressBar bar, TextView text) {
         this.progressUpdater = new ProgressUpdater(base, bar, text);
@@ -43,9 +43,9 @@ public class ProgressLoader implements LoadingContext {
     }
 
     private static class ProgressUpdater extends Handler {
-        private WeakReference<ProgressBar> barRef;
-        private WeakReference<TextView> textRef;
-        private WeakReference<View> baseRef;
+        private final WeakReference<ProgressBar> barRef;
+        private final WeakReference<TextView> textRef;
+        private final WeakReference<View> baseRef;
 
         private ProgressUpdater(View base, ProgressBar bar, TextView text) {
             this.baseRef = new WeakReference<View>(base);

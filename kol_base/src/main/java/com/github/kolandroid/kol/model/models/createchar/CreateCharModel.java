@@ -57,8 +57,8 @@ public class CreateCharModel extends Model {
             "The scourge of mariachis and polka bands, the Accordion Thieves have plied their malign craft since time out of mind. Their Moxie serves them well in both their adventures and their interactions with \"the gentlemen.\""
     };
 
-    private CharacterGender male;
-    private CharacterGender female;
+    private final CharacterGender male;
+    private final CharacterGender female;
 
     public CreateCharModel() {
         super(new Session());

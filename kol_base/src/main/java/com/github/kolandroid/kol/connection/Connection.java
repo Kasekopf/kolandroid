@@ -11,7 +11,7 @@ public class Connection {
     private static final String AGENT_NAME = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"; //"AndroidKOL";
     private static final int TIMEOUT = 10000;
     private final ArrayList<String> formFields;
-    private String URLbase;
+    private final String URLbase;
     private boolean redirect = true;
 
     public Connection(String url) {

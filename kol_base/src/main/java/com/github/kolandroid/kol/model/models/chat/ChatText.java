@@ -92,7 +92,7 @@ public class ChatText implements Serializable {
             case 3: // mod warning
                 return "<font color='red'><b>" + user.getName(false) + "</b>: "
                         + content + "</font>";
-            case 4: // mod announcment
+            case 4: // mod announcement
                 return "<font color='green'>" + content + "</font>";
             case 98: // event
                 return content;

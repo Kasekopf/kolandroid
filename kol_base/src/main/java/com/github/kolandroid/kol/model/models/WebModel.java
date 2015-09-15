@@ -8,8 +8,8 @@ import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 public class WebModel extends Model {
     /**
@@ -87,7 +87,7 @@ public class WebModel extends Model {
                     "    }" +
                     "    window.FORMOUT.processFormData(data);" +
                     "}";
-    private String url;
+    private final String url;
     private String html;
 
     public WebModel(Session s, ServerReply text) {
@@ -125,7 +125,7 @@ public class WebModel extends Model {
         return this.url.contains("small_");
     }
 
-    private final String doHacks(String html) {
+    private String doHacks(String html) {
         /**
          * Hacks for account.php
          */
@@ -231,6 +231,16 @@ public class WebModel extends Model {
             html_result = result.html;
         }
 
-        return new ByteArrayInputStream(html_result.getBytes(StandardCharsets.UTF_8));
+        try {
+            return new ByteArrayInputStream(html_result.getBytes("UTF-8"));
+        } catch (IOException e) {
+            Logger.log("WebModel", "Unable to encode as UTF-8");
+            return new InputStream() {
+                @Override
+                public int read() throws IOException {
+                    return 0;
+                }
+            };
+        }
     }
 }

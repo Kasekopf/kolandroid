@@ -117,11 +117,7 @@ public class OptionElement {
     }
 
     public static abstract class OptionElementParser<T> {
-        private String toExclude;
-
-        public OptionElementParser() {
-            this("");
-        }
+        private final String toExclude;
 
         public OptionElementParser(String toExclude) {
             this.toExclude = toExclude;

@@ -16,15 +16,12 @@ public class InventoryModel extends GroupModel<InventoryPocketModel> {
     private static final Regex CHOSEN_EQUIP = new Regex("\\[equipment\\]");
     private static final Regex CHOSEN_MISC = new Regex("\\[miscellaneous\\]");
     private static final Regex CHOSEN_RECENT = new Regex("\\[recent items\\]");
-
+    private final InventoryPocketModel consume;
+    private final EquipmentPocketModel equip;
+    private final InventoryPocketModel misc;
+    private final InventoryPocketModel recent;
     private int chosen;
-
     private WebModel resultsPane;
-
-    private InventoryPocketModel consume;
-    private EquipmentPocketModel equip;
-    private InventoryPocketModel misc;
-    private InventoryPocketModel recent;
 
     public InventoryModel(Session s, ServerReply text) {
         super(s);
@@ -37,12 +34,12 @@ public class InventoryModel extends GroupModel<InventoryPocketModel> {
         loadContent(text);
     }
 
-    protected boolean loadContent(ServerReply text) {
+    protected void loadContent(ServerReply text) {
         if (!text.url.contains("inventory.php")) {
             System.out
                     .println("Attempted to load non-inventory page into InventoryModel: "
                             + text.url);
-            return false;
+            return;
         }
 
         resultsPane = extractResultsPane(getSession(), text);
@@ -62,7 +59,6 @@ public class InventoryModel extends GroupModel<InventoryPocketModel> {
         InventoryPocketModel[] children = this.getChildren();
         children[chosen].process(text);
         System.out.println("Loaded into slot " + chosen);
-        return true;
     }
 
     public WebModel getResultsPane() {
