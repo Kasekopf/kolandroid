@@ -9,6 +9,8 @@ public abstract class Logger {
     };
 
     public static void log(String tag, String message) {
+        if (message == null)
+            message = "[NULL]";
         primary_logger.do_log(tag, message);
     }
 

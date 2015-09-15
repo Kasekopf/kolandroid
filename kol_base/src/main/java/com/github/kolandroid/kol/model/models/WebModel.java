@@ -35,6 +35,15 @@ public class WebModel extends Model {
             "<img[^>]*descitem\\((\\d+),(\\d+)(, event)?\\)[^>]*>");
 
     /**
+     * Regexes for fixing effect descriptions.
+     */
+    /* private static final Regex EFFECT_DESC = new Regex(
+            "(<img[^>]*)on[Cc]lick=[\"']?eff\\([\"']?(.*?)[\"']?\\);?[\"']?([^>]*>)", 0);
+    */
+    private static final Regex EFFECT_DESC = new Regex(
+            "<img[^>]*eff\\([\"']?(.*?)[\"']?\\)[^>]*>");
+
+    /**
      * Regexes for replacing static buttons.
      */
     private static final Regex FIND_FORM = new Regex(
@@ -93,16 +102,37 @@ public class WebModel extends Model {
     // Regex to find contents of the <body> tag of any page
     private static final Regex PAGE_BODY = new Regex(
             "(<body[^>]*>)(.*?)(</body>)", 2);
+    private static final Regex TYPE_EXTRACTION = new Regex("[&?]androiddisplay=([^&]*)", 1);
     private final String url;
+    private final WebModelType type;
     private String html;
 
-    public WebModel(Session s, ServerReply text) {
+    public WebModel(Session s, ServerReply text, WebModelType type) {
         super(s);
 
         Logger.log("WebModel", "Loaded " + text.url);
 
         this.setHTML(text.html.replace("window.devicePixelRatio >= 2", "window.devicePixelRatio < 2"));
         this.url = text.url;
+        this.type = type;
+    }
+
+    public WebModel(Session s, ServerReply text) {
+        this(s, text, determineType(text));
+    }
+
+    private static WebModelType determineType(ServerReply text) {
+        String specified_type = TYPE_EXTRACTION.extractSingle(text.url, "unspecified");
+        for (WebModelType type : WebModelType.values()) {
+            if (specified_type.equals(type.toString()))
+                return type;
+        }
+
+        if (text.url.contains("desc_item.php"))
+            return WebModelType.SMALL;
+        if (text.url.contains("desc_effect.php"))
+            return WebModelType.SMALL;
+        return WebModelType.REGULAR;
     }
 
     /**
@@ -115,59 +145,51 @@ public class WebModel extends Model {
      */
     public static WebModel extractResultsPane(Session s, ServerReply base) {
         String resultsPane = RESULTS_PANE.extractSingle(base.html);
+
         if (resultsPane == null)
             return null;
 
-        Logger.log("WebModel", "Loaded results pane: " + resultsPane);
-
+        Logger.log("WebModel", "Loaded results pane: " + prepareHtml(resultsPane));
         String html = PAGE_BODY.replaceAll(base.html, "$1<center>"
                 + resultsPane + "</center>$3");
+
+        String updatedUrl = base.url;
+        updatedUrl += (base.url.contains("?")) ? "&androiddisplay=results" : "?androiddisplay=results";
+
         ServerReply newRep = new ServerReply(base.responseCode,
                 base.redirectLocation, base.date, html,
-                "results/" + base.url, base.cookie);
+                updatedUrl, base.cookie);
         return new WebModel(s, newRep);
     }
 
-    public String getURL() {
-        return this.url;
+    private static String prepareHtml(String html) {
+        html = fixItemsAndEffects(html);
+        html = replaceForms(html);
+        html = doHacks(html);
+        html = fixPaneReferences(html);
+        return html;
     }
 
-    public final String getHTML() {
-        return this.html;
-    }
-
-    private void setHTML(String html) {
+    private static String fixItemsAndEffects(String html) {
         // Replace item description javascript with working html links
         html = ITEM_DESC.replaceAll(html,
                 "<a href=\"desc_item.php?whichitem=$1\">$0</a>");
         html = ITEM_WHICH_DESC.replaceAll(html,
                 "<a href=\"desc_item.php?whichitem=$1&otherplayer=$2\">$0</a>");
-        //html = replaceButtons(html);
-        html = replaceForms(html);
+        html = EFFECT_DESC.replaceAll(html,
+                "<a href=\"desc_effect.php?whicheffect=$1\">$0</a>");
+
+        return html;
+    }
+
+    private static String fixPaneReferences(String html) {
         html = FRAME_REDIRECT.replaceAll(html, "");
-        html = doHacks(html);
-        html = fixPaneReferences(html);
-
-        this.html = html;
-    }
-
-    public <E> E visitType(WebModelTypeVisitor<E> visitor) {
-        if (this.url.contains("small/"))
-            return visitor.forSmall();
-        else if (this.url.contains("results/"))
-            return visitor.forResults();
-        else
-            return visitor.forRegular();
-    }
-
-    private String fixPaneReferences(String html) {
         html = html.replace("top.charpane.location.href=\"charpane.php\";", "window.ANDROIDAPP.refreshStatsPane();");
-
         html = html.replace("top.mainpane.document", "document");
         return html;
     }
 
-    private String doHacks(String html) {
+    private static String doHacks(String html) {
         /**
          * Hacks for account.php
          */
@@ -182,58 +204,36 @@ public class WebModel extends Model {
         return html;
     }
 
-    private String replaceForms(String html) {
+    private static String replaceForms(String html) {
         html = FORM_REPLACER.replaceAll(html, "<form$1$3><input type=hidden name=totallyrealaction value=$2>");
         html = FORM_REPLACER2.replaceAll(html, "<form$1action=\"\" onsubmit=\"customParseForm(this);\"$2>");
 
         html = TABLE_FIXER.replaceAll(html, "$1$3$2");
         html = HEAD_TAG.replaceAll(html, "$0 <script>" + jsInjectCode + "</script>");
+
         return html;
     }
 
-    /**
-     * If the submission behavior of a button is entirely static, we can replace
-     * the entire button with a static link.
-     * <p/>
-     * Examples: Accepting the artist/untinkerer quest; Recieving friar
-     * blessing; Bounty hunter hunter
-     * <p/>
-     * Choice adventures are implemented with this, but the special interface is
-     * probably more useful.
-     *
-     * @param html The html of the page
-     * @return Html of the page with all static buttons replaced with a link.
-     */
-    @SuppressWarnings("unused")
-    @Deprecated
-    private String replaceButtons(String html) {
-        if (FIND_FORM.matches(html)) {
-            System.out.println("Found convertable form!");
-        }
+    public String getURL() {
+        return this.url;
+    }
 
-        for (String form : FIND_FORM.extractAllSingle(html)) {
-            String action = FORM_ACTION.extractSingle(form);
-            if (action == null)
-                continue;
+    public final String getHTML() {
+        return this.html;
+    }
 
-            for (String hidden : HIDDEN_INPUT.extractAllSingle(form)) {
-                String name = GET_NAME.extractSingle(hidden);
-                String value = GET_VALUE.extractSingle(hidden);
+    private void setHTML(String html) {
+        this.html = prepareHtml(html);
+    }
 
-                action += (action.contains("?") ? "&" : "?");
-                action += name + "=" + value;
-            }
-
-            String text = GET_TEXT.extractSingle(INPUT_BUTTON
-                    .extractSingle(html));
-            html = html.replace(form, "<a href=\"" + action + "\">" + text
-                    + "</a>");
-        }
-        return html;
+    public <E> E visitType(WebModelTypeVisitor<E> visitor) {
+        return type.visit(visitor);
     }
 
     public boolean makeRequest(String url) {
         if (url == null || url.length() < 1) return false;
+
+        String originalUrl = url;
 
         if (url.contains("totallyrealaction")) {
             System.out.println("Ignoring duplicate form request");
@@ -242,8 +242,10 @@ public class WebModel extends Model {
 
         if (url.contains("http://") || url.contains("https://")) {
             url = URL_FIND.extractSingle(url);
-            if (url == null)
+            if (url == null) {
+                Logger.log("WebModel", "Unable to load url from " + originalUrl);
                 return false;
+            }
         }
 
         if (url.charAt(0) == '?') {
@@ -252,6 +254,7 @@ public class WebModel extends Model {
             url = currentBase + url;
         }
 
+        Logger.log("WebModel", "Request started for " + url);
         Request req = new Request(url);
         this.makeRequest(req);
         return true;
@@ -269,11 +272,11 @@ public class WebModel extends Model {
             Logger.log("WebModel", "[AJAX] Error loading " + url);
             html_result = "";
         } else {
-            Logger.log("WebModel", "[AJAX] Loaded " + url + " : " + fixPaneReferences(result.html));
+            Logger.log("WebModel", "[AJAX] Loaded " + url + " : " + prepareHtml(result.html));
             html_result = result.html;
         }
 
-        fixPaneReferences(html_result);
+        html_result = prepareHtml(html_result);
 
         try {
             return new ByteArrayInputStream(html_result.getBytes("UTF-8"));
@@ -285,6 +288,35 @@ public class WebModel extends Model {
                     return 0;
                 }
             };
+        }
+    }
+
+    public enum WebModelType {
+        REGULAR("regular") {
+            public <E> E visit(WebModelTypeVisitor<E> visitor) {
+                return visitor.forRegular();
+            }
+        }, SMALL("small") {
+            public <E> E visit(WebModelTypeVisitor<E> visitor) {
+                return visitor.forSmall();
+            }
+        }, RESULTS("results") {
+            public <E> E visit(WebModelTypeVisitor<E> visitor) {
+                return visitor.forResults();
+            }
+        };
+
+        private final String value;
+
+        WebModelType(String value) {
+            this.value = value;
+        }
+
+        public abstract <E> E visit(WebModelTypeVisitor<E> visitor);
+
+        @Override
+        public String toString() {
+            return value;
         }
     }
 

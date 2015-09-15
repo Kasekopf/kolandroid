@@ -8,6 +8,7 @@ import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
 import com.github.kolandroid.kol.request.SimulatedRequest;
 import com.github.kolandroid.kol.request.TentativeRequest;
+import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -188,6 +189,7 @@ public class ChatModel extends LinkedModel<ChatStatus> {
         for (String message : INITIAL_MESSAGES.extractAllSingle(response.html)) {
             if (message.contains("<span class=\"welcome\">"))
                 continue;
+            Logger.log("ChatModel", message);
             processMessage(parser.fromJson(message, ChatText.class));
         }
 
@@ -295,7 +297,7 @@ public class ChatModel extends LinkedModel<ChatStatus> {
     public void displayRejectionMessage() {
         String html = "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"https://images.kingdomofloathing.com/styles.css\"></head><body><span class=small>You may not enter the chat until you have proven yourself literate. You can do so at the <a target=mainpane href=\"town_altar.php\">Temple of Literacy</a> in the Big Mountains.</body></html>";
         ServerReply reject = new ServerReply(200, "", "", html,
-                "small/chatreject.php", "");
+                "chatreject.php?androiddisplay=small", "");
         this.makeRequest(new SimulatedRequest(reject));
     }
 
