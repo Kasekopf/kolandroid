@@ -7,6 +7,7 @@ import com.github.kolandroid.kol.model.LiveModel;
 import com.github.kolandroid.kol.model.elements.basic.BasicGroup;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
 import com.github.kolandroid.kol.model.models.inventory.InventoryAction.ImmediateItemAction;
+import com.github.kolandroid.kol.model.models.inventory.InventoryAction.MultiClosetItemAction;
 import com.github.kolandroid.kol.model.models.inventory.InventoryAction.MultiuseItemAction;
 import com.github.kolandroid.kol.util.Regex;
 
@@ -110,10 +111,13 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
         if (actName == null || actDest == null)
             return null;
 
-        if (actName.toLowerCase().contains("use multiple")) {
+        String lowername = actName.toLowerCase();
+        if (lowername.contains("use multiple")) {
             return new MultiuseItemAction(getSession(), base, actDest, pwd);
-        } else if (actName.toLowerCase().contains("eat some")
-                || actName.toLowerCase().contains("drink some")) {
+        } else if (lowername.contains("take some") || lowername.contains("store some")) {
+            return new MultiClosetItemAction(getSession(), base, actName, actDest, pwd);
+        } else if (lowername.contains("eat some")
+                || lowername.contains("drink some")) {
             // do nothing for now
             return null;
         } else {

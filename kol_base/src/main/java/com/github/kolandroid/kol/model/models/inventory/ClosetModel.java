@@ -21,7 +21,7 @@ public class ClosetModel extends ItemStorageModel {
     private final String meatAction;
 
     public ClosetModel(Session s, ServerReply text) {
-        super(s, text, (text.url.contains("fillcloset.php") ? "fillcloset.php" : "closet.php"), false);
+        super(s, fixServerReply(text), (text.url.contains("fillcloset.php") ? "fillcloset.php" : "closet.php"), false);
 
         String pwd = ALPHANUM_VALUE.extractSingle(PWD_INPUT.extractSingle(text.html), "0");
 
@@ -37,6 +37,21 @@ public class ClosetModel extends ItemStorageModel {
             manageMeat = new MultiusableElement(getSession(), meat, "POST/closet.php?addtake=take&action=addtakeclosetmeat&pwd=" + pwd + "&quantity=");
             meatAction = "Take from Closet";
         }
+    }
+
+    private static ServerReply fixServerReply(ServerReply text) {
+        String message;
+        if (text.url.contains("fillcloset.php")) {
+            message = "Store";
+        } else {
+            message = "Take";
+        }
+
+        String html = text.html;
+        html = html.replace("[one]", "[" + message + " one]");
+        html = html.replace("[some]", "[" + message + " some]");
+        html = html.replace("[all]", "[" + message + " all]");
+        return new ServerReply(text, html);
     }
 
     public ActionElement getChangeState() {

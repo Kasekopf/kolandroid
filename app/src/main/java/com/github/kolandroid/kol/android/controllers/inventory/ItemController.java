@@ -50,14 +50,8 @@ public class ItemController implements Controller {
             }
 
             @Override
-            public void displayAutosell(Multiuseable item) {
-                Controller controller = new MultiusableController(item, "Sell");
-                DialogScreen.display(controller, host);
-            }
-
-            @Override
-            public void displayMultiuse(Multiuseable item) {
-                Controller controller = new MultiusableController(item, "Use");
+            public void displayMultiuse(Multiuseable item, String useText) {
+                Controller controller = new MultiusableController(item, useText);
                 DialogScreen.display(controller, host);
             }
         };
