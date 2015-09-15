@@ -84,9 +84,8 @@
          the container.
     -->
 
-    <fragment
+    <FrameLayout
         android:id="@+id/navigation_drawer"
-        android:name="com.github.kolandroid.kol.android.screen.FragmentScreen"
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="left" />

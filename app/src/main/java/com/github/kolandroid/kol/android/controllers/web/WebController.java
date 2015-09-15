@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.android.controllers;
+package com.github.kolandroid.kol.android.controllers.web;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -12,9 +12,11 @@ import android.webkit.WebViewClient;
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.UpdatableModelController;
 import com.github.kolandroid.kol.android.game.GameScreen;
+import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.model.models.WebModel;
+import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
@@ -85,7 +87,6 @@ public class WebController extends UpdatableModelController<WebModel> {
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     @Override
     public void connect(View view, WebModel model, final Screen host) {
-
         WebViewClient client = new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -184,6 +185,23 @@ public class WebController extends UpdatableModelController<WebModel> {
             if (host instanceof GameScreen) {
                 ((GameScreen) host).refreshStatsPane();
             }
+        }
+
+        @android.webkit.JavascriptInterface
+        public void displayFormNumeric(String question, final String onResult) {
+            Logger.log("WebController", "Querying numeric value: " + question);
+
+            TextInputController input = new TextInputController(new Callback<String>() {
+                @Override
+                public void execute(String result) {
+                    result = onResult.replace("#VAL", result);
+                    Logger.log("WebController", "Result: [" + result + "]");
+                    web.loadUrl(result);
+                }
+            });
+            Screen host = this.host.get();
+            if (host == null) return;
+            DialogScreen.display(input, host, question);
         }
     }
 

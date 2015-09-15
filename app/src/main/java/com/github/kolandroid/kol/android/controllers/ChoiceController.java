@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.ModelController;
+import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;

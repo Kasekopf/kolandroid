@@ -119,7 +119,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
             // the intent to launch this came from a back action
             // i.e. back from the chat
             // Do not shift the game view
-            Logger.log("GameScreen", "GameScreen received intent without model");
+            Logger.log("GameScreen", "GameScreen received intent without controller");
             return;
         }
 

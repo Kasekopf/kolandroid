@@ -71,7 +71,7 @@ public class WebModel extends Model {
      */
     private static final Regex FRAME_REDIRECT = new Regex("if\\s*\\(parent\\.frames\\.length\\s*==\\s*0\\)\\s*location.href\\s*=\\s*[\"']?game\\.php[\"']?;", 0);
     private static final Regex HEAD_TAG = new Regex("<head>");
-    private final static String jsInjectCode =
+    private final static String jsInjectCode = "" +
             "function customParseForm(form) { " +
                     "    var inputs = form.getElementsByTagName('input');" +
                     "    var data = form.totallyrealaction ? form.totallyrealaction.value : '';" +
@@ -95,7 +95,14 @@ public class WebModel extends Model {
                     "         data += encodeURIComponent(field.name) + '=' + encodeURIComponent(field.options[field.selectedIndex].value);" +
                     "    }" +
                     "    window.ANDROIDAPP.processFormData(data);" +
+            "}\n" +
+            "function pop_query(caller, title, button, callback, def) { " +
+            "    window.querycallback = callback;" +
+            "    window.ANDROIDAPP.displayFormNumeric(title, \"javascript:window.querycallback(#VAL)\");" +
                     "}";
+
+    private static final Regex POPQUERY_SCRIPT = new Regex("<script[^>]*pop_query[^>]*></script>");
+
     // Regex to find the top results pane of any page
     private static final Regex RESULTS_PANE = new Regex(
             "<table[^>]*><tr><td[^>]*><b>Results:.*?(<center>.*?)</table>", 1);
@@ -164,7 +171,7 @@ public class WebModel extends Model {
 
     private static String prepareHtml(String html) {
         html = fixItemsAndEffects(html);
-        html = replaceForms(html);
+        html = injectJavascript(html);
         html = doHacks(html);
         html = fixPaneReferences(html);
         return html;
@@ -186,6 +193,7 @@ public class WebModel extends Model {
         html = FRAME_REDIRECT.replaceAll(html, "");
         html = html.replace("top.charpane.location.href=\"charpane.php\";", "window.ANDROIDAPP.refreshStatsPane();");
         html = html.replace("top.mainpane.document", "document");
+        html = html.replace("parent.mainpane", "window");
         return html;
     }
 
@@ -204,12 +212,16 @@ public class WebModel extends Model {
         return html;
     }
 
-    private static String replaceForms(String html) {
+    private static String injectJavascript(String html) {
         html = FORM_REPLACER.replaceAll(html, "<form$1$3><input type=hidden name=totallyrealaction value=$2>");
         html = FORM_REPLACER2.replaceAll(html, "<form$1action=\"\" onsubmit=\"customParseForm(this);\"$2>");
 
         html = TABLE_FIXER.replaceAll(html, "$1$3$2");
         html = HEAD_TAG.replaceAll(html, "$0 <script>" + jsInjectCode + "</script>");
+
+        //pop_query(...) is replaced by an injected function to interact with android
+        html = POPQUERY_SCRIPT.replaceAll(html, "");
+        html = html.replace("Right-Click to Multi-Buy", "Long-Press to Multi-Buy");
 
         return html;
     }

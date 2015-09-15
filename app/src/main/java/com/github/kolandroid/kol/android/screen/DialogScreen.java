@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import com.github.kolandroid.kol.android.controller.Controller;
+import com.github.kolandroid.kol.android.controllers.ErrorController;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
+import com.github.kolandroid.kol.util.Logger;
 
 public class DialogScreen extends DialogFragment implements Screen {
     private Controller controller = null;
@@ -58,6 +60,11 @@ public class DialogScreen extends DialogFragment implements Screen {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.controller = (Controller) this.getArguments().getSerializable("controller");
+
+        if (controller == null) {
+            Logger.log("DialogScreen", "Unable to load controller from bundle");
+            controller = new ErrorController("[DialogScreen] Unable to load controller from bundle");
+        }
 
         int layoutid = controller.getView();
         View view = inflater.inflate(layoutid, container, false);

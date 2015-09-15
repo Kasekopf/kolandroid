@@ -6,7 +6,7 @@ import com.github.kolandroid.kol.android.binders.SkillsBinder;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.GroupController;
 import com.github.kolandroid.kol.android.controllers.MultiusableController;
-import com.github.kolandroid.kol.android.controllers.WebController;
+import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;

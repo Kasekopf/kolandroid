@@ -9,7 +9,7 @@ import com.github.kolandroid.kol.android.binders.ElementBinder;
 import com.github.kolandroid.kol.android.binders.SubtextBinder;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.ModelController;
-import com.github.kolandroid.kol.android.controllers.WebController;
+import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
