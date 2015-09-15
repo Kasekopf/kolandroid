@@ -3,6 +3,7 @@ package com.github.kolandroid.kol.android.game;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -44,8 +45,6 @@ import com.github.kolandroid.kol.util.Logger;
 
 public class GameScreen extends ActionBarActivity implements StatsCallbacks,
         ViewContext {
-    private DialogFragment dialog;
-
     private StatsController stats;
 
     private ViewContext baseContext;
@@ -110,9 +109,10 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
     }
 
     private void displayIntent(Intent intent, final boolean addToBackStack) {
-        if (dialog != null) {
-            dialog.dismiss();
-            dialog = null;
+        Fragment dialog = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (dialog != null && dialog instanceof DialogFragment) {
+            Logger.log("GameScreen", "Dismissing dialog box");
+            ((DialogFragment) dialog).dismiss();
         }
 
         if (!intent.hasExtra("controller")) {
@@ -148,7 +148,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
             @Override
             public void displayDialog(Controller c) {
                 Logger.log("GameScreen", "Displaying " + c + " on new dialog box");
-                dialog = DialogScreen.display(c, new ActivityScreen(GameScreen.this));
+                DialogScreen.display(c, new ActivityScreen(GameScreen.this));
             }
         });
     }
