@@ -133,6 +133,12 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
             }
 
             @Override
+            public void displayExternalDialog(Controller c) {
+                Logger.log("GameScreen", "ERROR: Controller " + c + " has chosen to appear on an external dialog. Rerouting...");
+                displayDialog(c);
+            }
+
+            @Override
             public void displayPrimary(Controller c, boolean replaceSameType) {
                 Logger.log("GameScreen", "Displaying " + c + " on primary pane [replace=" + replaceSameType + "]");
                 FragmentScreen screen = FragmentScreen.create(controller);

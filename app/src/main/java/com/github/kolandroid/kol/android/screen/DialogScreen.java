@@ -73,7 +73,7 @@ public class DialogScreen extends DialogFragment implements Screen {
 
         if (controller == null) {
             Logger.log("DialogScreen", "Unable to load controller from bundle");
-            controller = new ErrorController("[DialogScreen] Unable to load controller from bundle");
+            controller = new ErrorController("Error 0x04262 occurred when attempting to load page.", false);
         }
 
         int layoutid = controller.getView();

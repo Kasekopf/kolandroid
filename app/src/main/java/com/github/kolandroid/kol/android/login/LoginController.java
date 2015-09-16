@@ -52,7 +52,6 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
 
     @Override
     public void connect(View view, LoginModel model, final Screen host) {
-
         final EditText user = (EditText) view
                 .findViewById(R.id.login_username);
         final EditText pass = (EditText) view
@@ -149,14 +148,6 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
                 i.putExtra("start", enterChatImmediately);
                 context.startService(i);
 
-                break;
-            case FAILED_ACCESS:
-                Toast.makeText(host.getActivity(), "Failed access",
-                        Toast.LENGTH_SHORT).show();
-                break;
-            case FAILED_LOGIN:
-                Toast.makeText(host.getActivity(), "Failed login",
-                        Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;

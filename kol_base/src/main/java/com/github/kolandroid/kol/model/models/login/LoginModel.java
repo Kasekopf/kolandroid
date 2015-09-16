@@ -4,9 +4,11 @@ import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.LinkedModel;
+import com.github.kolandroid.kol.model.models.ErrorModel;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
 import com.github.kolandroid.kol.request.SingleRequest;
+import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
 public class LoginModel extends LinkedModel<LoginStatus> {
@@ -28,18 +30,24 @@ public class LoginModel extends LinkedModel<LoginStatus> {
 
     public void login(final ViewContext context, final String username,
                       final PasswordHash hash) {
-        this.notifyView(LoginStatus.STARTING);
-
         Request req = new Request("login.php");
         this.makeRequest(req, new ResponseHandler() {
             @Override
             public void handle(Session session, ServerReply response) {
+                Logger.log("LoginModel", "Received initial challenge");
+                if (response == null) {
+                    Logger.log("LoginModel", "Failed to Login");
+                    ErrorModel.trigger(context, "Unable to access KoL servers. Do you have internet?", true);
+                    return;
+                }
+
                 String loginId = LOGIN_ID.extractSingle(response.url);
                 String challenge = CHALLENGE.extractSingle(response.html);
                 String server = SERVER.extractSingle(response.cookie);
 
                 if (loginId == null || challenge == null || server == null) {
-                    notifyView(LoginStatus.FAILED_ACCESS);
+                    Logger.log("LoginModel", "Failed to Login");
+                    ErrorModel.trigger(context, "Unable to access KoL servers. Do you have internet?", true);
                     return;
                 }
 
@@ -48,7 +56,6 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                         "loggingin", "challenge", "response", "secure"};
                 String[] vals = {loginId, username, "", "Yup.", challenge,
                         hash.completeChallenge(challenge), "1"};
-                notifyView(LoginStatus.HALFWAY);
 
                 Request login = new SingleRequest("login.php", names, vals);
                 login.makeAsync(session, context.createLoadingContext(),
@@ -56,11 +63,12 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                             @Override
                             public void handle(Session session,
                                                ServerReply response) {
-                                System.out.println("Logincookie: "
-                                        + response.cookie);
+
+                                Logger.log("LoginModel", "Received cookie: " + response.cookie);
                                 if (!response.cookie.contains("PHPSESSID=")) {
                                     // Failure to login
-                                    notifyView(LoginStatus.FAILED_LOGIN);
+                                    Logger.log("LoginModel", "Failed to Login");
+                                    ErrorModel.trigger(context, "Login Failed. Bad Password.", true);
                                     return;
                                 }
 

@@ -4,15 +4,18 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.kolandroid.kol.android.R;
-import com.github.kolandroid.kol.android.controller.Controller;
+import com.github.kolandroid.kol.android.controller.ModelController;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
+import com.github.kolandroid.kol.model.models.ErrorModel;
 
-public class ErrorController implements Controller {
-    final String message;
+public class ErrorController extends ModelController<ErrorModel> {
+    public ErrorController(String message, boolean severe) {
+        this(new ErrorModel(message, severe));
+    }
 
-    public ErrorController(String message) {
-        this.message = message;
+    public ErrorController(ErrorModel model) {
+        super(model);
     }
 
     @Override
@@ -21,9 +24,9 @@ public class ErrorController implements Controller {
     }
 
     @Override
-    public void connect(View view, Screen host) {
+    public void connect(View view, ErrorModel model, Screen host) {
         TextView txtMessage = (TextView) view.findViewById(R.id.error_info);
-        txtMessage.setText(message);
+        txtMessage.setText(model.getMessage());
     }
 
     @Override
@@ -33,6 +36,10 @@ public class ErrorController implements Controller {
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayDialog(this);
+        if (getModel().isSevere())
+            choice.displayExternalDialog(this);
+        else
+            choice.displayDialog(this);
     }
+
 }

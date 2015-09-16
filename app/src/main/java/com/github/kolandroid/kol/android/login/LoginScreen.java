@@ -10,7 +10,11 @@ import android.view.MenuItem;
 
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.chat.ChatService;
+import com.github.kolandroid.kol.android.controller.Controller;
+import com.github.kolandroid.kol.android.screen.ActivityScreen;
+import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
+import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
 import com.github.kolandroid.kol.gamehandler.DataContext;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
@@ -36,14 +40,65 @@ public class LoginScreen extends ActionBarActivity implements ViewContext {
         this.baseContext = new AndroidViewContext(this);
 
         if (savedInstanceState == null) {
-            LoginController login = new LoginController();
-            FragmentScreen frag = FragmentScreen.create(login);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.game_mainfragment, frag).commit();
+            displayController(new LoginController());
         }
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Kingdom of Loathing");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //first saving my state, so the bundle wont be empty.
+        //https://code.google.com/p/android/issues/detail?id=19917
+        outState.putString("WORKAROUND_FOR_BUG_19917_KEY", "WORKAROUND_FOR_BUG_19917_VALUE");
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        this.setIntent(intent);
+
+        if (!intent.hasExtra("controller")) {
+            // the intent to launch this came from a back action
+            // i.e. back from the chat
+            // Do not shift the game view
+            Logger.log("GameScreen", "LoginScreen received intent without controller");
+            return;
+        }
+
+        final Controller controller = (Controller) intent
+                .getSerializableExtra("controller");
+        displayController(controller);
+    }
+
+    private void displayController(Controller controller) {
+        controller.chooseScreen(new ScreenSelection() {
+            @Override
+            public void displayExternal(Controller c) {
+                Logger.log("LoginScreen", "Displaying " + c + " on external pane");
+                FragmentScreen frag = FragmentScreen.create(c);
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.login_mainfragment, frag, "loginscreen").commit();
+            }
+
+            @Override
+            public void displayExternalDialog(Controller c) {
+                Logger.log("GameScreen", "Displaying " + c + " on new dialog box.");
+                DialogScreen.display(c, new ActivityScreen(LoginScreen.this));
+                displayDialog(c);
+            }
+
+            @Override
+            public void displayPrimary(Controller c, boolean replaceSameType) {
+                Logger.log("LoginScreen", "ERROR: Controller " + c + " has chosen to appear on a primary screen. Ignoring.");
+            }
+
+            @Override
+            public void displayDialog(Controller c) {
+                Logger.log("LoginScreen", "ERROR: Controller " + c + " has chosen to appear on a primary dialog. Ignoring.");
+            }
+        });
     }
 
     @Override

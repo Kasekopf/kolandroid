@@ -6,6 +6,7 @@ import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controllers.AccountSettingsController;
 import com.github.kolandroid.kol.android.controllers.ChoiceController;
 import com.github.kolandroid.kol.android.controllers.CraftingController;
+import com.github.kolandroid.kol.android.controllers.ErrorController;
 import com.github.kolandroid.kol.android.controllers.fight.FightController;
 import com.github.kolandroid.kol.android.controllers.inventory.ClosetController;
 import com.github.kolandroid.kol.android.controllers.inventory.ItemStorageController;
@@ -18,6 +19,7 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.models.AccountSettingsModel;
 import com.github.kolandroid.kol.model.models.ChoiceModel;
 import com.github.kolandroid.kol.model.models.CraftingModel;
+import com.github.kolandroid.kol.model.models.ErrorModel;
 import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.model.models.fight.FightModel;
 import com.github.kolandroid.kol.model.models.inventory.ClosetModel;
@@ -54,6 +56,10 @@ public class PrimaryRoute implements ResponseHandler {
             return new WebController(model);
         }
 
+        if (response.url.contains("androiderror.php")) {
+            ErrorModel model = new ErrorModel(session, response);
+            return new ErrorController(model);
+        }
 
         if (response.url.contains("login.php")) {
             return new LoginController();
