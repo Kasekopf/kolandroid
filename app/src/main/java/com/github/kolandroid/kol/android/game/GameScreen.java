@@ -187,11 +187,15 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
                     stats.showQuests();
                 return true;
             case R.id.action_chat:
-                if (chat == null)
+                if (chat == null) {
+                    Logger.log("GameScreen", "Unable to load chat model; not connected to AndroidBinder");
                     return false;
+                }
                 ChatModel model = chat.getModel();
-                if (model == null)
+                if (model == null) {
+                    Logger.log("GameScreen", "Unable to load chat model; AndroidBinder [" + chat + "] has null reference");
                     return false;
+                }
 
                 Intent intent = new Intent(this, ChatActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
