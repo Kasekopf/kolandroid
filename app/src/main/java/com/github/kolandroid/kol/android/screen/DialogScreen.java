@@ -1,9 +1,9 @@
 package com.github.kolandroid.kol.android.screen;
 
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +73,7 @@ public class DialogScreen extends DialogFragment implements Screen {
 
         if (controller == null) {
             Logger.log("DialogScreen", "Unable to load controller from bundle");
-            controller = new ErrorController("Error 0x04262 occurred when attempting to load page.", false);
+            controller = new ErrorController("0x35ad1: Unable to display page", false);
         }
 
         int layoutid = controller.getView();

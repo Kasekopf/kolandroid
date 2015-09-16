@@ -1,7 +1,7 @@
 package com.github.kolandroid.kol.android.screen;
 
 import android.app.Activity;
-import android.support.v4.app.FragmentManager;
+import android.app.FragmentManager;
 
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 

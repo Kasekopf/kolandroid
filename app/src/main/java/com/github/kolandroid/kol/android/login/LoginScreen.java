@@ -78,7 +78,7 @@ public class LoginScreen extends ActionBarActivity implements ViewContext {
             public void displayExternal(Controller c) {
                 Logger.log("LoginScreen", "Displaying " + c + " on external pane");
                 FragmentScreen frag = FragmentScreen.create(c);
-                getSupportFragmentManager().beginTransaction()
+                getFragmentManager().beginTransaction()
                         .add(R.id.login_mainfragment, frag, "loginscreen").commit();
             }
 

@@ -1,6 +1,6 @@
 package com.github.kolandroid.kol.android.controller;
 
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.View;
 
 import com.github.kolandroid.kol.android.R;

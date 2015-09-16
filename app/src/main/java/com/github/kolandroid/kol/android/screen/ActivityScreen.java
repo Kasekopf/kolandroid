@@ -1,7 +1,7 @@
 package com.github.kolandroid.kol.android.screen;
 
 import android.app.Activity;
-import android.support.v4.app.FragmentManager;
+import android.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 
 import com.github.kolandroid.kol.gamehandler.ViewContext;
@@ -15,12 +15,12 @@ public class ActivityScreen implements Screen {
 
     @Override
     public FragmentManager getFragmentManager() {
-        return base.getSupportFragmentManager();
+        return base.getFragmentManager();
     }
 
     @Override
     public FragmentManager getChildFragmentManager() {
-        return base.getSupportFragmentManager();
+        return base.getFragmentManager();
     }
 
     @Override

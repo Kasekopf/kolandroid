@@ -1,8 +1,8 @@
 package com.github.kolandroid.kol.android.screen;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;

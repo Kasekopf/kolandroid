@@ -1,14 +1,15 @@
 package com.github.kolandroid.kol.android.game;
 
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -88,7 +89,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
         // Set up the drawer.
         Controller nav = new NavigationController(new NavigationModel(session));
         DrawerScreen drawer = DrawerScreen.create(nav);
-        getSupportFragmentManager().beginTransaction()
+        getFragmentManager().beginTransaction()
                 .replace(R.id.navigation_drawer, drawer).commit();
         drawer.setUp(this, R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
@@ -109,7 +110,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
     }
 
     private void displayIntent(Intent intent, final boolean addToBackStack) {
-        Fragment dialog = getSupportFragmentManager().findFragmentByTag("dialog");
+        Fragment dialog = getFragmentManager().findFragmentByTag("dialog");
         if (dialog != null && dialog instanceof DialogFragment) {
             Logger.log("GameScreen", "Dismissing dialog box");
             ((DialogFragment) dialog).dismiss();
@@ -143,13 +144,13 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
                 Logger.log("GameScreen", "Displaying " + c + " on primary pane [replace=" + replaceSameType + "]");
                 FragmentScreen screen = FragmentScreen.create(controller);
 
-                FragmentTransaction trans = getSupportFragmentManager()
+                FragmentTransaction trans = getFragmentManager()
                         .beginTransaction().replace(R.id.game_mainfragment, screen, "gamescreen");
 
                 boolean doAddToBackStack = addToBackStack;
                 if (doAddToBackStack && replaceSameType) {
                     // We have to do a more complicated check to see if the same controller type is currently displayed
-                    Fragment current = getSupportFragmentManager().findFragmentByTag("gamescreen");
+                    Fragment current = getFragmentManager().findFragmentByTag("gamescreen");
                     if (current != null && current instanceof FragmentScreen) {
                         Controller currentController = ((FragmentScreen) current).getController();
                         if (currentController != null && c.getClass() == currentController.getClass()) {
@@ -161,7 +162,7 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 
                 if (doAddToBackStack) {
                     Logger.log("GameScreen", "History saved");
-                    trans = trans.addToBackStack(null);
+                    trans = trans.addToBackStack("a");
                 }
 
                 trans.commit();
@@ -228,6 +229,20 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //This appears to be necessary to make fragment backtracking actually work without the v4 support library...
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            if (!getFragmentManager().popBackStackImmediate()) {
+                //TODO: replace with Logout? message
+                //ErrorModel.trigger(this, "Nothing on the stack", false);
+                return super.onKeyDown(keyCode, event);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

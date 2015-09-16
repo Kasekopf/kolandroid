@@ -38,11 +38,11 @@ public class ChatActivity extends ActionBarActivity implements ViewContext,
 
         mainChat = new ChatController();
         FragmentScreen chatScreen = FragmentScreen.create(mainChat);
-        getSupportFragmentManager().beginTransaction().replace(R.id.chat_chatscreen, chatScreen).commit();
+        getFragmentManager().beginTransaction().replace(R.id.chat_chatscreen, chatScreen).commit();
 
         chatSubmission = new ChatSubmissionController();
         FragmentScreen subScreen = FragmentScreen.create(chatSubmission);
-        getSupportFragmentManager().beginTransaction().replace(R.id.chat_submissionscreen, subScreen).commit();
+        getFragmentManager().beginTransaction().replace(R.id.chat_submissionscreen, subScreen).commit();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
