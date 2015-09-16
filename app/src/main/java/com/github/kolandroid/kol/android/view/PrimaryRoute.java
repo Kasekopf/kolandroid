@@ -24,6 +24,7 @@ import com.github.kolandroid.kol.model.models.inventory.ClosetModel;
 import com.github.kolandroid.kol.model.models.inventory.InventoryModel;
 import com.github.kolandroid.kol.model.models.skill.SkillsModel;
 import com.github.kolandroid.kol.request.ResponseHandler;
+import com.github.kolandroid.kol.util.Logger;
 
 public class PrimaryRoute implements ResponseHandler {
     private final ScreenSelection screens;
@@ -42,14 +43,14 @@ public class PrimaryRoute implements ResponseHandler {
             return new LoginController();
         }
 
-        Log.i("Primary Route", "Creating model for response: " + response.url);
+        Log.i("PrimaryRoute", "Creating model for response: " + response.url);
 
         /**
          * Specifically handle simulated requests.
          * Prevents later models from matching html content.
          */
         if (response.url.contains("fake.php")) {
-            WebModel model = WebModel.create(session, response);
+            WebModel model = new WebModel(session, response);
             return new WebController(model);
         }
 
@@ -99,13 +100,29 @@ public class PrimaryRoute implements ResponseHandler {
             return new AccountSettingsController(model);
         }
 
-        WebModel model = WebModel.create(session, response);
+        WebModel model = new WebModel(session, response);
         return new WebController(model);
     }
 
     @Override
     public void handle(Session session, ServerReply response) {
-        Controller controller = getController(session, response);
-        controller.chooseScreen(screens);
+        if (response == null)
+            return;
+
+        ServerReply resultsPane = response.extractResultsPane();
+        if (resultsPane == null) {
+            Controller controller = getController(session, response);
+            controller.chooseScreen(screens);
+        } else if (resultsPane != null && response.url.contains("androiddisplay=results")) {
+            Logger.log("PrimaryRoute", "Results pane was contained in redundant results pane");
+            Controller controller = getController(session, resultsPane);
+            controller.chooseScreen(screens);
+        } else {
+            Logger.log("PrimaryRoute", "Split results pane off of response " + response.url);
+            Controller mainController = getController(session, response.removeResultsPane());
+            Controller resultsController = getController(session, resultsPane);
+            mainController.chooseScreen(screens);
+            resultsController.chooseScreen(screens);
+        }
     }
 }

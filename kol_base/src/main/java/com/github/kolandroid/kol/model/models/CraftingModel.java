@@ -2,6 +2,7 @@ package com.github.kolandroid.kol.model.models;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.GroupModel;
 import com.github.kolandroid.kol.util.Regex;
 
@@ -46,7 +47,7 @@ public class CraftingModel extends GroupModel<LiveWebModel> {
 
         crafts[initialSlot].process(reply);
 
-        this.resultsPane = WebModel.extractResultsPane(s, reply);
+        this.resultsPane = new WebModel(s, reply);
     }
 
     private static LiveWebModel createCraftingSubModel(Session s, String title, String updateUrl) {
@@ -56,6 +57,13 @@ public class CraftingModel extends GroupModel<LiveWebModel> {
                 return TOP_BAR.replaceAll(html, "$1");
             }
         };
+    }
+
+    @Override
+    public void attachView(ViewContext context) {
+        super.attachView(context);
+
+
     }
 
     public WebModel getResultsPane() {

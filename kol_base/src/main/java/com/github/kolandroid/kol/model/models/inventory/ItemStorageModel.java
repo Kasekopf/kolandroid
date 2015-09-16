@@ -3,7 +3,6 @@ package com.github.kolandroid.kol.model.models.inventory;
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.GroupModel;
-import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
@@ -23,7 +22,6 @@ public class ItemStorageModel extends GroupModel<ItemPocketModel> {
     private final ItemPocketModel recent;
     private final String baseUrl;
     private int chosen;
-    private WebModel resultsPane;
 
     public ItemStorageModel(Session s, ServerReply text, String baseUrl, boolean useEquipmentModel) {
         super(s);
@@ -48,8 +46,6 @@ public class ItemStorageModel extends GroupModel<ItemPocketModel> {
             return;
         }
 
-        resultsPane = WebModel.extractResultsPane(getSession(), text);
-
         if (CHOSEN_CONSUME.matches(text.html)) {
             chosen = 1;
         } else if (CHOSEN_EQUIP.matches(text.html)) {
@@ -65,10 +61,6 @@ public class ItemStorageModel extends GroupModel<ItemPocketModel> {
         ItemPocketModel[] children = this.getChildren();
         children[chosen].process(text);
         System.out.println("Loaded into slot " + chosen);
-    }
-
-    public WebModel getResultsPane() {
-        return resultsPane;
     }
 
     @Override

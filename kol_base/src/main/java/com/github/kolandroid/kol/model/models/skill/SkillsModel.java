@@ -3,7 +3,6 @@ package com.github.kolandroid.kol.model.models.skill;
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.GroupModel;
-import com.github.kolandroid.kol.model.models.WebModel;
 
 public class SkillsModel extends GroupModel<SkillsSubmodel> {
     /**
@@ -13,20 +12,14 @@ public class SkillsModel extends GroupModel<SkillsSubmodel> {
     private final SkillsListModel skills;
     private final ItemsListModel items;
     private final boolean usedItem;
-    private final WebModel resultsPane;
 
     public SkillsModel(Session s, ServerReply text) {
         super(s);
 
-        this.resultsPane = WebModel.extractResultsPane(getSession(), text);
         this.skills = new SkillsListModel(s, text);
         this.items = new ItemsListModel(s, text);
 
         usedItem = text.url.contains("useditem");
-    }
-
-    public WebModel getResultsPane() {
-        return resultsPane;
     }
 
     public boolean getJustUsedItem() {

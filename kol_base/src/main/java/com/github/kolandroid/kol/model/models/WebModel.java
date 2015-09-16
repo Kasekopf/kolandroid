@@ -103,9 +103,6 @@ public class WebModel extends Model {
 
     private static final Regex POPQUERY_SCRIPT = new Regex("<script[^>]*pop_query[^>]*></script>");
 
-    // Regex to find the top results pane of any page
-    private static final Regex RESULTS_PANE = new Regex(
-            "<table[^>]*><tr><td[^>]*><b>Results:.*?(<center>.*?)</table>", 1);
     // Regex to find contents of the <body> tag of any page
     private static final Regex PAGE_BODY = new Regex(
             "(<body[^>]*>)(.*?)(</body>)", 2);
@@ -115,7 +112,7 @@ public class WebModel extends Model {
     private final WebModelType type;
     private String html;
 
-    protected WebModel(Session s, ServerReply text, WebModelType type) {
+    public WebModel(Session s, ServerReply text, WebModelType type) {
         super(s);
 
         Logger.log("WebModel", "Loaded " + text.url);
@@ -125,25 +122,11 @@ public class WebModel extends Model {
         this.type = type;
 
 
-        Logger.log("WebModel", this.html);
+        //Logger.log("WebModel", this.html);
     }
 
-    protected WebModel(Session s, ServerReply text) {
+    public WebModel(Session s, ServerReply text) {
         this(s, text, determineType(text));
-    }
-
-    public static WebModel create(Session s, ServerReply text) {
-        WebModelType type = determineType(text);
-
-        //If the model IS a results pane and HAS a results pane, remove the external pane.
-        if (type == WebModelType.RESULTS) {
-            WebModel resultsPane = extractResultsPane(s, text);
-            if (resultsPane != null) {
-                return resultsPane;
-            }
-        }
-
-        return new WebModel(s, text, type);
     }
 
     private static WebModelType determineType(ServerReply text) {
@@ -160,38 +143,7 @@ public class WebModel extends Model {
         return WebModelType.REGULAR;
     }
 
-    /**
-     * Extract a model for the results pane of this page, if any exists.
-     *
-     * @param s    Session in which to create the new model.
-     * @param base Page to parse
-     * @return A model representing the results pane; null if no results pane
-     * was found.
-     */
-    public static WebModel extractResultsPane(Session s, ServerReply base) {
-        String resultsPane = RESULTS_PANE.extractSingle(base.html);
 
-        if (resultsPane == null)
-            return null;
-
-        Logger.log("WebModel", "Loaded results pane: " + prepareHtml(resultsPane));
-        String html;
-        if (PAGE_BODY.matches(base.html)) {
-            html = PAGE_BODY.replaceAll(base.html, "$1<center>"
-                    + resultsPane + "</center>$3");
-        } else {
-            //A fake wrapper for the result; TODO: revisit.
-            html = "<html><head><script type=\"text/javascript\">top.charpane.location.href=\"charpane.php\";</script></head><body>" + resultsPane + "</body></html>";
-        }
-
-        String updatedUrl = base.url;
-        updatedUrl += (base.url.contains("?")) ? "&androiddisplay=results" : "?androiddisplay=results";
-
-        ServerReply newRep = new ServerReply(base.responseCode,
-                base.redirectLocation, base.date, html,
-                updatedUrl, base.cookie);
-        return new WebModel(s, newRep, WebModelType.RESULTS);
-    }
 
     private static String prepareHtml(String html) {
         html = fixItemsAndEffects(html);

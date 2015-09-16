@@ -1,13 +1,10 @@
 package com.github.kolandroid.kol.android.controllers.skills;
 
-import android.view.View;
-
 import com.github.kolandroid.kol.android.binders.DefaultGroupBinder;
 import com.github.kolandroid.kol.android.binders.SkillsBinder;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.GroupController;
 import com.github.kolandroid.kol.android.controllers.MultiusableController;
-import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
@@ -16,7 +13,6 @@ import com.github.kolandroid.kol.android.util.searchlist.ListSelector;
 import com.github.kolandroid.kol.android.util.searchlist.SearchListController;
 import com.github.kolandroid.kol.android.util.searchlist.SerializableSelector;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
-import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.model.models.skill.ItemsListModel;
 import com.github.kolandroid.kol.model.models.skill.SkillModelElement;
 import com.github.kolandroid.kol.model.models.skill.SkillModelElement.Buff;
@@ -91,16 +87,5 @@ public class SkillsController extends GroupController<SkillsSubmodel, SkillsMode
     @Override
     protected Controller getController(SkillsSubmodel child) {
         return child.execute(childRoute);
-    }
-
-    @Override
-    public void connect(View view, SkillsModel model, Screen host) {
-        super.connect(view, model, host);
-
-        WebModel results = model.getResultsPane();
-        if (results != null) {
-            WebController web = new WebController(results);
-            DialogScreen.display(web, host);
-        }
     }
 }
