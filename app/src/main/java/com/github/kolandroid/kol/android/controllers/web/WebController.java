@@ -40,12 +40,7 @@ public class WebController extends UpdatableModelController<WebModel> {
     public void updateModel(WebModel base) {
         super.updateModel(base);
         if (web != null) {
-            String fixedHtml = BODY_TAG
-                    .replaceAll(base.getHTML(),
-                            "$0<meta name=\"viewport\" content=\"width=device-width\">");
-            web.loadDataWithBaseURL(base.getURL(), fixedHtml, "text/html", null,
-                    null);
-            web.invalidate();
+            loadContent(base);
         }
     }
 
@@ -128,42 +123,47 @@ public class WebController extends UpdatableModelController<WebModel> {
         };
 
         web = (WebView) view.findViewById(R.id.webview);
+
+        web.getSettings().setJavaScriptEnabled(true);
+        web.addJavascriptInterface(new JavaScriptInterface(host), "ANDROIDAPP");
+        web.setWebViewClient(client);
+        loadContent(model);
+    }
+
+    private void loadContent(WebModel model) {
         // Fix the viewport size by inserting a viewport tag
         String fixedHtml = BODY_TAG
                 .replaceAll(model.getHTML(),
                         "$0<meta name=\"viewport\" content=\"width=device-width\">");
-        Log.i("WebFragment", "Loading content of size " + fixedHtml.length());
+        Logger.log("WebController", "Loading content of size " + fixedHtml.length());
 
-        web.getSettings().setBuiltInZoomControls(true);
+        boolean allowZoom = model.visitType(new WebModel.WebModelTypeVisitor<Boolean>() {
+            @Override
+            public Boolean forRegular() {
+                return true;
+            }
+
+            @Override
+            public Boolean forSmall() {
+                return false;
+            }
+
+            @Override
+            public Boolean forResults() {
+                return false;
+            }
+        });
+
+        web.getSettings().setBuiltInZoomControls(allowZoom);
         web.getSettings().setLoadWithOverviewMode(true);
         web.getSettings().setUseWideViewPort(true);
-        web.getSettings().setJavaScriptEnabled(true);
-        web.addJavascriptInterface(new JavaScriptInterface(host), "ANDROIDAPP");
 
-		/*
-        CookieSyncManager syncManager = CookieSyncManager.createInstance(web.getContext());
-		CookieManager cookieManager = CookieManager.getInstance();
-		cookieManager.setAcceptCookie(true);
-		cookieManager.removeAllCookie();
-
-		SystemClock.sleep(1000);
-		Session session = model.getSession();
-		cookieManager.setCookie("www.kingdomofloathing.com", session.getCookie());
-		//cookieManager.setCookie("www.kingdomofloathing.com", "appserver=" + session.getServer());
-		Logger.log("CookieSetting", session.getCookie());
-		//Logger.log("CookieSetting", "appserver=" + session.getServer());
-		syncManager.sync();
-		*/
-
-        web.setWebViewClient(client);
         web.loadDataWithBaseURL(model.getURL(), fixedHtml, "text/html", null,
                 null);
 
         web.invalidate();
 
-
     }
-
     class JavaScriptInterface {
         private final WeakReference<Screen> host;
 
