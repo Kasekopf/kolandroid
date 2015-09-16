@@ -178,7 +178,7 @@ public class WebController extends UpdatableModelController<WebModel> {
 
         @android.webkit.JavascriptInterface
         public void processFormData(String formData) {
-            Log.i("WebFragment Form", "Res: " + formData);
+            Logger.log("WebController", "Form data: " + formData);
             getModel().makeRequest(formData);
         }
 

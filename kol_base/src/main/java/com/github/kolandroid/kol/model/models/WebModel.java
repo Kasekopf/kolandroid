@@ -99,7 +99,7 @@ public class WebModel extends Model {
             "function pop_query(caller, title, button, callback, def) { " +
             "    window.querycallback = callback;" +
             "    window.ANDROIDAPP.displayFormNumeric(title, button, \"javascript:window.querycallback(#VAL)\");" +
-            "}";
+            "}\n";
 
     private static final Regex POPQUERY_SCRIPT = new Regex("<script[^>]*pop_query[^>]*></script>");
 
@@ -215,6 +215,7 @@ public class WebModel extends Model {
     private static String fixPaneReferences(String html) {
         html = FRAME_REDIRECT.replaceAll(html, "");
         html = html.replace("top.charpane.location.href=\"charpane.php\";", "window.ANDROIDAPP.refreshStatsPane();");
+        html = html.replace("top.charpane.location=\"charpane.php\";", "window.ANDROIDAPP.refreshStatsPane();");
         html = html.replace("top.mainpane.document", "document");
         html = html.replace("parent.mainpane", "window");
         return html;
@@ -247,6 +248,8 @@ public class WebModel extends Model {
         html = html.replace("Right-Click to Multi-Buy", "Long-Press to Multi-Buy");
         html = html.replace("Right-Click to Multi-Make", "Long-Press to Multi-Make");
 
+        //Convert ajax post requests into the proper format
+        html = html.replace("$.post(", "$.get(\"POST/\" + ");
         return html;
     }
 
