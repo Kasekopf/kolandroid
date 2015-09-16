@@ -1,17 +1,11 @@
 package com.github.kolandroid.kol.android.controllers;
 
-import android.view.View;
-
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.GroupController;
 import com.github.kolandroid.kol.android.controllers.web.LiveWebController;
-import com.github.kolandroid.kol.android.controllers.web.WebController;
-import com.github.kolandroid.kol.android.screen.DialogScreen;
-import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.model.models.CraftingModel;
 import com.github.kolandroid.kol.model.models.LiveWebModel;
-import com.github.kolandroid.kol.model.models.WebModel;
 
 public class CraftingController extends
         GroupController<LiveWebModel, CraftingModel> {
@@ -27,17 +21,6 @@ public class CraftingController extends
     @Override
     public void chooseScreen(ScreenSelection choice) {
         choice.displayPrimary(this);
-    }
-
-    @Override
-    public void connect(View view, CraftingModel model, Screen host) {
-        super.connect(view, model, host);
-
-        WebModel results = model.getResultsPane();
-        if (results != null) {
-            WebController web = new WebController(results);
-            DialogScreen.display(web, host);
-        }
     }
 
     @Override

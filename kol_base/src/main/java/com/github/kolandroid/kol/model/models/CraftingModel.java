@@ -17,7 +17,7 @@ public class CraftingModel extends GroupModel<LiveWebModel> {
     private static final Regex CRAFT_TITLE = new Regex("\\[(?:<[^>]*>)?([^<]*)(?:<[^>]*>)?\\]", 1);
     private static final Regex CRAFT_LINK = new Regex("\\[<a href=[\"']?([^>]*?)[\"']?>*>[^<]*<[^>]*>\\]", 1);
     private static final Regex TOP_BAR = new Regex("(<body>.*?)<table.*?</table>.*?</table>", 0);
-    private final WebModel resultsPane;
+
     private LiveWebModel[] crafts;
     private int initialSlot;
 
@@ -46,8 +46,6 @@ public class CraftingModel extends GroupModel<LiveWebModel> {
         System.out.println("Loaded " + crafts.length + " crafts; selected " + initialSlot);
 
         crafts[initialSlot].process(reply);
-
-        this.resultsPane = new WebModel(s, reply);
     }
 
     private static LiveWebModel createCraftingSubModel(Session s, String title, String updateUrl) {
@@ -64,10 +62,6 @@ public class CraftingModel extends GroupModel<LiveWebModel> {
         super.attachView(context);
 
 
-    }
-
-    public WebModel getResultsPane() {
-        return resultsPane;
     }
 
     @Override
