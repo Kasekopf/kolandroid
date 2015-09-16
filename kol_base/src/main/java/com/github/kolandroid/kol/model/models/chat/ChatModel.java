@@ -123,6 +123,11 @@ public class ChatModel extends LinkedModel<ChatStatus> {
     }
 
     private void handle(ServerReply response, boolean hidden) {
+        if (response == null) {
+            Logger.log("ChatModel", "Recieved null updated");
+            return;
+        }
+
         if (!response.url.contains("newchatmessages.php")
                 && !response.url.contains("submitnewchat.php")) {
             notifyView(ChatStatus.STOPPED);

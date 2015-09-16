@@ -98,8 +98,8 @@ public class WebModel extends Model {
             "}\n" +
             "function pop_query(caller, title, button, callback, def) { " +
             "    window.querycallback = callback;" +
-            "    window.ANDROIDAPP.displayFormNumeric(title, \"javascript:window.querycallback(#VAL)\");" +
-                    "}";
+            "    window.ANDROIDAPP.displayFormNumeric(title, button, \"javascript:window.querycallback(#VAL)\");" +
+            "}";
 
     private static final Regex POPQUERY_SCRIPT = new Regex("<script[^>]*pop_query[^>]*></script>");
 

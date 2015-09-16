@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controllers.ErrorController;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
@@ -42,6 +43,15 @@ public class DialogScreen extends DialogFragment implements Screen {
         res.setArguments(DialogScreen.prepare(controller, title));
         res.show(base.getFragmentManager(), "dialog");
         return res;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments().containsKey("title")) {
+            setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog);
+        }
     }
 
     @NonNull

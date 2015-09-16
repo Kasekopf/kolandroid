@@ -14,10 +14,12 @@ import com.github.kolandroid.kol.util.Logger;
 import java.lang.ref.WeakReference;
 
 public class TextInputController implements Controller {
+    private final String buttonText;
     private transient WeakReference<Callback<String>> onSubmit;
 
-    public TextInputController(Callback<String> onSubmit) {
+    public TextInputController(String buttonText, Callback<String> onSubmit) {
         this.onSubmit = new WeakReference<Callback<String>>(onSubmit);
+        this.buttonText = buttonText;
     }
 
     @Override
@@ -45,6 +47,7 @@ public class TextInputController implements Controller {
                 host.close();
             }
         });
+        button.setText(buttonText);
     }
 
     @Override

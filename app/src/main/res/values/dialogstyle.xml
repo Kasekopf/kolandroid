@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowTitleStyle">@style/CustomDialogTitle</item>
+        <item name="android:background">#fff</item>
+    </style>
+
+    <style name="CustomDialogTitle">
+        <item name="android:textAppearance">@style/CustomDialogWindowTitle</item>
+        <item name="android:background">#ddd</item>
+    </style>
+
+    <style name="CustomDialogWindowTitle">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">#000</item>
+    </style>
+</resources>

@@ -193,13 +193,14 @@ public class WebController extends UpdatableModelController<WebModel> {
         }
 
         @android.webkit.JavascriptInterface
-        public void displayFormNumeric(String question, final String onResult) {
+        public void displayFormNumeric(String question, String button, final String onResult) {
             Logger.log("WebController", "Querying numeric value: " + question);
 
-            TextInputController input = new TextInputController(new Callback<String>() {
+            TextInputController input = new TextInputController(button, new Callback<String>() {
                 @Override
                 public void execute(String result) {
-                    result = onResult.replace("#VAL", result);
+                    result = result.replace("\"", ""); //attempt to stop OTHER javascript injection
+                    result = onResult.replace("#VAL", "\"" + result + "\"");
                     Logger.log("WebController", "Result: [" + result + "]");
                     web.loadUrl(result);
                 }

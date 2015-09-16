@@ -119,6 +119,8 @@ public class FightModel extends WebModel {
         ArrayList<OptionElement> dropdown_items = OptionElement
                 .extractOptions(dropdown);
         for (OptionElement option : dropdown_items) {
+            if (option.text.contains("(select an item)"))
+                continue;
             items.add(new FightItem(getSession(), option.text, option.img,
                     option.value));
         }
