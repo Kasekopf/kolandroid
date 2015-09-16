@@ -51,7 +51,6 @@ public class BinderController<E> implements UpdatableController<E> {
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this);
+        choice.displayDialog(this);
     }
-
 }

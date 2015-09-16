@@ -20,7 +20,7 @@ public class CraftingController extends
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this);
+        choice.displayPrimary(this, true);
     }
 
     @Override

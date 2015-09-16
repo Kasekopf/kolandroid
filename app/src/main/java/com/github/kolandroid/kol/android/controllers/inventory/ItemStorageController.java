@@ -28,7 +28,7 @@ public class ItemStorageController<E extends ItemStorageModel> extends GroupCont
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this);
+        choice.displayPrimary(this, true);
     }
 
     @Override

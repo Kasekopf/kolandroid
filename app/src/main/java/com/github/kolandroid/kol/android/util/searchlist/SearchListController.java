@@ -90,7 +90,7 @@ public class SearchListController<E> implements Controller {
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this);
+        choice.displayPrimary(this, false);
     }
 
 }

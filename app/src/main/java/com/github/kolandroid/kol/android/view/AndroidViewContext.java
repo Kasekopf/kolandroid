@@ -45,7 +45,7 @@ public class AndroidViewContext implements ViewContext {
             }
 
             @Override
-            public void displayPrimary(Controller c) {
+            public void displayPrimary(Controller c, boolean replaceSameType) {
                 IntentBuilder builder = new IntentBuilder(GameScreen.class, c);
                 Message.obtain(activityLauncher, 0, builder).sendToTarget();
             }

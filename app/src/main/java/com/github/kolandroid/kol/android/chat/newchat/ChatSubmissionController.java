@@ -68,7 +68,7 @@ public class ChatSubmissionController implements Controller {
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this);
+        choice.displayDialog(this);
     }
 
     public void fillChatText(String with) {

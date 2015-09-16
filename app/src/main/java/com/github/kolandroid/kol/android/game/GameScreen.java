@@ -129,18 +129,35 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
             @Override
             public void displayExternal(Controller c) {
                 Logger.log("GameScreen", "ERROR: Controller " + c + " has chosen to appear on an external screen. Rerouting...");
-                displayPrimary(c);
+                displayPrimary(c, false);
             }
 
             @Override
-            public void displayPrimary(Controller c) {
-                Logger.log("GameScreen", "Displaying " + c + " on primary pane");
+            public void displayPrimary(Controller c, boolean replaceSameType) {
+                Logger.log("GameScreen", "Displaying " + c + " on primary pane [replace=" + replaceSameType + "]");
                 FragmentScreen screen = FragmentScreen.create(controller);
 
                 FragmentTransaction trans = getSupportFragmentManager()
-                        .beginTransaction().replace(R.id.game_mainfragment, screen);
-                if (addToBackStack)
+                        .beginTransaction().replace(R.id.game_mainfragment, screen, "gamescreen");
+
+                boolean doAddToBackStack = addToBackStack;
+                if (doAddToBackStack && replaceSameType) {
+                    // We have to do a more complicated check to see if the same controller type is currently displayed
+                    Fragment current = getSupportFragmentManager().findFragmentByTag("gamescreen");
+                    if (current != null && current instanceof FragmentScreen) {
+                        Controller currentController = ((FragmentScreen) current).getController();
+                        if (currentController != null && c.getClass() == currentController.getClass()) {
+                            Logger.log("GameScreen", "<" + c.getClass() + "> already on screen");
+                            doAddToBackStack = false;
+                        }
+                    }
+                }
+
+                if (doAddToBackStack) {
+                    Logger.log("GameScreen", "History saved");
                     trans = trans.addToBackStack(null);
+                }
+
                 trans.commit();
                 refreshStatsPane();
             }

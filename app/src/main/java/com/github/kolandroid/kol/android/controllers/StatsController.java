@@ -83,7 +83,7 @@ public class StatsController extends LinkedModelController<LiveMessage, StatsMod
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this);
+        choice.displayPrimary(this, true);
     }
 
     public interface StatsCallbacks {

@@ -81,7 +81,7 @@ public class SkillsController extends GroupController<SkillsSubmodel, SkillsMode
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this);
+        choice.displayPrimary(this, true);
     }
 
     @Override

@@ -65,7 +65,7 @@ public class WebController extends UpdatableModelController<WebModel> {
     public void chooseScreen(final ScreenSelection choice) {
         getModel().visitType(new WebModel.WebModelTypeVisitor<Void>() {
             public Void forRegular() {
-                choice.displayPrimary(WebController.this);
+                choice.displayPrimary(WebController.this, false);
                 return null;
             }
 

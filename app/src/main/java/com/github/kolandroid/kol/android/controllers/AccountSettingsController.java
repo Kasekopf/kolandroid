@@ -22,6 +22,6 @@ public class AccountSettingsController extends GroupController<LiveWebModel, Acc
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this);
+        choice.displayPrimary(this, true);
     }
 }

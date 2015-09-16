@@ -31,7 +31,7 @@ public class LiveWebController extends
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this);
+        choice.displayPrimary(this, false);
     }
 
     @Override
