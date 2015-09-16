@@ -3,9 +3,9 @@ package com.github.kolandroid.kol.android.view;
 import android.util.Log;
 
 import com.github.kolandroid.kol.android.controller.Controller;
+import com.github.kolandroid.kol.android.controllers.AccountSettingsController;
 import com.github.kolandroid.kol.android.controllers.ChoiceController;
 import com.github.kolandroid.kol.android.controllers.CraftingController;
-import com.github.kolandroid.kol.android.controllers.TextDebugController;
 import com.github.kolandroid.kol.android.controllers.fight.FightController;
 import com.github.kolandroid.kol.android.controllers.inventory.ClosetController;
 import com.github.kolandroid.kol.android.controllers.inventory.ItemStorageController;
@@ -15,6 +15,7 @@ import com.github.kolandroid.kol.android.login.LoginController;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.model.models.AccountSettingsModel;
 import com.github.kolandroid.kol.model.models.ChoiceModel;
 import com.github.kolandroid.kol.model.models.CraftingModel;
 import com.github.kolandroid.kol.model.models.WebModel;
@@ -93,10 +94,9 @@ public class PrimaryRoute implements ResponseHandler {
             return new CraftingController(model);
         }
 
-        if (response.url.contains("submitnewchat.php")) {
-            //Triggered by a chatmacro from the Navigation
-            WebModel model = WebModel.create(session, response);
-            return new TextDebugController(model);
+        if (response.url.contains("account.php")) {
+            AccountSettingsModel model = new AccountSettingsModel(session, response);
+            return new AccountSettingsController(model);
         }
 
         WebModel model = WebModel.create(session, response);

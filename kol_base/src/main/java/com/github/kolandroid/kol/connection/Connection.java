@@ -40,7 +40,8 @@ public class Connection {
     private String getArguments() {
         StringBuilder fieldValues = new StringBuilder("");
 
-        if (URLbase.contains("?")) {
+        // Note that URLbase might be account.php?, so we have to check this way
+        if (URLbase.split("\\?").length > 1) {
             fieldValues.append(URLbase.split("\\?")[1]);
         }
 

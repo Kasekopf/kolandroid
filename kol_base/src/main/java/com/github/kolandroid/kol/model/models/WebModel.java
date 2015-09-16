@@ -110,6 +110,7 @@ public class WebModel extends Model {
     private static final Regex PAGE_BODY = new Regex(
             "(<body[^>]*>)(.*?)(</body>)", 2);
     private static final Regex TYPE_EXTRACTION = new Regex("[&?]androiddisplay=([^&]*)", 1);
+    private static final Regex TOP_PANE_REFRESH = new Regex("top.charpane.location(.href)?=[\"']?charpane.php[\"']?;");
     private final String url;
     private final WebModelType type;
     private String html;
@@ -214,8 +215,7 @@ public class WebModel extends Model {
 
     private static String fixPaneReferences(String html) {
         html = FRAME_REDIRECT.replaceAll(html, "");
-        html = html.replace("top.charpane.location.href=\"charpane.php\";", "window.ANDROIDAPP.refreshStatsPane();");
-        html = html.replace("top.charpane.location=\"charpane.php\";", "window.ANDROIDAPP.refreshStatsPane();");
+        html = TOP_PANE_REFRESH.replaceAll(html, "window.ANDROIDAPP.refreshStatsPane();");
         html = html.replace("top.mainpane.document", "document");
         html = html.replace("parent.mainpane", "window");
         return html;
