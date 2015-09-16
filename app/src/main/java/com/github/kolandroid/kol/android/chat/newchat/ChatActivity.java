@@ -85,6 +85,11 @@ public class ChatActivity extends ActionBarActivity implements ViewContext,
     }
 
     @Override
+    public void displayMessage(String message) {
+        baseContext.displayMessage(message);
+    }
+
+    @Override
     public void fillChatText(String text) {
         chatSubmission.fillChatText(text);
     }

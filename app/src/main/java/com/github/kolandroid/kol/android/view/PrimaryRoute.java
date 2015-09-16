@@ -5,6 +5,7 @@ import android.util.Log;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controllers.ChoiceController;
 import com.github.kolandroid.kol.android.controllers.CraftingController;
+import com.github.kolandroid.kol.android.controllers.TextDebugController;
 import com.github.kolandroid.kol.android.controllers.fight.FightController;
 import com.github.kolandroid.kol.android.controllers.inventory.ClosetController;
 import com.github.kolandroid.kol.android.controllers.inventory.ItemStorageController;
@@ -47,7 +48,7 @@ public class PrimaryRoute implements ResponseHandler {
          * Prevents later models from matching html content.
          */
         if (response.url.contains("fake.php")) {
-            WebModel model = new WebModel(session, response);
+            WebModel model = WebModel.create(session, response);
             return new WebController(model);
         }
 
@@ -92,7 +93,13 @@ public class PrimaryRoute implements ResponseHandler {
             return new CraftingController(model);
         }
 
-        WebModel model = new WebModel(session, response);
+        if (response.url.contains("submitnewchat.php")) {
+            //Triggered by a chatmacro from the Navigation
+            WebModel model = WebModel.create(session, response);
+            return new TextDebugController(model);
+        }
+
+        WebModel model = WebModel.create(session, response);
         return new WebController(model);
     }
 

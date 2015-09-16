@@ -84,4 +84,9 @@ public class LoginScreen extends ActionBarActivity implements ViewContext {
     public DataContext getDataContext() {
         return baseContext.getDataContext();
     }
+
+    @Override
+    public void displayMessage(String message) {
+        baseContext.displayMessage(message);
+    }
 }

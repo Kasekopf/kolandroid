@@ -17,14 +17,21 @@ public interface ViewContext {
     /*
      * Provide a context to display loading information.
      *
-     * @returns A reference to a new progress indicator.
+     * @return A reference to a new progress indicator.
      */
     LoadingContext createLoadingContext();
 
     /*
      * Provide a context for accessing game data.
      *
-     * @returns A reference to a new context for game data.
+     * @return A reference to a new context for game data.
      */
     DataContext getDataContext();
+
+    /*
+     * Display a brief message to the user.
+     *
+     * @param message   The message to display.
+     */
+    void displayMessage(String message);
 }

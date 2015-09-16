@@ -19,13 +19,22 @@ public class BasicAction implements DeferredGameAction {
         this.session = session;
     }
 
-    protected void submit(ViewContext context, String urloverride) {
-        Request r = new Request(urloverride);
-        r.makeAsync(session, context.createLoadingContext(), context.getPrimaryRoute());
+    protected void submit(ViewContext context, Session sessionOverride, String urlOverride) {
+        Request r = new Request(urlOverride);
+        r.makeAsync(sessionOverride, context.createLoadingContext(), context.getPrimaryRoute());
+    }
+
+    protected void submit(ViewContext context, String urlOverride) {
+        submit(context, session, urlOverride);
     }
 
     @Override
     public void submit(ViewContext context) {
-        submit(context, url);
+        submit(context, session, url);
+    }
+
+    public boolean urlMatches(BasicAction other) {
+        if (other == null) return false;
+        return url.equals(other.url);
     }
 }

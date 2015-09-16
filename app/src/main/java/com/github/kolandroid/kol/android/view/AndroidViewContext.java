@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.github.kolandroid.kol.android.BuildConfig;
 import com.github.kolandroid.kol.android.controller.Controller;
@@ -16,11 +17,13 @@ import com.github.kolandroid.kol.gamehandler.DataContext;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.request.ResponseHandler;
+import com.github.kolandroid.kol.util.Logger;
 
 import java.lang.ref.WeakReference;
 
 public class AndroidViewContext implements ViewContext {
     private Handler activityLauncher;
+    private Handler toastLauncher;
     private AndroidDataContext data;
 
     private ResponseHandler primaryRoute;
@@ -31,6 +34,7 @@ public class AndroidViewContext implements ViewContext {
         }
 
         this.activityLauncher = new ActivityLauncher(context);
+        this.toastLauncher = new ToastLauncher(context);
         this.data = new AndroidDataContext(context);
 
         ScreenSelection screens = new ScreenSelection() {
@@ -70,6 +74,11 @@ public class AndroidViewContext implements ViewContext {
         return data;
     }
 
+    @Override
+    public void displayMessage(String message) {
+        Message.obtain(toastLauncher, 0, message).sendToTarget();
+    }
+
     private static class IntentBuilder {
         private final Class<?> toLaunch;
         private final Controller toInclude;
@@ -89,6 +98,26 @@ public class AndroidViewContext implements ViewContext {
 
     }
 
+    private static class ToastLauncher extends Handler {
+        final WeakReference<Context> parent;
+
+        public ToastLauncher(Context parent) {
+            this.parent = new WeakReference<Context>(parent);
+        }
+
+        @Override
+        public void handleMessage(Message m) {
+            Context context = parent.get();
+            if (context == null) {
+                Logger.log("AndroidViewContext", "Attempted to display message using garbage-collected intent");
+                return;
+            }
+
+            String message = (String) m.obj;
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private static class ActivityLauncher extends Handler {
         final WeakReference<Context> parent;
 
@@ -100,7 +129,7 @@ public class AndroidViewContext implements ViewContext {
         public void handleMessage(Message m) {
             Context context = parent.get();
             if (context == null) {
-                Log.i("ViewContext", "Attempted to display model using garbage-collected intent");
+                Logger.log("AndroidViewContext", "Attempted to display model using garbage-collected intent");
                 return;
             }
 

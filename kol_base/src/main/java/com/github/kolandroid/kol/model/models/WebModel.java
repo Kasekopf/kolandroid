@@ -114,7 +114,7 @@ public class WebModel extends Model {
     private final WebModelType type;
     private String html;
 
-    public WebModel(Session s, ServerReply text, WebModelType type) {
+    protected WebModel(Session s, ServerReply text, WebModelType type) {
         super(s);
 
         Logger.log("WebModel", "Loaded " + text.url);
@@ -122,10 +122,27 @@ public class WebModel extends Model {
         this.setHTML(text.html.replace("window.devicePixelRatio >= 2", "window.devicePixelRatio < 2"));
         this.url = text.url;
         this.type = type;
+
+
+        Logger.log("WebModel", this.html);
     }
 
-    public WebModel(Session s, ServerReply text) {
+    protected WebModel(Session s, ServerReply text) {
         this(s, text, determineType(text));
+    }
+
+    public static WebModel create(Session s, ServerReply text) {
+        WebModelType type = determineType(text);
+
+        //If the model IS a results pane and HAS a results pane, remove the external pane.
+        if (type == WebModelType.RESULTS) {
+            WebModel resultsPane = extractResultsPane(s, text);
+            if (resultsPane != null) {
+                return resultsPane;
+            }
+        }
+
+        return new WebModel(s, text, type);
     }
 
     private static WebModelType determineType(ServerReply text) {
@@ -157,8 +174,14 @@ public class WebModel extends Model {
             return null;
 
         Logger.log("WebModel", "Loaded results pane: " + prepareHtml(resultsPane));
-        String html = PAGE_BODY.replaceAll(base.html, "$1<center>"
-                + resultsPane + "</center>$3");
+        String html;
+        if (PAGE_BODY.matches(base.html)) {
+            html = PAGE_BODY.replaceAll(base.html, "$1<center>"
+                    + resultsPane + "</center>$3");
+        } else {
+            //A fake wrapper for the result; TODO: revisit.
+            html = "<html><head><script type=\"text/javascript\">top.charpane.location.href=\"charpane.php\";</script></head><body>" + resultsPane + "</body></html>";
+        }
 
         String updatedUrl = base.url;
         updatedUrl += (base.url.contains("?")) ? "&androiddisplay=results" : "?androiddisplay=results";
@@ -166,7 +189,7 @@ public class WebModel extends Model {
         ServerReply newRep = new ServerReply(base.responseCode,
                 base.redirectLocation, base.date, html,
                 updatedUrl, base.cookie);
-        return new WebModel(s, newRep);
+        return new WebModel(s, newRep, WebModelType.RESULTS);
     }
 
     private static String prepareHtml(String html) {

@@ -109,6 +109,19 @@ public class ChatModel extends LinkedModel<ChatStatus> {
         });
     }
 
+    @SuppressWarnings("deprecation")
+    public static String encodeChatMessage(String baseUrl, String playerId, String pwd, String msg) {
+        String encodedMsg;
+
+        try {
+            encodedMsg = URLEncoder.encode(msg, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            encodedMsg = URLEncoder.encode(msg);
+        }
+
+        return String.format(baseUrl, playerId, pwd, encodedMsg);
+    }
+
     @Override
     public void attachView(ViewContext context) {
         super.attachView(context);
@@ -287,25 +300,15 @@ public class ChatModel extends LinkedModel<ChatStatus> {
         submitChat(msg, false);
     }
 
-    @SuppressWarnings("deprecation")
-    private void submitChat(String msg, final boolean hiddencommand) {
-        String baseurl = "submitnewchat.php?playerid=%s&pwd=%s&graf=%s&j=1";
-        String encodedmsg;
-
-        try {
-            encodedmsg = URLEncoder.encode(msg, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            encodedmsg = URLEncoder.encode(msg);
-        }
-
-        String url = String.format(baseurl, playerid, pwd, encodedmsg);
-        System.out.println("Submitting chat for " + url);
+    private void submitChat(String msg, final boolean hiddenCommand) {
+        String url = encodeChatMessage("submitnewchat.php?playerid=%s&pwd=%s&graf=%s&j=1", playerid, pwd, msg);
+        Logger.log("ChatModel", "Submitting chat for " + url);
 
         Request req = new Request(url);
         this.makeRequest(req, new ResponseHandler() {
             @Override
             public void handle(Session session, ServerReply response) {
-                ChatModel.this.handle(response, hiddencommand);
+                ChatModel.this.handle(response, hiddenCommand);
             }
         });
     }

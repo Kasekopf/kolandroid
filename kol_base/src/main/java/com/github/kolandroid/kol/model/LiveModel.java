@@ -15,9 +15,8 @@ public abstract class LiveModel extends LinkedModel<LiveMessage> {
      */
     private static final long serialVersionUID = 6439988316319232465L;
 
-    private final String updateUrl;
     private final boolean foreground;
-
+    private String updateUrl;
     private boolean filling;
 
     public LiveModel(Session s, String updateUrl, boolean foreground) {
@@ -42,7 +41,7 @@ public abstract class LiveModel extends LinkedModel<LiveMessage> {
         ResponseHandler listener = new ResponseHandler() {
             @Override
             public void handle(Session session, ServerReply response) {
-                if (response.url.contains(updateUrl)) {
+                if (canHandle(response.url)) {
                     process(response);
                 } else {
                     if (foreground)
@@ -66,6 +65,14 @@ public abstract class LiveModel extends LinkedModel<LiveMessage> {
         this.filling = true;
 
         this.update();
+    }
+
+    protected void setUpdateUrl(String url) {
+        this.updateUrl = url;
+    }
+
+    protected boolean canHandle(String url) {
+        return url.contains(updateUrl);
     }
 
     /**

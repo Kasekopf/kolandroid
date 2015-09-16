@@ -155,11 +155,11 @@ public class WebController extends UpdatableModelController<WebModel> {
 		syncManager.sync();
 		*/
 
+        web.setWebViewClient(client);
         web.loadDataWithBaseURL(model.getURL(), fixedHtml, "text/html", null,
                 null);
 
         web.invalidate();
-        web.setWebViewClient(client);
 
 
     }
@@ -189,6 +189,8 @@ public class WebController extends UpdatableModelController<WebModel> {
 
             if (host instanceof GameScreen) {
                 ((GameScreen) host).refreshStatsPane();
+            } else {
+                Logger.log("WebController", "Pane refresh triggered by javascript, but host was " + host);
             }
         }
 

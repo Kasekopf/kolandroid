@@ -230,6 +230,11 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
     }
 
     @Override
+    public void displayMessage(String message) {
+        baseContext.displayMessage(message);
+    }
+
+    @Override
     public void register(StatsController statController) {
         this.stats = statController;
     }
