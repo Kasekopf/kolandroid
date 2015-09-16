@@ -3,7 +3,6 @@
     android:id="@+id/dialog_chat_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
     android:choiceMode="singleChoice"
     android:divider="#aaa"
     android:dividerHeight="1dp"

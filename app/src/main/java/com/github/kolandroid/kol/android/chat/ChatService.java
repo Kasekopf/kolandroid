@@ -23,20 +23,20 @@ public class ChatService extends Service {
         Log.i("ChatService", "Received start id " + startId + ": " + intent);
 
         if (intent != null) {
-            Session session = (Session) intent.getSerializableExtra("session");
-            ViewContext context = new AndroidViewContext(
-                    this.getApplicationContext());
-            chat = new ChatManager(session, context);
+            chat = new ChatManager();
 
-            boolean shouldstart = intent.getBooleanExtra("start", false);
-            if (shouldstart) {
-                chat.start();
+            boolean shouldStart = intent.getBooleanExtra("start", false);
+            if (shouldStart) {
+                Session session = (Session) intent.getSerializableExtra("session");
+                ViewContext context = new AndroidViewContext(
+                        this.getApplicationContext());
+                chat.start(session, context);
             }
         }
 
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
-        return START_REDELIVER_INTENT;
+        return START_NOT_STICKY;
     }
 
     @Override

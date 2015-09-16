@@ -192,13 +192,11 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
                 ChatModel model = chat.getModel();
                 if (model == null)
                     return false;
-                if (model.getChatExists()) {
-                    Intent intent = new Intent(this, ChatActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                } else {
-                    model.displayRejectionMessage();
-                }
+
+                Intent intent = new Intent(this, ChatActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
                 return true;
         }
 

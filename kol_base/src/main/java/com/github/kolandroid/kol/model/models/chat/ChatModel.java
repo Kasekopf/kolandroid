@@ -2,12 +2,15 @@ package com.github.kolandroid.kol.model.models.chat;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.gamehandler.LoadingContext;
+import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.LinkedModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModel.ChatStatus;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
 import com.github.kolandroid.kol.request.SimulatedRequest;
 import com.github.kolandroid.kol.request.TentativeRequest;
+import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 import com.google.gson.FieldNamingPolicy;
@@ -20,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -51,17 +55,15 @@ public class ChatModel extends LinkedModel<ChatStatus> {
     private final ArrayList<ChatText> messages;
     private final Map<String, ChannelModel> channelsByName;
     private final ArrayList<ChannelModel> channels;
-    private boolean hasChat;
     private String lasttime;
     private String playerid;
     private String pwd;
     private ArrayList<ChatAction> baseActions;
     private String visibleChannel;
 
-    public ChatModel(Session s) {
+    public ChatModel(Session s, ServerReply reply) {
         super(s);
 
-        hasChat = false;
         seenMessages = new HashSet<Integer>();
         messages = new ArrayList<ChatText>();
 
@@ -74,6 +76,46 @@ public class ChatModel extends LinkedModel<ChatStatus> {
                 new RawActionListDeserializer());
         parser = builder.setFieldNamingPolicy(
                 FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+
+        processInitial(reply);
+    }
+
+    public static void start(Session session, Callback<ChatModel> onStart) {
+        final WeakReference<Callback<ChatModel>> callback = new WeakReference<Callback<ChatModel>>(onStart);
+
+        Request req = new TentativeRequest("mchat.php", new ResponseHandler() {
+            @Override
+            public void handle(Session session, ServerReply response) {
+                Logger.log("ChatModel", "Unable to start chat");
+            }
+        });
+
+        req.makeAsync(session, LoadingContext.NONE, new ResponseHandler() {
+            @Override
+            public void handle(Session session, ServerReply response) {
+                if (!response.url.contains("mchat.php"))
+                    return;
+                Logger.log("ChatModel", "Chat started");
+
+                Callback<ChatModel> onStart = callback.get();
+                if (onStart == null) {
+                    Logger.log("ChatModel", "Chat started, but callback to service has been closed");
+                    return;
+                }
+
+                ChatModel model = new ChatModel(session, response);
+                onStart.execute(model);
+            }
+        });
+    }
+
+    @Override
+    public void attachView(ViewContext context) {
+        super.attachView(context);
+
+        //Update internal list of channels.
+        submitChat("/channels", true);
+        submitChat("/l", true);
     }
 
     protected void notifyChange() {
@@ -190,6 +232,9 @@ public class ChatModel extends LinkedModel<ChatStatus> {
             if (message.contains("<span class=\"welcome\">"))
                 continue;
             Logger.log("ChatModel", message);
+            if (message.equals("{type: 'event', msg: 'Oops!  Sorry, Dave, you appear to be ' + parts[1]}"))
+                continue; //ignore this message
+
             processMessage(parser.fromJson(message, ChatText.class));
         }
 
@@ -211,32 +256,6 @@ public class ChatModel extends LinkedModel<ChatStatus> {
             @Override
             public void handle(Session session, ServerReply response) {
                 ChatModel.this.handle(response, false);
-            }
-        });
-    }
-
-    public void start() {
-        Request req = new TentativeRequest("mchat.php", new ResponseHandler() {
-            @Override
-            public void handle(Session session, ServerReply response) {
-                hasChat = false;
-                notifyView(ChatStatus.NOCHAT);
-            }
-
-        });
-        this.makeRequest(req, new ResponseHandler() {
-            @Override
-            public void handle(Session session, ServerReply response) {
-                if (!response.url.contains("mchat.php"))
-                    return;
-
-                hasChat = true;
-                processInitial(response);
-                notifyView(ChatStatus.LOADED);
-
-                //Update internal list of channels.
-                submitChat("/channels", true);
-                submitChat("/l", true);
             }
         });
     }
@@ -284,10 +303,6 @@ public class ChatModel extends LinkedModel<ChatStatus> {
                 ChatModel.this.handle(response, hiddencommand);
             }
         });
-    }
-
-    public boolean getChatExists() {
-        return hasChat;
     }
 
     protected void makeRequest(Request req) {

@@ -49,7 +49,7 @@ public class ChatController implements Controller {
         tabs.setOnTabChangedListener(new OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
-                if (connection != null && connection != null)
+                if (connection != null && connection.isConnected())
                     connection.getModel().setCurrentRoom(tabId);
             }
         });
