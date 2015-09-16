@@ -297,17 +297,16 @@ public class CustomFragmentTabHost extends TabHost
                     ft.detach(mLastTab.fragment);
                 }
             }
-            if (newTab != null) {
-                if (newTab.fragment == null) {
-                    newTab.fragment = Fragment.instantiate(mContext,
-                            newTab.clss.getName(), newTab.args);
 
-                    if (mOnCreateFragmentListener != null)
-                        mOnCreateFragmentListener.setup(newTab.fragment, newTab.tag);
-                    ft.add(mContainerId, newTab.fragment, newTab.tag);
-                } else {
-                    ft.attach(newTab.fragment);
-                }
+            if (newTab.fragment == null) {
+                newTab.fragment = Fragment.instantiate(mContext,
+                        newTab.clss.getName(), newTab.args);
+
+                if (mOnCreateFragmentListener != null)
+                    mOnCreateFragmentListener.setup(newTab.fragment, newTab.tag);
+                ft.add(mContainerId, newTab.fragment, newTab.tag);
+            } else {
+                ft.attach(newTab.fragment);
             }
 
             mLastTab = newTab;

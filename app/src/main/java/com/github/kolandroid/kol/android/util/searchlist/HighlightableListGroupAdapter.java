@@ -21,8 +21,8 @@ public class HighlightableListGroupAdapter<F> extends ListGroupAdapter<ModelGrou
     private List<ModelGroup<F>> base;
     private Regex filter;
 
-    public HighlightableListGroupAdapter(Context context, List<ModelGroup<F>> base, Binder<? super F> childBinder) {
-        super(context, childBinder);
+    public HighlightableListGroupAdapter(Context context, List<ModelGroup<F>> base, Binder<? super ModelGroup<F>> groupBinder, Binder<? super F> childBinder) {
+        super(context, new ArrayList<ModelGroup<F>>(), groupBinder, childBinder);
 
         this.displayed = new ArrayList<ModelGroup<F>>();
         this.filter = new Regex("");

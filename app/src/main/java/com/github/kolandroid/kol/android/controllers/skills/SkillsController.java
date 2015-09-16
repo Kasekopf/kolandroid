@@ -2,6 +2,7 @@ package com.github.kolandroid.kol.android.controllers.skills;
 
 import android.view.View;
 
+import com.github.kolandroid.kol.android.binders.DefaultGroupBinder;
 import com.github.kolandroid.kol.android.binders.SkillsBinder;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.GroupController;
@@ -68,7 +69,7 @@ public class SkillsController extends GroupController<SkillsSubmodel, SkillsMode
         @Override
         public Controller execute(SkillsListModel model) {
             ArrayList<ModelGroup<SkillModelElement>> list = model.getSkills();
-            return new GroupSearchListController<SkillModelElement>(list, SkillsBinder.ONLY, selector);
+            return new GroupSearchListController<SkillModelElement>(list, DefaultGroupBinder.ONLY, SkillsBinder.ONLY, selector);
         }
 
         @Override

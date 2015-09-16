@@ -15,7 +15,7 @@ public class DefaultGroupBinder implements Binder<ModelGroup<?>>, Serializable {
      */
     private static final long serialVersionUID = -3370288778582625801L;
 
-    private DefaultGroupBinder() {
+    DefaultGroupBinder() {
 
     }
 

@@ -3,6 +3,7 @@ package com.github.kolandroid.kol.android.controllers.inventory;
 import android.view.View;
 
 import com.github.kolandroid.kol.android.R;
+import com.github.kolandroid.kol.android.binders.ColoredGroupBinder;
 import com.github.kolandroid.kol.android.binders.SubtextBinder;
 import com.github.kolandroid.kol.android.controller.LinkedModelController;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
@@ -34,10 +35,12 @@ public class ItemPocketController extends
             return false;
         }
     };
+    private final int groupColor;
     private transient GroupSearchListController<InventoryItem> list;
 
-    public ItemPocketController(ItemPocketModel model) {
+    public ItemPocketController(ItemPocketModel model, int groupColor) {
         super(model);
+        this.groupColor = groupColor;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class ItemPocketController extends
     @Override
     public void connect(View view, ItemPocketModel model, Screen host) {
         ViewScreen screen = (ViewScreen) view.findViewById(R.id.inventory_list);
-        list = new GroupSearchListController<InventoryItem>(model.getItems(), SubtextBinder.ONLY, displayPossibleActions);
+        list = new GroupSearchListController<InventoryItem>(model.getItems(), new ColoredGroupBinder(groupColor), SubtextBinder.ONLY, displayPossibleActions);
         screen.display(list, host);
     }
 }

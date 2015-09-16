@@ -5,4 +5,7 @@
     <color name="actionbar_back">#eee</color>
     <color name="actionbar_arrow">#f00</color>
 
+    <color name="inventory_header">#00f</color>
+    <color name="closet_header">#080</color>
+    <color name="hagnk_header">#888</color>
 </resources>

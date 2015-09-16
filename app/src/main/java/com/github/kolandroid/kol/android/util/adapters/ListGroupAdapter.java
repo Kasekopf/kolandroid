@@ -7,10 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 
 import com.github.kolandroid.kol.android.binders.Binder;
-import com.github.kolandroid.kol.android.binders.DefaultGroupBinder;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListGroupAdapter<E extends ModelGroup<F>, F>
@@ -22,15 +20,11 @@ public class ListGroupAdapter<E extends ModelGroup<F>, F>
 
     private List<E> baseList;
 
-    public ListGroupAdapter(Context c, Binder<? super F> elementBinding) {
-        this(c, new ArrayList<E>(), elementBinding);
-    }
-
-    public ListGroupAdapter(Context c, List<E> baseList, Binder<? super F> elementBinding) {
+    public ListGroupAdapter(Context c, List<E> baseList, Binder<? super E> groupBinding, Binder<? super F> elementBinding) {
         this.baseList = baseList;
         this.context = c;
         this.elementBinding = elementBinding;
-        this.groupBinding = DefaultGroupBinder.ONLY;
+        this.groupBinding = groupBinding;
     }
 
     public void setElements(List<E> baseList) {

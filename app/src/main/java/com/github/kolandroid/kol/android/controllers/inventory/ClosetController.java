@@ -19,7 +19,7 @@ public class ClosetController extends ItemStorageController<ClosetModel> {
     private static final long serialVersionUID = -275856461187273887L;
 
     public ClosetController(ClosetModel model) {
-        super(model);
+        super(model, R.color.closet_header);
     }
 
     @Override

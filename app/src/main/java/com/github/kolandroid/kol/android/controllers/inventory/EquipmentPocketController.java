@@ -5,6 +5,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.github.kolandroid.kol.android.R;
+import com.github.kolandroid.kol.android.binders.ColoredGroupBinder;
 import com.github.kolandroid.kol.android.binders.ElementBinder;
 import com.github.kolandroid.kol.android.binders.SubtextBinder;
 import com.github.kolandroid.kol.android.controller.Controller;
@@ -37,10 +38,12 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
             return false;
         }
     };
+    private final int groupColor;
     private transient GroupSearchListController<InventoryItem> list;
 
-    public EquipmentPocketController(EquipmentPocketModel model) {
+    public EquipmentPocketController(EquipmentPocketModel model, int groupColor) {
         super(model);
+        this.groupColor = groupColor;
     }
 
     @Override
@@ -63,14 +66,14 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
     public void connect(View view, final EquipmentPocketModel model, final Screen host) {
 
         ViewScreen screen = (ViewScreen) view.findViewById(R.id.inventory_list);
-        list = new GroupSearchListController<InventoryItem>(model.getItems(), SubtextBinder.ONLY, displayPossibleActions);
+        list = new GroupSearchListController<InventoryItem>(model.getItems(), new ColoredGroupBinder(groupColor), SubtextBinder.ONLY, displayPossibleActions);
         screen.display(list, host);
 
         Button equipoutfit = (Button) view.findViewById(R.id.equipment_equipoutfit);
         equipoutfit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                Controller c = GroupSearchListController.create(model.getOutfits(), ElementBinder.ONLY);
+                Controller c = GroupSearchListController.create(model.getOutfits(), new ColoredGroupBinder(groupColor), ElementBinder.ONLY);
                 DialogScreen.display(c, host, "Equip outfit");
             }
         });

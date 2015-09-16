@@ -24,6 +24,7 @@ public class GroupSearchListController<F> implements Controller {
     private static final long serialVersionUID = -3034860712134386719L;
 
     private final ListSelector<F> selector;
+    private final Binder<? super ModelGroup<F>> groupBinder;
     private final Binder<? super F> childBinder;
 
     private ArrayList<ModelGroup<F>> base;
@@ -31,14 +32,15 @@ public class GroupSearchListController<F> implements Controller {
     private transient HighlightableListGroupAdapter<F> adapter;
     private transient ExpandableListView list;
 
-    public GroupSearchListController(ArrayList<ModelGroup<F>> items, Binder<? super F> childBinder, ListSelector<F> selector) {
+    public GroupSearchListController(ArrayList<ModelGroup<F>> items, Binder<? super ModelGroup<F>> groupBinder, Binder<? super F> childBinder, ListSelector<F> selector) {
         this.base = items;
+        this.groupBinder = groupBinder;
         this.childBinder = childBinder;
         this.selector = selector;
     }
 
-    public static <F extends ActionElement> GroupSearchListController<F> create(ArrayList<ModelGroup<F>> items, Binder<? super F> childBinder) {
-        return new GroupSearchListController<F>(items, childBinder, new ActionSelector<F>());
+    public static <F extends ActionElement> GroupSearchListController<F> create(ArrayList<ModelGroup<F>> items, Binder<? super ModelGroup<F>> groupBinder, Binder<? super F> childBinder) {
+        return new GroupSearchListController<F>(items, groupBinder, childBinder, new ActionSelector<F>());
     }
 
     @Override
@@ -48,7 +50,7 @@ public class GroupSearchListController<F> implements Controller {
 
     @Override
     public void connect(View view, final Screen host) {
-        adapter = new HighlightableListGroupAdapter<F>(view.getContext(), base, childBinder);
+        adapter = new HighlightableListGroupAdapter<F>(view.getContext(), base, groupBinder, childBinder);
         list = (ExpandableListView) view.findViewById(R.id.list_display_list);
         list.setOnChildClickListener(new OnChildClickListener() {
             @Override
