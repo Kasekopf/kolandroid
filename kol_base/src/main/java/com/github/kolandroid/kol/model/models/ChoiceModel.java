@@ -36,6 +36,15 @@ public class ChoiceModel extends WebModel {
         return OPTIONS.replaceAll(html, "");
     }
 
+    public static int extractChoiceId(ServerReply server) {
+        String whichchoice = NUM_VALUE.extractSingle(WHICH_INPUT.extractSingle(server.html), "-1");
+        try {
+            return Integer.parseInt(whichchoice);
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
     private void extractOptions(String html) {
         this.options = new ArrayList<ActionElement>();
         for (String form : OPTIONS.extractAllSingle(html)) {

@@ -62,8 +62,14 @@ public class PrimaryRoute implements ResponseHandler {
         }
 
         if (response.url.contains("choice.php")) {
-            ChoiceModel model = new ChoiceModel(session, response);
-            return new ChoiceController(model);
+            //Ignore a couple badly behaved choice adventures.
+            int whichchoice = ChoiceModel.extractChoiceId(response);
+            if (whichchoice == 985 /* Odd-jobs board */) {
+                //do nothing
+            } else {
+                ChoiceModel model = new ChoiceModel(session, response);
+                return new ChoiceController(model);
+            }
         }
 
         if (response.url.contains("inventory.php")) {

@@ -135,9 +135,9 @@ public class WebModel extends Model {
                 return type;
         }
 
-        if (text.url.contains("desc_item.php"))
-            return WebModelType.SMALL;
-        if (text.url.contains("desc_effect.php"))
+        if (text.url.contains("desc_item.php")
+                || text.url.contains("desc_effect.php")
+                || text.url.contains("desc_skill.php"))
             return WebModelType.SMALL;
         return WebModelType.REGULAR;
     }
@@ -222,6 +222,7 @@ public class WebModel extends Model {
         //pop_query(...) is replaced by an injected function to interact with android
         html = POPQUERY_SCRIPT.replaceAll(html, "");
         html = html.replace("Right-Click to Multi-Buy", "Long-Press to Multi-Buy");
+        html = html.replace("Right-Click to Multi-Make", "Long-Press to Multi-Make");
 
         return html;
     }

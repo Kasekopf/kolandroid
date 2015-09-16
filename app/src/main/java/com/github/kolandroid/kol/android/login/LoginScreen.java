@@ -44,6 +44,11 @@ public class LoginScreen extends ActionBarActivity implements ViewContext {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Kingdom of Loathing");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         stopService(new Intent(this, ChatService.class));
     }
