@@ -2,6 +2,7 @@ package com.github.kolandroid.kol.android.view;
 
 import android.util.Log;
 
+import com.github.kolandroid.kol.android.chat.old.ChatController;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controllers.AccountSettingsController;
 import com.github.kolandroid.kol.android.controllers.ChoiceController;
@@ -104,6 +105,11 @@ public class PrimaryRoute implements ResponseHandler {
         if (response.url.contains("account.php")) {
             AccountSettingsModel model = new AccountSettingsModel(session, response);
             return new AccountSettingsController(model);
+        }
+
+        if (response.url.contains("chat.php")) {
+            // Ignore the server reply; we'll just connect to the ChatService for an update
+            return new ChatController();
         }
 
         WebModel model = new WebModel(session, response);

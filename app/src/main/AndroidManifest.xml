@@ -25,12 +25,12 @@
             android:launchMode="singleTop" />
 
         <service
-            android:name="com.github.kolandroid.kol.android.chat.ChatService"
+            android:name=".chat.service.ChatService"
             android:enabled="true"
             android:permission="android.permission.INTERNET" />
 
         <activity
-            android:name="com.github.kolandroid.kol.android.chat.newchat.ChatActivity"
+            android:name=".chat.old.ChatScreen"
             android:label="@string/title_activity_chat"
             android:parentActivityName="com.github.kolandroid.kol.android.game.GameScreen">
             <meta-data

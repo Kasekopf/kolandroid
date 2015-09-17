@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.android.chat.newchat;
+package com.github.kolandroid.kol.android.chat.old;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -12,8 +12,8 @@ import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.util.CustomFragmentTabHost;
-import com.github.kolandroid.kol.model.models.chat.ChannelModel;
-import com.github.kolandroid.kol.model.models.chat.ChatModel;
+import com.github.kolandroid.kol.model.models.chat.chatold.ChannelModel;
+import com.github.kolandroid.kol.model.models.chat.chatold.ChatModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -176,6 +176,6 @@ public class ChatController implements Controller {
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this, true);
+        choice.displayChat(this);
     }
 }

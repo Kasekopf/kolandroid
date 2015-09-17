@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.kolandroid.kol.android.R;
-import com.github.kolandroid.kol.android.chat.ChatService;
+import com.github.kolandroid.kol.android.chat.service.ChatService;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
@@ -72,6 +72,11 @@ public class LoginScreen extends ActivityScreen {
             @Override
             public void displayDialog(Controller c) {
                 Logger.log("LoginScreen", "ERROR: Controller " + c + " has chosen to appear on a primary dialog. Ignoring.");
+            }
+
+            @Override
+            public void displayChat(Controller c) {
+                Logger.log("LoginScreen", "ERROR: Controller " + c + " has chosen to appear on in the chat. Ignoring.");
             }
         });
     }

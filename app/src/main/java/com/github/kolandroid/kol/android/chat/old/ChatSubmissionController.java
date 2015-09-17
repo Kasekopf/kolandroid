@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.android.chat.newchat;
+package com.github.kolandroid.kol.android.chat.old;
 
 import android.content.Context;
 import android.view.View;
@@ -11,7 +11,7 @@ import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
-import com.github.kolandroid.kol.model.models.chat.ChatModel;
+import com.github.kolandroid.kol.model.models.chat.chatold.ChatModel;
 
 public class ChatSubmissionController implements Controller {
     /**

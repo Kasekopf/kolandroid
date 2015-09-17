@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.android.chat.newchat;
+package com.github.kolandroid.kol.android.chat.old;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -8,10 +8,10 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.github.kolandroid.kol.android.chat.ChatManager;
-import com.github.kolandroid.kol.android.chat.ChatService;
+import com.github.kolandroid.kol.android.chat.service.ChatService;
+import com.github.kolandroid.kol.android.chat.service.ChatServiceBinder;
 import com.github.kolandroid.kol.android.util.HandlerCallback;
-import com.github.kolandroid.kol.model.models.chat.ChatModel;
+import com.github.kolandroid.kol.model.models.chat.chatold.ChatModel;
 
 public abstract class ChatConnection {
     private final ServiceConnection service;
@@ -24,10 +24,15 @@ public abstract class ChatConnection {
             public void onServiceConnected(ComponentName className,
                                            IBinder service) {
                 Log.i("ChatService", "Chat Service bound to " + connectionName);
-                ChatManager manager = (ChatManager) service;
+                ChatServiceBinder manager = (ChatServiceBinder) service;
 
-                model = manager.getModel();
-                onConnection(model);
+                manager.acquireModel(new HandlerCallback<ChatModel>() {
+                    @Override
+                    protected void receiveProgress(ChatModel message) {
+                        model = message;
+                        onConnection(model);
+                    }
+                });
 
                 callback = new HandlerCallback<Void>() {
                     @Override

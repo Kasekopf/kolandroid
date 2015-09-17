@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.android.chat;
+package com.github.kolandroid.kol.android.chat.service;
 
 import android.os.Binder;
 
@@ -6,29 +6,33 @@ import com.github.kolandroid.kol.android.util.HandlerCallback;
 import com.github.kolandroid.kol.android.util.LatchedCallback;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
-import com.github.kolandroid.kol.model.models.chat.ChatModel;
-import com.github.kolandroid.kol.model.models.chat.ChatModel.ChatStatus;
+import com.github.kolandroid.kol.model.models.chat.chatold.ChatModel;
+import com.github.kolandroid.kol.model.models.chat.chatold.ChatModelSegment;
+import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ChatManager extends Binder {
-    private final ArrayList<ChatListener> listeners;
+public class ChatServiceBinder extends Binder {
+    private final ArrayList<LatchedCallback<Void>> listeners;
+    private final ArrayList<Callback<ChatModel>> creationListeners;
+
     private ChatModel model;
     private Timer updateTimer;
     private boolean started;
 
-    public ChatManager() {
+    public ChatServiceBinder() {
         this.started = false;
-        this.listeners = new ArrayList<ChatListener>();
+
+        this.listeners = new ArrayList<>();
+        this.creationListeners = new ArrayList<>();
     }
 
     public void addListener(LatchedCallback<Void> listener) {
-        this.listeners.add(new ChatListener(listener));
+        this.listeners.add(listener);
         listener.execute(null);
     }
 
@@ -36,11 +40,13 @@ public class ChatManager extends Binder {
         if (!this.started)
             return;
 
-        Iterator<ChatListener> it = listeners.iterator();
+        Iterator<LatchedCallback<Void>> it = listeners.iterator();
         while (it.hasNext()) {
-            if (!it.next().update()) {
+            LatchedCallback<Void> callback = it.next();
+            if (callback.isClosed())
                 it.remove();
-            }
+            else
+                callback.execute(null);
         }
     }
 
@@ -53,21 +59,21 @@ public class ChatManager extends Binder {
             @Override
             public void receiveProgress(ChatModel item) {
                 started = true;
-                model = item;
 
-                Logger.log("ChatManager", "Chat connected to [" + ChatManager.this + "]");
+                synchronized (creationListeners) {
+                    model = item;
+                    for (Callback<ChatModel> creationListener : creationListeners) {
+                        creationListener.execute(model);
+                    }
+                    creationListeners.clear();
+                }
+
+                Logger.log("ChatServiceBinder", "Chat connected to [" + ChatServiceBinder.this + "]");
                 model.attachView(context);
-                model.attachCallback(new HandlerCallback<ChatStatus>() {
+                model.attachCallback(new HandlerCallback<Iterable<ChatModelSegment>>() {
                     @Override
-                    public void receiveProgress(ChatStatus message) {
-                        switch (message) {
-                            case UPDATE:
-                                updateListeners();
-                                break;
-                            case STOPPED:
-                                stop();
-                                break;
-                        }
+                    protected void receiveProgress(Iterable<ChatModelSegment> message) {
+                        updateListeners();
                     }
                 });
 
@@ -84,8 +90,14 @@ public class ChatManager extends Binder {
         });
     }
 
-    public ChatModel getModel() {
-        return model;
+    public void acquireModel(Callback<ChatModel> callback) {
+        synchronized (creationListeners) {
+            if (model != null) {
+                callback.execute(model);
+            } else {
+                creationListeners.add(callback);
+            }
+        }
     }
 
     protected void stop() {
@@ -96,24 +108,6 @@ public class ChatManager extends Binder {
         if (this.updateTimer != null) {
             this.updateTimer.cancel();
             this.updateTimer = null;
-        }
-    }
-
-    private static class ChatListener {
-        private final WeakReference<LatchedCallback<Void>> callback;
-
-        public ChatListener(LatchedCallback<Void> callback) {
-            this.callback = new WeakReference<LatchedCallback<Void>>(callback);
-        }
-
-        public boolean update() {
-            LatchedCallback<Void> listener = callback.get();
-            if (listener == null || listener.isClosed()) {
-                return false;
-            }
-
-            listener.execute(null);
-            return true;
         }
     }
 }

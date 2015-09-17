@@ -53,7 +53,7 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
 
     public abstract void setup(Bundle savedInstanceState);
 
-    protected abstract void displayController(Controller c, boolean addToBackStack);
+    protected abstract void displayController(Controller controller, boolean addToBackStack);
 
     protected abstract int getContentView();
 

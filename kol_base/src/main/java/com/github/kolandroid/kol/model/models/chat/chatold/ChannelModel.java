@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.model.models.chat;
+package com.github.kolandroid.kol.model.models.chat.chatold;
 
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.Model;
@@ -45,7 +45,8 @@ public class ChannelModel extends Model {
             return;
         if (name.contains("@")) {
             setActive(false);
-            host.notifyChange();
+            //TODO
+            //host.notifyChange();
             return;
         }
         host.submitChat("/listen " + name);

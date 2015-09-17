@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.model.models.chat;
+package com.github.kolandroid.kol.model.models.chat.chatold;
 
 import com.google.gson.annotations.SerializedName;
 

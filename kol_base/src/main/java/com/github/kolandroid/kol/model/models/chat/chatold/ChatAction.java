@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.model.models.chat;
+package com.github.kolandroid.kol.model.models.chat.chatold;
 
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.util.Callback;
@@ -25,11 +25,11 @@ public class ChatAction implements Serializable {
         this.action = action;
     }
 
-    protected void setEntry(String key) {
+    public void setEntry(String key) {
         this.entry = key;
     }
 
-    public void submit(ChatText baseMessage, Callback<String> toChatField, ChatModel context) {
+    public void submit(ChatText baseMessage, Callback<String> toChatField, com.github.kolandroid.kol.model.models.chat.chatold.ChatModel context) {
         if (baseMessage.getUser() == null)
             return; //cannot submit with no user
 

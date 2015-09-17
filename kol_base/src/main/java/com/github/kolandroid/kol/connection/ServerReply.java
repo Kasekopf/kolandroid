@@ -98,6 +98,10 @@ public class ServerReply implements Serializable {
         return cookies;
     }
 
+    public static ServerReply fabricate(String html, String url) {
+        return new ServerReply(200, "", "", html, url, "");
+    }
+
     @Override
     public String toString() {
         String s = "RESPONSE CODE: " + responseCode;

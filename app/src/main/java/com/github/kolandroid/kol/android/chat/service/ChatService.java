@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.android.chat;
+package com.github.kolandroid.kol.android.chat.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -11,7 +11,7 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 
 public class ChatService extends Service {
-    private ChatManager chat;
+    private ChatServiceBinder chat;
 
     @Override
     public void onCreate() {
@@ -23,7 +23,7 @@ public class ChatService extends Service {
         Log.i("ChatService", "Received start id " + startId + ": " + intent);
 
         if (intent != null) {
-            chat = new ChatManager();
+            chat = new ChatServiceBinder();
 
             boolean shouldStart = intent.getBooleanExtra("start", false);
             if (shouldStart) {

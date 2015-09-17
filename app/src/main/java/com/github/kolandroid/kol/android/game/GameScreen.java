@@ -15,8 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.kolandroid.kol.android.R;
-import com.github.kolandroid.kol.android.chat.newchat.ChatActivity;
-import com.github.kolandroid.kol.android.chat.newchat.ChatConnection;
+import com.github.kolandroid.kol.android.chat.old.ChatConnection;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.ModelController;
 import com.github.kolandroid.kol.android.controllers.NavigationController;
@@ -30,13 +29,14 @@ import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
 import com.github.kolandroid.kol.android.view.ProgressLoader;
+import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.model.models.NavigationModel;
 import com.github.kolandroid.kol.model.models.StatsModel;
-import com.github.kolandroid.kol.model.models.chat.ChatModel;
+import com.github.kolandroid.kol.model.models.chat.chatold.ChatModel;
 import com.github.kolandroid.kol.util.Logger;
 
 public class GameScreen extends ActivityScreen implements StatsCallbacks {
@@ -101,6 +101,11 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
             public void displayExternalDialog(Controller c) {
                 Logger.log("GameScreen", "ERROR: Controller " + c + " has chosen to appear on an external dialog. Rerouting...");
                 displayDialog(c);
+            }
+
+            @Override
+            public void displayChat(Controller c) {
+                Logger.log("GameScreen", "ERROR: Controller " + c + " has chosen to appear on in the chat. Ignoring.");
             }
 
             @Override
@@ -194,10 +199,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
                     return false;
                 }
 
-                Intent intent = new Intent(this, ChatActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-
+                this.getViewContext().getPrimaryRoute().handle(model.getSession(), ServerReply.fabricate("", "chat.php"));
                 return true;
         }
 

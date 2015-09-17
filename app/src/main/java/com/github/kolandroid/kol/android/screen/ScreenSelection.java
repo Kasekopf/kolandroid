@@ -10,4 +10,6 @@ public interface ScreenSelection {
     void displayPrimary(Controller c, boolean replaceSameType);
 
     void displayDialog(Controller c);
+
+    void displayChat(Controller c);
 }

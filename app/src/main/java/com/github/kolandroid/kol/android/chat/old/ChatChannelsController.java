@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.android.chat.newchat;
+package com.github.kolandroid.kol.android.chat.old;
 
 import android.view.View;
 import android.widget.ListView;
@@ -9,8 +9,8 @@ import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.util.adapters.ListAdapter;
-import com.github.kolandroid.kol.model.models.chat.ChannelModel;
-import com.github.kolandroid.kol.model.models.chat.ChatModel;
+import com.github.kolandroid.kol.model.models.chat.chatold.ChannelModel;
+import com.github.kolandroid.kol.model.models.chat.chatold.ChatModel;
 import com.github.kolandroid.kol.util.Callback;
 
 import java.util.ArrayList;

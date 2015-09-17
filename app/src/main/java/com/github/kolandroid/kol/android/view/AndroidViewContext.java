@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.github.kolandroid.kol.android.BuildConfig;
+import com.github.kolandroid.kol.android.chat.old.ChatScreen;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.game.GameScreen;
 import com.github.kolandroid.kol.android.login.LoginScreen;
@@ -65,6 +66,13 @@ public class AndroidViewContext implements ViewContext {
             @Override
             public void displayDialog(Controller c) {
                 IntentBuilder builder = new IntentBuilder(GameScreen.class, c);
+                Message.obtain(activityLauncher, 0, builder).sendToTarget();
+            }
+
+
+            @Override
+            public void displayChat(Controller c) {
+                IntentBuilder builder = new IntentBuilder(ChatScreen.class, c);
                 Message.obtain(activityLauncher, 0, builder).sendToTarget();
             }
         };
