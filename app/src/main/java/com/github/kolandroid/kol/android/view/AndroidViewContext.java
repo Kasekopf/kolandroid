@@ -27,8 +27,13 @@ public class AndroidViewContext implements ViewContext {
     private AndroidDataContext data;
 
     private ResponseHandler primaryRoute;
+    private LoadingContext loadingContext;
 
     public AndroidViewContext(Context context) {
+        this(context, LoadingContext.NONE);
+    }
+
+    public AndroidViewContext(Context context, LoadingContext loadingContext) {
         if (BuildConfig.DEBUG && Looper.getMainLooper().getThread() != Thread.currentThread()) {
             throw new RuntimeException("AndroidViewContext should only be created from the main thread.");
         }
@@ -36,6 +41,7 @@ public class AndroidViewContext implements ViewContext {
         this.activityLauncher = new ActivityLauncher(context);
         this.toastLauncher = new ToastLauncher(context);
         this.data = new AndroidDataContext(context);
+        this.loadingContext = loadingContext;
 
         ScreenSelection screens = new ScreenSelection() {
             @Override
@@ -72,7 +78,7 @@ public class AndroidViewContext implements ViewContext {
 
     @Override
     public LoadingContext createLoadingContext() {
-        return LoadingContext.NONE;
+        return loadingContext;
     }
 
     @Override

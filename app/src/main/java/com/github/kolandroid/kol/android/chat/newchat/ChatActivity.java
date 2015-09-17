@@ -10,7 +10,7 @@ import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.chat.newchat.ChatActionsController.ChatActionsControllerHost;
 import com.github.kolandroid.kol.android.chat.newchat.ChatChannelsController.ChatChannelsControllerHost;
 import com.github.kolandroid.kol.android.chat.newchat.ChatSubmissionController.ChatSubmissionControllerHost;
-import com.github.kolandroid.kol.android.screen.ActivityScreen;
+import com.github.kolandroid.kol.android.screen.ChatActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
@@ -34,7 +34,7 @@ public class ChatActivity extends ActionBarActivity implements ViewContext,
         setContentView(R.layout.activity_chat_screen);
 
         this.baseContext = new AndroidViewContext(this);
-        this.baseScreen = new ActivityScreen(this);
+        this.baseScreen = new ChatActivityScreen(this);
 
         mainChat = new ChatController();
         FragmentScreen chatScreen = FragmentScreen.create(mainChat);

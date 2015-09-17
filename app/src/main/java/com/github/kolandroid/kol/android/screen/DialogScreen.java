@@ -95,7 +95,12 @@ public class DialogScreen extends DialogFragment implements Screen {
 
     @Override
     public ViewContext getViewContext() {
-        return (ViewContext) this.getActivity();
+        if (this.getActivity() instanceof Screen) {
+            Screen host = (Screen) this.getActivity();
+            return host.getViewContext();
+        } else {
+            return (ViewContext) this.getActivity();
+        }
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.github.kolandroid.kol.android.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,38 +14,9 @@ import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
-import com.github.kolandroid.kol.android.view.AndroidViewContext;
-import com.github.kolandroid.kol.gamehandler.DataContext;
-import com.github.kolandroid.kol.gamehandler.LoadingContext;
-import com.github.kolandroid.kol.gamehandler.ViewContext;
-import com.github.kolandroid.kol.request.ResponseHandler;
 import com.github.kolandroid.kol.util.Logger;
 
-public class LoginScreen extends ActionBarActivity implements ViewContext {
-    private ViewContext baseContext;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_screen);
-
-        Logger.override_logger(new Logger() {
-            @Override
-            public void do_log(String tag, String message) {
-                Log.v(tag, message);
-            }
-        });
-
-        this.baseContext = new AndroidViewContext(this);
-
-        if (savedInstanceState == null) {
-            displayController(new LoginController());
-        }
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Kingdom of Loathing");
-    }
-
+public class LoginScreen extends ActivityScreen {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         //first saving my state, so the bundle wont be empty.
@@ -56,23 +26,28 @@ public class LoginScreen extends ActionBarActivity implements ViewContext {
     }
 
     @Override
-    public void onNewIntent(Intent intent) {
-        this.setIntent(intent);
+    public void setup(Bundle savedInstanceState) {
+        Logger.override_logger(new Logger() {
+            @Override
+            public void do_log(String tag, String message) {
+                Log.v(tag, message);
+            }
+        });
 
-        if (!intent.hasExtra("controller")) {
-            // the intent to launch this came from a back action
-            // i.e. back from the chat
-            // Do not shift the game view
-            Logger.log("GameScreen", "LoginScreen received intent without controller");
-            return;
+        // Default to displaying the Login Screen on app startup
+        Intent intent = getIntent();
+        if (!intent.hasCategory("controller")) {
+            intent.putExtra("controller", new LoginController());
         }
 
-        final Controller controller = (Controller) intent
-                .getSerializableExtra("controller");
-        displayController(controller);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Kingdom of Loathing");
+        }
     }
 
-    private void displayController(Controller controller) {
+    @Override
+    protected void displayController(Controller controller, boolean addToBackStack) {
         controller.chooseScreen(new ScreenSelection() {
             @Override
             public void displayExternal(Controller c) {
@@ -85,7 +60,7 @@ public class LoginScreen extends ActionBarActivity implements ViewContext {
             @Override
             public void displayExternalDialog(Controller c) {
                 Logger.log("GameScreen", "Displaying " + c + " on new dialog box.");
-                DialogScreen.display(c, new ActivityScreen(LoginScreen.this));
+                DialogScreen.display(c, LoginScreen.this);
                 displayDialog(c);
             }
 
@@ -99,6 +74,11 @@ public class LoginScreen extends ActionBarActivity implements ViewContext {
                 Logger.log("LoginScreen", "ERROR: Controller " + c + " has chosen to appear on a primary dialog. Ignoring.");
             }
         });
+    }
+
+    @Override
+    protected int getContentView() {
+        return R.layout.activity_login_screen;
     }
 
     @Override
@@ -123,25 +103,5 @@ public class LoginScreen extends ActionBarActivity implements ViewContext {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         return (id == R.id.action_settings) || super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public ResponseHandler getPrimaryRoute() {
-        return baseContext.getPrimaryRoute();
-    }
-
-    @Override
-    public LoadingContext createLoadingContext() {
-        return LoadingContext.NONE;
-    }
-
-    @Override
-    public DataContext getDataContext() {
-        return baseContext.getDataContext();
-    }
-
-    @Override
-    public void displayMessage(String message) {
-        baseContext.displayMessage(message);
     }
 }
