@@ -9,7 +9,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,6 +46,7 @@ import com.github.kolandroid.kol.util.Logger;
 public class GameScreen extends ActionBarActivity implements StatsCallbacks,
         ViewContext {
     private StatsController stats;
+    private DrawerScreen navigationScreen;
 
     private ViewContext baseContext;
     private LoadingContext loader;
@@ -67,18 +67,19 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
         final Screen baseScreen = new ActivityScreen(this);
         this.baseContext = new AndroidViewContext(this);
 
+        // Set up the bottom loading bar
         View base = this.findViewById(R.id.game_progress_popup);
         ProgressBar bar = (ProgressBar) this
                 .findViewById(R.id.game_progress_bar);
         TextView text = (TextView) this.findViewById(R.id.game_progress_text);
-
         this.loader = new ProgressLoader(base, bar, text);
         base.setVisibility(View.GONE);
 
+        // Store the screen title (for restoreActionBar)
         mTitle = getTitle();
 
+        // Load the session for the provided model
         Intent intent = this.getIntent();
-
         @SuppressWarnings("unchecked")
         ModelController<? extends Model> c = (ModelController<? extends Model>) intent
                 .getSerializableExtra("controller");
@@ -88,19 +89,23 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
 
         // Set up the drawer.
         Controller nav = new NavigationController(new NavigationModel(session));
-        DrawerScreen drawer = DrawerScreen.create(nav);
+        navigationScreen = DrawerScreen.create(nav);
         getFragmentManager().beginTransaction()
-                .replace(R.id.navigation_drawer, drawer).commit();
-        drawer.setUp(this, R.id.navigation_drawer,
+                .replace(R.id.navigation_drawer, navigationScreen).commit();
+        navigationScreen.setUp(this, R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        // Set up the stats pane.
         this.stats = new StatsController(new StatsModel(session));
         ViewScreen statsScreen = (ViewScreen) findViewById(R.id.game_statsscreen);
         statsScreen.display(stats, baseScreen);
 
+        // Connect to the chat service
         chat = ChatConnection.create(this.getClass().getSimpleName());
         chat.connect(this);
-        displayIntent(this.getIntent(), false);
+
+        // Display the provided controller
+        displayIntent(intent, false);
     }
 
     @Override
@@ -232,17 +237,21 @@ public class GameScreen extends ActionBarActivity implements StatsCallbacks,
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public void onBackPressed() {
         //This appears to be necessary to make fragment backtracking actually work without the v4 support library...
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            if (!getFragmentManager().popBackStackImmediate()) {
-                //TODO: replace with Logout? message
-                //ErrorModel.trigger(this, "Nothing on the stack", false);
-                return super.onKeyDown(keyCode, event);
-            }
-            return true;
+
+        // Close the navigation drawer if open
+        if (navigationScreen != null && navigationScreen.isOpen()) {
+            navigationScreen.close();
+            return;
         }
-        return super.onKeyDown(keyCode, event);
+
+        // Attempt to pop the next fragment off the stack
+        if (!getFragmentManager().popBackStackImmediate()) {
+            //TODO: replace with Logout? message
+            super.onBackPressed();
+            return;
+        }
     }
 
     @Override

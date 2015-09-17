@@ -132,4 +132,8 @@ public class DrawerScreen extends FragmentScreen {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
     }
+
+    public boolean isOpen() {
+        return mDrawerLayout.isDrawerOpen(mFragmentContainerView);
+    }
 }
