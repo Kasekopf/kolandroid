@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.kolandroid.kol.android.R;
-import com.github.kolandroid.kol.model.models.chat.chatold.ChatText;
+import com.github.kolandroid.kol.model.models.chat.ChatText;
 
 import java.io.Serializable;
 

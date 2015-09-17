@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.model.models.chat.chatold;
+package com.github.kolandroid.kol.model.models.chat;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.util.Logger;
@@ -98,6 +98,10 @@ public abstract class ChatModelSegment implements Serializable {
         void setAvailableChannels(ArrayList<String> channels);
 
         void setCurrentChannels(ArrayList<String> channels);
+
+        void submitChatMessage(String message);
+
+        void leaveChannel(String channel);
     }
 
     private static final class AssertChatClosed extends ChatModelSegment {
@@ -156,6 +160,32 @@ public abstract class ChatModelSegment implements Serializable {
         @Override
         public void visit(ChatModelSegmentProcessor processor) {
             processor.setCurrentChannels(channels);
+        }
+    }
+
+    public static final class SubmitChatMessage extends ChatModelSegment {
+        private final String message;
+
+        public SubmitChatMessage(String message) {
+            this.message = message;
+        }
+
+        @Override
+        public void visit(ChatModelSegmentProcessor processor) {
+            processor.submitChatMessage(message);
+        }
+    }
+
+    public static final class LeaveChannel extends ChatModelSegment {
+        private final String channel;
+
+        public LeaveChannel(String channel) {
+            this.channel = channel;
+        }
+
+        @Override
+        public void visit(ChatModelSegmentProcessor processor) {
+            processor.leaveChannel(channel);
         }
     }
 

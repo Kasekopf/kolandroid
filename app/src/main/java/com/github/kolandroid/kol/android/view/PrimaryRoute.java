@@ -2,12 +2,12 @@ package com.github.kolandroid.kol.android.view;
 
 import android.util.Log;
 
-import com.github.kolandroid.kol.android.chat.old.ChatController;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controllers.AccountSettingsController;
 import com.github.kolandroid.kol.android.controllers.ChoiceController;
 import com.github.kolandroid.kol.android.controllers.CraftingController;
 import com.github.kolandroid.kol.android.controllers.ErrorController;
+import com.github.kolandroid.kol.android.controllers.chat.ChatController;
 import com.github.kolandroid.kol.android.controllers.fight.FightController;
 import com.github.kolandroid.kol.android.controllers.inventory.ClosetController;
 import com.github.kolandroid.kol.android.controllers.inventory.ItemStorageController;
@@ -22,6 +22,7 @@ import com.github.kolandroid.kol.model.models.ChoiceModel;
 import com.github.kolandroid.kol.model.models.CraftingModel;
 import com.github.kolandroid.kol.model.models.ErrorModel;
 import com.github.kolandroid.kol.model.models.WebModel;
+import com.github.kolandroid.kol.model.models.chat.ChatStubModel;
 import com.github.kolandroid.kol.model.models.fight.FightModel;
 import com.github.kolandroid.kol.model.models.inventory.ClosetModel;
 import com.github.kolandroid.kol.model.models.inventory.InventoryModel;
@@ -109,7 +110,7 @@ public class PrimaryRoute implements ResponseHandler {
 
         if (response.url.contains("chat.php")) {
             // Ignore the server reply; we'll just connect to the ChatService for an update
-            return new ChatController();
+            return new ChatController(new ChatStubModel(session));
         }
 
         WebModel model = new WebModel(session, response);

@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.kolandroid.kol.android.R;
-import com.github.kolandroid.kol.android.chat.service.ChatService;
+import com.github.kolandroid.kol.android.chat.ChatService;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;

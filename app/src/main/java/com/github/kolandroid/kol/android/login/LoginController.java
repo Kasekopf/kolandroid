@@ -17,7 +17,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.github.kolandroid.kol.android.R;
-import com.github.kolandroid.kol.android.chat.service.ChatService;
+import com.github.kolandroid.kol.android.chat.ChatService;
 import com.github.kolandroid.kol.android.controller.LinkedModelController;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;

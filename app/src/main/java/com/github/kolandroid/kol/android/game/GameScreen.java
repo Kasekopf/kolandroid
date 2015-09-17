@@ -15,7 +15,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.kolandroid.kol.android.R;
-import com.github.kolandroid.kol.android.chat.old.ChatConnection;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.ModelController;
 import com.github.kolandroid.kol.android.controllers.NavigationController;
@@ -36,7 +35,6 @@ import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.model.models.NavigationModel;
 import com.github.kolandroid.kol.model.models.StatsModel;
-import com.github.kolandroid.kol.model.models.chat.chatold.ChatModel;
 import com.github.kolandroid.kol.util.Logger;
 
 public class GameScreen extends ActivityScreen implements StatsCallbacks {
@@ -45,7 +43,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
 
     private LoadingContext loader;
 
-    private ChatConnection chat;
+    private Session session; //todo remove; only for testing chat
 
     @Override
     protected ViewContext createViewContext() {
@@ -68,6 +66,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
                 .getSerializableExtra("controller");
         Model model = c.getModel();
         Session session = model.getSession();
+        this.session = session;
         Log.i("GameScreen", "Session: " + session);
 
         // Set up the drawer.
@@ -83,9 +82,11 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
         ViewScreen statsScreen = (ViewScreen) findViewById(R.id.game_statsscreen);
         statsScreen.display(stats, this);
 
+        /*
         // Connect to the chat service
         chat = ChatConnection.create(this.getClass().getSimpleName());
         chat.connect(this);
+        */
     }
 
     @Override
@@ -170,7 +171,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        chat.close(this);
+        //chat.close(this);
     }
 
     @Override
@@ -189,6 +190,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
                     stats.showQuests();
                 return true;
             case R.id.action_chat:
+                /*
                 if (chat == null) {
                     Logger.log("GameScreen", "Unable to load chat model; not connected to AndroidBinder");
                     return false;
@@ -198,8 +200,9 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
                     Logger.log("GameScreen", "Unable to load chat model; AndroidBinder [" + chat + "] has null reference");
                     return false;
                 }
+                */
 
-                this.getViewContext().getPrimaryRoute().handle(model.getSession(), ServerReply.fabricate("", "chat.php"));
+                this.getViewContext().getPrimaryRoute().handle(session, ServerReply.fabricate("", "chat.php"));
                 return true;
         }
 

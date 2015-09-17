@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.android.chat.old;
+package com.github.kolandroid.kol.android.chat;
 
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -6,14 +6,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.kolandroid.kol.android.R;
-import com.github.kolandroid.kol.android.chat.old.ChatActionsController.ChatActionsControllerHost;
-import com.github.kolandroid.kol.android.chat.old.ChatChannelsController.ChatChannelsControllerHost;
-import com.github.kolandroid.kol.android.chat.old.ChatSubmissionController.ChatSubmissionControllerHost;
 import com.github.kolandroid.kol.android.controller.Controller;
+import com.github.kolandroid.kol.android.controllers.chat.ChatActionsController.ChatActionsControllerHost;
+import com.github.kolandroid.kol.android.controllers.chat.ChatChannelsController;
+import com.github.kolandroid.kol.android.controllers.chat.ChatChannelsController.ChatChannelsControllerHost;
+import com.github.kolandroid.kol.android.controllers.chat.ChatController;
+import com.github.kolandroid.kol.android.controllers.chat.ChatSubmissionController;
+import com.github.kolandroid.kol.android.controllers.chat.ChatSubmissionController.ChatSubmissionControllerHost;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
+import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.model.models.chat.ChatStubModel;
 import com.github.kolandroid.kol.util.Logger;
 
 public class ChatScreen extends ActivityScreen implements
@@ -84,7 +89,7 @@ public class ChatScreen extends ActivityScreen implements
                 overridePendingTransition(R.anim.inrightanim, R.anim.outrightanim);
                 return true;
             case R.id.action_channels:
-                ChatChannelsController controller = new ChatChannelsController();
+                ChatChannelsController controller = new ChatChannelsController(new ChatStubModel(new Session())); //TODO
                 DialogScreen.display(controller, this);
                 return true;
         }

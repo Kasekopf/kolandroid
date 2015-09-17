@@ -9,7 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.github.kolandroid.kol.android.BuildConfig;
-import com.github.kolandroid.kol.android.chat.old.ChatScreen;
+import com.github.kolandroid.kol.android.chat.ChatScreen;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.game.GameScreen;
 import com.github.kolandroid.kol.android.login.LoginScreen;

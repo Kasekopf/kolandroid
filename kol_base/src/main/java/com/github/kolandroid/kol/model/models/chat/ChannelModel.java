@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.model.models.chat.chatold;
+package com.github.kolandroid.kol.model.models.chat;
 
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.Model;
@@ -28,6 +28,16 @@ public class ChannelModel extends Model {
         this.messages = new ArrayList<ChatText>();
     }
 
+    public ChannelModel(ChannelModel copyFrom, ChatModel host) {
+        super(copyFrom.getSession());
+
+        this.host = host;
+
+        this.name = copyFrom.name;
+        this.active = copyFrom.active;
+        this.messages = new ArrayList<>(copyFrom.messages);
+    }
+
     public void enter() {
         if (host == null)
             return;
@@ -44,11 +54,10 @@ public class ChannelModel extends Model {
         if (!active)
             return;
         if (name.contains("@")) {
-            setActive(false);
-            //TODO
-            //host.notifyChange();
+            host.leaveChannel(name);
             return;
         }
+
         host.submitChat("/listen " + name);
     }
 
@@ -61,8 +70,6 @@ public class ChannelModel extends Model {
     }
 
     protected void setActive(boolean active) {
-        System.out.println("Setting channel " + this.name + " active to "
-                + active);
         this.active = active;
     }
 

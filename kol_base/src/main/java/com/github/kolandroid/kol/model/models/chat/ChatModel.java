@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.model.models.chat.chatold;
+package com.github.kolandroid.kol.model.models.chat;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
@@ -48,14 +48,28 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
     private final ArrayList<ChatText> messages;
     private final Map<String, ChannelModel> channelsByName;
     private final ArrayList<ChannelModel> channels;
-
-    private final String playerid;
-    private final String pwd;
     private final ArrayList<ChatAction> baseActions;
+
+    private String playerid;
+    private String pwd;
 
     private String visibleChannel;
     private String lasttime;
 
+    protected ChatModel(Session s) {
+        super(s);
+
+        seenMessages = new HashSet<Integer>();
+        messages = new ArrayList<ChatText>();
+        channels = new ArrayList<ChannelModel>();
+        channelsByName = new HashMap<String, ChannelModel>();
+
+        parser = null;
+
+        playerid = "";
+        pwd = "";
+        baseActions = new ArrayList<>();
+    }
 
     /**
      * Create a new model in the provided session.
@@ -105,25 +119,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             if (messageUpdate != null)
                 this.reassemble(messageUpdate);
         }
-    }
 
-    public ChatModel(ChatModel cloneFrom) {
-        super(cloneFrom.getSession());
-
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(RawActionList.class,
-                new RawActionListDeserializer());
-        parser = builder.setFieldNamingPolicy(
-                FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-
-        seenMessages = (HashSet<Integer>) cloneFrom.seenMessages.clone();
-        messages = (ArrayList<ChatText>) cloneFrom.messages.clone();
-        channels = new ArrayList<ChannelModel>();
-        channelsByName = new HashMap<String, ChannelModel>();
-
-        playerid = cloneFrom.playerid;
-        pwd = cloneFrom.pwd;
-        baseActions = (ArrayList<ChatAction>) cloneFrom.baseActions.clone();
     }
 
     public static void start(Session session, Callback<ChatModel> onStart) {
@@ -172,9 +168,37 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
     public void attachView(ViewContext context) {
         super.attachView(context);
 
-        //Update internal list of channels.
-        submitChat("/channels", true);
-        submitChat("/l", true);
+        if (!this.stubbed()) {
+            //Update internal list of channels.
+            submitChat("/channels", true);
+            submitChat("/l", true);
+        }
+    }
+
+    public void duplicate(ChatModel cloneFrom) {
+        seenMessages.clear();
+        seenMessages.addAll(cloneFrom.seenMessages);
+
+        messages.clear();
+        messages.addAll(cloneFrom.messages);
+
+        channels.clear();
+        channelsByName.clear();
+        for (ChannelModel cloneChannelFrom : cloneFrom.channels) {
+            ChannelModel channel = new ChannelModel(cloneChannelFrom, this);
+            channels.add(channel);
+            channelsByName.put(channel.getName(), channel);
+        }
+
+        baseActions.clear();
+        baseActions.addAll(cloneFrom.baseActions);
+
+        playerid = cloneFrom.playerid;
+        pwd = cloneFrom.pwd;
+        lasttime = cloneFrom.lasttime;
+        visibleChannel = cloneFrom.visibleChannel;
+
+        notifyView(new ArrayList<ChatModelSegment>());
     }
 
     private ChannelModel getOrCreateChannel(String name) {
@@ -185,7 +209,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             channel = new ChannelModel(this, name, this.getSession());
             channels.add(channel);
             channelsByName.put(name, channel);
-            System.out.println("Added new chat channel: " + name);
+            log("Added new chat channel: " + name);
         }
         return channel;
     }
@@ -194,9 +218,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         for(ChatModelSegment seg : segments) {
             this.reassemble(seg);
         }
+        notifyView(segments);
     }
 
-    public void reassemble(ChatModelSegment chatModelSegment) {
+    private void reassemble(ChatModelSegment chatModelSegment) {
         chatModelSegment.visit(new ChatModelSegment.ChatModelSegmentProcessor() {
             @Override
             public void chatClosed() {
@@ -238,11 +263,22 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                     channel.setActive(active.contains(channel));
                 }
             }
+
+            @Override
+            public void submitChatMessage(String message) {
+                submitChat(message, false);
+            }
+
+            @Override
+            public void leaveChannel(String channel) {
+                ChannelModel model = getOrCreateChannel(channel);
+                model.setActive(false);
+            }
         });
     }
 
     public void submitChat(String channel, String msg) {
-        System.out.println("Submitting " + msg + " to " + channel);
+        log("Submitting " + msg + " to " + channel);
         if (!msg.startsWith("/")) {
             if (channel.startsWith("@")) {
                 // private messaging channel
@@ -266,14 +302,13 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             public void handle(Session session, ServerReply response) {
                 ArrayList<ChatModelSegment> newSegments = ChatModelSegment.disassembleSegments(parser, seenMessages, response, false);
                 if (newSegments.size() > 0) {
-                    notifyView(newSegments);
-                    ChatModel.this.apply(newSegments);
+                    apply(newSegments);
                 }
             }
         });
     }
 
-    private void submitChat(String msg, final boolean hiddenCommand) {
+    protected void submitChat(String msg, final boolean hiddenCommand) {
         String url = encodeChatMessage("submitnewchat.php?playerid=%s&pwd=%s&graf=%s&j=1", playerid, pwd, msg);
         Logger.log("ChatModel", "Submitting chat for " + url);
 
@@ -283,8 +318,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             public void handle(Session session, ServerReply response) {
                 ArrayList<ChatModelSegment> newSegments = ChatModelSegment.disassembleSegments(parser, seenMessages, response, hiddenCommand);
                 if (newSegments.size() > 0) {
-                    notifyView(newSegments);
-                    ChatModel.this.apply(newSegments);
+                    apply(newSegments);
                 }
             }
         });
@@ -301,6 +335,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         this.makeRequest(new SimulatedRequest(reject));
     }
 
+    protected boolean stubbed() {
+        return false;
+    }
+
     public ArrayList<ChannelModel> getChannels() {
         return new ArrayList<ChannelModel>(channels);
     }
@@ -313,10 +351,18 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         this.visibleChannel = room;
     }
 
-    public static class RawActionList {
-        public final ArrayList<com.github.kolandroid.kol.model.models.chat.chatold.ChatAction> actions;
+    protected void leaveChannel(String channel) {
+        getOrCreateChannel(channel).setActive(false);
+    }
 
-        public RawActionList(ArrayList<com.github.kolandroid.kol.model.models.chat.chatold.ChatAction> actions) {
+    protected void log(String message) {
+        Logger.log("ChatModel", message);
+    }
+
+    public static class RawActionList {
+        public final ArrayList<ChatAction> actions;
+
+        public RawActionList(ArrayList<ChatAction> actions) {
             this.actions = actions;
         }
     }
@@ -326,7 +372,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         @Override
         public RawActionList deserialize(JsonElement element, Type type,
                                          JsonDeserializationContext context) throws JsonParseException {
-            ArrayList<ChatAction> actions = new ArrayList<com.github.kolandroid.kol.model.models.chat.chatold.ChatAction>();
+            ArrayList<ChatAction> actions = new ArrayList<ChatAction>();
 
             JsonObject jsonObject = element.getAsJsonObject();
             for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {

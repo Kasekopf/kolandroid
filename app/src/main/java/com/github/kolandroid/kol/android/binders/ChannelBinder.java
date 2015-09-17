@@ -7,7 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.kolandroid.kol.android.R;
-import com.github.kolandroid.kol.model.models.chat.chatold.ChannelModel;
+import com.github.kolandroid.kol.model.models.chat.ChannelModel;
 import com.github.kolandroid.kol.util.Callback;
 
 public class ChannelBinder implements Binder<ChannelModel> {

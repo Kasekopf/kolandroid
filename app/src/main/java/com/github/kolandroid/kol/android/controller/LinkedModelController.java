@@ -31,7 +31,7 @@ public abstract class LinkedModelController<C, M extends LinkedModel<C>> extends
             }
         };
 
-        getModel().attachCallback(callback);
+        getModel().attachCallback(callback.weak());
         super.connect(view, host);
     }
 

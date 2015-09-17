@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.android.chat.service;
+package com.github.kolandroid.kol.android.chat;
 
 import android.app.Service;
 import android.content.Intent;

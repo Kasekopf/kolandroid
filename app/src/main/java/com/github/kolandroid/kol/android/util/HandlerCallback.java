@@ -10,8 +10,8 @@ public abstract class HandlerCallback<E> implements LatchedCallback<E> {
     private boolean closed;
 
     public HandlerCallback() {
-        base = new TypedHandler<E>(this);
-        closed = false;
+        this.base = new TypedHandler<E>(this);
+        this.closed = false;
     }
 
     @Override
@@ -24,6 +24,10 @@ public abstract class HandlerCallback<E> implements LatchedCallback<E> {
     public void close() {
         closed = true;
         base.close();
+    }
+
+    public LatchedCallback<E> weak() {
+        return new WeakLatchedCallback<>(this);
     }
 
     public boolean isClosed() {
