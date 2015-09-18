@@ -3,6 +3,7 @@ package com.github.kolandroid.kol.model;
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
+import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
@@ -50,7 +51,18 @@ public abstract class Model implements Serializable {
      * @param req The request to make.
      */
     protected void makeRequest(Request req) {
-        this.makeRequest(req, context.getPrimaryRoute());
+        this.makeRequest(req, session, context.getPrimaryRoute());
+    }
+
+
+    /**
+     * Make a new request in the context of this model.
+     *
+     * @param req The request to make.
+     * @param override The session to use.
+     */
+    protected void makeRequest(Request req, Session override) {
+        this.makeRequest(req, override, context.getPrimaryRoute());
     }
 
     /**
@@ -60,7 +72,19 @@ public abstract class Model implements Serializable {
      * @param listener Response handler to use for the result.
      */
     protected void makeRequest(Request req, ResponseHandler listener) {
-        req.makeAsync(session, context.createLoadingContext(), listener);
+        this.makeRequest(req, session, listener);
+    }
+
+
+    /**
+     * Make a new request in the context of this model.
+     *
+     * @param req      The request to make.
+     * @param override The session to use.
+     * @param listener Response handler to use for the result.
+     */
+    protected void makeRequest(Request req, Session override, ResponseHandler listener) {
+        req.makeAsync(override, context.createLoadingContext(), listener);
     }
 
     /**
@@ -95,5 +119,9 @@ public abstract class Model implements Serializable {
 
     public Session getSession() {
         return session;
+    }
+
+    protected SettingsContext getSettings() {
+        return context.getSettingsContext();
     }
 }

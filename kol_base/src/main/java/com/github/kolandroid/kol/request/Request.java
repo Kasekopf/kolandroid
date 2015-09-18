@@ -40,7 +40,7 @@ public class Request {
     }
 
     protected Connection getConnection(String server) {
-        return new Connection("http://" + server + ".kingdomofloathing.com/" + url);
+        return new Connection("http://www.kingdomofloathing.com/" + url);
     }
 
 

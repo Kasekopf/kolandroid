@@ -37,7 +37,7 @@ public class LoginScreen extends ActivityScreen {
         // Default to displaying the Login Screen on app startup
         Intent intent = getIntent();
         if (!intent.hasCategory("controller")) {
-            intent.putExtra("controller", new LoginController());
+            intent.putExtra("controller", new LoginConnectingController());
         }
 
         ActionBar actionBar = getSupportActionBar();

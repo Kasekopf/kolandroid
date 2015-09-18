@@ -66,6 +66,8 @@ public class WebModel extends Model {
 
     private static final Regex FORM_FINDER = new Regex("<form([^>]*)>", 0);
 
+    private static final Regex SCRIPT_TAG_FIXER = new Regex("(<title>The Kingdom of Loathing</title>)\n<script>\n(<script)");
+
     private static final Regex TABLE_FIXER = new Regex("(</td>)(.*?)(</td>|</tr>|</table>|<td[^>]*>)");
     /**
      * Remove code which redirects when no frames are detected.
@@ -73,7 +75,7 @@ public class WebModel extends Model {
     private static final Regex FRAME_REDIRECT = new Regex("if\\s*\\(parent\\.frames\\.length\\s*==\\s*0\\)\\s*location.href\\s*=\\s*[\"']?game\\.php[\"']?;", 0);
     private static final Regex HEAD_TAG = new Regex("<head>");
     private final static String jsInjectCode = "" +
-            "function customParseForm(form, action, method) { " +
+            "\nfunction customParseForm(form, action, method) { " +
             "   var inputs = form.getElementsByTagName('input');" +
             "   var data = action ? action : '';" +
             "   if(method.toUpperCase() == 'POST') {" +
@@ -103,8 +105,8 @@ public class WebModel extends Model {
             "   return false;" +
             "}\n" +
             "function pop_query(caller, title, button, callback, def) { " +
-            "    window.querycallback = callback;" +
-            "    window.ANDROIDAPP.displayFormNumeric(title, button, \"javascript:window.querycallback(#VAL)\");" +
+            "   window.querycallback = callback;" +
+            "   window.ANDROIDAPP.displayFormNumeric(title, button, \"javascript:window.querycallback(#VAL)\");" +
             "}\n";
 
     private static final Regex POPQUERY_SCRIPT = new Regex("<script[^>]*pop_query[^>]*></script>");
@@ -143,6 +145,9 @@ public class WebModel extends Model {
                 || text.url.contains("desc_effect.php")
                 || text.url.contains("desc_skill.php"))
             return WebModelType.SMALL;
+
+        if (text.url.contains("create.php"))
+            return WebModelType.EXTERNAL;
         return WebModelType.REGULAR;
     }
 
@@ -151,7 +156,7 @@ public class WebModel extends Model {
     private static String prepareHtml(String html) {
         html = fixItemsAndEffects(html);
         html = injectJavascript(html);
-        html = doHacks(html);
+        html = doMiscFixes(html);
         html = fixPaneReferences(html);
         return html;
     }
@@ -176,18 +181,12 @@ public class WebModel extends Model {
         return html;
     }
 
-    private static String doHacks(String html) {
-        /**
-         * Hacks for account.php
-         */
-        /*
-        //stop removing the submit button on account.php
-		html = html.replace("document.write('<style type=\"text/css\">#submit {display: none; }</style>');", "");
-		//remove all the blue "Saving..." text on account.php
-		html = html.replace("<span class=\"saving\">Saving...</span>", "");
-		//remove the fancy tab ajax calls on account.php; they do not have the proper cookie
-		html = html.replace("$('#tabs li').click(changeTab);", "");
-		*/
+    private static String doMiscFixes(String html) {
+        //create.php? has an extra script tag
+        html = SCRIPT_TAG_FIXER.replaceAll(html, "$1$2");
+
+        // Manually fix the width of the body, to fix top-level center tags
+        html = html.replace("<body", "<body style=\"display: inline-block;\"");
         return html;
     }
 
@@ -275,9 +274,13 @@ public class WebModel extends Model {
         }
 
         Logger.log("WebModel", "Request started for " + url);
+        followUrl(url);
+        return true;
+    }
+
+    protected void followUrl(String url) {
         Request req = new Request(url);
         this.makeRequest(req);
-        return true;
     }
 
     public InputStream makeBlockingRequest(String url) {
@@ -324,6 +327,11 @@ public class WebModel extends Model {
             public <E> E visit(WebModelTypeVisitor<E> visitor) {
                 return visitor.forResults();
             }
+        }, EXTERNAL("external") {
+            @Override
+            public <E> E visit(WebModelTypeVisitor<E> visitor) {
+                return visitor.forExternal();
+            }
         };
 
         private final String value;
@@ -346,5 +354,7 @@ public class WebModel extends Model {
         E forSmall();
 
         E forResults();
+
+        E forExternal();
     }
 }

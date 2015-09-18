@@ -6,6 +6,10 @@ public class SingleRequest extends Request {
     private final String[] formNames;
     private final String[] formVals;
 
+    public SingleRequest(String url) {
+        this(url, new String[0], new String[0]);
+    }
+
     public SingleRequest(String url, String[] names, String[] vals) {
         super(url);
 

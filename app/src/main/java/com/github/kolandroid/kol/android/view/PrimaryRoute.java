@@ -26,6 +26,8 @@ import com.github.kolandroid.kol.model.models.chat.ChatStubModel;
 import com.github.kolandroid.kol.model.models.fight.FightModel;
 import com.github.kolandroid.kol.model.models.inventory.ClosetModel;
 import com.github.kolandroid.kol.model.models.inventory.InventoryModel;
+import com.github.kolandroid.kol.model.models.login.CreateCharacterModel;
+import com.github.kolandroid.kol.model.models.login.LoginModel;
 import com.github.kolandroid.kol.model.models.skill.SkillsModel;
 import com.github.kolandroid.kol.request.ResponseHandler;
 import com.github.kolandroid.kol.util.Logger;
@@ -38,15 +40,6 @@ public class PrimaryRoute implements ResponseHandler {
     }
 
     private Controller getController(Session session, ServerReply response) {
-        /**
-         * Reset the session if a logout was received.
-         */
-        if (response.url.contains("login.php?notloggedin=1")) {
-            Log.i("Primary Route", "Logout seen");
-            //The session was logged out.
-            return new LoginController();
-        }
-
         Log.i("PrimaryRoute", "Creating model for response: " + response.url);
 
         /**
@@ -70,7 +63,16 @@ public class PrimaryRoute implements ResponseHandler {
         }
 
         if (response.url.contains("login.php")) {
-            return new LoginController();
+            if (response.url.contains("notloggedin=1")) {
+                Logger.log("PrimaryRoute", "Forced logout encountered");
+            }
+            LoginModel model = new LoginModel(session, response);
+            return new LoginController(model);
+        }
+
+        if (response.url.contains("create.php")) {
+            CreateCharacterModel model = new CreateCharacterModel(session, response);
+            return new WebController(model);
         }
 
         if (response.url.contains("fight.php")) {

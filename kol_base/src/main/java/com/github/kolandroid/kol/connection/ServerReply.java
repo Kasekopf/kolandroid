@@ -48,6 +48,9 @@ public class ServerReply implements Serializable {
         url = base.getURL().toString();
         date = base.getHeaderField("Date");
         cookie = getCookie(base);
+        if (cookie.contains("magic")) {
+            Logger.log("ServerReply", "Received magic cookie!");
+        }
 
         this.html = getResponse(base);
 

@@ -2,14 +2,17 @@ package com.github.kolandroid.kol.model.models.login;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
-import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.LinkedModel;
 import com.github.kolandroid.kol.model.models.ErrorModel;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
+import com.github.kolandroid.kol.request.SimulatedRequest;
 import com.github.kolandroid.kol.request.SingleRequest;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 
 public class LoginModel extends LinkedModel<LoginStatus> {
     /**
@@ -24,64 +27,108 @@ public class LoginModel extends LinkedModel<LoginStatus> {
     private static final Regex CHALLENGE = new Regex(
             "<input type=hidden name=challenge value=\"([^\"]*?)\">", 1);
 
-    public LoginModel() {
-        super(new Session());
+    private final static Regex MAGIC_DETECTOR = new Regex("<b>Fresh Characters</b><ul>.*?</ul>", 0);
+    private final static Regex MAGIC_CHARACTERS = new Regex("<li>(.*?)</li>", 1);
+    private static final Regex FIND_MAGIC = new Regex("magic=(\\d+)%.*", 1);
+    private final static Regex MAGIC_NAME = new Regex("<a[^>]*>([^<]*)</a>", 1);
+    private final static Regex MAGIC_ACTION = new Regex("<a[^>]*href=[\"']([^\"'>]*)[\"']", 1);
+    private final String loginId;
+    private final String challenge;
+    private final ArrayList<MagicLoginAction> magicCharacters;
+
+    public LoginModel(Session s, ServerReply reply) {
+        super(s);
+
+        loginId = LOGIN_ID.extractSingle(reply.url);
+        challenge = CHALLENGE.extractSingle(reply.html);
+
+        Logger.log("LoginModel", "Old cookie: " + s);
+        s.addCookies(reply.cookie);
+        Logger.log("LoginModel", "New cookie: " + s);
+
+        magicCharacters = new ArrayList<>();
+        String magic = MAGIC_DETECTOR.extractSingle(reply.html, "");
+        if (!magic.equals("")) {
+            for (String listitem : MAGIC_CHARACTERS.extractAllSingle(magic)) {
+                magicCharacters.add(new MagicLoginAction(listitem));
+            }
+        }
     }
 
-    public void login(final ViewContext context, final String username,
+    public void login(final String username,
                       final PasswordHash hash) {
-        Request req = new Request("login.php");
-        this.makeRequest(req, new ResponseHandler() {
+        String[] names = {"loginid", "loginname", "password",
+                "loggingin", "challenge", "response", "secure"};
+        String[] vals = {loginId, username, "", "Yup.", challenge,
+                hash.completeChallenge(challenge), "1"};
+
+        Request login = new SingleRequest("login.php", names, vals);
+        this.makeRequest(login, new ResponseHandler() {
             @Override
-            public void handle(Session session, ServerReply response) {
-                Logger.log("LoginModel", "Received initial challenge");
-                if (response == null) {
+            public void handle(Session session,
+                               ServerReply response) {
+                session.addCookies(response.cookie);
+                Logger.log("LoginModel", "New game session: " + session);
+                if (session.getCookie("PHPSESSID", "").equals("")) {
+                    // Failure to login
                     Logger.log("LoginModel", "Failed to Login");
-                    ErrorModel.trigger(context, "Unable to access KoL servers. Do you have internet?", ErrorModel.ErrorType.SEVERE);
+                    makeRequest(new SimulatedRequest(ErrorModel.generateErrorMessage("Login Failed. Bad Password.", ErrorModel.ErrorType.SEVERE)));
                     return;
                 }
 
-                String loginId = LOGIN_ID.extractSingle(response.url);
-                String challenge = CHALLENGE.extractSingle(response.html);
-                String server = SERVER.extractSingle(response.cookie);
+                notifyView(LoginStatus.SUCCESS);
 
-                if (loginId == null || challenge == null || server == null) {
-                    Logger.log("LoginModel", "Failed to Login");
-                    ErrorModel.trigger(context, "Unable to access KoL servers. Do you have internet?", ErrorModel.ErrorType.SEVERE);
-                    return;
-                }
-
-                session.setCookie(response.cookie);
-                String[] names = {"loginid", "loginname", "password",
-                        "loggingin", "challenge", "response", "secure"};
-                String[] vals = {loginId, username, "", "Yup.", challenge,
-                        hash.completeChallenge(challenge), "1"};
-
-                Request login = new SingleRequest("login.php", names, vals);
-                login.makeAsync(session, context.createLoadingContext(),
-                        new ResponseHandler() {
-                            @Override
-                            public void handle(Session session,
-                                               ServerReply response) {
-
-                                Logger.log("LoginModel", "Received cookie: " + response.cookie);
-                                if (!response.cookie.contains("PHPSESSID=")) {
-                                    // Failure to login
-                                    Logger.log("LoginModel", "Failed to Login");
-                                    ErrorModel.trigger(context, "Login Failed. Bad Password.", ErrorModel.ErrorType.SEVERE);
-                                    return;
-                                }
-
-                                notifyView(LoginStatus.SUCCESS);
-
-                                session.setCookie(response.cookie);
-                                Request game = new Request("main.php");
-                                game.makeAsync(session,
-                                        context.createLoadingContext(),
-                                        context.getPrimaryRoute());
-                            }
-                        });
+                Request game = new Request("main.php");
+                makeRequest(game, session);
             }
         });
+    }
+
+    public ArrayList<MagicLoginAction> getMagicCharacters() {
+        return magicCharacters;
+    }
+
+    public void magicLogin() {
+    }
+
+    public void createAccount() {
+        Request req = new Request("create.php?");
+        this.makeRequest(req);
+    }
+
+    public class MagicLoginAction implements Serializable {
+        private final String character;
+        private final String url;
+
+        public MagicLoginAction(String listItem) {
+            character = MAGIC_NAME.extractSingle(listItem, "");
+            url = MAGIC_ACTION.extractSingle(listItem, "");
+        }
+
+        public String getCharacter() {
+            return character;
+        }
+
+        public void magicLogin() {
+            Request r = new SingleRequest(url, new String[0], new String[0]);
+            makeRequest(r, new ResponseHandler() {
+                @Override
+                public void handle(Session session, ServerReply response) {
+                    session.addCookies(response.cookie);
+                    Logger.log("LoginModel", "New game session: " + session);
+                    if (session.getCookie("PHPSESSID", "").equals("")) {
+                        // Failure to login
+                        Logger.log("LoginModel", "Failed to Login");
+                        makeRequest(new SimulatedRequest(ErrorModel.generateErrorMessage("Login Failed. Bad Password.", ErrorModel.ErrorType.SEVERE)));
+                        return;
+                    }
+
+                    notifyView(LoginStatus.SUCCESS);
+
+                    Request game = new Request("main.php");
+                    makeRequest(game, session);
+                }
+            });
+        }
     }
 }

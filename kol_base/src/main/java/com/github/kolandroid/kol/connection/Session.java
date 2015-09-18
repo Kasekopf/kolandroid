@@ -3,6 +3,8 @@ package com.github.kolandroid.kol.connection;
 import com.github.kolandroid.kol.util.Regex;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Session implements Serializable {
     /**
@@ -10,29 +12,58 @@ public class Session implements Serializable {
      */
     private static final long serialVersionUID = 7771874452940822920L;
 
-    private static final Regex SERVER = new Regex("appserver=([^;]*)[;$]", 1);
+    private static final Regex COOKIE_FINDER = new Regex("(^|;| )([^ =;]*)=([^ =;]*)(;|$)", 2, 3);
 
-    private String cookie = null;
+    private final Map<String, String> cookieMap;
+    private String allCookies;
 
-    public String getCookie() {
-        return cookie;
+    public Session() {
+        this.cookieMap = new HashMap<>();
+        this.allCookies = "";
     }
 
-    public void setCookie(String cookie) {
-        this.cookie = cookie;
+    public Session(String cookies) {
+        this();
+        this.addCookies(cookies);
+    }
+
+    public String getCookie() {
+        return allCookies;
+    }
+
+    public String getCookie(String which, String defaultVal) {
+        if (cookieMap.containsKey(which)) {
+            return cookieMap.get(which);
+        }
+
+        return defaultVal;
+    }
+
+    public void addCookies(String cookies) {
+        if (cookies == null) return;
+
+        for (String[] match : COOKIE_FINDER.extractAll(cookies)) {
+            if (match[0] != null && match[1] != null) {
+                cookieMap.put(match[0], match[1]);
+            }
+        }
+
+        allCookies = "";
+        for (String key : cookieMap.keySet()) {
+            allCookies += key + "=" + cookieMap.get(key) + "; ";
+        }
     }
 
     public String getServer() {
-        String server = SERVER.extractSingle(cookie);
-
-        if (server == null)
+        if (cookieMap.containsKey("appserver")) {
+            return cookieMap.get("appserver");
+        } else {
             return "www";
-        else
-            return server;
+        }
     }
 
     @Override
     public String toString() {
-        return "$Session[" + cookie + "]";
+        return "$session[" + getCookie() + "]";
     }
 }

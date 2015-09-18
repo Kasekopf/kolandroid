@@ -95,6 +95,7 @@ public class Connection {
         connection.setReadTimeout(TIMEOUT);
         connection.setInstanceFollowRedirects(redirect);
 
+
         if (dopost) {
             connection.setUseCaches(false);
             connection.setDoOutput(true);

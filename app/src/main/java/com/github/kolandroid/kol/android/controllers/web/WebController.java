@@ -3,7 +3,6 @@ package com.github.kolandroid.kol.android.controllers.web;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
@@ -58,6 +57,10 @@ public class WebController extends UpdatableModelController<WebModel> {
             public Integer forResults() {
                 return R.layout.dialog_results_screen;
             }
+
+            public Integer forExternal() {
+                return R.layout.fragment_web_screen;
+            }
         });
     }
 
@@ -78,6 +81,12 @@ public class WebController extends UpdatableModelController<WebModel> {
                 choice.displayDialog(WebController.this);
                 return null;
             }
+
+            @Override
+            public Void forExternal() {
+                choice.displayExternal(WebController.this);
+                return null;
+            }
         });
     }
 
@@ -85,6 +94,8 @@ public class WebController extends UpdatableModelController<WebModel> {
     @Override
     public void connect(View view, WebModel model, final Screen host) {
         WebViewClient client = new WebViewClient() {
+            private final Regex INTERNAL_FULL_URL = new Regex("^(https?://)?([^\\.]*\\.)?kingdomofloathing\\.com");
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith("data:text/html"))
@@ -111,6 +122,12 @@ public class WebController extends UpdatableModelController<WebModel> {
                     return null;
 
                 if (url.contains(".php")) {
+                    if ((url.startsWith("http://") || url.startsWith("https://") || url.startsWith("www"))
+                            && !INTERNAL_FULL_URL.matches(url)) {
+                        //do not mess with external requests
+                        return null;
+                    }
+
                     //All requests to .php must include the proper cookies
                     InputStream result = getModel().makeBlockingRequest(url);
                     return new WebResourceResponse("text/html; charset=UTF-8", null, result);
@@ -129,10 +146,13 @@ public class WebController extends UpdatableModelController<WebModel> {
     }
 
     private void loadContent(WebModel model) {
+        String fixedHtml = model.getHTML();
+
         // Fix the viewport size by inserting a viewport tag
-        String fixedHtml = BODY_TAG
-                .replaceAll(model.getHTML(),
+        fixedHtml = BODY_TAG
+                .replaceAll(fixedHtml,
                         "$0<meta name=\"viewport\" content=\"width=device-width\">");
+
         Logger.log("WebController", "Loading content of size " + fixedHtml.length());
 
         boolean allowZoom = model.visitType(new WebModel.WebModelTypeVisitor<Boolean>() {
@@ -149,6 +169,11 @@ public class WebController extends UpdatableModelController<WebModel> {
             @Override
             public Boolean forResults() {
                 return false;
+            }
+
+            @Override
+            public Boolean forExternal() {
+                return true;
             }
         });
 
@@ -171,7 +196,7 @@ public class WebController extends UpdatableModelController<WebModel> {
 
         @android.webkit.JavascriptInterface
         public void debug(String text) {
-            Log.i("WebFragment Form", "Debug: " + text);
+            Logger.log("WebController Javascript", text);
         }
 
         @android.webkit.JavascriptInterface
