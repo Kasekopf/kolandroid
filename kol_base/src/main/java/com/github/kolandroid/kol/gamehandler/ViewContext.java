@@ -34,4 +34,11 @@ public interface ViewContext {
      * @param message   The message to display.
      */
     void displayMessage(String message);
+
+    /*
+     * Provide a context for accessing app settings.
+     *
+     * @return A reference to a new context for accessing app settings.
+     */
+    SettingsContext getSettingsContext();
 }

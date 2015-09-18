@@ -16,6 +16,7 @@ import com.github.kolandroid.kol.android.login.LoginScreen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.gamehandler.DataContext;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
+import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.request.ResponseHandler;
 import com.github.kolandroid.kol.util.Logger;
@@ -27,6 +28,7 @@ public class AndroidViewContext implements ViewContext {
     private Handler toastLauncher;
     private AndroidDataContext data;
 
+    private SettingsContext settings;
     private ResponseHandler primaryRoute;
     private LoadingContext loadingContext;
 
@@ -43,6 +45,7 @@ public class AndroidViewContext implements ViewContext {
         this.toastLauncher = new ToastLauncher(context);
         this.data = new AndroidDataContext(context);
         this.loadingContext = loadingContext;
+        this.settings = new AndroidSettingsContext(context);
 
         ScreenSelection screens = new ScreenSelection() {
             @Override
@@ -97,6 +100,11 @@ public class AndroidViewContext implements ViewContext {
     @Override
     public void displayMessage(String message) {
         Message.obtain(toastLauncher, 0, message).sendToTarget();
+    }
+
+    @Override
+    public SettingsContext getSettingsContext() {
+        return settings;
     }
 
     private static class IntentBuilder {
