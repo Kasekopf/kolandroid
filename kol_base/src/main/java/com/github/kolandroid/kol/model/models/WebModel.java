@@ -69,6 +69,9 @@ public class WebModel extends Model {
     private static final Regex SCRIPT_TAG_FIXER = new Regex("(<title>The Kingdom of Loathing</title>)\n<script>\n(<script)");
 
     private static final Regex TABLE_FIXER = new Regex("(</td>)(.*?)(</td>|</tr>|</table>|<td[^>]*>)");
+
+    private static final Regex TUTORIAL_FIXER = new Regex("(<form[^>]*><input[^>]*><input[^>]*>)(.*?)(<input[^>]*>)</td></form>");
+
     /**
      * Remove code which redirects when no frames are detected.
      */
@@ -125,9 +128,15 @@ public class WebModel extends Model {
 
         Logger.log("WebModel", "Created for " + text.url);
 
-        this.setHTML(text.html.replace("window.devicePixelRatio >= 2", "window.devicePixelRatio < 2"));
         this.url = text.url;
+        this.setHTML(text.html.replace("window.devicePixelRatio >= 2", "window.devicePixelRatio < 2"));
         this.type = type;
+
+        /*
+        for(String x : this.getHTML().split("\n")) {
+            Logger.log("WebModel", x);
+        }
+        */
     }
 
     public WebModel(Session s, ServerReply text) {
@@ -152,10 +161,9 @@ public class WebModel extends Model {
     }
 
 
-
-    private static String prepareHtml(String html) {
+    private static String prepareHtml(String html, String url) {
         html = fixItemsAndEffects(html);
-        html = injectJavascript(html);
+        html = injectJavascript(html, url);
         html = doMiscFixes(html);
         html = fixPaneReferences(html);
         return html;
@@ -187,12 +195,24 @@ public class WebModel extends Model {
 
         // Manually fix the width of the body, to fix top-level center tags
         html = html.replace("<body", "<body style=\"display: inline-block;\"");
+
+        // Fixes the strange form tags in tutorial.php
+        if (html.contains("tutorial.php")) {
+            Logger.log("WebModel", "Fixing tutorial " + TUTORIAL_FIXER.matches(html));
+            html = TUTORIAL_FIXER.replaceAll(html, "$2$1$3</form></td>");
+        }
+
+        // ?
+        html = TABLE_FIXER.replaceAll(html, "$1$3$2");
+
         return html;
     }
 
-    private static String injectJavascript(String html) {
+    private static String injectJavascript(String html, String url) {
+        String thispage = URL_BASE_FIND.extractSingle(url);
+
         for (String form : FORM_FINDER.extractAllSingle(html)) {
-            String action = FORM_ACTION.extractSingle(form, "");
+            String action = FORM_ACTION.extractSingle(form, thispage);
             String method = FORM_METHOD.extractSingle(form, "");
             String onsubmit = FORM_SUBMIT.extractSingle(form, "");
 
@@ -220,7 +240,6 @@ public class WebModel extends Model {
             html = html.replace(form, newform);
         }
 
-        html = TABLE_FIXER.replaceAll(html, "$1$3$2");
         html = HEAD_TAG.replaceAll(html, "$0 <script>" + jsInjectCode + "</script>");
 
         //pop_query(...) is replaced by an injected function to interact with android
@@ -242,7 +261,7 @@ public class WebModel extends Model {
     }
 
     private void setHTML(String html) {
-        this.html = prepareHtml(html);
+        this.html = prepareHtml(html, url);
     }
 
     public <E> E visitType(WebModelTypeVisitor<E> visitor) {
@@ -295,11 +314,10 @@ public class WebModel extends Model {
             Logger.log("WebModel", "[AJAX] Error loading " + url);
             html_result = "";
         } else {
-            Logger.log("WebModel", "[AJAX] Loaded " + url + " : " + prepareHtml(result.html));
-            html_result = result.html;
+            html_result = prepareHtml(result.html, url);
+            Logger.log("WebModel", "[AJAX] Loaded " + url + " : " + html_result);
         }
 
-        html_result = prepareHtml(html_result);
 
         try {
             return new ByteArrayInputStream(html_result.getBytes("UTF-8"));
