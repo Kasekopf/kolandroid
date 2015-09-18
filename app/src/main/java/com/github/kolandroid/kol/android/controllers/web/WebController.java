@@ -87,15 +87,13 @@ public class WebController extends UpdatableModelController<WebModel> {
         WebViewClient client = new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Logger.log("Request", "Request made to " + url);
-
                 if (url.startsWith("data:text/html"))
                     return true;
 
                 url = url.replace("reallyquitefake/", "");
-                Log.i("WebFragment", "Request made to " + url);
+                Logger.log("WebModel", "Request made to " + url);
                 if (!getModel().makeRequest(url)) {
-                    Log.i("WebFragment", "External request: " + url);
+                    Logger.log("WedModel", "External request: " + url);
 
                     // Otherwise, the link is not for a kol page; launch an
                     // external activity

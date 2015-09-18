@@ -49,8 +49,6 @@ public class WebModel extends Model {
     private static final Regex FIND_FORM = new Regex(
             "<form[^>]*>(<input[^>]*type=[\"']?hidden[^>]*>)*<input[^>]*button[^>]*></form>",
             0);
-    private static final Regex FORM_ACTION = new Regex(
-            "<form[^>]*action=[\"']?([^\"'> ]*)[\"'> ]", 1);
     private static final Regex HIDDEN_INPUT = new Regex(
             "<input[^>]*type=[\"']?hidden[^>]*>", 0);
     private static final Regex GET_NAME = new Regex(
@@ -62,8 +60,11 @@ public class WebModel extends Model {
             "<input[^>]*button[^>]*>", 0);
     private static final Regex GET_TEXT = new Regex("value=\"([^>]*)\">", 1);
 
-    private static final Regex FORM_REPLACER = new Regex("<form([^>]*)action=([\"']?[^\"' >]*[\"']?)([^>]*)>");
-    private static final Regex FORM_REPLACER2 = new Regex("<form([^>]*)method=[\"']?[^\"' >]*[\"']?([^>]*)>");
+    private static final Regex FORM_ACTION = new Regex("<form([^>]*)action=[\"']?([^\"' >]*)[\"']?([^>]*)>", 2);
+    private static final Regex FORM_METHOD = new Regex("<form([^>]*)method=[\"']?([^\"' >]*)[\"']?([^>]*)>", 2);
+    private static final Regex FORM_SUBMIT = new Regex("<form([^>]*)onsubmit=[\"']([^\"']*)[\"']([^>]*)>", 2);
+
+    private static final Regex FORM_FINDER = new Regex("<form([^>]*)>", 0);
 
     private static final Regex TABLE_FIXER = new Regex("(</td>)(.*?)(</td>|</tr>|</table>|<td[^>]*>)");
     /**
@@ -72,29 +73,34 @@ public class WebModel extends Model {
     private static final Regex FRAME_REDIRECT = new Regex("if\\s*\\(parent\\.frames\\.length\\s*==\\s*0\\)\\s*location.href\\s*=\\s*[\"']?game\\.php[\"']?;", 0);
     private static final Regex HEAD_TAG = new Regex("<head>");
     private final static String jsInjectCode = "" +
-            "function customParseForm(form) { " +
-                    "    var inputs = form.getElementsByTagName('input');" +
-                    "    var data = form.totallyrealaction ? form.totallyrealaction.value : '';" +
-                    "    var tobegin = (data.indexOf('?') == -1);" +
-                    "    for (var i = 0; i < inputs.length; i++) {" +
-                    "         var field = inputs[i];" +
-                    "         if(field.name && field.name==='totallyrealaction') continue; " +
-                    "         if(field.type == 'radio' && !field.checked) continue; " +
-                    "         if(field.type == 'checkbox' && !field.checked) continue; " +
-                    "         if (field.type != 'reset' && field.name) {" +
-                    "             data += (tobegin ? '?' : '&');" +
-                    "             tobegin = false;" +
-                    "             data += encodeURIComponent(field.name) + '=' + encodeURIComponent(field.value);" +
-                    "         }" +
-                    "    }" +
-                    "    var select = form.getElementsByTagName('select');" +
-                    "    for (var i = 0; i < select.length; i++) {" +
-                    "         var field = select[i];" +
-                    "         data += (tobegin ? '?' : '&');" +
-                    "         tobegin = false;" +
-                    "         data += encodeURIComponent(field.name) + '=' + encodeURIComponent(field.options[field.selectedIndex].value);" +
-                    "    }" +
-                    "    window.ANDROIDAPP.processFormData(data);" +
+            "function customParseForm(form, action, method) { " +
+            "   var inputs = form.getElementsByTagName('input');" +
+            "   var data = action ? action : '';" +
+            "   if(method.toUpperCase() == 'POST') {" +
+            "       if(data.indexOf('.com/') > -1) data = data.replace('.com/', '.com/POST/');" +
+            "       else data = 'POST/' + data;" +
+            "   }" +
+            "   var tobegin = (data.indexOf('?') == -1);" +
+            "   for (var i = 0; i < inputs.length; i++) {" +
+            "       var field = inputs[i];" +
+            "       if(field.name && field.name==='totallyrealaction') continue; " +
+            "       if(field.type == 'radio' && !field.checked) continue; " +
+            "       if(field.type == 'checkbox' && !field.checked) continue; " +
+            "       if (field.type != 'reset' && field.name) {" +
+            "           data += (tobegin ? '?' : '&');" +
+            "           tobegin = false;" +
+            "           data += encodeURIComponent(field.name) + '=' + encodeURIComponent(field.value);" +
+            "       }" +
+            "   }" +
+            "   var select = form.getElementsByTagName('select');" +
+            "   for (var i = 0; i < select.length; i++) {" +
+            "       var field = select[i];" +
+            "       data += (tobegin ? '?' : '&');" +
+            "       tobegin = false;" +
+            "       data += encodeURIComponent(field.name) + '=' + encodeURIComponent(field.options[field.selectedIndex].value);" +
+            "   }" +
+            "   window.ANDROIDAPP.processFormData(data);" +
+            "   return false;" +
             "}\n" +
             "function pop_query(caller, title, button, callback, def) { " +
             "    window.querycallback = callback;" +
@@ -115,14 +121,11 @@ public class WebModel extends Model {
     public WebModel(Session s, ServerReply text, WebModelType type) {
         super(s);
 
-        Logger.log("WebModel", "Loaded " + text.url);
+        Logger.log("WebModel", "Created for " + text.url);
 
         this.setHTML(text.html.replace("window.devicePixelRatio >= 2", "window.devicePixelRatio < 2"));
         this.url = text.url;
         this.type = type;
-
-
-        //Logger.log("WebModel", this.html);
     }
 
     public WebModel(Session s, ServerReply text) {
@@ -189,8 +192,34 @@ public class WebModel extends Model {
     }
 
     private static String injectJavascript(String html) {
-        html = FORM_REPLACER.replaceAll(html, "<form$1$3><input type=hidden name=totallyrealaction value=$2>");
-        html = FORM_REPLACER2.replaceAll(html, "<form$1action=\"\" onsubmit=\"customParseForm(this);\"$2>");
+        for (String form : FORM_FINDER.extractAllSingle(html)) {
+            String action = FORM_ACTION.extractSingle(form, "");
+            String method = FORM_METHOD.extractSingle(form, "");
+            String onsubmit = FORM_SUBMIT.extractSingle(form, "");
+
+            //Process the onsubmit javascript into a prependable form
+            String newsubmit = "customParseForm(this, '" + action + "', '" + method + "');";
+            if (onsubmit.startsWith("return ")) {
+                onsubmit = onsubmit.replace("return ", "");
+                while (onsubmit.length() > 0 && onsubmit.endsWith(";")) {
+                    onsubmit = onsubmit.substring(0, onsubmit.length() - 1);
+                }
+                newsubmit = "return ((" + onsubmit + ") && " + newsubmit + ")";
+            } else if (onsubmit.length() > 0) {
+                newsubmit = onsubmit + "; return " + newsubmit;
+            } else {
+                newsubmit = "return " + newsubmit;
+            }
+
+            String newform = form;
+            newform = FORM_ACTION.replaceAll(newform, "<form$1$3>");
+            newform = FORM_METHOD.replaceAll(newform, "<form$1$3>");
+            newform = FORM_SUBMIT.replaceAll(newform, "<form$1$3>");
+            newform = FORM_FINDER.replaceAll(newform, "<form$1 action=\"\" onsubmit=\"" + newsubmit + "\">");
+
+            Logger.log("WebModel", form + " => " + newform);
+            html = html.replace(form, newform);
+        }
 
         html = TABLE_FIXER.replaceAll(html, "$1$3$2");
         html = HEAD_TAG.replaceAll(html, "$0 <script>" + jsInjectCode + "</script>");

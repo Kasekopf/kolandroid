@@ -13,6 +13,7 @@ import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controllers.ErrorController;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
+import com.github.kolandroid.kol.model.models.ErrorModel;
 import com.github.kolandroid.kol.util.Logger;
 
 public class DialogScreen extends DialogFragment implements Screen {
@@ -73,7 +74,7 @@ public class DialogScreen extends DialogFragment implements Screen {
 
         if (controller == null) {
             Logger.log("DialogScreen", "Unable to load controller from bundle");
-            controller = new ErrorController("0x35ad1: Unable to display page", false);
+            controller = new ErrorController("0x35ad1: Unable to display page", ErrorModel.ErrorType.ERROR);
         }
 
         int layoutid = controller.getView();

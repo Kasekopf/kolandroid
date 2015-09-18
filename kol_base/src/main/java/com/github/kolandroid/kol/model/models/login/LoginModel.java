@@ -37,7 +37,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                 Logger.log("LoginModel", "Received initial challenge");
                 if (response == null) {
                     Logger.log("LoginModel", "Failed to Login");
-                    ErrorModel.trigger(context, "Unable to access KoL servers. Do you have internet?", true);
+                    ErrorModel.trigger(context, "Unable to access KoL servers. Do you have internet?", ErrorModel.ErrorType.SEVERE);
                     return;
                 }
 
@@ -47,7 +47,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
 
                 if (loginId == null || challenge == null || server == null) {
                     Logger.log("LoginModel", "Failed to Login");
-                    ErrorModel.trigger(context, "Unable to access KoL servers. Do you have internet?", true);
+                    ErrorModel.trigger(context, "Unable to access KoL servers. Do you have internet?", ErrorModel.ErrorType.SEVERE);
                     return;
                 }
 
@@ -68,7 +68,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                                 if (!response.cookie.contains("PHPSESSID=")) {
                                     // Failure to login
                                     Logger.log("LoginModel", "Failed to Login");
-                                    ErrorModel.trigger(context, "Login Failed. Bad Password.", true);
+                                    ErrorModel.trigger(context, "Login Failed. Bad Password.", ErrorModel.ErrorType.SEVERE);
                                     return;
                                 }
 

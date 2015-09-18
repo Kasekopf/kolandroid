@@ -58,6 +58,12 @@ public class PrimaryRoute implements ResponseHandler {
             return new WebController(model);
         }
 
+        if (response.url.contains("donatepopup.php")) {
+            response = ErrorModel.generateErrorMessage("Thanks for donating to KoL! Unfortunately, this unofficial mobile app does not yet support donations. Please use the mobile web browser.", ErrorModel.ErrorType.MESSAGE);
+            ErrorModel model = new ErrorModel(session, response);
+            return new ErrorController(model);
+        }
+
         if (response.url.contains("androiderror.php")) {
             ErrorModel model = new ErrorModel(session, response);
             return new ErrorController(model);

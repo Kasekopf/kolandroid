@@ -5,10 +5,12 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.util.Logger;
+import com.github.kolandroid.kol.util.Regex;
 
 public class ErrorModel extends Model {
+    private static final Regex TYPE_EXTRACTION = new Regex("[&?]severe=([^&]*)", 1);
     private final String message;
-    private final boolean severe;
+    private final ErrorType severe;
 
     /**
      * Create a new model in the provided session.
@@ -19,23 +21,32 @@ public class ErrorModel extends Model {
         super(s);
 
         this.message = reply.html;
-        this.severe = reply.url.contains("severe=true");
+        this.severe = determineType(reply);
     }
 
-    public ErrorModel(String message, boolean severe) {
+    public ErrorModel(String message, ErrorType type) {
         super(new Session());
 
         this.message = message;
-        this.severe = severe;
+        this.severe = type;
     }
 
-    public static void trigger(ViewContext context, String message, boolean severe) {
+    private static ErrorType determineType(ServerReply text) {
+        String specified_type = TYPE_EXTRACTION.extractSingle(text.url, "message");
+        for (ErrorType type : ErrorType.values()) {
+            if (specified_type.equals(type.toString()))
+                return type;
+        }
+        return ErrorType.MESSAGE;
+    }
+
+    public static void trigger(ViewContext context, String message, ErrorType type) {
         Logger.log("ErrorModel", "ERROR: " + message);
-        context.getPrimaryRoute().handle(new Session(), generateErrorMessage(message, severe));
+        context.getPrimaryRoute().handle(new Session(), generateErrorMessage(message, type));
     }
 
-    public static ServerReply generateErrorMessage(String message, boolean severe) {
-        String url = "androiderror.php&severe=" + severe;
+    public static ServerReply generateErrorMessage(String message, ErrorType type) {
+        String url = "androiderror.php&severe=" + type;
         return new ServerReply(200, "", "", message, url, "");
     }
 
@@ -43,7 +54,45 @@ public class ErrorModel extends Model {
         return message;
     }
 
-    public boolean isSevere() {
-        return severe;
+    public <E> E visitType(ErrorTypeVisitor<E> visitor) {
+        return severe.visit(visitor);
+    }
+
+
+    public enum ErrorType {
+        MESSAGE("message") {
+            public <E> E visit(ErrorTypeVisitor<E> visitor) {
+                return visitor.forMessage();
+            }
+        }, ERROR("error") {
+            public <E> E visit(ErrorTypeVisitor<E> visitor) {
+                return visitor.forError();
+            }
+        }, SEVERE("results") {
+            public <E> E visit(ErrorTypeVisitor<E> visitor) {
+                return visitor.forSevere();
+            }
+        };
+
+        private final String value;
+
+        ErrorType(String value) {
+            this.value = value;
+        }
+
+        public abstract <E> E visit(ErrorTypeVisitor<E> visitor);
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    public interface ErrorTypeVisitor<E> {
+        E forMessage();
+
+        E forError();
+
+        E forSevere();
     }
 }
