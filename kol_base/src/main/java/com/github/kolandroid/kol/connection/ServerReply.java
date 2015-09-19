@@ -21,7 +21,7 @@ public class ServerReply implements Serializable {
             "<table[^>]*><tr><td[^>]*><b>Results:?.*?(<center>.*?</center>)</td></tr><tr><td height=4></td></tr></table>", 1);
     // Regex to find contents of the <body> tag of any page
     private static final Regex PAGE_BODY = new Regex(
-            "(<body[^>]*>)(.*?)(</body>)", 2);
+            "(<body[^>]*>)(.*)(</body>)", 2);
 
     public final int responseCode;
     public final String redirectLocation;
@@ -127,20 +127,22 @@ public class ServerReply implements Serializable {
             return null;
 
         Logger.log("ServerReply", "Detected results pane: " + resultsPane);
-        String resultsHtml;
-        if (PAGE_BODY.matches(html)) {
-            resultsHtml = PAGE_BODY.replaceAll(html, "$1<center>"
-                    + resultsPane + "</center>$3");
-        } else {
-            //A fake wrapper for the result; TODO: revisit.
-            resultsHtml = "<html><head><script type=\"text/javascript\">top.charpane.location.href=\"charpane.php\";</script></head><body>" + resultsPane + "</body></html>";
-        }
-
         String updatedUrl = "http://www.kingdomofloathing.com/results.php?androiddisplay=results";
 
-        return new ServerReply(responseCode,
-                redirectLocation, date, resultsHtml,
-                updatedUrl, cookie);
+        return substituteBody(updatedUrl, "<center>" + resultsPane + "</center>");
+    }
+
+    public ServerReply substituteBody(String newUrl, String newBody) {
+        String newHtml;
+        if (PAGE_BODY.matches(html)) {
+            newHtml = PAGE_BODY.replaceAll(html, "$1" + newBody + "</body>");
+        } else {
+            Logger.log("ServerReply", "Could not find the body of " + url);
+            newHtml = "<html><head></head><body>" + newBody + "</body></html>";
+        }
+
+        Logger.logBig("ServerReply", newHtml);
+        return new ServerReply(responseCode, redirectLocation, date, newHtml, newUrl, cookie);
     }
 
     public ServerReply removeResultsPane() {

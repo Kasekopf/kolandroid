@@ -20,12 +20,16 @@ import android.widget.Toast;
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.chat.ChatService;
 import com.github.kolandroid.kol.android.controller.LinkedModelController;
+import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
+import com.github.kolandroid.kol.android.screen.ViewScreen;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
+import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.model.models.login.LoginModel;
 import com.github.kolandroid.kol.model.models.login.LoginStatus;
 import com.github.kolandroid.kol.model.models.login.PasswordHash;
+import com.github.kolandroid.kol.util.Logger;
 
 import java.util.ArrayList;
 
@@ -177,6 +181,16 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
                 });
                 container.addView(magicButton);
             }
+        }
+
+        WebModel announcements = model.getAnnouncementsModel();
+        if (announcements == null) {
+            View announcementsPanel = view.findViewById(R.id.login_announcementspanel);
+            announcementsPanel.setVisibility(View.GONE);
+        } else {
+            Logger.log("LoginController", "Displaying Announcements!");
+            ViewScreen announcementsScreen = (ViewScreen) view.findViewById(R.id.login_announcementsscreen);
+            announcementsScreen.display(new WebController(announcements), host);
         }
 
     }

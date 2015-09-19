@@ -192,9 +192,6 @@ public class WebModel extends Model {
 
     private static final Regex POPQUERY_SCRIPT = new Regex("<script[^>]*pop_query[^>]*></script>");
 
-    // Regex to find contents of the <body> tag of any page
-    private static final Regex PAGE_BODY = new Regex(
-            "(<body[^>]*>)(.*?)(</body>)", 2);
     private static final Regex TYPE_EXTRACTION = new Regex("[&?]androiddisplay=([^&]*)", 1);
     private static final Regex TOP_PANE_REFRESH = new Regex("top.charpane.location(.href)?=[\"']?charpane.php[\"']?;");
     private final String url;
@@ -218,10 +215,10 @@ public class WebModel extends Model {
     }
 
     public WebModel(Session s, ServerReply text) {
-        this(s, text, determineType(text));
+        this(s, text, determineType(s, text));
     }
 
-    private static WebModelType determineType(ServerReply text) {
+    private static WebModelType determineType(Session session, ServerReply text) {
         String specified_type = TYPE_EXTRACTION.extractSingle(text.url, "unspecified");
         for (WebModelType type : WebModelType.values()) {
             if (specified_type.equals(type.toString()))
@@ -235,7 +232,12 @@ public class WebModel extends Model {
 
         if (text.url.contains("create.php"))
             return WebModelType.EXTERNAL;
-        return WebModelType.REGULAR;
+
+        if (session.getCookie("PHPSESSID", "").equals("")) {
+            return WebModelType.EXTERNAL;
+        } else {
+            return WebModelType.REGULAR;
+        }
     }
 
 

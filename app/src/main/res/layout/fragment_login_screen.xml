@@ -1,166 +1,192 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff3f3f3"
-    android:orientation="vertical"
-    tools:context="com.github.kolandroid.kol.android.login.LoginScreen">
-
-    <LinearLayout
-        android:id="@+id/login_magicpanel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/blueborder"
-        android:orientation="vertical"
-        android:padding="1dp"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#00f"
-            android:gravity="center"
-            android:text="Newly Created Characters:"
-            android:textColor="#fff"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:id="@+id/login_magiccontainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="5dp">
-
-        </LinearLayout>
-    </LinearLayout>
+    tools:context="com.github.kolandroid.kol.android.login.LoginController">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/blueborder"
+        android:layout_height="match_parent"
+        android:background="#fff3f3f3"
         android:orientation="vertical"
-        android:padding="1dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#00f"
-            android:gravity="center"
-            android:text="Enter the Kingdom:"
-            android:textColor="#fff"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        android:padding="10dp">
 
         <LinearLayout
+            android:id="@+id/login_magicpanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/blueborder"
             android:orientation="vertical"
-            android:paddingBottom="5dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp">
-
-            <EditText
-                android:id="@+id/login_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Username"
-                android:imeOptions="actionNext"
-                android:inputType="textNoSuggestions"
-                android:maxLines="@integer/SingleLine">
-
-                <requestFocus />
-            </EditText>
-
-            <EditText
-                android:id="@+id/login_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Password"
-                android:imeOptions="actionGo"
-                android:inputType="textPassword"
-                android:maxLines="@integer/SingleLine" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <CheckBox
-                    android:id="@+id/login_savepassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingRight="5dp"
-                    android:text="Save Password" />
-
-                <CheckBox
-                    android:id="@+id/login_enterchat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingRight="5dp"
-                    android:text="Enter Chat" />
-
-
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/login_btnlogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Login" />
-        </LinearLayout>
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/blueborder"
-        android:orientation="vertical"
-        android:paddingBottom="1dp"
-        android:paddingLeft="1dp"
-        android:paddingRight="1dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#00f"
-            android:gravity="center"
-            android:text="Sign Up!"
-            android:textColor="#fff"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="5dp">
-
+            android:padding="1dp"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#00f"
                 android:gravity="center"
-                android:text="Don't have a character? Make one now! It's free!"
-                android:textColor="#000" />
+                android:text="Newly Created Characters:"
+                android:textColor="#fff"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/login_newaccount"
+            <LinearLayout
+                android:id="@+id/login_magiccontainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Play" />
+                android:orientation="vertical"
+                android:padding="5dp">
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/blueborder"
+            android:orientation="vertical"
+            android:padding="1dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#00f"
+                android:gravity="center"
+                android:text="Enter the Kingdom:"
+                android:textColor="#fff"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
+
+                <EditText
+                    android:id="@+id/login_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Username"
+                    android:imeOptions="actionNext"
+                    android:inputType="textNoSuggestions"
+                    android:maxLines="@integer/SingleLine">
+
+                    <requestFocus />
+                </EditText>
+
+                <EditText
+                    android:id="@+id/login_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Password"
+                    android:imeOptions="actionGo"
+                    android:inputType="textPassword"
+                    android:maxLines="@integer/SingleLine" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/login_savepassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="5dp"
+                        android:text="Save Password" />
+
+                    <CheckBox
+                        android:id="@+id/login_enterchat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="5dp"
+                        android:text="Enter Chat" />
+
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/login_btnlogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Login" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/blueborder"
+            android:orientation="vertical"
+            android:paddingBottom="1dp"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#00f"
+                android:gravity="center"
+                android:text="Sign Up!"
+                android:textColor="#fff"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Don't have a character? Make one now! It's free!"
+                    android:textColor="#000" />
+
+                <Button
+                    android:id="@+id/login_newaccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Play" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/login_announcementspanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/blueborder"
+            android:orientation="vertical"
+            android:paddingBottom="1dp"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#00f"
+                android:gravity="center"
+                android:text="Announcements:"
+                android:textColor="#fff"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <com.github.kolandroid.kol.android.screen.ViewScreen
+                android:id="@+id/login_announcementsscreen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

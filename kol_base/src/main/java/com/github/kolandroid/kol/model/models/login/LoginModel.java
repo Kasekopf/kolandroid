@@ -4,6 +4,7 @@ import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.LinkedModel;
 import com.github.kolandroid.kol.model.models.ErrorModel;
+import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
 import com.github.kolandroid.kol.request.SimulatedRequest;
@@ -32,10 +33,14 @@ public class LoginModel extends LinkedModel<LoginStatus> {
     private static final Regex FIND_MAGIC = new Regex("magic=(\\d+)%.*", 1);
     private final static Regex MAGIC_NAME = new Regex("<a[^>]*>([^<]*)</a>", 1);
     private final static Regex MAGIC_ACTION = new Regex("<a[^>]*href=[\"']([^\"'>]*)[\"']", 1);
+
+    private final static Regex ANNOUNCEMENTS = new Regex("<b>Announcements:?</b>.*?<center>(<table>.*?</table>)</center>", 1);
+    private final static Regex BLANK_TARGETS = new Regex("target=[\"']?_blank[\"']?");
+
     private final String loginId;
     private final String challenge;
     private final ArrayList<MagicLoginAction> magicCharacters;
-
+    private final WebModel announcmentsModel;
     private boolean stale;
 
     public LoginModel(Session s, ServerReply reply) {
@@ -55,6 +60,15 @@ public class LoginModel extends LinkedModel<LoginStatus> {
             for (String listitem : MAGIC_CHARACTERS.extractAllSingle(magic)) {
                 magicCharacters.add(new MagicLoginAction(listitem));
             }
+        }
+
+        String announcements = ANNOUNCEMENTS.extractSingle(reply.html);
+        if (announcements == null) {
+            announcmentsModel = null;
+        } else {
+            announcements = BLANK_TARGETS.replaceAll(announcements, "");
+            Logger.log("LoginModel", "Announcements:" + announcements);
+            announcmentsModel = new WebModel(s, reply.substituteBody("http://www.kingdomofloathing.com/announcements.php", announcements));
         }
     }
 
@@ -100,6 +114,10 @@ public class LoginModel extends LinkedModel<LoginStatus> {
     public void createAccount() {
         Request req = new Request("create.php?");
         this.makeRequest(req);
+    }
+
+    public WebModel getAnnouncementsModel() {
+        return announcmentsModel;
     }
 
     public class MagicLoginAction implements Serializable {

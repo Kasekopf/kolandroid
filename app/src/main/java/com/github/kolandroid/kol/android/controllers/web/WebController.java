@@ -120,7 +120,7 @@ public class WebController extends UpdatableModelController<WebModel> {
 
             @Override
             public Void forExternal() {
-                choice.displayExternal(WebController.this);
+                choice.displayExternalDialog(WebController.this, true);
                 return null;
             }
         });
