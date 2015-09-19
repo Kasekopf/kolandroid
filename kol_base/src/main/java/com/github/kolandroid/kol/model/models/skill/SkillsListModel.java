@@ -5,9 +5,11 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.model.elements.OptionElement;
 import com.github.kolandroid.kol.model.elements.OptionElement.OptionElementParser;
+import com.github.kolandroid.kol.model.elements.basic.BasicGroup;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
 import com.github.kolandroid.kol.model.models.skill.SkillModelElement.Buff;
 import com.github.kolandroid.kol.model.models.skill.SkillModelElement.Skill;
+import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
 import java.util.ArrayList;
@@ -18,33 +20,78 @@ public class SkillsListModel extends Model implements SkillsSubmodel {
      */
     private static final long serialVersionUID = -6757825084689878953L;
 
-    private static final Regex SKILLS_FORM = new Regex(
-            "<form[^>]*skillform[^>]*>.*?</form>", 0);
-    private static final Regex BUFFS_FORM = new Regex(
-            "<form[^>]*buffform[^>]*>.*?</form>", 0);
-    private static final Regex BUFFS_LIST = OptionElement
-            .regexFor("whichskill");
-
+    private static final Regex SKILL = new Regex(
+            "<div[^>]*class=[\"']?skill[^>]*"
+    );
+    private static final Regex ICON_GROUP = new Regex("(<table[^>]*class=[\"']?cat[\"']?.*?)?div class=[\"']?balls[\"']?.*?<td height=4></td></tr></table>", 0);
+    private static final Regex ICON_GROUP_NAME = new Regex("<b>([^<]*)<span class=[\"']?open[\"']?>", 1);
+    private static final Regex ICON_SKILL = new Regex("<div[^>]*skill.*?</table>", 0);
+    private static final Regex ICON_SKILLID = new Regex("<div[^>]*rel=[\"']?(\\d+)[\"']>", 1);
+    private static final Regex ICON_NAME = new Regex("title=\"([^\"]*)\"", 1);
+    private static final Regex ICON_IMG = new Regex("src=\"([^\"]*)\"", 1);
+    private static final Regex ICON_COST = new Regex("<div[^>]*cost[^>]*>([^<]*)</div>", 1);
+    private static final Regex ICON_DISABLED = new Regex("skill *disabled", 1);
+    private static final Regex ICON_PWD = new Regex("&pwd=([^&]*)&", 1);
+    private static final Regex ICON_YOURSELF = new Regex("&targetplayer=([^&]*)&", 1);
+    private static final Regex SKILLS_GROUP = new Regex(
+            "(<div class=\"title\">[^<]*</div>)?<form[^>]*runskillz.php.*?</form>", 1, 0);
+    private static final Regex TARGETS = new Regex("<select[^>]*targetplayer.*?</select>");
     private static final Regex PWD = new Regex("<input[^>]*pwd[^>]*>", 0);
     private static final Regex EXTRACT_VALUE = new Regex(
             "value=[\"']?([0-9a-fA-F]*)", 1);
-
     private static final Regex OPTION_YOURSELF = new Regex(
             "<option value=[\"']?(\\d+)[\"']?>\\(yourself\\)</option>", 1);
-
     private final ArrayList<ModelGroup<SkillModelElement>> skills;
-
     public SkillsListModel(Session s, ServerReply base) {
         super(s);
-        this.skills = processSkills(base.html);
+        if (base.html.contains("(select a skill)</option>")) {
+            this.skills = processSkillsDropdowns(base.html);
+        } else {
+            this.skills = processSkillsIcons(base.html);
+        }
     }
 
-    private ArrayList<ModelGroup<SkillModelElement>> processSkills(String html) {
+    private ArrayList<ModelGroup<SkillModelElement>> processSkillsIcons(String html) {
+        Logger.log("SkillsListModel", "Parsing icons");
         ArrayList<ModelGroup<SkillModelElement>> skills = new ArrayList<ModelGroup<SkillModelElement>>();
 
-        String all_skills = SKILLS_FORM.extractSingle(html);
+        String pwd = ICON_PWD.extractSingle(html);
+        String yourself = ICON_YOURSELF.extractSingle(html);
+
+        for (String group : ICON_GROUP.extractAllSingle(html)) {
+            ArrayList<SkillModelElement> elements = new ArrayList<>();
+            for (String skill : ICON_SKILL.extractAllSingle(group)) {
+                String name = ICON_NAME.extractSingle(skill, "");
+                String id = ICON_SKILLID.extractSingle(skill, "");
+                if (name.equals("") || id.equals("")) continue;
+
+                String img = ICON_IMG.extractSingle(skill, "");
+                String cost = ICON_COST.extractSingle(skill, "");
+                boolean disabled = ICON_DISABLED.matches(skill);
+
+                if (!cost.equals(""))
+                    name += " " + cost;
+
+                OptionElement option = new OptionElement(name, img, id, disabled);
+                elements.add(new Buff(getSession(), option, pwd, yourself));
+            }
+
+            if (elements.size() == 0) continue;
+
+            String groupName = ICON_GROUP_NAME.extractSingle(group, "Skills");
+            skills.add(new BasicGroup<SkillModelElement>(groupName, elements));
+        }
+        return skills;
+    }
+
+    private ArrayList<ModelGroup<SkillModelElement>> processSkillsDropdowns(String html) {
+        Logger.log("SkillsListModel", "Parsing dropdowns");
+
+        ArrayList<ModelGroup<SkillModelElement>> skills = new ArrayList<ModelGroup<SkillModelElement>>();
+
         final String pwd = EXTRACT_VALUE.extractSingle(PWD
-                .extractSingle(all_skills));
+                .extractSingle(html), "0");
+        final String yourself = OPTION_YOURSELF.extractSingle(html, "");
 
         OptionElementParser<SkillModelElement> skillparser = new OptionElementParser<SkillModelElement>(
                 "(select a skill)") {
@@ -54,22 +101,38 @@ public class SkillsListModel extends Model implements SkillsSubmodel {
             }
         };
 
-        skills.addAll(OptionElement.extractObjectGroups(all_skills, "Skills",
-                skillparser));
-
-        String all_buffs = BUFFS_LIST.extractSingle(BUFFS_FORM
-                .extractSingle(html));
-        final String yourself = OPTION_YOURSELF.extractSingle(all_buffs);
         OptionElementParser<SkillModelElement> buffparser = new OptionElementParser<SkillModelElement>(
-                "(select a buff)") {
+                "(select a skill)") {
             @Override
             public SkillModelElement make(OptionElement base) {
                 return new Buff(getSession(), base, pwd, yourself);
             }
         };
 
-        skills.addAll(OptionElement.extractObjectGroups(all_buffs, "Buffs",
-                buffparser));
+        for (String[] group : SKILLS_GROUP.extractAll(html)) {
+            String name = group[0];
+            if (name == null) name = "Skills";
+            name = name.replace(":", "");
+            name = name.replace("<div class=\"title\">", "");
+            name = name.replace("</div>", "");
+
+            String form = group[1];
+            if (form == null) continue;
+            form = form.replace(" &nbsp;", "");
+            form = TARGETS.replaceAll(form, "");
+
+            ArrayList<SkillModelElement> elements;
+            if (name.equalsIgnoreCase("Not-Buff") || yourself.equals("")) {
+                //We can be sure the elements are not buffs
+                elements = OptionElement.extractObjects(form, skillparser);
+            } else {
+                elements = OptionElement.extractObjects(form, buffparser);
+            }
+
+            Logger.log("SkillsListModel", "Parsed skill group " + name);
+
+            skills.add(new BasicGroup(name, elements));
+        }
 
         return skills;
     }

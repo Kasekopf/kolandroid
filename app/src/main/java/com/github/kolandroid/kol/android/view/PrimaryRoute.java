@@ -101,7 +101,7 @@ public class PrimaryRoute implements ResponseHandler {
             return new ClosetController(model);
         }
 
-        if (response.url.contains("skills.php")) {
+        if (response.url.contains("skillz.php")) {
             SkillsModel model = new SkillsModel(session, response);
             return new SkillsController(model);
         }

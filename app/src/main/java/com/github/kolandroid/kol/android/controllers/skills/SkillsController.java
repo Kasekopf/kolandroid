@@ -13,7 +13,7 @@ import com.github.kolandroid.kol.android.util.searchlist.ListSelector;
 import com.github.kolandroid.kol.android.util.searchlist.SearchListController;
 import com.github.kolandroid.kol.android.util.searchlist.SerializableSelector;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
-import com.github.kolandroid.kol.model.models.skill.ItemsListModel;
+import com.github.kolandroid.kol.model.models.skill.ItemRestorersModel;
 import com.github.kolandroid.kol.model.models.skill.SkillModelElement;
 import com.github.kolandroid.kol.model.models.skill.SkillModelElement.Buff;
 import com.github.kolandroid.kol.model.models.skill.SkillModelElement.RestorerItem;
@@ -69,7 +69,7 @@ public class SkillsController extends GroupController<SkillsSubmodel, SkillsMode
         }
 
         @Override
-        public Controller execute(ItemsListModel model) {
+        public Controller execute(ItemRestorersModel model) {
             ArrayList<SkillModelElement> list = model.getItems();
             return new SearchListController<SkillModelElement>(list, SkillsBinder.ONLY, selector);
         }

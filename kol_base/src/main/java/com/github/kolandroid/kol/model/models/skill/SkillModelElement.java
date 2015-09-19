@@ -48,7 +48,7 @@ public abstract class SkillModelElement extends BasicSubtextElement {
         public Skill(Session session, OptionElement option, String pwd) {
             super(option);
 
-            this.actionBase = "skills.php?pwd=" + pwd
+            this.actionBase = "skillz.php?pwd=" + pwd
                     + "&action=Skillz&whichskill=" + option.value;
             this.session = session;
         }
@@ -77,7 +77,7 @@ public abstract class SkillModelElement extends BasicSubtextElement {
                     String yourself) {
             super(option);
 
-            String action = "skills.php?pwd=" + pwd;
+            String action = "skillz.php?pwd=" + pwd;
             action += "&action=Skillz&targetplayer=" + yourself;
             action += "&whichskill=" + option.value;
             this.actionBase = action;
@@ -114,7 +114,7 @@ public abstract class SkillModelElement extends BasicSubtextElement {
 
             String action = "inv_use.php";
             action += "?pwd=" + pwd;
-            action += "&action=useitem&bounce=skills.php%3Faction%3Duseditem";
+            action += "&action=useitem&bounce=skillz.php%3Faction%3Duseditem";
             action += "&whichitem=" + option.value;
             this.actionBase = action;
         }

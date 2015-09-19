@@ -10,20 +10,13 @@ public class SkillsModel extends GroupModel<SkillsSubmodel> {
      */
     private static final long serialVersionUID = 295714863597L;
     private final SkillsListModel skills;
-    private final ItemsListModel items;
-    private final boolean usedItem;
+    private final ItemRestorersModel items;
 
     public SkillsModel(Session s, ServerReply text) {
         super(s);
 
         this.skills = new SkillsListModel(s, text);
-        this.items = new ItemsListModel(s, text);
-
-        usedItem = text.url.contains("useditem");
-    }
-
-    public boolean getJustUsedItem() {
-        return usedItem;
+        this.items = new ItemRestorersModel(s, text);
     }
 
     @Override

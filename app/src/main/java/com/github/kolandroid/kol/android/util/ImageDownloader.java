@@ -36,9 +36,6 @@ public class ImageDownloader {
             throw new RuntimeException("AndroidViewContext should only be created from the main thread.");
         }
 
-        //todo add caching
-        //see https://github.com/koush/UrlImageViewHelper/blob/master/UrlImageViewHelper/src/com/koushikdutta/urlimageviewhelper/UrlImageViewHelper.java
-        //for an example implementation
         if (url == null) return;
         if (url.length() <= 1) return;
         if (!url.startsWith("http://")) url = "http://" + url;

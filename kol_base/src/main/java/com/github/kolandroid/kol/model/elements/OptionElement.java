@@ -20,14 +20,14 @@ public class OptionElement {
             "<optgroup[^>]*label=[\"']?(.*?)[\"'>]", 1);
 
     private static final Regex OPTION_DISABLED = new Regex(
-            "<option[^>]*disabled[^>]*>", 0);
+            "disabled=", 0);
 
     public final String text;
     public final String img;
     public final String value;
     public final boolean disabled;
 
-    private OptionElement(String text, String img, String value,
+    public OptionElement(String text, String img, String value,
                           boolean disabled) {
         this.text = text;
         this.img = img;
