@@ -1,23 +1,55 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.github.kolandroid.kol.android.dialogs.ItemDialog">
+    tools:context="com.github.kolandroid.kol.android.controllers.inventory.ItemController">
 
-    <com.github.kolandroid.kol.android.screen.ViewScreen
-        android:id="@+id/dialog_item_description"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/dialog_item_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#fff"
-        android:choiceMode="singleChoice"
-        android:divider="#aaa"
-        android:dividerHeight="1dp"
-        tools:context="com.github.kolandroid.kol.android.game.ItemDialog" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:orientation="horizontal"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp">
 
-</LinearLayout>
+            <ImageView
+                android:id="@+id/dialog_item_image"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:contentDescription="Image"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/dialog_item_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="25sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/dialog_item_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:orientation="vertical" />
+
+        <com.github.kolandroid.kol.android.screen.ViewScreen
+            android:id="@+id/dialog_item_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</ScrollView>

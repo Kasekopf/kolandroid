@@ -38,13 +38,13 @@ public class ItemRestorersModel extends ItemPocketModel implements SkillsSubmode
                 "(select a skill)") {
             @Override
             public ItemModel make(OptionElement base) {
-                /*
-                 String action = "inv_use.php";
-                 action += "?pwd=" + pwd;
-                 action += "&action=useitem&bounce=skillz.php%3Faction%3Duseditem";
-                 action += "&whichitem=" + option.value;
-                 */
-                return new ItemModel(getSession(), pwd, base);
+                String action = "inv_use.php";
+                action += "?pwd=" + pwd;
+                action += "&action=useitem&bounce=skillz.php%3Faction%3Duseditem";
+                action += "&whichitem=" + base.value;
+                action += "&itemquantity=";
+
+                return new ItemModel(getSession(), pwd, base, action);
             }
         };
         ArrayList<ItemModel> itemList = OptionElement.extractObjects(all_items, itemsparser);

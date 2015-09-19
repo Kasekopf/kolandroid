@@ -79,7 +79,7 @@ public class ItemModel extends Model implements SubtextElement {
         }
     }
 
-    public ItemModel(Session s, String pwd, OptionElement base) {
+    public ItemModel(Session s, String pwd, OptionElement base, String baseAction) {
         super(s);
 
         this.name = base.text;
@@ -89,6 +89,11 @@ public class ItemModel extends Model implements SubtextElement {
         descriptionUrl = ""; //TODO: get this description url from elsewhere?
 
         this.actions = new ArrayList<>();
+        actions.add(new InventoryAction.ImmediateItemAction(getSession(), "Use", baseAction + "1"));
+
+        if (!quantity.equals("1")) {
+            actions.add(new InventoryAction.MultiuseItemAction(getSession(), this, baseAction));
+        }
     }
 
     private InventoryAction parseAction(String pwd, String action) {
@@ -154,5 +159,10 @@ public class ItemModel extends Model implements SubtextElement {
     @Override
     public String getImage() {
         return image;
+    }
+
+    @Override
+    public String toString() {
+        return getText();
     }
 }

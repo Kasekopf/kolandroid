@@ -4,12 +4,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.ModelController;
+import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
+import com.github.kolandroid.kol.android.screen.ViewScreen;
+import com.github.kolandroid.kol.android.util.ImageDownloader;
+import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.model.models.skill.SkillModel;
 
 public class SkillController extends ModelController<SkillModel> {
@@ -29,11 +34,34 @@ public class SkillController extends ModelController<SkillModel> {
 
     @Override
     public void connect(final View view, SkillModel model, final Screen host) {
-        TextView text = (TextView) view.findViewById(R.id.dialog_skill_text);
-        text.setText(model.getText());
+        WebModel description = model.getDescription();
+        if (description == null) {
+            // Display image/name of the item as a backup
 
-        TextView subtext = (TextView) view.findViewById(R.id.dialog_skill_subtext);
-        subtext.setText(model.getSubtext());
+            TextView text = (TextView) view.findViewById(R.id.dialog_skill_text);
+            text.setText(model.getText());
+            text.setVisibility(View.VISIBLE);
+
+            TextView subtext = (TextView) view.findViewById(R.id.dialog_skill_subtext);
+            subtext.setText(model.getSubtext());
+            subtext.setVisibility(View.VISIBLE);
+
+            if (model.getImage() != null && !model.getImage().equals("")) {
+                ImageView img = (ImageView) view.findViewById(R.id.dialog_skill_image);
+                img.setVisibility(View.VISIBLE);
+                ImageDownloader.loadFromUrl(img, model.getImage());
+            }
+        } else {
+            ViewScreen desc = (ViewScreen) view.findViewById(R.id.dialog_skill_description);
+            desc.display(new WebController(description), host);
+        }
+
+        if (!model.isBuff()) {
+            View player = view.findViewById(R.id.dialog_skill_player);
+            View playerlabel = view.findViewById(R.id.dialog_skill_playerlabel);
+            player.setVisibility(View.GONE);
+            playerlabel.setVisibility(View.GONE);
+        }
 
         Button submit = (Button) view.findViewById(R.id.dialog_skill_submit);
         submit.setOnClickListener(new OnClickListener() {

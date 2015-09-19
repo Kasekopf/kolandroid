@@ -2,43 +2,80 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     android:orientation="vertical"
     tools:context="com.github.kolandroid.kol.android.dialogs.BuffDialog">
 
-    <TextView
-        android:id="@+id/dialog_skill_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingLeft="15dp"
-        android:text="TextView"
-        android:textColor="#000"
-        android:textSize="25sp" />
 
-    <TextView
-        android:id="@+id/dialog_skill_subtext"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingLeft="20dp"
-        android:text="TextView"
-        android:textColor="#666"
-        android:textSize="12sp" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingLeft="3dp">
+
+        <ImageView
+            android:id="@+id/dialog_skill_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:contentDescription="Image"
+            android:gravity="center_vertical"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp">
+
+            <TextView
+                android:id="@+id/dialog_skill_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="25sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/dialog_skill_subtext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingLeft="5dp"
+                android:text=""
+                android:textColor="#666"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.github.kolandroid.kol.android.screen.ViewScreen
+        android:id="@+id/dialog_skill_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <android.support.v7.widget.GridLayout xmlns:grid="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         grid:columnCount="2"
         grid:orientation="vertical"
         grid:rowCount="2">
 
         <TextView
+            android:id="@+id/dialog_skill_playerlabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Use On:"
             android:textColor="#000"
             android:textSize="20sp"
-            grid:layout_gravity="right|bottom" />
+            grid:layout_gravity="right|center" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -47,7 +84,7 @@
             android:text="# Times:"
             android:textColor="#000"
             android:textSize="20sp"
-            grid:layout_gravity="right|bottom" />
+            grid:layout_gravity="right|center" />
 
         <EditText
             android:id="@+id/dialog_skill_player"
@@ -74,6 +111,6 @@
         android:id="@+id/dialog_skill_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Use Skill" />
+        android:text="Cast" />
 
 </LinearLayout>

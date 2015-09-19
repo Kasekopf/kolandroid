@@ -25,6 +25,7 @@ public class SkillModel extends Model implements SubtextElement {
     private final String descriptionUrl;
     private final String castAction;
     private WebModel description;
+    private boolean isBuff;
 
     /**
      * Create a new model in the provided session.
@@ -42,6 +43,7 @@ public class SkillModel extends Model implements SubtextElement {
         descriptionUrl = "desc_skill.php?whichskill=" + id;
 
         castAction = "runskillz.php?pwd=" + pwd + "&action=Skillz&targetplayer=" + yourself + "&whichskill=" + id;
+        isBuff = true;
     }
 
     public SkillModel(Session s, String pwd, String yourself, OptionElement base) {
@@ -53,6 +55,7 @@ public class SkillModel extends Model implements SubtextElement {
         descriptionUrl = "desc_skill.php?whichskill=" + base.value;
 
         castAction = "runskillz.php?pwd=" + pwd + "&action=Skillz&targetplayer=" + yourself + "&whichskill=" + base.value;
+        isBuff = true;
     }
 
     @Override
@@ -79,6 +82,10 @@ public class SkillModel extends Model implements SubtextElement {
         this.makeRequest(new Request(url));
     }
 
+    public boolean isBuff() {
+        return false;
+    }
+
     public boolean getDisabled() {
         return disabled;
     }
@@ -88,7 +95,7 @@ public class SkillModel extends Model implements SubtextElement {
     }
 
     public void loadDescription(final Callback<SkillModel> onResult) {
-        if (description != null) {
+        if (description != null || descriptionUrl.equals("")) {
             onResult.execute(this);
         } else {
             this.makeRequest(new Request(descriptionUrl), new ResponseHandler() {
@@ -97,10 +104,16 @@ public class SkillModel extends Model implements SubtextElement {
                     if (response == null) return;
                     if (!response.url.contains(descriptionUrl)) return;
 
+                    isBuff = (response.html.contains("<b>Type:</b> Buff<br>"));
                     description = new WebModel(session, new ServerReply(response, response.html));
                     onResult.execute(SkillModel.this);
                 }
             });
         }
+    }
+
+    @Override
+    public String toString() {
+        return getText();
     }
 }

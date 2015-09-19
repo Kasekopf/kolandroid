@@ -88,6 +88,12 @@ public abstract class InventoryAction extends BasicElement {
             this.toMultiuse = new MultiusableElement(session, base, action);
         }
 
+        public MultiuseItemAction(final Session session,
+                                  final ItemModel base, String action) {
+            super("Use multiple");
+            this.toMultiuse = new MultiusableElement(session, base, action);
+        }
+
         @Override
         public void select(InventoryActionVisitor visitor) {
             visitor.displayMultiuse(toMultiuse, "Use");
