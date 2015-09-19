@@ -28,17 +28,53 @@ public class WebController extends UpdatableModelController<WebModel> {
      */
     private static final long serialVersionUID = -8051419766943400254L;
 
-    private final static Regex BODY_TAG = new Regex("<body[^>]*?>");
-
     private transient WebView web;
+
+    private String inputChanges;
 
     public WebController(WebModel model) {
         super(model);
+
+        this.inputChanges = "{}";
+    }
+
+    public static String difference(String str1, String str2) {
+        if (str1 == null) {
+            return str2;
+        }
+        if (str2 == null) {
+            return str1;
+        }
+        int at = indexOfDifference(str1, str2);
+        if (at == -1) {
+            return "";
+        }
+        return str2.substring(at);
+    }
+
+    public static int indexOfDifference(String str1, String str2) {
+        if (str1 == str2) {
+            return -1;
+        }
+        if (str1 == null || str2 == null) {
+            return 0;
+        }
+        int i;
+        for (i = 0; i < str1.length() && i < str2.length(); ++i) {
+            if (str1.charAt(i) != str2.charAt(i)) {
+                break;
+            }
+        }
+        if (i < str2.length() || i < str1.length()) {
+            return i;
+        }
+        return -1;
     }
 
     public void updateModel(WebModel base) {
         super.updateModel(base);
         if (web != null) {
+            //inputChanges = "{}";
             loadContent(base);
         }
     }
@@ -88,6 +124,19 @@ public class WebController extends UpdatableModelController<WebModel> {
                 return null;
             }
         });
+    }
+
+    @Override
+    public void disconnect(Screen host) {
+        super.disconnect(host);
+
+        /*
+        if(web != null) {
+            //Check all input changes in the document, and pass them to reportInputChanges()
+            web.loadUrl("javascript:checkInputChanges();");
+        }
+        */
+
     }
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
@@ -140,21 +189,15 @@ public class WebController extends UpdatableModelController<WebModel> {
         web = (WebView) view.findViewById(R.id.webview);
 
         web.getSettings().setJavaScriptEnabled(true);
+
+        Logger.log("WebController", "Adding html with input cache: " + inputChanges);
         web.addJavascriptInterface(new JavaScriptInterface(host), "ANDROIDAPP");
         web.setWebViewClient(client);
+
         loadContent(model);
     }
 
     private void loadContent(WebModel model) {
-        String fixedHtml = model.getHTML();
-
-        // Fix the viewport size by inserting a viewport tag
-        fixedHtml = BODY_TAG
-                .replaceAll(fixedHtml,
-                        "$0<meta name=\"viewport\" content=\"width=device-width\">");
-
-        Logger.log("WebController", "Loading content of size " + fixedHtml.length());
-
         boolean allowZoom = model.visitType(new WebModel.WebModelTypeVisitor<Boolean>() {
             @Override
             public Boolean forRegular() {
@@ -181,12 +224,15 @@ public class WebController extends UpdatableModelController<WebModel> {
         web.getSettings().setLoadWithOverviewMode(true);
         web.getSettings().setUseWideViewPort(true);
 
-        web.loadDataWithBaseURL(model.getURL(), fixedHtml, "text/html", null,
+        String html = model.getHTML();
+        Logger.log("WebController", "Loading content of size " + html.length());
+        web.loadDataWithBaseURL(model.getURL(), html, "text/html", null,
                 null);
 
         web.invalidate();
 
     }
+
     class JavaScriptInterface {
         private final WeakReference<Screen> host;
 
@@ -233,6 +279,30 @@ public class WebController extends UpdatableModelController<WebModel> {
             Screen host = this.host.get();
             if (host == null) return;
             DialogScreen.display(input, host, question);
+        }
+
+
+        @android.webkit.JavascriptInterface
+        public void reportInputChanges(String changes) {
+            Logger.log("WebController", "Cached input changes: " + changes);
+            inputChanges = changes;
+        }
+
+        @android.webkit.JavascriptInterface
+        public String getInputChanges() {
+            return inputChanges;
+        }
+
+        @android.webkit.JavascriptInterface
+        public void saveHtml(String html) {
+            Logger.log("WebController", "Found html [size " + html.length() + "]");
+            String oldHtml = getModel().getHTML();
+            if (!oldHtml.equals(html)) {
+                Logger.logBig("WebController", "New:" + html);
+                Logger.logBig("WebController", "Old:" + oldHtml);
+                Logger.log("WebController", "Saving changed html");
+                getModel().setFixedHTML(html);
+            }
         }
     }
 

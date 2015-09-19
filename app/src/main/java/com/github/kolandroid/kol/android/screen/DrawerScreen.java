@@ -15,10 +15,6 @@ import android.view.View;
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.Controller;
 
-/**
- * Note that due to a bug (?) this CANNOT be a DialogFragment and so cannot use BaseGameFragment.
- * "DialogFragment can not be attached to a container view"
- */
 public class DrawerScreen extends FragmentScreen {
     /**
      * Per the design guidelines, you should show the drawer on launch until the user manually

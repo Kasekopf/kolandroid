@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.kolandroid.kol.android.controller.Controller;
+import com.github.kolandroid.kol.android.controllers.ErrorController;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
+import com.github.kolandroid.kol.model.models.ErrorModel;
+import com.github.kolandroid.kol.util.Logger;
 
 public class FragmentScreen extends Fragment implements Screen {
     private Controller controller = null;
@@ -29,6 +32,11 @@ public class FragmentScreen extends Fragment implements Screen {
                              Bundle savedInstanceState) {
         this.controller = (Controller) this.getArguments().getSerializable("controller");
 
+        if (controller == null) {
+            Logger.log("FragmentScreen", "Unable to load controller from bundle");
+            controller = new ErrorController("0x35ad1: Unable to display page", ErrorModel.ErrorType.ERROR);
+        }
+
         int layoutid = controller.getView();
         View view = inflater.inflate(layoutid, container, false);
         controller.connect(view, this);
@@ -41,8 +49,9 @@ public class FragmentScreen extends Fragment implements Screen {
 
     @Override
     public void onDestroyView() {
-        if (controller != null)
-            controller.disconnect(this);
+        if (controller != null) {
+            this.getArguments().putSerializable("controller", controller); // save the current controller
+        }
         super.onDestroyView();
     }
 

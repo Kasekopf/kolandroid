@@ -72,6 +72,8 @@ public class WebModel extends Model {
 
     private static final Regex TUTORIAL_FIXER = new Regex("(<form[^>]*><input[^>]*><input[^>]*>)(.*?)(<input[^>]*>)</td></form>");
 
+    private final static Regex BODY_TAG = new Regex("<body[^>]*?>");
+
     /**
      * Remove code which redirects when no frames are detected.
      */
@@ -110,7 +112,83 @@ public class WebModel extends Model {
             "function pop_query(caller, title, button, callback, def) { " +
             "   window.querycallback = callback;" +
             "   window.ANDROIDAPP.displayFormNumeric(title, button, \"javascript:window.querycallback(#VAL)\");" +
-            "}\n";
+            "}\n" +
+            "function addInputUniqueTags() {" +
+            "   console.log(document.getElementsByTagName('html')[0].innerHTML.length);" +
+            "   var inputs = document.getElementsByTagName('input');" +
+            "   console.log('Found ' + inputs.length + ' input tags');" +
+            "   count = 0;" +
+            "   for (var i = 0; i < inputs.length; i++) {" +
+            "      inputs[i].androidUniqueId = count;" +
+            "      count += 1;" +
+            "      inputs[i].androidInitialValue = inputs[i].value;" +
+            "      inputs[i].androidInitialChecked = inputs[i].checked;" +
+            "      inputs[i].onchange = checkInputChanges;" +
+            "   }" +
+            "   var selects = document.getElementsByTagName('select');" +
+            "   console.log('Found ' + selects.length + ' select tags');" +
+            "   for (var i = 0; i < selects.length; i++) {" +
+            "       selects[i].androidUniqueId = count;" +
+            "       count += 1;" +
+            "       selects[i].androidInitialValue = selects[i].selectedIndex;" +
+            "   }" +
+            "   var texts = document.getElementsByTagName('textarea');" +
+            "   console.log('Found ' + texts.length + ' textarea tags');" +
+            "   for (var i = 0; i < texts.length; i++) {" +
+            "       texts[i].androidUniqueId = count;" +
+            "       count += 1;" +
+            "       texts[i].androidInitialValue = texts[i].value;" +
+            "   }" +
+            "   applyInputChanges(window.ANDROIDAPP.getInputChanges())" +
+            "}\n" +
+            "window.addEventListener('load', addInputUniqueTags);" +
+            "function checkInputChanges() {" +
+            "   result = {};" +
+            "   var inputs = document.getElementsByTagName('input');" +
+            "   for (var i = 0; i < inputs.length; i++) {" +
+            "      if(inputs[i].androidUniqueId && (true || inputs[i].value != inputs[i].androidInitialValue || inputs[i].checked != inputs[i].androidInitialChecked)) {" +
+            "         result[inputs[i].androidUniqueId] = {name: inputs[i].name, value: inputs[i].value, checked: inputs[i].checked};" +
+            "      }" +
+            "   }" +
+            "   var selects = document.getElementsByTagName('select');" +
+            "   for (var i = 0; i < selects.length; i++) {" +
+            "      if(selects[i].androidUniqueId && (true || selects[i].selectedIndex != selects[i].androidInitialValue)) {" +
+            "         result[selects[i].androidUniqueId] = {name: selects[i].name, value: selects[i].selectedIndex, checked: false};" +
+            "      }" +
+            "   }" +
+            "   var texts = document.getElementsByTagName('textarea');" +
+            "   for (var i = 0; i < texts.length; i++) {" +
+            "      if(texts[i].androidUniqueId && (true || texts[i].value != texts[i].androidInitialValue)) {" +
+            "         result[texts[i].androidUniqueId] = {name: texts[i].name, value: texts[i].value, checked: false};" +
+            "      }" +
+            "   }" +
+            "   window.ANDROIDAPP.reportInputChanges(JSON.stringify(result));" +
+            "}\n" +
+            "function applyInputChanges(cached_values) {" +
+            "   cache = JSON.parse(cached_values);" +
+            "   var inputs = document.getElementsByTagName('input');" +
+            "   for (var i = 0; i < inputs.length; i++) {" +
+            "      var id = inputs[i].androidUniqueId;" +
+            "      if(id && cache[id] && inputs[i].name == cache[id].name) {" +
+            "         inputs[i].value = cache[id].value;" +
+            "         inputs[i].checked = cache[id].checked;" +
+            "      }" +
+            "   }" +
+            "   var selects = document.getElementsByTagName('select');" +
+            "   for (var i = 0; i < selects.length; i++) {" +
+            "      var id = selects[i].androidUniqueId;" +
+            "      if(id && cache[id] && selects[i].name == cache[id].name) {" +
+            "         selects[i].selectedIndex = cache[id].selectedIndex;" +
+            "      }" +
+            "   }" +
+            "   var texts = document.getElementsByTagName('textarea');" +
+            "   for (var i = 0; i < texts.length; i++) {" +
+            "      var id = texts[i].androidUniqueId;" +
+            "      if(id && cache[id] && texts[i].name == cache[id].name) {" +
+            "         texts[i].value = cache[id].value;" +
+            "      }" +
+            "   }" +
+            "}";
 
     private static final Regex POPQUERY_SCRIPT = new Regex("<script[^>]*pop_query[^>]*></script>");
 
@@ -205,6 +283,11 @@ public class WebModel extends Model {
         // ?
         html = TABLE_FIXER.replaceAll(html, "$1$3$2");
 
+        // Fix the viewport size by inserting a viewport tag
+        html = BODY_TAG
+                .replaceAll(html,
+                        "$0<meta name=\"viewport\" content=\"width=device-width\">");
+
         return html;
     }
 
@@ -262,6 +345,10 @@ public class WebModel extends Model {
 
     private void setHTML(String html) {
         this.html = prepareHtml(html, url);
+    }
+
+    public void setFixedHTML(String html) {
+        this.html = html;
     }
 
     public <E> E visitType(WebModelTypeVisitor<E> visitor) {
