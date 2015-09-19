@@ -34,6 +34,12 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
         this.name = name;
     }
 
+    public ItemPocketModel(String name, Session s, ServerReply reply) {
+        this(name, s, reply.url);
+
+        process(reply);
+    }
+
     public ArrayList<ModelGroup<ItemModel>> getItems() {
         this.access();
         return items;

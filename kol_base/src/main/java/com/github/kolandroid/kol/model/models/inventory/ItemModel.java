@@ -3,6 +3,7 @@ package com.github.kolandroid.kol.model.models.inventory;
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.Model;
+import com.github.kolandroid.kol.model.elements.OptionElement;
 import com.github.kolandroid.kol.model.elements.interfaces.SubtextElement;
 import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.request.Request;
@@ -37,13 +38,12 @@ public class ItemModel extends Model implements SubtextElement {
             "<font[^>]*size=[\"']?1[^>]*>.*?(\\([^<]*\\))</font>", 1);
 
     private static final Regex DESCRIPTION_END = new Regex("</blockquote>");
-
+    private static final Regex OPTION_QUANTITY = new Regex("\\([^\\)]*?\\)$", 0);
     private final ArrayList<InventoryAction> actions;
     private final String name;
     private final String image;
     private final String subtext;
     private final String descriptionUrl;
-
     private final String quantity;
     private WebModel description;
 
@@ -79,6 +79,18 @@ public class ItemModel extends Model implements SubtextElement {
         }
     }
 
+    public ItemModel(Session s, String pwd, OptionElement base) {
+        super(s);
+
+        this.name = base.text;
+        this.quantity = OPTION_QUANTITY.extractSingle(base.text, "1");
+        this.image = base.img;
+        this.subtext = "";
+        descriptionUrl = ""; //TODO: get this description url from elsewhere?
+
+        this.actions = new ArrayList<>();
+    }
+
     private InventoryAction parseAction(String pwd, String action) {
         String actName = ITEM_ACTION_NAME.extractSingle(action);
         String actDest = ITEM_ACTION_LINK.extractSingle(action);
@@ -107,7 +119,7 @@ public class ItemModel extends Model implements SubtextElement {
     }
 
     public void loadDescription(final Callback<ItemModel> onResult) {
-        if (description != null) {
+        if (description != null || descriptionUrl.equals("")) {
             onResult.execute(this);
         } else {
             this.makeRequest(new Request(descriptionUrl), new ResponseHandler() {

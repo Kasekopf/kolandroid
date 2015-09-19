@@ -141,7 +141,6 @@ public class ServerReply implements Serializable {
             newHtml = "<html><head></head><body>" + newBody + "</body></html>";
         }
 
-        Logger.logBig("ServerReply", newHtml);
         return new ServerReply(responseCode, redirectLocation, date, newHtml, newUrl, cookie);
     }
 
