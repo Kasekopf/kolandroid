@@ -18,7 +18,7 @@ public class ServerReply implements Serializable {
     private static final long serialVersionUID = -7171484980493452228L;
     // Regex to find the top results pane of any page
     private static final Regex RESULTS_PANE = new Regex(
-            "<table[^>]*><tr><td[^>]*><b>Results:.*?(<center>.*?</center>)</td></tr><tr><td height=4></td></tr></table>", 1);
+            "<table[^>]*><tr><td[^>]*><b>Results:?.*?(<center>.*?</center>)</td></tr><tr><td height=4></td></tr></table>", 1);
     // Regex to find contents of the <body> tag of any page
     private static final Regex PAGE_BODY = new Regex(
             "(<body[^>]*>)(.*?)(</body>)", 2);

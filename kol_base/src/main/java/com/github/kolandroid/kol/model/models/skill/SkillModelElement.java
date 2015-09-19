@@ -48,7 +48,7 @@ public abstract class SkillModelElement extends BasicSubtextElement {
         public Skill(Session session, OptionElement option, String pwd) {
             super(option);
 
-            this.actionBase = "skillz.php?pwd=" + pwd
+            this.actionBase = "runskillz.php?pwd=" + pwd
                     + "&action=Skillz&whichskill=" + option.value;
             this.session = session;
         }
@@ -77,7 +77,7 @@ public abstract class SkillModelElement extends BasicSubtextElement {
                     String yourself) {
             super(option);
 
-            String action = "skillz.php?pwd=" + pwd;
+            String action = "runskillz.php?pwd=" + pwd;
             action += "&action=Skillz&targetplayer=" + yourself;
             action += "&whichskill=" + option.value;
             this.actionBase = action;
@@ -91,8 +91,10 @@ public abstract class SkillModelElement extends BasicSubtextElement {
 
         public DeferredGameAction cast(String number, String onPlayer) {
             String action = actionBase;
-            action += "&specificplayer=" + onPlayer;
-            action += "&bufftimes=" + number;
+            if (!onPlayer.equals("") && onPlayer != null) {
+                action += "&specificplayer=" + onPlayer;
+            }
+            action += "&quantity=" + number;
             return new BasicAction(session, action);
         }
     }

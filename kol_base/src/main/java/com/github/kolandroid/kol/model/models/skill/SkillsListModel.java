@@ -32,7 +32,7 @@ public class SkillsListModel extends Model implements SkillsSubmodel {
     private static final Regex ICON_COST = new Regex("<div[^>]*cost[^>]*>([^<]*)</div>", 1);
     private static final Regex ICON_DISABLED = new Regex("skill *disabled", 1);
     private static final Regex ICON_PWD = new Regex("&pwd=([^&]*)&", 1);
-    private static final Regex ICON_YOURSELF = new Regex("&targetplayer=([^&]*)&", 1);
+    private static final Regex ICON_YOURSELF = new Regex("&targetplayer=([^&'\\\\\"]+)&", 1);
     private static final Regex SKILLS_GROUP = new Regex(
             "(<div class=\"title\">[^<]*</div>)?<form[^>]*runskillz.php.*?</form>", 1, 0);
     private static final Regex TARGETS = new Regex("<select[^>]*targetplayer.*?</select>");
