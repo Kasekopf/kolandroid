@@ -85,7 +85,7 @@ public class ErrorController extends ModelController<ErrorModel> {
 
             @Override
             public Void forSevere() {
-                choice.displayExternalDialog(ErrorController.this);
+                choice.displayExternalDialog(ErrorController.this, true);
                 return null;
             }
         });

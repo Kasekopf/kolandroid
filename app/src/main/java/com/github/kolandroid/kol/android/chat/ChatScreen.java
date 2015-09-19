@@ -51,7 +51,7 @@ public class ChatScreen extends ActivityScreen implements
             }
 
             @Override
-            public void displayExternalDialog(Controller c) {
+            public void displayExternalDialog(Controller c, boolean cancellable) {
                 Logger.log("ChatScreen", "ERROR: Controller " + c + " has chosen to appear on an external dialog. Ignoring.");
             }
 

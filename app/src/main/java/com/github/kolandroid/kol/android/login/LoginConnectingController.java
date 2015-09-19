@@ -1,6 +1,8 @@
 package com.github.kolandroid.kol.android.login;
 
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.kolandroid.kol.android.R;
@@ -16,16 +18,29 @@ public class LoginConnectingController extends LinkedModelController<ConnectionF
     }
 
     @Override
-    public void receiveProgress(View view, LoginConnectingModel model, ConnectionFailed failure, Screen host) {
-        TextView displayMessage = (TextView) view.findViewById(R.id.login_connecting_message);
+    public void receiveProgress(View view, final LoginConnectingModel model, ConnectionFailed failure, final Screen host) {
+        final ProgressBar bar = (ProgressBar) view.findViewById(R.id.login_connecting_progress);
+        bar.setVisibility(View.GONE);
+
+        final TextView displayMessage = (TextView) view.findViewById(R.id.login_connecting_message);
         displayMessage.setText(failure.getReason());
+        displayMessage.setVisibility(View.VISIBLE);
+
+        final Button retryButton = (Button) view.findViewById(R.id.login_connecting_button);
+        retryButton.setVisibility(View.VISIBLE);
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bar.setVisibility(View.VISIBLE);
+                displayMessage.setVisibility(View.GONE);
+                retryButton.setVisibility(View.GONE);
+                model.doLogin(host.getViewContext());
+            }
+        });
     }
 
     @Override
     public void connect(View view, LoginConnectingModel model, Screen host) {
-        TextView displayMessage = (TextView) view.findViewById(R.id.login_connecting_message);
-        displayMessage.setText("Connecting!");
-
         model.doLogin(host.getViewContext());
     }
 
@@ -36,6 +51,6 @@ public class LoginConnectingController extends LinkedModelController<ConnectionF
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayExternal(this);
+        choice.displayExternalDialog(this, false);
     }
 }

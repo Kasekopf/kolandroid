@@ -5,7 +5,7 @@ import com.github.kolandroid.kol.android.controller.Controller;
 public interface ScreenSelection {
     void displayExternal(Controller c);
 
-    void displayExternalDialog(Controller c);
+    void displayExternalDialog(Controller c, boolean cancellable);
 
     void displayPrimary(Controller c, boolean replaceSameType);
 

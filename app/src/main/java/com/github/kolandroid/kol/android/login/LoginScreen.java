@@ -14,9 +14,24 @@ import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
+import com.github.kolandroid.kol.android.util.HandlerCallback;
 import com.github.kolandroid.kol.util.Logger;
 
 public class LoginScreen extends ActivityScreen {
+    private Controller current = null;
+
+    private DialogScreen dialog = null;
+
+    private final HandlerCallback<Void> closeDialog = new HandlerCallback<Void>() {
+        @Override
+        protected void receiveProgress(Void message) {
+            if (dialog != null) {
+                dialog.close();
+                dialog = null;
+            }
+        }
+    };
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         //first saving my state, so the bundle wont be empty.
@@ -42,7 +57,7 @@ public class LoginScreen extends ActivityScreen {
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("Kingdom of Loathing");
+            actionBar.setTitle("The Kingdom of Loathing");
         }
     }
 
@@ -52,16 +67,24 @@ public class LoginScreen extends ActivityScreen {
             @Override
             public void displayExternal(Controller c) {
                 Logger.log("LoginScreen", "Displaying " + c + " on external pane");
+                current = c;
+
                 FragmentScreen frag = FragmentScreen.create(c);
-                getFragmentManager().beginTransaction()
+                getFragmentManager().beginTransaction() //.setCustomAnimations(R.animator.fadeinanimator, R.animator.fadeoutanimator)
                         .add(R.id.login_mainfragment, frag, "loginscreen").commit();
+
+                closeDialog.execute(null, 500);
             }
 
             @Override
-            public void displayExternalDialog(Controller c) {
+            public void displayExternalDialog(Controller c, boolean cancellable) {
                 Logger.log("GameScreen", "Displaying " + c + " on new dialog box.");
-                DialogScreen.display(c, LoginScreen.this);
-                displayDialog(c);
+                if (dialog != null) {
+                    dialog.close();
+                }
+
+                dialog = DialogScreen.display(c, LoginScreen.this);
+                dialog.setCancelable(cancellable);
             }
 
             @Override
@@ -89,6 +112,11 @@ public class LoginScreen extends ActivityScreen {
     @Override
     public void onResume() {
         super.onResume();
+
+        // If the currently displayed LoginModel is stale, we have to reload the login page
+        if (current != null && current instanceof LoginController && ((LoginController) current).getModel().isStale()) {
+            this.displayController(new LoginConnectingController(), false);
+        }
 
         stopService(new Intent(this, ChatService.class));
     }

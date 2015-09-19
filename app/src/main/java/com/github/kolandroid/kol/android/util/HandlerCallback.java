@@ -18,7 +18,15 @@ public abstract class HandlerCallback<E> implements LatchedCallback<E> {
     public void execute(E item) {
         if (closed)
             return;
+
         Message.obtain(base, 0, item).sendToTarget();
+    }
+
+    public void execute(E item, int delay) {
+        if (closed)
+            return;
+
+        base.sendMessageDelayed(Message.obtain(base, 0, item), delay);
     }
 
     public void close() {

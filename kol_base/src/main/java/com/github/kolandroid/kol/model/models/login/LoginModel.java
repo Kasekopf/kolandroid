@@ -36,9 +36,12 @@ public class LoginModel extends LinkedModel<LoginStatus> {
     private final String challenge;
     private final ArrayList<MagicLoginAction> magicCharacters;
 
+    private boolean stale;
+
     public LoginModel(Session s, ServerReply reply) {
         super(s);
 
+        stale = false;
         loginId = LOGIN_ID.extractSingle(reply.url);
         challenge = CHALLENGE.extractSingle(reply.html);
 
@@ -61,6 +64,8 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                 "loggingin", "challenge", "response", "secure"};
         String[] vals = {loginId, username, "", "Yup.", challenge,
                 hash.completeChallenge(challenge), "1"};
+
+        stale = true;
 
         Request login = new SingleRequest("login.php", names, vals);
         this.makeRequest(login, new ResponseHandler() {
@@ -88,7 +93,8 @@ public class LoginModel extends LinkedModel<LoginStatus> {
         return magicCharacters;
     }
 
-    public void magicLogin() {
+    public boolean isStale() {
+        return stale;
     }
 
     public void createAccount() {

@@ -55,7 +55,7 @@ public class AndroidViewContext implements ViewContext {
             }
 
             @Override
-            public void displayExternalDialog(Controller c) {
+            public void displayExternalDialog(Controller c, boolean cancellable) {
                 IntentBuilder builder = new IntentBuilder(LoginScreen.class, c);
                 Message.obtain(activityLauncher, 0, builder).sendToTarget();
             }

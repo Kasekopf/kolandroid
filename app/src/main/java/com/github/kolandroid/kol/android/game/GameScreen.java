@@ -99,7 +99,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
             }
 
             @Override
-            public void displayExternalDialog(Controller c) {
+            public void displayExternalDialog(Controller c, boolean cancellable) {
                 Logger.log("GameScreen", "ERROR: Controller " + c + " has chosen to appear on an external dialog. Rerouting...");
                 displayDialog(c);
             }
