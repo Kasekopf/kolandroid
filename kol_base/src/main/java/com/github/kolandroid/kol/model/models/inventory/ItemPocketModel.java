@@ -6,9 +6,6 @@ import com.github.kolandroid.kol.model.GroupModel.ChildModel;
 import com.github.kolandroid.kol.model.LiveModel;
 import com.github.kolandroid.kol.model.elements.basic.BasicGroup;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
-import com.github.kolandroid.kol.model.models.inventory.InventoryAction.ImmediateItemAction;
-import com.github.kolandroid.kol.model.models.inventory.InventoryAction.MultiClosetItemAction;
-import com.github.kolandroid.kol.model.models.inventory.InventoryAction.MultiuseItemAction;
 import com.github.kolandroid.kol.util.Regex;
 
 import java.util.ArrayList;
@@ -28,114 +25,38 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
     private static final Regex ITEM = new Regex(
             "<table class=[\"']?item.*?</table>", 0);
 
-    private static final Regex ITEM_IMG = new Regex(
-            "<img[^>]*src=[\"']?([^\"' >]*)[\"' >]", 1);
-    private static final Regex ITEM_DESCID = new Regex(
-            "<img[^>]*descitem\\((\\d+)[,\\)]", 1);
-    private static final Regex ITEM_NAME = new Regex("<b[^>]*>(.*?)</b>", 1);
-    private static final Regex ITEM_QNTY = new Regex(
-            "<b[^>]*ircm[^>]*>.*?</b>&nbsp;<span>\\((\\d+)\\)</span>", 1);
-
-    private static final Regex ITEM_SLOT = new Regex("<a[^>]*>([^<]*?)</a>:", 1);
-
-    private static final Regex ITEM_ACTION = new Regex("<a.*?</a>", 0);
-    private static final Regex ITEM_ACTION_NAME = new Regex(
-            "<a[^>]*>.*?\\[([^\\]]*?)\\].*?</a>", 1);
-    private static final Regex ITEM_ACTION_LINK = new Regex(
-            "<a[^>]*href=[\"']?(.*?)[\"' >]", 1);
-    private static final Regex ITEM_SUBTEXT = new Regex(
-            "<font[^>]*size=[\"']?1[^>]*>.*?(\\([^<]*\\))</font>", 1);
     private final String name;
-    protected ArrayList<ModelGroup<InventoryItem>> items;
+    protected ArrayList<ModelGroup<ItemModel>> items;
 
     public ItemPocketModel(String name, Session s, String updateUrl) {
         super(s, updateUrl, true);
-        this.items = new ArrayList<ModelGroup<InventoryItem>>();
+        this.items = new ArrayList<ModelGroup<ItemModel>>();
         this.name = name;
     }
 
-    public ArrayList<ModelGroup<InventoryItem>> getItems() {
+    public ArrayList<ModelGroup<ItemModel>> getItems() {
         this.access();
         return items;
     }
 
-    protected ModelGroup<InventoryItem> parseItems(String sectionName,
+    protected ModelGroup<ItemModel> parseItems(String sectionName,
                                                    ArrayList<String> items, String pwd) {
-
-        BasicGroup<InventoryItem> newsection = new BasicGroup<InventoryItem>(
+        BasicGroup<ItemModel> newsection = new BasicGroup<ItemModel>(
                 sectionName);
         for (String item : items) {
-
-            String img = ITEM_IMG.extractSingle(item);
-            String descid = ITEM_DESCID.extractSingle(item);
-            String name = ITEM_NAME.extractSingle(item);
-            String subtext = ITEM_SUBTEXT.extractSingle(item);
-            String slot = ITEM_SLOT.extractSingle(item);
-
-            String number = ITEM_QNTY.extractSingle(item);
-            if (name == null)
-                continue;
-            if (subtext == null)
-                subtext = "";
-
-            subtext = subtext.replace("&nbsp;", "");
-            if (number != null)
-                name += " (" + number + ")";
-            if (slot != null) {
-                name = slot + ": " + name;
-            }
-
-            ArrayList<InventoryAction> actions = new ArrayList<InventoryAction>();
-
-            InventoryItem invitem = new InventoryItem(name, img, subtext,
-                    actions);
-            newsection.add(invitem);
-
-            actions.add(new ImmediateItemAction(getSession(), "Description",
-                    "desc_item.php?whichitem=" + descid));
-            for (String action : ITEM_ACTION.extractAllSingle(item)) {
-                InventoryAction parsed = parseAction(pwd, invitem,
-                        action);
-                if (parsed != null)
-                    actions.add(parsed);
-            }
-
+            newsection.add(new ItemModel(getSession(), pwd, item));
         }
         return newsection;
     }
 
-    private InventoryAction parseAction(String pwd, InventoryItem base,
-                                        String action) {
-        String actName = ITEM_ACTION_NAME.extractSingle(action);
-        String actDest = ITEM_ACTION_LINK.extractSingle(action);
-        if (actName == null || actDest == null)
-            return null;
-
-        String lowername = actName.toLowerCase();
-        if (lowername.contains("use multiple")) {
-            return new MultiuseItemAction(getSession(), base, actDest, pwd);
-        } else if (lowername.contains("take some") || lowername.contains("store some")) {
-            return new MultiClosetItemAction(getSession(), base, actName, actDest, pwd);
-        } else if (lowername.contains("eat some")
-                || lowername.contains("drink some")) {
-            // do nothing for now
-            return null;
-        } else {
-            actName = actName.substring(0, 1).toUpperCase()
-                    + actName.substring(1);
-
-            return new ImmediateItemAction(getSession(), actName, actDest);
-        }
-    }
-
     protected void loadContent(ServerReply reply) {
-        this.items = new ArrayList<ModelGroup<InventoryItem>>();
+        this.items = new ArrayList<ModelGroup<ItemModel>>();
 
         String pwd = PWD.extractSingle(reply.html);
 
         for (String section : SECTION.extractAllSingle(reply.html)) {
             String sectionName = SECTION_NAME.extractSingle(section);
-            ModelGroup<InventoryItem> newsection = parseItems(sectionName,
+            ModelGroup<ItemModel> newsection = parseItems(sectionName,
                     ITEM.extractAllSingle(section), pwd);
 
             if (newsection.size() > 0)

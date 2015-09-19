@@ -47,7 +47,7 @@ public abstract class InventoryAction extends BasicElement {
         private final Multiuseable toMultisell;
 
         public AutosellItemAction(final Session session,
-                                  final InventoryItem base, final String defaultAction,
+                                  final ItemModel base, final String defaultAction,
                                   final String pwd) {
             super("Autosell");
 
@@ -75,7 +75,7 @@ public abstract class InventoryAction extends BasicElement {
         private final Multiuseable toMultiuse;
 
         public MultiuseItemAction(final Session session,
-                                  final InventoryItem base, final String defaultAction,
+                                  final ItemModel base, final String defaultAction,
                                   final String pwd) {
             super("Use multiple");
 
@@ -104,7 +104,7 @@ public abstract class InventoryAction extends BasicElement {
         private final Multiuseable toMultiuse;
 
         public MultiClosetItemAction(final Session session,
-                                     final InventoryItem base, final String name, final String defaultAction,
+                                     final ItemModel base, final String name, final String defaultAction,
                                      final String pwd) {
             super(name);
             this.toMultiuse = new MultiusableElement(session, base, defaultAction);

@@ -40,7 +40,7 @@ public class EquipmentPocketModel extends ItemPocketModel {
 
         String equipment = EQUIPMENT.extractSingle(reply.html);
         if (equipment != null) {
-            ModelGroup<InventoryItem> equipped = parseItems("Equipped",
+            ModelGroup<ItemModel> equipped = parseItems("Equipped",
                     ITEM_EQUIPPED.extractAllSingle(equipment), pwd);
             if (equipped.size() > 0)
                 items.add(0, equipped);
