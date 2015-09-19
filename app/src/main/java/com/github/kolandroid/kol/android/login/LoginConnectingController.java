@@ -27,13 +27,11 @@ public class LoginConnectingController extends LinkedModelController<ConnectionF
         displayMessage.setVisibility(View.VISIBLE);
 
         final Button retryButton = (Button) view.findViewById(R.id.login_connecting_button);
-        retryButton.setVisibility(View.VISIBLE);
         retryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bar.setVisibility(View.VISIBLE);
                 displayMessage.setVisibility(View.GONE);
-                retryButton.setVisibility(View.GONE);
                 model.doLogin(host.getViewContext());
             }
         });

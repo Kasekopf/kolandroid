@@ -69,7 +69,6 @@
         android:id="@+id/login_connecting_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Retry"
-        android:visibility="gone" />
+        android:text="Refresh" />
 
 </LinearLayout>
