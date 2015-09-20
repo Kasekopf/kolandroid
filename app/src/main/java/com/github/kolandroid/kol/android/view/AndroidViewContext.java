@@ -1,5 +1,6 @@
 package com.github.kolandroid.kol.android.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -31,11 +32,11 @@ public class AndroidViewContext implements ViewContext {
     private PrimaryRoute primaryRoute;
     private LoadingContext loadingContext;
 
-    public AndroidViewContext(Context context) {
-        this(context, LoadingContext.NONE);
+    public AndroidViewContext(Context context, Class<? extends Activity> sendDialogsTo) {
+        this(context, LoadingContext.NONE, sendDialogsTo);
     }
 
-    public AndroidViewContext(Context context, LoadingContext loadingContext) {
+    public AndroidViewContext(Context context, LoadingContext loadingContext, final Class<? extends Activity> sendDialogsTo) {
         if (BuildConfig.DEBUG && Looper.getMainLooper().getThread() != Thread.currentThread()) {
             throw new RuntimeException("AndroidViewContext should only be created from the main thread.");
         }
@@ -67,7 +68,7 @@ public class AndroidViewContext implements ViewContext {
 
             @Override
             public void displayDialog(Controller c) {
-                IntentBuilder builder = new IntentBuilder(GameScreen.class, c);
+                IntentBuilder builder = new IntentBuilder(sendDialogsTo, c);
                 Message.obtain(activityLauncher, 0, builder).sendToTarget();
             }
 

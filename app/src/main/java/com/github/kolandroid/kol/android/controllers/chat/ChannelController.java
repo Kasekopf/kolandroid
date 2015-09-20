@@ -7,7 +7,6 @@ import android.widget.ListView;
 
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.binders.ChatBinder;
-import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.util.adapters.ListAdapter;
@@ -56,7 +55,7 @@ public class ChannelController extends ChatStubController {
                     return;
 
                 ChatActionsController controller = new ChatActionsController(getModel(), choice);
-                DialogScreen.display(controller, host);
+                host.getViewContext().getPrimaryRoute().execute(controller);
             }
         });
     }

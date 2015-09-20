@@ -62,7 +62,8 @@ public class ChatScreen extends ActivityScreen implements
 
             @Override
             public void displayDialog(Controller c) {
-                Logger.log("ChatScreen", "ERROR: Controller " + c + " has chosen to appear on a primary dialog. Ignoring.");
+                Logger.log("ChatScreen", "Displaying " + c + " on new dialog box");
+                DialogScreen.display(c, ChatScreen.this);
             }
 
             @Override
@@ -90,7 +91,7 @@ public class ChatScreen extends ActivityScreen implements
                 return true;
             case R.id.action_channels:
                 ChatChannelsController controller = new ChatChannelsController(new ChatStubModel(new Session())); //TODO
-                DialogScreen.display(controller, this);
+                this.getViewContext().getPrimaryRoute().execute(controller);
                 return true;
         }
         return super.onOptionsItemSelected(item);

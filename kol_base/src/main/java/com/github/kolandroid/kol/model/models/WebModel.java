@@ -114,9 +114,7 @@ public class WebModel extends Model {
             "   window.ANDROIDAPP.displayFormNumeric(title, button, \"javascript:window.querycallback(#VAL)\");" +
             "}\n" +
             "function addInputUniqueTags() {" +
-            "   console.log(document.getElementsByTagName('html')[0].innerHTML.length);" +
             "   var inputs = document.getElementsByTagName('input');" +
-            "   console.log('Found ' + inputs.length + ' input tags');" +
             "   count = 0;" +
             "   for (var i = 0; i < inputs.length; i++) {" +
             "      inputs[i].androidUniqueId = count;" +
@@ -126,14 +124,15 @@ public class WebModel extends Model {
             "      inputs[i].onchange = checkInputChanges;" +
             "   }" +
             "   var selects = document.getElementsByTagName('select');" +
-            "   console.log('Found ' + selects.length + ' select tags');" +
             "   for (var i = 0; i < selects.length; i++) {" +
             "       selects[i].androidUniqueId = count;" +
             "       count += 1;" +
             "       selects[i].androidInitialValue = selects[i].selectedIndex;" +
             "   }" +
             "   var texts = document.getElementsByTagName('textarea');" +
-            "   console.log('Found ' + texts.length + ' textarea tags');" +
+            "   if(inputs.length + selects.length + texts.length > 0) {" +
+            "       console.log('Adding unique input ids: (' + inputs.length + ' + ' + selects.length + ' + ' + texts.length + ')');" +
+            "   }" +
             "   for (var i = 0; i < texts.length; i++) {" +
             "       texts[i].androidUniqueId = count;" +
             "       count += 1;" +

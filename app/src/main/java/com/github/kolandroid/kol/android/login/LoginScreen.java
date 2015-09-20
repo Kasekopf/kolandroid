@@ -94,7 +94,7 @@ public class LoginScreen extends ActivityScreen {
 
             @Override
             public void displayDialog(Controller c) {
-                Logger.log("LoginScreen", "ERROR: Controller " + c + " has chosen to appear on a primary dialog. Ignoring.");
+                displayExternalDialog(c, true);
             }
 
             @Override

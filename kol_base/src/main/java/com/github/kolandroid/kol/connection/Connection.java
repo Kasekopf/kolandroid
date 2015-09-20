@@ -82,7 +82,7 @@ public class Connection {
         URL url = new URL(base);
         if (dopost) {
             Logger.log("Connection", "Making POST request to " + url + " [" + getArguments() + "]");
-        } else {
+        } else if (!base.contains("newchatmessages.php")) { //filter out the endless newchatmessage requests
             Logger.log("Connection", "Making GET request to " + url);
         }
 

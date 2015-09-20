@@ -21,6 +21,7 @@ import com.github.kolandroid.kol.android.controllers.NavigationController;
 import com.github.kolandroid.kol.android.controllers.StatsController;
 import com.github.kolandroid.kol.android.controllers.StatsController.StatsCallbacks;
 import com.github.kolandroid.kol.android.controllers.chat.ChatCounterController;
+import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.DrawerScreen;
@@ -56,7 +57,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
         TextView text = (TextView) this.findViewById(R.id.game_progress_text);
         base.setVisibility(View.GONE);
         ProgressLoader loader = new ProgressLoader(base, bar, text);
-        return new AndroidViewContext(this, loader);
+        return new AndroidViewContext(this, loader, this.getClass());
     }
 
     @Override
@@ -138,7 +139,9 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
                 }
 
                 trans.commit();
-                refreshStatsPane();
+                if (!(c instanceof WebController)) {
+                    refreshStatsPane();
+                }
             }
 
             @Override
@@ -193,19 +196,6 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
                 if (stats != null)
                     stats.showQuests();
                 return true;
-            //case R.id.action_chat:
-                /*
-                if (chat == null) {
-                    Logger.log("GameScreen", "Unable to load chat model; not connected to AndroidBinder");
-                    return false;
-                }
-                ChatModel model = chat.getModel();
-                if (model == null) {
-                    Logger.log("GameScreen", "Unable to load chat model; AndroidBinder [" + chat + "] has null reference");
-                    return false;
-                }
-                */
-            //   return true;
         }
 
         return super.onOptionsItemSelected(item);

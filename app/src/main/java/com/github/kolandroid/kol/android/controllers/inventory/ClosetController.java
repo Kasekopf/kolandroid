@@ -6,7 +6,6 @@ import android.widget.Button;
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controllers.MultiusableController;
-import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.model.elements.ActionElement;
 import com.github.kolandroid.kol.model.elements.MultiusableElement;
@@ -49,7 +48,7 @@ public class ClosetController extends ItemStorageController<ClosetModel> {
             @Override
             public void onClick(View v) {
                 Controller controller = new MultiusableController(manageMeat, meatText);
-                DialogScreen.display(controller, host);
+                host.getViewContext().getPrimaryRoute().execute(controller);
             }
         });
     }

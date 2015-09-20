@@ -6,7 +6,6 @@ import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.binders.ColoredGroupBinder;
 import com.github.kolandroid.kol.android.binders.SubtextBinder;
 import com.github.kolandroid.kol.android.controller.LinkedModelController;
-import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
@@ -71,7 +70,7 @@ public class ItemPocketController extends
             @Override
             protected void receiveProgress(ItemModel message) {
                 ItemController controller = new ItemController(message);
-                DialogScreen.display(controller, host);
+                host.getViewContext().getPrimaryRoute().execute(controller);
             }
         };
     }

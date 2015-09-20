@@ -20,7 +20,6 @@ public class ChatCounterController extends ChatStubController {
 
     @Override
     public void doConnect(View view, ChatStubModel model, final Screen host) {
-        Logger.log("ChatCounterController", "Connected to chat! Initial count=" + this.initialCount);
         if (model.getMessageCount() > 0) {
             this.initialCount = model.getMessageCount();
         }
@@ -49,7 +48,6 @@ public class ChatCounterController extends ChatStubController {
         if (initialCount < 0)
             initialCount = newCount; //ignore the first update
 
-        Logger.log("ChatCounterController", "Count=" + newCount + ", " + initialCount);
         if (newCount > initialCount) {
             TextView popup = (TextView) view.findViewById(R.id.gochat_notification);
             if (popup != null) {

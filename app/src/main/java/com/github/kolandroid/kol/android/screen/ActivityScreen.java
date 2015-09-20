@@ -47,7 +47,7 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
     }
 
     protected AndroidViewContext createViewContext() {
-        return new AndroidViewContext(this);
+        return new AndroidViewContext(this, getClass());
     }
 
     public abstract void setup(Bundle savedInstanceState);

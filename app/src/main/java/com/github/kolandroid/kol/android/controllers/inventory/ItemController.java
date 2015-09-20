@@ -11,7 +11,6 @@ import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.ModelController;
 import com.github.kolandroid.kol.android.controllers.MultiusableController;
 import com.github.kolandroid.kol.android.controllers.web.WebController;
-import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
@@ -49,7 +48,7 @@ public class ItemController extends ModelController<ItemModel> {
             @Override
             public void displayMultiuse(Multiuseable item, String useText) {
                 Controller controller = new MultiusableController(item, useText);
-                DialogScreen.display(controller, host);
+                host.getViewContext().getPrimaryRoute().execute(controller);
             }
         };
 

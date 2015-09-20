@@ -138,13 +138,13 @@ public class NavigationModel extends LiveModel {
                 chatAction = chatAction.replace("&amp;", "&");
                 String url = ChatModel.encodeChatMessage(chatBase, playerid, pwd, chatAction);
 
-                Logger.log("NavigationModel", "Identified ChatItem[" + name + ", " + chatAction + ", " + image + ", " + url + "]");
                 locations.add(new ChatMacroActionElement(getSession(), name, image, url));
             } else {
-                Logger.log("NavigationModel", "Identified MenuItem[" + name + ", " + link + ", " + image + "]");
                 locations.add(new ActionElement(getSession(), name, image, link));
             }
         }
+
+        Logger.log("NavigationModel", "Loaded " + locations.size() + " elements from awesomemenu.php");
     }
 
     private void conditionalAdd(String html, String name, String image,

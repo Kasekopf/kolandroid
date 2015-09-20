@@ -6,6 +6,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.github.kolandroid.kol.android.game.GameScreen;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
@@ -29,7 +30,7 @@ public class ChatService extends Service {
             if (shouldStart) {
                 Session session = (Session) intent.getSerializableExtra("session");
                 ViewContext context = new AndroidViewContext(
-                        this.getApplicationContext());
+                        this.getApplicationContext(), GameScreen.class);
                 chat.start(session, context);
             }
         }
