@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controllers.ErrorController;
-import com.github.kolandroid.kol.gamehandler.ViewContext;
+import com.github.kolandroid.kol.android.view.AndroidViewContext;
 import com.github.kolandroid.kol.model.models.ErrorModel;
 import com.github.kolandroid.kol.util.Logger;
 
@@ -56,13 +56,9 @@ public class FragmentScreen extends Fragment implements Screen {
     }
 
     @Override
-    public ViewContext getViewContext() {
-        if (this.getActivity() instanceof Screen) {
-            Screen host = (Screen) this.getActivity();
-            return host.getViewContext();
-        } else {
-            return (ViewContext) this.getActivity();
-        }
+    public AndroidViewContext getViewContext() {
+        Screen host = (Screen) this.getActivity();
+        return host.getViewContext();
     }
 
     @Override

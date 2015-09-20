@@ -22,7 +22,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -122,9 +121,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
 
     }
 
-    public static void start(Session session, Callback<ChatModel> onStart) {
-        final WeakReference<Callback<ChatModel>> callback = new WeakReference<Callback<ChatModel>>(onStart);
-
+    public static void start(Session session, final Callback<ChatModel> onStart) {
         Request req = new TentativeRequest("mchat.php", new ResponseHandler() {
             @Override
             public void handle(Session session, ServerReply response) {
@@ -139,14 +136,8 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                     return;
                 Logger.log("ChatModel", "Chat started");
 
-                Callback<ChatModel> onStart = callback.get();
-                if (onStart == null) {
-                    Logger.log("ChatModel", "Chat started, but callback to service has been closed");
-                    return;
-                }
 
-                ChatModel model = new ChatModel(session, response);
-                onStart.execute(model);
+                onStart.execute(new ChatModel(session, response));
             }
         });
     }
@@ -337,6 +328,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
 
     protected boolean stubbed() {
         return false;
+    }
+
+    public int getMessageCount() {
+        return messages.size();
     }
 
     public ArrayList<ChannelModel> getChannels() {

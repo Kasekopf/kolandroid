@@ -8,11 +8,10 @@ import android.support.v7.app.ActionBarActivity;
 
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
-import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.util.Logger;
 
 public abstract class ActivityScreen extends ActionBarActivity implements Screen {
-    private ViewContext base;
+    private AndroidViewContext base;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +46,7 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
         displayController(controller, addToBackStack);
     }
 
-    protected ViewContext createViewContext() {
+    protected AndroidViewContext createViewContext() {
         return new AndroidViewContext(this);
     }
 
@@ -68,7 +67,7 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
     }
 
     @Override
-    public ViewContext getViewContext() {
+    public AndroidViewContext getViewContext() {
         return base;
     }
 

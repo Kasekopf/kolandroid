@@ -18,7 +18,6 @@ import com.github.kolandroid.kol.gamehandler.DataContext;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
-import com.github.kolandroid.kol.request.ResponseHandler;
 import com.github.kolandroid.kol.util.Logger;
 
 import java.lang.ref.WeakReference;
@@ -29,7 +28,7 @@ public class AndroidViewContext implements ViewContext {
     private AndroidDataContext data;
 
     private SettingsContext settings;
-    private ResponseHandler primaryRoute;
+    private PrimaryRoute primaryRoute;
     private LoadingContext loadingContext;
 
     public AndroidViewContext(Context context) {
@@ -83,7 +82,7 @@ public class AndroidViewContext implements ViewContext {
     }
 
     @Override
-    public ResponseHandler getPrimaryRoute() {
+    public PrimaryRoute getPrimaryRoute() {
         return primaryRoute;
     }
 

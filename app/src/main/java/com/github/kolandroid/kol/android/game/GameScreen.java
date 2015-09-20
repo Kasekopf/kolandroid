@@ -20,18 +20,18 @@ import com.github.kolandroid.kol.android.controller.ModelController;
 import com.github.kolandroid.kol.android.controllers.NavigationController;
 import com.github.kolandroid.kol.android.controllers.StatsController;
 import com.github.kolandroid.kol.android.controllers.StatsController.StatsCallbacks;
+import com.github.kolandroid.kol.android.controllers.chat.ChatCounterController;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.DrawerScreen;
+import com.github.kolandroid.kol.android.screen.ForcedViewScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
 import com.github.kolandroid.kol.android.view.ProgressLoader;
-import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
-import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.model.models.NavigationModel;
 import com.github.kolandroid.kol.model.models.StatsModel;
@@ -45,8 +45,10 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
 
     private Session session; //todo remove; only for testing chat
 
+    private ForcedViewScreen chatIconScreen;
+
     @Override
-    protected ViewContext createViewContext() {
+    protected AndroidViewContext createViewContext() {
         // Set up the bottom loading bar
         View base = this.findViewById(R.id.game_progress_popup);
         ProgressBar bar = (ProgressBar) this
@@ -176,7 +178,9 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_testing, menu);
+        getMenuInflater().inflate(R.menu.game_screen, menu);
+        chatIconScreen = new ForcedViewScreen(menu.findItem(R.id.action_chat).getActionView());
+        chatIconScreen.display(new ChatCounterController(session), this);
         return true;
     }
 
@@ -189,7 +193,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
                 if (stats != null)
                     stats.showQuests();
                 return true;
-            case R.id.action_chat:
+            //case R.id.action_chat:
                 /*
                 if (chat == null) {
                     Logger.log("GameScreen", "Unable to load chat model; not connected to AndroidBinder");
@@ -201,9 +205,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
                     return false;
                 }
                 */
-
-                this.getViewContext().getPrimaryRoute().handle(session, ServerReply.fabricate("", "chat.php"));
-                return true;
+            //   return true;
         }
 
         return super.onOptionsItemSelected(item);

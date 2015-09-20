@@ -30,9 +30,10 @@ import com.github.kolandroid.kol.model.models.login.CreateCharacterModel;
 import com.github.kolandroid.kol.model.models.login.LoginModel;
 import com.github.kolandroid.kol.model.models.skill.SkillsModel;
 import com.github.kolandroid.kol.request.ResponseHandler;
+import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 
-public class PrimaryRoute implements ResponseHandler {
+public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
     private final ScreenSelection screens;
 
     public PrimaryRoute(ScreenSelection screens) {
@@ -41,6 +42,12 @@ public class PrimaryRoute implements ResponseHandler {
 
     private Controller getController(Session session, ServerReply response) {
         Log.i("PrimaryRoute", "Creating model for response: " + response.url);
+
+        if (response == null) {
+            response = ErrorModel.generateErrorMessage("Unable to access KoL.", ErrorModel.ErrorType.ERROR);
+            ErrorModel model = new ErrorModel(session, response);
+            return new ErrorController(model);
+        }
 
         /**
          * Specifically handle simulated requests.
@@ -133,17 +140,22 @@ public class PrimaryRoute implements ResponseHandler {
         ServerReply resultsPane = response.extractResultsPane();
         if (resultsPane == null) {
             Controller controller = getController(session, response);
-            controller.chooseScreen(screens);
+            execute(controller);
         } else if (resultsPane != null && response.url.contains("androiddisplay=results")) {
             Logger.log("PrimaryRoute", "Results pane was contained in redundant results pane");
             Controller controller = getController(session, resultsPane);
-            controller.chooseScreen(screens);
+            execute(controller);
         } else {
             Logger.log("PrimaryRoute", "Split results pane off of response " + response.url);
             Controller mainController = getController(session, response.removeResultsPane());
             Controller resultsController = getController(session, resultsPane);
-            mainController.chooseScreen(screens);
-            resultsController.chooseScreen(screens);
+            execute(mainController);
+            execute(resultsController);
         }
+    }
+
+    @Override
+    public void execute(Controller controller) {
+        controller.chooseScreen(screens);
     }
 }

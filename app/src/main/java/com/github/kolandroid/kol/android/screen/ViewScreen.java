@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.github.kolandroid.kol.android.controller.Controller;
-import com.github.kolandroid.kol.gamehandler.ViewContext;
+import com.github.kolandroid.kol.android.view.AndroidViewContext;
 
 public class ViewScreen extends FrameLayout implements Screen {
     private Controller controller;
@@ -55,7 +55,7 @@ public class ViewScreen extends FrameLayout implements Screen {
     }
 
     @Override
-    public ViewContext getViewContext() {
+    public AndroidViewContext getViewContext() {
         return base.getViewContext();
     }
 
