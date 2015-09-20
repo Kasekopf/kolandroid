@@ -1,13 +1,16 @@
 package com.github.kolandroid.kol.android.controllers.chat;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.TabHost.OnTabChangeListener;
 
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.Controller;
+import com.github.kolandroid.kol.android.screen.ForcedViewScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
@@ -16,6 +19,7 @@ import com.github.kolandroid.kol.model.models.chat.ChannelModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModelSegment;
 import com.github.kolandroid.kol.model.models.chat.ChatStubModel;
+import com.github.kolandroid.kol.util.Logger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,8 +34,8 @@ public class ChatController extends ChatStubController {
 
     private transient CustomFragmentTabHost tabs;
 
-    public ChatController(ChatStubModel model) {
-        super(model);
+    public ChatController(ChatModel model) {
+        super(new ChatStubModel(model));
         this.currentTabs = new HashSet<String>();
     }
 
@@ -99,8 +103,26 @@ public class ChatController extends ChatStubController {
             preexisting.setVisibility(View.VISIBLE);
         } else {
             Controller channel = new ChannelController(getModel(), tag);
-            tabs.addTab(tabs.newTabSpec(tag).setIndicator(tag),
-                    FragmentScreen.class, FragmentScreen.prepare(channel));
+
+            //Inflate a new view for the tag
+            LayoutInflater inflater = (LayoutInflater) tabs.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (inflater == null) {
+                Logger.log("ChatController", "Unable to find LayoutInflater for [" + tag + "]");
+                tabs.addTab(tabs.newTabSpec(tag).setIndicator(tag),
+                        FragmentScreen.class, FragmentScreen.prepare(channel));
+            } else {
+                ChannelModel channelModel = getModel().getChannel(tag);
+                if (channelModel == null) {
+                    return; // unable to link to channel which does not exist
+                }
+
+                Controller channelName = new ChannelCounterController(getModel().getChannel(tag));
+                View tabView = inflater.inflate(channelName.getView(), null);
+                ForcedViewScreen forcedScreen = new ForcedViewScreen(tabView);
+                forcedScreen.display(channelName, host);
+                tabs.addTab(tabs.newTabSpec(tag).setIndicator(tabView),
+                        FragmentScreen.class, FragmentScreen.prepare(channel));
+            }
             currentTabs.add(tag);
             View tabTitle = tabs.getTabByTag(tag);
             tabTitle.setOnLongClickListener(new OnLongClickListener() {

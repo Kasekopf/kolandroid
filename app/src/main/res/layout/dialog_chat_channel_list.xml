@@ -6,4 +6,4 @@
     android:choiceMode="singleChoice"
     android:divider="#aaa"
     android:dividerHeight="1dp"
-    tools:context="com.github.kolandroid.kol.android.chat.ChatChannelDialog" />
+    tools:context="com.github.kolandroid.kol.android.controllers.chat.ChatChannelsController" />

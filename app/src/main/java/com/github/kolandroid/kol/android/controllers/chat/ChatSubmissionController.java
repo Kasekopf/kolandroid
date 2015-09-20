@@ -22,7 +22,7 @@ public class ChatSubmissionController extends ChatStubController {
 
     private transient EditText text;
 
-    public ChatSubmissionController(ChatStubModel model) {
+    public ChatSubmissionController(ChatModel model) {
         super(new ChatStubModel(model));
     }
 

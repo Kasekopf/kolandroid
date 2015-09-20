@@ -36,8 +36,10 @@ public class ChatText implements Serializable {
     }
 
     protected void prepare(ArrayList<ChatAction> newActions, String defaultChannel) {
-        if (newActions != null && user != null)
-            actions.addAll(newActions);
+        if (actions.size() == 0) {
+            if (newActions != null && user != null)
+                actions.addAll(newActions);
+        }
 
         if (baseChannel == null || baseChannel.length() == 0)
             this.baseChannel = defaultChannel;

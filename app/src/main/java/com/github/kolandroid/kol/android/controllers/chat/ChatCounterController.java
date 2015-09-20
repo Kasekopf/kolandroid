@@ -59,7 +59,7 @@ public class ChatCounterController extends ChatStubController {
 
     @Override
     public int getView() {
-        return R.layout.action_bar_game_gochat;
+        return R.layout.view_game_gochat;
     }
 
     @Override

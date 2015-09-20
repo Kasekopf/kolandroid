@@ -39,6 +39,8 @@ public abstract class LinkedModelController<C, M extends LinkedModel<C>> extends
 
     @Override
     public void disconnect(Screen host) {
-        callback.close();
+        if (callback != null) {
+            callback.close();
+        }
     }
 }

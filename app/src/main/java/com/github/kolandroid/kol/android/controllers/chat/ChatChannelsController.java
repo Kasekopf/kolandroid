@@ -1,13 +1,13 @@
 package com.github.kolandroid.kol.android.controllers.chat;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.github.kolandroid.kol.android.R;
-import com.github.kolandroid.kol.android.binders.ChannelBinder;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
-import com.github.kolandroid.kol.android.util.adapters.ListAdapter;
+import com.github.kolandroid.kol.android.util.adapters.ListControllerAdapter;
 import com.github.kolandroid.kol.model.models.chat.ChannelModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModelSegment;
@@ -15,6 +15,8 @@ import com.github.kolandroid.kol.model.models.chat.ChatStubModel;
 import com.github.kolandroid.kol.util.Callback;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ChatChannelsController extends ChatStubController {
     /**
@@ -22,10 +24,16 @@ public class ChatChannelsController extends ChatStubController {
      */
     private static final long serialVersionUID = -7646035545611799838L;
 
-    private transient ListAdapter<ChannelModel> adapter;
+    private Set<String> currentChannels;
+    private ArrayList<ChannelListItemController> controllers;
+
+    private transient ListControllerAdapter<ChannelListItemController> adapter;
 
     public ChatChannelsController(ChatModel model) {
         super(new ChatStubModel(model));
+
+        controllers = new ArrayList<>();
+        currentChannels = new HashSet<>();
     }
 
     @Override
@@ -44,31 +52,43 @@ public class ChatChannelsController extends ChatStubController {
             }
         };
 
-        ArrayList<ChannelModel> channels = new ArrayList<ChannelModel>();
-        ChannelBinder binder = new ChannelBinder(localChannelSelector);
-        adapter = new ListAdapter<ChannelModel>(host.getActivity(), channels, binder);
+        for (ChannelModel channel : model.getChannels()) {
+            addChannel(channel, host);
+        }
 
+        adapter = new ListControllerAdapter<ChannelListItemController>(host, controllers);
         ListView list = (ListView) view.findViewById(R.id.dialog_chat_list);
         list.setAdapter(adapter);
     }
 
-    @Override
-    public void receiveProgress(View view, ChatStubModel model, Iterable<ChatModelSegment> message, Screen host) {
-        if (adapter != null) {
-            adapter.setElements(getAvailableChannels(model));
-        }
+    public void addChannel(ChannelModel channel, Screen host) {
+        if (currentChannels.contains(channel.getName()))
+            return;
+        if (channel.getName().contains("@") && !channel.isActive())
+            return;
+        currentChannels.add(channel.getName());
+
+        ChannelListItemController controller = new ChannelListItemController(channel);
+        controllers.add(controller);
     }
 
-    private ArrayList<ChannelModel> getAvailableChannels(ChatModel model) {
-        ArrayList<ChannelModel> result = new ArrayList<ChannelModel>();
-        if (model == null)
-            return result;
+    @Override
+    public void disconnect(Screen host) {
+        this.adapter = null;
+        super.disconnect(host);
+    }
 
-        for (ChannelModel channel : model.getChannels()) {
-            if (channel.isActive() || !channel.getName().contains("@"))
-                result.add(channel);
+    @Override
+    public void receiveProgress(View view, ChatStubModel model, Iterable<ChatModelSegment> message, Screen host) {
+        for (ChannelModel c : model.getChannels()) {
+            addChannel(c, host);
         }
-        return result;
+
+        if (adapter != null) {
+            //Reset this every time; the list adapter does strange things with connect/disconnect
+            // so we cannot rely on each ChannelController updating properly
+            adapter.setElements(controllers);
+        }
     }
 
     @Override
@@ -78,5 +98,80 @@ public class ChatChannelsController extends ChatStubController {
 
     public interface ChatChannelsControllerHost {
         void switchChannel(String to);
+    }
+
+    private static class ChannelListItemController extends ChannelCounterController {
+        private boolean active;
+
+        public ChannelListItemController(ChannelModel channel) {
+            super(channel);
+        }
+
+        @Override
+        public int getView() {
+            return R.layout.list_chat_channel_item;
+        }
+
+        @Override
+        public void receiveProgress(View view, ChannelModel model, Void message, Screen host) {
+            if (active != model.isActive()) {
+                setButtonState(view, model, host);
+            }
+            super.receiveProgress(view, model, message, host);
+        }
+
+        private void setButtonState(View view, ChannelModel model, final Screen host) {
+            Button enter = (Button) view.findViewById(R.id.chat_channel_enter);
+            Button leave = (Button) view.findViewById(R.id.chat_channel_leave);
+
+            active = model.isActive();
+            if (model.isActive()) {
+                enter.setEnabled(false);
+                leave.setEnabled(true);
+                leave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
+                        getModel().leave();
+                    }
+                });
+            } else {
+                enter.setEnabled(true);
+                leave.setEnabled(false);
+                enter.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
+                        getModel().enter();
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void disconnect(Screen host) {
+            super.disconnect(host);
+        }
+
+        @Override
+        public void connect(View view, ChannelModel model, final Screen host) {
+            super.connect(view, model, host);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (getModel().isActive()) {
+                        ChatChannelsControllerHost activity = (ChatChannelsControllerHost) host.getActivity();
+                        activity.switchChannel(getModel().getName());
+                        host.close();
+                    }
+                }
+            });
+
+            this.setButtonState(view, model, host);
+        }
+
+        @Override
+        public String toString() {
+            return getModel().getName();
+        }
     }
 }
