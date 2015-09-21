@@ -4,6 +4,7 @@ import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.model.LinkedModel;
+import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.model.models.chat.raw.RawActionList;
 import com.github.kolandroid.kol.model.models.chat.raw.RawActionListDeserializer;
 import com.github.kolandroid.kol.request.Request;
@@ -179,7 +180,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             }
 
             @Override
-            public void startChatFailed(String message, String redirectUrl) {
+            public void startChatFailed(MessageModel message) {
                 started = false;
             }
 
@@ -400,7 +401,8 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                         public void handle(Session session, ServerReply response) {
                             Logger.log("ChatModel", "Unable to start chat");
                             ArrayList<ChatModelSegment> result = new ArrayList<>();
-                            result.add(new ChatModelSegment.AssertChatStartFailed("Unable to connect to KoL", ""));
+                            MessageModel message = new MessageModel("Unable to connect to KoL.", MessageModel.ErrorType.ERROR);
+                            result.add(new ChatModelSegment.AssertChatStartFailed(message));
                         }
                     });
 

@@ -3,7 +3,7 @@ package com.github.kolandroid.kol.model.models.login;
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
-import com.github.kolandroid.kol.model.models.ErrorModel;
+import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
@@ -28,7 +28,7 @@ public class CreateCharacterModel extends WebModel {
                 public void handle(Session session, ServerReply response) {
                     if (response == null || response.redirectLocation == null || response.redirectLocation == "") {
                         Logger.log("CreateCharacterModel", "Error creating character; no response from create.php");
-                        makeRequest(new SimulatedRequest(ErrorModel.generateErrorMessage("Unable to Create Character [0x01]", ErrorModel.ErrorType.SEVERE)));
+                        makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Unable to Create Character [0x01]", MessageModel.ErrorType.SEVERE)));
                         return;
                     }
 
@@ -36,7 +36,7 @@ public class CreateCharacterModel extends WebModel {
                     Logger.log("CreateCharacterModel", "Session: " + session);
                     if (session.getCookie("magic", "").equals("")) {
                         Logger.log("CreateCharacterModel", "Error creating character; no magic value set");
-                        makeRequest(new SimulatedRequest(ErrorModel.generateErrorMessage("Unable to Create Character [0x02]", ErrorModel.ErrorType.SEVERE)));
+                        makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Unable to Create Character [0x02]", MessageModel.ErrorType.SEVERE)));
                         return;
                     }
 
@@ -49,7 +49,7 @@ public class CreateCharacterModel extends WebModel {
                         public void handle(Session session, ServerReply response) {
                             if (response == null || response.redirectLocation == null || response.redirectLocation == "") {
                                 Logger.log("CreateCharacterModel", "Error creating character; no response from login.php");
-                                makeRequest(new SimulatedRequest(ErrorModel.generateErrorMessage("Unable to Create Character [0x03]", ErrorModel.ErrorType.SEVERE)));
+                                makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Unable to Create Character [0x03]", MessageModel.ErrorType.SEVERE)));
                                 return;
                             }
 
@@ -58,7 +58,7 @@ public class CreateCharacterModel extends WebModel {
                             if (session.getCookie("PHPSESSID", "").equals("")) {
                                 // Failure to login
                                 Logger.log("CreateCharacterModel", "Failed to Login");
-                                makeRequest(new SimulatedRequest(ErrorModel.generateErrorMessage("Unable to Create Character [0x04]", ErrorModel.ErrorType.SEVERE)));
+                                makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Unable to Create Character [0x04]", MessageModel.ErrorType.SEVERE)));
                                 return;
                             }
 

@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 import com.github.kolandroid.kol.android.controller.Controller;
-import com.github.kolandroid.kol.android.controllers.ErrorController;
+import com.github.kolandroid.kol.android.controllers.MessageController;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
-import com.github.kolandroid.kol.model.models.ErrorModel;
+import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.util.Logger;
 
 public abstract class ActivityScreen extends ActionBarActivity implements Screen {
@@ -35,7 +35,8 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
 
         controller = this.setup(savedInstanceState, controller);
         if (controller == null) {
-            controller = new ErrorController("Unable to determine controller to display", ErrorModel.ErrorType.ERROR);
+            MessageModel error = new MessageModel("0x534fa: Unable to determine controller to display", MessageModel.ErrorType.ERROR);
+            controller = new MessageController(error);
         }
 
         displayController(controller, false);

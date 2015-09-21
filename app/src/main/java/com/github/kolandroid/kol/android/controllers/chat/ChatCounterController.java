@@ -4,12 +4,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.kolandroid.kol.android.R;
-import com.github.kolandroid.kol.android.controllers.ErrorController;
+import com.github.kolandroid.kol.android.controllers.MessageController;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
-import com.github.kolandroid.kol.model.models.ErrorModel;
+import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.model.models.chat.ChannelModel;
 import com.github.kolandroid.kol.model.models.chat.ChatAction;
 import com.github.kolandroid.kol.model.models.chat.ChatModel;
@@ -92,8 +92,8 @@ public class ChatCounterController extends ChatStubController<ChatStubModel> {
             }
 
             @Override
-            public void startChatFailed(String message, String redirectUrl) {
-                openChatFailure(host, message, redirectUrl);
+            public void startChatFailed(MessageModel message) {
+                openChatFailure(host, message);
             }
 
             @Override
@@ -121,9 +121,9 @@ public class ChatCounterController extends ChatStubController<ChatStubModel> {
     }
 
 
-    private void openChatFailure(Screen host, String message, String redirectUrl) {
-        Logger.log("ChatCounterController", "Unable to open Chat: " + message);
-        ErrorController error = new ErrorController(message, ErrorModel.ErrorType.MESSAGE);
+    private void openChatFailure(Screen host, MessageModel message) {
+        Logger.log("ChatCounterController", "Unable to open Chat: " + message.getMessage());
+        MessageController error = new MessageController(message);
         host.getViewContext().getPrimaryRoute().execute(error);
     }
 

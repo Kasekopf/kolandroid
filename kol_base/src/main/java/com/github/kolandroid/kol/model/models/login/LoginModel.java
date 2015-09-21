@@ -3,7 +3,7 @@ package com.github.kolandroid.kol.model.models.login;
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.LinkedModel;
-import com.github.kolandroid.kol.model.models.ErrorModel;
+import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
@@ -89,7 +89,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                 if (response == null) {
                     // Failure to login
                     Logger.log("LoginModel", "Failed to Login");
-                    makeRequest(new SimulatedRequest(ErrorModel.generateErrorMessage("Login Failed. Unable to connect to server.", ErrorModel.ErrorType.SEVERE)));
+                    makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Login Failed. Unable to connect to server.", MessageModel.ErrorType.SEVERE)));
                     return;
                 }
 
@@ -98,7 +98,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                 if (session.getCookie("PHPSESSID", "").equals("")) {
                     // Failure to login
                     Logger.log("LoginModel", "Failed to Login");
-                    makeRequest(new SimulatedRequest(ErrorModel.generateErrorMessage("Login Failed. Bad Password.", ErrorModel.ErrorType.SEVERE)));
+                    makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Login Failed. Bad Password.", MessageModel.ErrorType.SEVERE)));
                     return;
                 }
 
@@ -148,7 +148,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                     if (response == null) {
                         // Failure to login
                         Logger.log("LoginModel", "Failed to Login");
-                        makeRequest(new SimulatedRequest(ErrorModel.generateErrorMessage("Login Failed. Unable to connect to server.", ErrorModel.ErrorType.SEVERE)));
+                        makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Login Failed. Unable to connect to server.", MessageModel.ErrorType.SEVERE)));
                         return;
                     }
 
@@ -157,7 +157,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                     if (session.getCookie("PHPSESSID", "").equals("")) {
                         // Failure to login
                         Logger.log("LoginModel", "Failed to Login");
-                        makeRequest(new SimulatedRequest(ErrorModel.generateErrorMessage("Login Failed. Bad Password.", ErrorModel.ErrorType.SEVERE)));
+                        makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Login Failed. Bad Password.", MessageModel.ErrorType.SEVERE)));
                         return;
                     }
 

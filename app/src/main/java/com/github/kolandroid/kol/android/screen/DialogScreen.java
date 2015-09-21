@@ -11,9 +11,9 @@ import android.view.Window;
 
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.Controller;
-import com.github.kolandroid.kol.android.controllers.ErrorController;
+import com.github.kolandroid.kol.android.controllers.MessageController;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
-import com.github.kolandroid.kol.model.models.ErrorModel;
+import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.util.Logger;
 
 public class DialogScreen extends DialogFragment implements Screen {
@@ -73,8 +73,10 @@ public class DialogScreen extends DialogFragment implements Screen {
         this.controller = (Controller) this.getArguments().getSerializable("controller");
 
         if (controller == null) {
+
+            MessageModel error = new MessageModel("0x35ad2: Unable to display page", MessageModel.ErrorType.ERROR);
+            controller = new MessageController(error);
             Logger.log("DialogScreen", "Unable to load controller from bundle");
-            controller = new ErrorController("0x35ad1: Unable to display page", ErrorModel.ErrorType.ERROR);
         }
 
         int layoutid = controller.getView();

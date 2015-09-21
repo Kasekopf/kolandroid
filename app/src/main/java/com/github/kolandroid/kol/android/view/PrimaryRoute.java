@@ -5,7 +5,7 @@ import android.util.Log;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controllers.AccountSettingsController;
 import com.github.kolandroid.kol.android.controllers.CraftingController;
-import com.github.kolandroid.kol.android.controllers.ErrorController;
+import com.github.kolandroid.kol.android.controllers.MessageController;
 import com.github.kolandroid.kol.android.controllers.chat.ChatController;
 import com.github.kolandroid.kol.android.controllers.fight.FightController;
 import com.github.kolandroid.kol.android.controllers.inventory.ClosetController;
@@ -18,7 +18,7 @@ import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.models.AccountSettingsModel;
 import com.github.kolandroid.kol.model.models.CraftingModel;
-import com.github.kolandroid.kol.model.models.ErrorModel;
+import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.model.models.chat.stubs.ChatStubModel;
 import com.github.kolandroid.kol.model.models.fight.FightModel;
@@ -42,9 +42,8 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
         Log.i("PrimaryRoute", "Creating model for response: " + response.url);
 
         if (response == null) {
-            response = ErrorModel.generateErrorMessage("Unable to access KoL.", ErrorModel.ErrorType.ERROR);
-            ErrorModel model = new ErrorModel(session, response);
-            return new ErrorController(model);
+            MessageModel model = new MessageModel("Unable to access KoL.", MessageModel.ErrorType.ERROR);
+            return new MessageController(model);
         }
 
         /**
@@ -57,14 +56,13 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
         }
 
         if (response.url.contains("donatepopup.php")) {
-            response = ErrorModel.generateErrorMessage("Thanks for donating to KoL! Unfortunately, this unofficial mobile app does not yet support donations. Please use the mobile web browser.", ErrorModel.ErrorType.MESSAGE);
-            ErrorModel model = new ErrorModel(session, response);
-            return new ErrorController(model);
+            MessageModel model = new MessageModel("Thanks for donating to KoL! Unfortunately, this unofficial mobile app does not yet support donations. Please use the mobile web browser.", MessageModel.ErrorType.NONE);
+            return new MessageController(model);
         }
 
         if (response.url.contains("androiderror.php")) {
-            ErrorModel model = new ErrorModel(session, response);
-            return new ErrorController(model);
+            MessageModel model = new MessageModel(session, response);
+            return new MessageController(model);
         }
 
         if (response.url.contains("login.php")) {

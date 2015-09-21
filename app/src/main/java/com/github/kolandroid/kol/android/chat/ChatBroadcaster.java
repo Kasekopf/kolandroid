@@ -11,6 +11,7 @@ import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
+import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.model.models.chat.ChatAction;
 import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModelSegment;
@@ -77,7 +78,7 @@ public class ChatBroadcaster {
         }
 
         @Override
-        public void startChatFailed(String message, String redirectUrl) {
+        public void startChatFailed(MessageModel message) {
             stop();
         }
 

@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.kolandroid.kol.android.controller.Controller;
-import com.github.kolandroid.kol.android.controllers.ErrorController;
+import com.github.kolandroid.kol.android.controllers.MessageController;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
-import com.github.kolandroid.kol.model.models.ErrorModel;
+import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.util.Logger;
 
 public class FragmentScreen extends Fragment implements Screen {
@@ -34,7 +34,8 @@ public class FragmentScreen extends Fragment implements Screen {
 
         if (controller == null) {
             Logger.log("FragmentScreen", "Unable to load controller from bundle");
-            controller = new ErrorController("0x35ad1: Unable to display page", ErrorModel.ErrorType.ERROR);
+            MessageModel error = new MessageModel("0x35ad1: Unable to display page", MessageModel.ErrorType.ERROR);
+            controller = new MessageController(error);
         }
 
         int layoutid = controller.getView();

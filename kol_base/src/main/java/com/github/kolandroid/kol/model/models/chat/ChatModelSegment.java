@@ -2,6 +2,7 @@ package com.github.kolandroid.kol.model.models.chat;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.model.models.chat.raw.RawAction;
 import com.github.kolandroid.kol.model.models.chat.raw.RawActionList;
 import com.github.kolandroid.kol.util.Logger;
@@ -32,18 +33,26 @@ public abstract class ChatModelSegment implements Serializable {
 
         if (reply == null) {
             Logger.log("ChatModel", "Unable to connect to KoL");
-            result.add(new AssertChatStartFailed("Unable to connect to KoL", ""));
+            MessageModel message = new MessageModel("Unable to connect to KoL.", MessageModel.ErrorType.ERROR);
+            result.add(new AssertChatStartFailed(message));
             return result;
         }
 
         if (!reply.url.contains("mchat.php")) {
             if (reply.html.contains("<b>Add E-Mail Address</b>")) {
                 Logger.log("ChatModel", "Player must first add an email address");
-                result.add(new AssertChatStartFailed("You must first add an email address.", "sendmessage.php"));
+                MessageModel message = new MessageModel(session, "Chat:", "You must first add an email address.", "Add", "sendmessage.php", MessageModel.ErrorType.NONE);
+                result.add(new AssertChatStartFailed(message));
+                return result;
+            } else if (reply.html.contains("town_altar.php")) {
+                Logger.log("ChatModel", "Player must first complete the alter of literacy");
+                MessageModel message = new MessageModel(session, "Chat:", "You may not enter the chat until you have proven yourself literate. You can do so at the Temple of Literacy in the Big Mountains.", "Go There", "town_altar.php", MessageModel.ErrorType.NONE);
+                result.add(new AssertChatStartFailed(message));
                 return result;
             } else {
                 Logger.log("ChatModel", "mchat.php responded with " + reply.url);
-                result.add(new AssertChatStartFailed("Unable to connect to chat", ""));
+                MessageModel message = new MessageModel("Unable to connect to chat.", MessageModel.ErrorType.ERROR);
+                result.add(new AssertChatStartFailed(message));
                 return result;
             }
         }
@@ -172,7 +181,7 @@ public abstract class ChatModelSegment implements Serializable {
 
         void startChat(String playerId, String pwd, String visibleChannel, ArrayList<ChatAction> baseActions);
 
-        void startChatFailed(String message, String redirectUrl);
+        void startChatFailed(MessageModel message);
 
         void duplicateModel(ChatModel model);
     }
@@ -275,17 +284,15 @@ public abstract class ChatModelSegment implements Serializable {
     }
 
     public static final class AssertChatStartFailed extends ChatModelSegment {
-        private final String message;
-        private final String redirectUrl;
+        private final MessageModel message;
 
-        public AssertChatStartFailed(String message, String redirectUrl) {
+        public AssertChatStartFailed(MessageModel message) {
             this.message = message;
-            this.redirectUrl = redirectUrl;
         }
 
         @Override
         public void visit(ChatModelSegmentProcessor processor) {
-            processor.startChatFailed(message, redirectUrl);
+            processor.startChatFailed(message);
         }
     }
 
