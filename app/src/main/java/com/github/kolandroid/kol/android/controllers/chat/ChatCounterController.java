@@ -7,12 +7,13 @@ import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.model.models.chat.ChannelModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModelSegment;
-import com.github.kolandroid.kol.model.models.chat.ChatStubModel;
+import com.github.kolandroid.kol.model.models.chat.stubs.ChatStubModel;
 import com.github.kolandroid.kol.util.Logger;
 
-public class ChatCounterController extends ChatStubController {
-    private int initialCount = -1;
+public class ChatCounterController extends ChatStubController<ChatStubModel> {
+    private transient TextView popup;
 
     public ChatCounterController(Session session) {
         super(new ChatStubModel(session));
@@ -20,11 +21,7 @@ public class ChatCounterController extends ChatStubController {
 
     @Override
     public void doConnect(View view, ChatStubModel model, final Screen host) {
-        if (model.getMessageCount() > 0) {
-            this.initialCount = model.getMessageCount();
-        }
-
-        final TextView popup = (TextView) view.findViewById(R.id.gochat_notification);
+        popup = (TextView) view.findViewById(R.id.gochat_notification);
         if (popup != null) {
             popup.setVisibility(View.GONE);
         }
@@ -36,25 +33,30 @@ public class ChatCounterController extends ChatStubController {
                 ChatController controller = new ChatController(getModel());
                 host.getViewContext().getPrimaryRoute().execute(controller);
 
-                initialCount = getModel().getMessageCount();
                 popup.setVisibility(View.GONE);
             }
         });
     }
 
-    @Override
-    public void receiveProgress(View view, ChatStubModel model, Iterable<ChatModelSegment> message, Screen host) {
-        int newCount = model.getMessageCount();
-        if (initialCount < 0)
-            initialCount = newCount; //ignore the first update
+    private void checkUnread() {
+        int totalUnread = 0;
+        for (ChannelModel channel : getModel().getChannels()) {
+            totalUnread += channel.getUnreadCount();
+        }
 
-        if (newCount > initialCount) {
-            TextView popup = (TextView) view.findViewById(R.id.gochat_notification);
-            if (popup != null) {
+        if (popup != null) {
+            if (totalUnread == 0) {
+                popup.setVisibility(View.GONE);
+            } else {
                 popup.setVisibility(View.VISIBLE);
-                popup.setText("" + (newCount - initialCount));
+                popup.setText("" + totalUnread);
             }
         }
+    }
+
+    @Override
+    public void receiveProgress(View view, ChatStubModel model, Iterable<ChatModelSegment> message, Screen host) {
+        checkUnread();
     }
 
     @Override

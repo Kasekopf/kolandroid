@@ -17,7 +17,7 @@ public class ChannelModel extends LinkedModel<Void> {
     private final String name;
     private boolean active;
 
-    private int unread = 0;
+    private int unread;
 
     public ChannelModel(ChatModel host, String name, Session session) {
         super(session);
@@ -28,6 +28,7 @@ public class ChannelModel extends LinkedModel<Void> {
         this.active = name.contains("@");
 
         this.messages = new ArrayList<ChatText>();
+        this.unread = 0;
     }
 
     public ChannelModel(ChannelModel copyFrom, ChatModel host) {
@@ -38,6 +39,7 @@ public class ChannelModel extends LinkedModel<Void> {
         this.name = copyFrom.name;
         this.active = copyFrom.active;
         this.messages = new ArrayList<>(copyFrom.messages);
+        this.unread = copyFrom.unread;
     }
 
     public void enter() {
@@ -63,6 +65,10 @@ public class ChannelModel extends LinkedModel<Void> {
         host.submitCommand(new ChatModel.ChatModelCommand.SubmitChatMessage("/listen " + name));
     }
 
+    public void makePrimaryChannel() {
+        host.submitCommand(new ChatModel.ChatModelCommand.SetCurrentChannel(name));
+    }
+
     public String getName() {
         return this.name;
     }
@@ -77,7 +83,9 @@ public class ChannelModel extends LinkedModel<Void> {
     }
 
     public void readAllMessages() {
-        host.submitCommand(new ChatModel.ChatModelCommand.ReadChannelMessages(this.getName()));
+        if (unread > 0) {
+            host.submitCommand(new ChatModel.ChatModelCommand.ReadChannelMessages(this.getName()));
+        }
     }
 
     protected void setMessagesRead() {

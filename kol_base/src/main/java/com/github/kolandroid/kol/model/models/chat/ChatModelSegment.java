@@ -17,7 +17,7 @@ public abstract class ChatModelSegment implements Serializable {
         ArrayList<ChatModelSegment> segments = new ArrayList<>();
 
         if (response == null) {
-            Logger.log("ChatModel", "Recieved null updated");
+            Logger.log("ChatModel", "Received null update");
             return segments;
         }
 

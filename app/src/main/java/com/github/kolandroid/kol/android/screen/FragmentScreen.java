@@ -50,6 +50,7 @@ public class FragmentScreen extends Fragment implements Screen {
     @Override
     public void onDestroyView() {
         if (controller != null) {
+            controller.disconnect(this);
             this.getArguments().putSerializable("controller", controller); // save the current controller
         }
         super.onDestroyView();

@@ -1,6 +1,7 @@
-package com.github.kolandroid.kol.model.models.chat;
+package com.github.kolandroid.kol.model.models.chat.stubs;
 
 import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 

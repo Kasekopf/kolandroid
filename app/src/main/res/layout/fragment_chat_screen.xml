@@ -38,28 +38,11 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="#000" />
 
-    <LinearLayout
+    <com.github.kolandroid.kol.android.screen.ViewScreen
+        android:id="@+id/chat_submissionscreen"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/chatroom_text_input"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="text" />
-
-        <Button
-            android:id="@+id/chatroom_submit"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Post" />
-
-    </LinearLayout>
-
+        android:layout_height="wrap_content" />
 </LinearLayout>

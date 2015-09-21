@@ -4,7 +4,6 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.model.models.chat.raw.RawAction;
 import com.github.kolandroid.kol.request.Request;
-import com.github.kolandroid.kol.util.Callback;
 
 public class ChatAction extends Model {
     /**
@@ -21,7 +20,7 @@ public class ChatAction extends Model {
     }
 
 
-    public void submit(ChatText baseMessage, Callback<String> toChatField, ChatModel context) {
+    public void submit(ChatText baseMessage, ChatModel context) {
         if (baseMessage.getUser() == null)
             return; //cannot submit with no user
 
@@ -50,7 +49,7 @@ public class ChatAction extends Model {
             case 3: // prompt for text
             case 4: // confirm action
                 // in either case, we'll default to filling up the textview
-                toChatField.execute(base.entry + " " + player);
+                context.submitCommand(new ChatModel.ChatModelCommand.FillPartialChat(base.entry + " " + player));
                 break;
             case 5:
                 Request chatReq = new Request(base.entry + baseMessage.getUser().getId());

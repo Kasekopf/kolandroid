@@ -10,7 +10,7 @@ import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.model.models.chat.ChannelModel;
 
 public class ChannelCounterController extends LinkedModelController<Void, ChannelModel> {
-    private int count = 0;
+    private transient TextView badge;
 
     public ChannelCounterController(ChannelModel channel) {
         super(channel);
@@ -27,12 +27,25 @@ public class ChannelCounterController extends LinkedModelController<Void, Channe
     }
 
     @Override
-    public void receiveProgress(View view, ChannelModel model, Void message, Screen host) {
-        count += 1;
+    public void disconnect(Screen host) {
+        badge = null;
+    }
 
-        TextView notification = (TextView) view.findViewById(R.id.channelname_notification);
-        notification.setText("" + count);
-        notification.setVisibility(View.VISIBLE);
+    @Override
+    public void receiveProgress(View view, ChannelModel model, Void message, Screen host) {
+        checkNotificationBadge();
+    }
+
+    private void checkNotificationBadge() {
+        if (badge == null)
+            return;
+
+        if (getModel().getUnreadCount() == 0) {
+            badge.setVisibility(View.GONE);
+        } else {
+            badge.setText("" + getModel().getUnreadCount());
+            badge.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -40,8 +53,7 @@ public class ChannelCounterController extends LinkedModelController<Void, Channe
         TextView nameText = (TextView) view.findViewById(R.id.channelname_text);
         nameText.setText(model.getName());
 
-        TextView notification = (TextView) view.findViewById(R.id.channelname_notification);
-        notification.setText("");
-        notification.setVisibility(View.GONE);
+        badge = (TextView) view.findViewById(R.id.channelname_notification);
+        checkNotificationBadge();
     }
 }

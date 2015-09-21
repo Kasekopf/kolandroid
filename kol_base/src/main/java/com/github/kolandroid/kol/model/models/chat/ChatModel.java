@@ -277,6 +277,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
     }
     */
 
+    protected void fillPartialChatPrompt(String message) {
+        // do nothing
+    }
+
     protected boolean stubbed() {
         return false;
     }
@@ -295,6 +299,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
 
     protected void log(String message) {
         Logger.log("ChatModel", message);
+    }
+
+    public String getCurrentChannel() {
+        return visibleChannel;
     }
 
     public interface ChatModelCommand {
@@ -334,6 +342,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
 
             @Override
             public boolean complete(ChatModel base) {
+                base.log(base + ": Current channel set to " + channel);
                 base.visibleChannel = channel;
                 return true;
             }
@@ -416,6 +425,22 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                 if (model != null) {
                     model.setMessagesRead();
                 }
+                return true;
+            }
+        }
+
+        class FillPartialChat implements ChatModelCommand {
+            private final String partial;
+
+            public FillPartialChat(String partial) {
+                this.partial = partial;
+            }
+
+
+            @Override
+            public boolean complete(ChatModel base) {
+                Logger.log("ChatModel", base + " filled partial message " + partial);
+                base.fillPartialChatPrompt(partial);
                 return true;
             }
         }

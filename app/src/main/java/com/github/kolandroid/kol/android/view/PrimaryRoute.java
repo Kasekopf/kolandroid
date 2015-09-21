@@ -22,7 +22,7 @@ import com.github.kolandroid.kol.model.models.ChoiceModel;
 import com.github.kolandroid.kol.model.models.CraftingModel;
 import com.github.kolandroid.kol.model.models.ErrorModel;
 import com.github.kolandroid.kol.model.models.WebModel;
-import com.github.kolandroid.kol.model.models.chat.ChatStubModel;
+import com.github.kolandroid.kol.model.models.chat.stubs.ChatStubModel;
 import com.github.kolandroid.kol.model.models.fight.FightModel;
 import com.github.kolandroid.kol.model.models.inventory.ClosetModel;
 import com.github.kolandroid.kol.model.models.inventory.InventoryModel;
