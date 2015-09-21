@@ -17,6 +17,8 @@ public class ChannelModel extends LinkedModel<Void> {
     private final String name;
     private boolean active;
 
+    private int unread = 0;
+
     public ChannelModel(ChatModel host, String name, Session session) {
         super(session);
 
@@ -45,7 +47,7 @@ public class ChannelModel extends LinkedModel<Void> {
             return;
         if (name.contains("@"))
             return;
-        host.submitChat("/listen " + name);
+        host.submitCommand(new ChatModel.ChatModelCommand.SubmitChatMessage("/listen " + name));
     }
 
     public void leave() {
@@ -54,11 +56,11 @@ public class ChannelModel extends LinkedModel<Void> {
         if (!active)
             return;
         if (name.contains("@")) {
-            host.leaveChannel(name);
+            host.submitCommand(new ChatModel.ChatModelCommand.LeaveChannel(name));
             return;
         }
 
-        host.submitChat("/listen " + name);
+        host.submitCommand(new ChatModel.ChatModelCommand.SubmitChatMessage("/listen " + name));
     }
 
     public String getName() {
@@ -74,11 +76,21 @@ public class ChannelModel extends LinkedModel<Void> {
         notifyView(null);
     }
 
+    public void readAllMessages() {
+        host.submitCommand(new ChatModel.ChatModelCommand.ReadChannelMessages(this.getName()));
+    }
+
+    protected void setMessagesRead() {
+        this.unread = 0;
+        notifyView(null);
+    }
+
     protected void addMessage(ChatText message) {
         messages.add(message);
         if (this.name.startsWith("@"))
             setActive(true);
 
+        unread += 1;
         if (message.isEvent()) {
             String text = message.getText();
             if (text.contains("Now listening to channel:"))
@@ -94,5 +106,9 @@ public class ChannelModel extends LinkedModel<Void> {
 
     public ArrayList<ChatText> getMessages() {
         return messages;
+    }
+
+    public int getUnreadCount() {
+        return unread;
     }
 }

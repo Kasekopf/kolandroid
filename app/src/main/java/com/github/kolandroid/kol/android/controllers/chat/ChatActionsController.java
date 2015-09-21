@@ -57,6 +57,7 @@ public class ChatActionsController extends ChatStubController {
             public void onItemClick(AdapterView<?> ad, View list, int pos,
                                     long arg3) {
                 ChatAction select = (ChatAction) ad.getItemAtPosition(pos);
+                select.attachView(host.getViewContext());
                 select.submit(base, fillChatText.weak(), getModel());
                 host.close();
             }

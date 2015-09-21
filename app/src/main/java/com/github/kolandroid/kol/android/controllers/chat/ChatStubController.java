@@ -51,7 +51,7 @@ public abstract class ChatStubController extends LinkedModelController<Iterable<
                 ChatServiceBinder binder = (ChatServiceBinder) service;
                 binder.acquireModel(withModel.weak(), withUpdates.weak());
 
-                getModel().insertSegmentCallback(binder.segmentSubmissionCallback());
+                getModel().insertCommandCallback(binder.commandSubmissionCallback());
             }
 
             @Override

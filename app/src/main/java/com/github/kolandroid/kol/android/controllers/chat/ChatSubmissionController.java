@@ -41,12 +41,12 @@ public class ChatSubmissionController extends ChatStubController {
             public void onClick(View arg0) {
                 ChatSubmissionControllerHost activity = (ChatSubmissionControllerHost) host
                         .getActivity();
-                String msg = text.getText().toString();
+                String message = text.getText().toString();
                 String channel = activity.getCurrentChannel();
 
                 ChatModel chat = getModel();
                 if (chat != null) {
-                    chat.submitChat(channel, msg);
+                    chat.submitCommand(new ChatModel.ChatModelCommand.SubmitChatMessage(channel, message));
                     text.setText("");
                 }
 

@@ -87,7 +87,6 @@ public abstract class ChatModelSegment implements Serializable {
 
     public abstract void visit(ChatModelSegmentProcessor processor);
 
-
     public interface ChatModelSegmentProcessor {
         void chatClosed();
 
@@ -99,9 +98,7 @@ public abstract class ChatModelSegment implements Serializable {
 
         void setCurrentChannels(ArrayList<String> channels);
 
-        void submitChatMessage(String message);
-
-        void leaveChannel(String channel);
+        void executeCommand(ChatModel.ChatModelCommand command);
     }
 
     private static final class AssertChatClosed extends ChatModelSegment {
@@ -163,29 +160,16 @@ public abstract class ChatModelSegment implements Serializable {
         }
     }
 
-    public static final class SubmitChatMessage extends ChatModelSegment {
-        private final String message;
+    public static final class ExecuteCommand extends ChatModelSegment {
+        private ChatModel.ChatModelCommand command;
 
-        public SubmitChatMessage(String message) {
-            this.message = message;
+        public ExecuteCommand(ChatModel.ChatModelCommand command) {
+            this.command = command;
         }
 
         @Override
         public void visit(ChatModelSegmentProcessor processor) {
-            processor.submitChatMessage(message);
-        }
-    }
-
-    public static final class LeaveChannel extends ChatModelSegment {
-        private final String channel;
-
-        public LeaveChannel(String channel) {
-            this.channel = channel;
-        }
-
-        @Override
-        public void visit(ChatModelSegmentProcessor processor) {
-            processor.leaveChannel(channel);
+            processor.executeCommand(command);
         }
     }
 

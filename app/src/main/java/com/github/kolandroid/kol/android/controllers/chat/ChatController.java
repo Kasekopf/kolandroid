@@ -36,7 +36,7 @@ public class ChatController extends ChatStubController {
 
     public ChatController(ChatModel model) {
         super(new ChatStubModel(model));
-        this.currentTabs = new HashSet<String>();
+        this.currentTabs = new HashSet<>();
     }
 
     @Override
@@ -57,15 +57,15 @@ public class ChatController extends ChatStubController {
         tabs.setOnTabChangedListener(new OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
-                getModel().setCurrentRoom(tabId);
+                getModel().submitCommand(new ChatModel.ChatModelCommand.SetCurrentChannel(tabId));
             }
         });
 
-        this.currentTabs = new HashSet<String>();
+        this.currentTabs = new HashSet<>();
     }
 
     private void updateTabs(ChatModel model, Screen host) {
-        ArrayList<String> currentChannels = new ArrayList<String>();
+        ArrayList<String> currentChannels = new ArrayList<>();
         for (ChannelModel child : model.getChannels()) {
             if (child.isActive())
                 currentChannels.add(child.getName());
@@ -77,7 +77,7 @@ public class ChatController extends ChatStubController {
             }
         }
 
-        ArrayList<String> toRemove = new ArrayList<String>();
+        ArrayList<String> toRemove = new ArrayList<>();
         for (String channel : currentTabs) {
             if (!currentChannels.contains(channel)) {
                 toRemove.add(channel);

@@ -19,21 +19,20 @@ public class ChatServiceBinder extends Binder {
     private final ArrayList<LatchedCallback<Iterable<ChatModelSegment>>> updateListeners;
     private final ArrayList<Callback<ChatModel>> creationListeners;
     private ChatModel model;
-    private final LatchedCallback<ChatModelSegment> segmentSubmission = new LatchedCallback<ChatModelSegment>() {
+    private final LatchedCallback<ChatModel.ChatModelCommand> commandSubmission = new LatchedCallback<ChatModel.ChatModelCommand>() {
         @Override
         public boolean isClosed() {
             return model != null;
         }
 
         @Override
-        public void execute(ChatModelSegment item) {
+        public void execute(ChatModel.ChatModelCommand command) {
             if (model != null) {
-                ArrayList<ChatModelSegment> it = new ArrayList<>();
-                it.add(item);
-                model.apply(it);
+                model.submitCommand(command);
             }
         }
     };
+
     private Timer updateTimer;
     private boolean started;
 
@@ -94,7 +93,7 @@ public class ChatServiceBinder extends Binder {
                 updateTimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        model.triggerUpdate();
+                        model.submitCommand(ChatModel.ChatModelCommand.UpdateChat.ONLY);
                     }
                 }, 1000, 5000);
             }
@@ -117,8 +116,8 @@ public class ChatServiceBinder extends Binder {
         }
     }
 
-    public LatchedCallback<ChatModelSegment> segmentSubmissionCallback() {
-        return segmentSubmission;
+    public LatchedCallback<ChatModel.ChatModelCommand> commandSubmissionCallback() {
+        return commandSubmission;
     }
 
     protected void stop() {

@@ -5,9 +5,11 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.LinkedModel;
+import com.github.kolandroid.kol.model.models.chat.raw.RawAction;
+import com.github.kolandroid.kol.model.models.chat.raw.RawActionList;
+import com.github.kolandroid.kol.model.models.chat.raw.RawActionListDeserializer;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
-import com.github.kolandroid.kol.request.SimulatedRequest;
 import com.github.kolandroid.kol.request.TentativeRequest;
 import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
@@ -15,14 +17,8 @@ import com.github.kolandroid.kol.util.Regex;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,10 +54,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
     protected ChatModel(Session s) {
         super(s);
 
-        seenMessages = new HashSet<Integer>();
-        messages = new ArrayList<ChatText>();
-        channels = new ArrayList<ChannelModel>();
-        channelsByName = new HashMap<String, ChannelModel>();
+        seenMessages = new HashSet<>();
+        messages = new ArrayList<>();
+        channels = new ArrayList<>();
+        channelsByName = new HashMap<>();
 
         parser = null;
 
@@ -84,10 +80,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         parser = builder.setFieldNamingPolicy(
                 FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
-        seenMessages = new HashSet<Integer>();
-        messages = new ArrayList<ChatText>();
-        channels = new ArrayList<ChannelModel>();
-        channelsByName = new HashMap<String, ChannelModel>();
+        seenMessages = new HashSet<>();
+        messages = new ArrayList<>();
+        channels = new ArrayList<>();
+        channelsByName = new HashMap<>();
 
         lasttime = "0";
 
@@ -96,15 +92,16 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         this.visibleChannel = BASEROOM.extractSingle(reply.html, "");
 
         String actionList = ACTIONS.extractSingle(reply.html, "");
-        if (actionList == null) {
-            this.baseActions = new ArrayList<>();
-        } else {
+        this.baseActions = new ArrayList<>();
+        if (actionList != null) {
             RawActionList rawActions = parser.fromJson(actionList,
                     RawActionList.class);
-            this.baseActions = rawActions.actions;
+            for (RawAction raw : rawActions.actions) {
+                this.baseActions.add(new ChatAction(s, raw));
+            }
         }
 
-        baseActions.add(0, ChatAction.SHOWPROFILE);
+        baseActions.add(0, new ChatAction(getSession(), RawAction.SHOWPROFILE));
 
         for (String message : INITIAL_MESSAGES.extractAllSingle(reply.html)) {
             if (message.contains("<span class=\"welcome\">"))
@@ -161,8 +158,8 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
 
         if (!this.stubbed()) {
             //Update internal list of channels.
-            submitChat("/channels", true);
-            submitChat("/l", true);
+            this.submitCommand(new ChatModelCommand.SubmitChatMessage("/channels", true));
+            this.submitCommand(new ChatModelCommand.SubmitChatMessage("/l", true));
         }
     }
 
@@ -212,8 +209,8 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         notifyView(segments);
     }
 
-    private void reassemble(ChatModelSegment chatModelSegment) {
-        chatModelSegment.visit(new ChatModelSegment.ChatModelSegmentProcessor() {
+    private void reassemble(ChatModelSegment segment) {
+        segment.visit(new ChatModelSegment.ChatModelSegmentProcessor() {
             @Override
             public void chatClosed() {
 
@@ -243,7 +240,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
 
             @Override
             public void setCurrentChannels(ArrayList<String> channels) {
-                ArrayList<ChannelModel> active = new ArrayList<ChannelModel>();
+                ArrayList<ChannelModel> active = new ArrayList<>();
                 for (String channel : channels) {
                     ChannelModel model = getOrCreateChannel(channel);
                     model.setActive(true);
@@ -256,75 +253,29 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             }
 
             @Override
-            public void submitChatMessage(String message) {
-                submitChat(message, false);
-            }
-
-            @Override
-            public void leaveChannel(String channel) {
-                ChannelModel model = getOrCreateChannel(channel);
-                model.setActive(false);
+            public void executeCommand(ChatModelCommand command) {
+                command.complete(ChatModel.this); // do not rebroadcast
             }
         });
     }
 
-    public void submitChat(String channel, String msg) {
-        log("Submitting " + msg + " to " + channel);
-        if (!msg.startsWith("/")) {
-            if (channel.startsWith("@")) {
-                // private messaging channel
-                msg = String
-                        .format("/msg %s %s", channel.replace("@", ""), msg);
-            } else {
-                msg = String.format("/c %s %s", channel, msg);
-            }
+    public void submitCommand(ChatModelCommand command) {
+        boolean rebroadcast = command.complete(this);
+        if (rebroadcast) {
+            ArrayList<ChatModelSegment> update = new ArrayList<>();
+            update.add(new ChatModelSegment.ExecuteCommand(command));
+            this.notifyView(update);
         }
-        submitChat(msg);
     }
 
-    protected void submitChat(String msg) {
-        submitChat(msg, false);
-    }
-
-    public void triggerUpdate() {
-        Request r = new Request("newchatmessages.php?j=1&lasttime=" + lasttime);
-        this.makeRequest(r, new ResponseHandler() {
-            @Override
-            public void handle(Session session, ServerReply response) {
-                ArrayList<ChatModelSegment> newSegments = ChatModelSegment.disassembleSegments(parser, seenMessages, response, false);
-                if (newSegments.size() > 0) {
-                    apply(newSegments);
-                }
-            }
-        });
-    }
-
-    protected void submitChat(String msg, final boolean hiddenCommand) {
-        String url = encodeChatMessage("submitnewchat.php?playerid=%s&pwd=%s&graf=%s&j=1", playerid, pwd, msg);
-        Logger.log("ChatModel", "Submitting chat for " + url);
-
-        Request req = new Request(url);
-        this.makeRequest(req, new ResponseHandler() {
-            @Override
-            public void handle(Session session, ServerReply response) {
-                ArrayList<ChatModelSegment> newSegments = ChatModelSegment.disassembleSegments(parser, seenMessages, response, hiddenCommand);
-                if (newSegments.size() > 0) {
-                    apply(newSegments);
-                }
-            }
-        });
-    }
-
-    protected void makeRequest(Request req) {
-        super.makeRequest(req);
-    }
-
+    /*
     public void displayRejectionMessage() {
         String html = "<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"https://images.kingdomofloathing.com/styles.css\"></head><body><span class=small>You may not enter the chat until you have proven yourself literate. You can do so at the <a target=mainpane href=\"town_altar.php\">Temple of Literacy</a> in the Big Mountains.</body></html>";
         ServerReply reject = new ServerReply(200, "", "", html,
                 "chatreject.php?androiddisplay=small", "");
         this.makeRequest(new SimulatedRequest(reject));
     }
+    */
 
     protected boolean stubbed() {
         return false;
@@ -335,51 +286,138 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
     }
 
     public ArrayList<ChannelModel> getChannels() {
-        return new ArrayList<ChannelModel>(channels);
+        return new ArrayList<>(channels);
     }
 
     public ChannelModel getChannel(String name) {
         return channelsByName.get(name);
     }
 
-    public void setCurrentRoom(String room) {
-        this.visibleChannel = room;
-    }
-
-    protected void leaveChannel(String channel) {
-        getOrCreateChannel(channel).setActive(false);
-    }
-
     protected void log(String message) {
         Logger.log("ChatModel", message);
     }
 
-    public static class RawActionList {
-        public final ArrayList<ChatAction> actions;
+    public interface ChatModelCommand {
+        /**
+         * Run the command on the the provided model.
+         *
+         * @param base Chat model to execute command on
+         * @return True if the chat model should rebroadcast the command
+         */
+        boolean complete(ChatModel base);
 
-        public RawActionList(ArrayList<ChatAction> actions) {
-            this.actions = actions;
+        class UpdateChat implements ChatModelCommand {
+            public static final UpdateChat ONLY = new UpdateChat();
+
+            @Override
+            public boolean complete(final ChatModel base) {
+                Request r = new Request("newchatmessages.php?j=1&lasttime=" + base.lasttime);
+                base.makeRequest(r, new ResponseHandler() {
+                    @Override
+                    public void handle(Session session, ServerReply response) {
+                        ArrayList<ChatModelSegment> newSegments = ChatModelSegment.disassembleSegments(base.parser, base.seenMessages, response, false);
+                        if (newSegments.size() > 0) {
+                            base.apply(newSegments);
+                        }
+                    }
+                });
+                return false;
+            }
         }
-    }
 
-    public static class RawActionListDeserializer implements
-            JsonDeserializer<RawActionList> {
-        @Override
-        public RawActionList deserialize(JsonElement element, Type type,
-                                         JsonDeserializationContext context) throws JsonParseException {
-            ArrayList<ChatAction> actions = new ArrayList<ChatAction>();
+        class SetCurrentChannel implements ChatModelCommand {
+            private final String channel;
 
-            JsonObject jsonObject = element.getAsJsonObject();
-            for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-                // For individual City objects, we can use default
-                // deserialisation:
-                ChatAction action = context.deserialize(entry.getValue(),
-                        ChatAction.class);
-                action.setEntry(entry.getKey());
-                actions.add(action);
+            public SetCurrentChannel(String channel) {
+                this.channel = channel;
             }
 
-            return new RawActionList(actions);
+            @Override
+            public boolean complete(ChatModel base) {
+                base.visibleChannel = channel;
+                return true;
+            }
+        }
+
+        class SubmitChatMessage implements ChatModelCommand {
+            private final String message;
+            private final boolean hidden;
+
+            public SubmitChatMessage(String channel, String message) {
+                if (!message.startsWith("/")) {
+                    if (channel.startsWith("@")) {
+                        // private messaging channel
+                        message = String
+                                .format("/msg %s %s", channel.replace("@", ""), message);
+                    } else {
+                        message = String.format("/c %s %s", channel, message);
+                    }
+                }
+
+                this.message = message;
+                this.hidden = false;
+            }
+
+            public SubmitChatMessage(String message) {
+                this.message = message;
+                this.hidden = false;
+            }
+
+            public SubmitChatMessage(String message, boolean hidden) {
+                this.message = message;
+                this.hidden = hidden;
+            }
+
+            @Override
+            public boolean complete(final ChatModel base) {
+                String url = encodeChatMessage("submitnewchat.php?playerid=%s&pwd=%s&graf=%s&j=1", base.playerid, base.pwd, message);
+                Logger.log("ChatModel", "Submitting chat for " + url);
+
+                Request req = new Request(url);
+                base.makeRequest(req, new ResponseHandler() {
+                    @Override
+                    public void handle(Session session, ServerReply response) {
+                        ArrayList<ChatModelSegment> newSegments = ChatModelSegment.disassembleSegments(base.parser, base.seenMessages, response, hidden);
+                        if (newSegments.size() > 0) {
+                            base.apply(newSegments);
+                        }
+                    }
+                });
+                return false;
+            }
+        }
+
+        class LeaveChannel implements ChatModelCommand {
+            private final String channel;
+
+            public LeaveChannel(String channel) {
+                this.channel = channel;
+            }
+
+
+            @Override
+            public boolean complete(ChatModel base) {
+                ChannelModel model = base.getOrCreateChannel(channel);
+                model.setActive(false);
+                return true;
+            }
+        }
+
+        class ReadChannelMessages implements ChatModelCommand {
+            private final String channel;
+
+            public ReadChannelMessages(String channel) {
+                this.channel = channel;
+            }
+
+            @Override
+            public boolean complete(ChatModel base) {
+                ChannelModel model = base.getChannel(channel);
+                if (model != null) {
+                    model.setMessagesRead();
+                }
+                return true;
+            }
         }
     }
 }
