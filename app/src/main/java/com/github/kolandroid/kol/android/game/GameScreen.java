@@ -3,11 +3,9 @@ package com.github.kolandroid.kol.android.game;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,39 +59,42 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
     }
 
     @Override
-    public void setup(Bundle savedInstanceState) {
-        // Load the session for the provided model
-        Intent intent = this.getIntent();
-        @SuppressWarnings("unchecked")
-        ModelController<? extends Model> c = (ModelController<? extends Model>) intent
-                .getSerializableExtra("controller");
-        Model model = c.getModel();
-        Session session = model.getSession();
-        this.session = session;
-        Log.i("GameScreen", "Session: " + session);
+    public Controller setup(Bundle savedInstanceState, Controller controller) {
+        if (controller != null && controller instanceof ModelController) {
+            // Load the session for the provided model
+            @SuppressWarnings("unchecked")
+            ModelController<? extends Model> c = (ModelController<? extends Model>) controller;
+            Model model = c.getModel();
+            Session session = model.getSession();
+            this.session = session;
 
-        // Set up the drawer.
-        Controller nav = new NavigationController(new NavigationModel(session));
-        navigationScreen = DrawerScreen.create(nav);
-        getFragmentManager().beginTransaction()
-                .replace(R.id.navigation_drawer, navigationScreen).commit();
-        navigationScreen.setUp(this, R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+            // Set up the drawer.
+            Controller nav = new NavigationController(new NavigationModel(session));
+            navigationScreen = DrawerScreen.create(nav);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.navigation_drawer, navigationScreen).commit();
+            navigationScreen.setUp(this, R.id.navigation_drawer,
+                    (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        // Set up the stats pane.
-        this.stats = new StatsController(new StatsModel(session));
-        ViewScreen statsScreen = (ViewScreen) findViewById(R.id.game_statsscreen);
-        statsScreen.display(stats, this);
+            // Set up the stats pane.
+            this.stats = new StatsController(new StatsModel(session));
+            ViewScreen statsScreen = (ViewScreen) findViewById(R.id.game_statsscreen);
+            statsScreen.display(stats, this);
+        } else {
+            Logger.log("GameScreen", "Controller " + controller + " has no session; cannot be used to start GameScreen");
+        }
 
-        /*
-        // Connect to the chat service
-        chat = ChatConnection.create(this.getClass().getSimpleName());
-        chat.connect(this);
-        */
+        return controller;
     }
 
     @Override
     protected void displayController(Controller c, final boolean addToBackStack) {
+        Fragment dialog = getFragmentManager().findFragmentByTag("dialog");
+        if (dialog != null && dialog instanceof DialogFragment) {
+            Logger.log("GameScreen", "Dismissing dialog box");
+            ((DialogFragment) dialog).dismiss();
+        }
+
         c.chooseScreen(new ScreenSelection() {
             @Override
             public void displayExternal(Controller c) {
@@ -155,17 +156,6 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
     @Override
     protected int getContentView() {
         return R.layout.activity_game_screen;
-    }
-
-    @Override
-    protected void displayIntent(Intent intent, boolean addToBackStack) {
-        Fragment dialog = getFragmentManager().findFragmentByTag("dialog");
-        if (dialog != null && dialog instanceof DialogFragment) {
-            Logger.log("GameScreen", "Dismissing dialog box");
-            ((DialogFragment) dialog).dismiss();
-        }
-
-        super.displayIntent(intent, addToBackStack);
     }
 
     public void refreshStatsPane() {

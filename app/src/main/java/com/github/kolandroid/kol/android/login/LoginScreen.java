@@ -41,7 +41,7 @@ public class LoginScreen extends ActivityScreen {
     }
 
     @Override
-    public void setup(Bundle savedInstanceState) {
+    public Controller setup(Bundle savedInstanceState, Controller controller) {
         Logger.override_logger(new Logger() {
             @Override
             public void do_log(String tag, String message) {
@@ -50,15 +50,16 @@ public class LoginScreen extends ActivityScreen {
         });
 
         // Default to displaying the Login Screen on app startup
-        Intent intent = getIntent();
-        if (!intent.hasCategory("controller")) {
-            intent.putExtra("controller", new LoginConnectingController());
+        if (controller == null) {
+            controller = new LoginConnectingController();
         }
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("The Kingdom of Loathing");
         }
+
+        return controller;
     }
 
     @Override

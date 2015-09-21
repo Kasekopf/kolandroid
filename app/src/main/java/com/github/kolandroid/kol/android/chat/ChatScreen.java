@@ -19,11 +19,13 @@ import com.github.kolandroid.kol.util.Logger;
 
 public class ChatScreen extends ActivityScreen {
     @Override
-    public void setup(Bundle savedInstanceState) {
+    public Controller setup(Bundle savedInstanceState, Controller initial) {
         ActionBar bar = getSupportActionBar();
         if (bar != null) {
             bar.setDisplayHomeAsUpEnabled(true);
         }
+
+        return initial;
     }
 
     @Override

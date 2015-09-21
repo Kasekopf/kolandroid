@@ -50,13 +50,13 @@ public class AndroidViewContext implements ViewContext {
         ScreenSelection screens = new ScreenSelection() {
             @Override
             public void displayExternal(Controller c) {
-                IntentBuilder builder = new IntentBuilder(LoginScreen.class, c);
+                IntentBuilder builder = new IntentBuilder(LoginScreen.class, c, Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 Message.obtain(activityLauncher, 0, builder).sendToTarget();
             }
 
             @Override
             public void displayExternalDialog(Controller c, boolean cancellable) {
-                IntentBuilder builder = new IntentBuilder(LoginScreen.class, c);
+                IntentBuilder builder = new IntentBuilder(LoginScreen.class, c, Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 Message.obtain(activityLauncher, 0, builder).sendToTarget();
             }
 
@@ -110,16 +110,22 @@ public class AndroidViewContext implements ViewContext {
     private static class IntentBuilder {
         private final Class<?> toLaunch;
         private final Controller toInclude;
+        private final int intentFlags;
 
         public IntentBuilder(Class<?> toLaunch, Controller toInclude) {
+            this(toLaunch, toInclude, Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        }
+
+        public IntentBuilder(Class<?> toLaunch, Controller toInclude, int intentFlags) {
             this.toLaunch = toLaunch;
             this.toInclude = toInclude;
+            this.intentFlags = intentFlags;
         }
 
         public Intent build(Context context) {
             Intent intent = new Intent(context, toLaunch);
             intent.putExtra("controller", toInclude);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(intentFlags);
             Log.i("ViewContext", "Constructing new intent for " + toInclude.getClass());
             return intent;
         }

@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 import com.github.kolandroid.kol.android.controller.Controller;
+import com.github.kolandroid.kol.android.controllers.ErrorController;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
+import com.github.kolandroid.kol.model.models.ErrorModel;
 import com.github.kolandroid.kol.util.Logger;
 
 public abstract class ActivityScreen extends ActionBarActivity implements Screen {
@@ -19,38 +21,65 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
 
         this.setContentView(this.getContentView());
         this.base = this.createViewContext();
-        this.setup(savedInstanceState);
 
-        // Display the provided controller
-        displayIntent(this.getIntent(), false);
+        Controller controller = null;
+        if (savedInstanceState != null && savedInstanceState.containsKey("controller")) {
+            controller = (Controller) savedInstanceState.getSerializable("controller");
+            Logger.log(this.getClass().getSimpleName(), "Restarting with " + controller);
+        } else if (getIntent() != null && getIntent().hasExtra("controller")) {
+            controller = (Controller) getIntent().getSerializableExtra("controller");
+            Logger.log(this.getClass().getSimpleName(), "Starting with " + controller);
+        } else {
+            Logger.log(this.getClass().getSimpleName(), "Unable to find controller to display");
+        }
+
+        controller = this.setup(savedInstanceState, controller);
+        if (controller == null) {
+            controller = new ErrorController("Unable to determine controller to display", ErrorModel.ErrorType.ERROR);
+        }
+
+        displayController(controller, false);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        Logger.log(this.getLocalClassName(), "Saving instance state");
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("controller")) {
+            savedInstanceState.putSerializable("controller", intent.getSerializableExtra("controller"));
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        Logger.log(this.getLocalClassName(), "Destroyed (finished=" + isFinishing() + ")");
     }
 
     @Override
     public void onNewIntent(Intent intent) {
         this.setIntent(intent);
 
-        displayIntent(intent, true);
-    }
-
-    protected void displayIntent(Intent intent, boolean addToBackStack) {
-        if (!intent.hasExtra("controller")) {
+        if (intent.hasExtra("controller")) {
+            Controller controller = (Controller) intent.getSerializableExtra("controller");
+            displayController(controller, true);
+        } else {
             // the intent to launch this came from a back action
             // i.e. back from the chat
             // Do not shift the displayed controller
             Logger.log("ActivityScreen", this.getClass() + " received intent without controller");
             return;
         }
-
-        final Controller controller = (Controller) intent
-                .getSerializableExtra("controller");
-        displayController(controller, addToBackStack);
     }
 
     protected AndroidViewContext createViewContext() {
         return new AndroidViewContext(this, getClass());
     }
 
-    public abstract void setup(Bundle savedInstanceState);
+    public abstract Controller setup(Bundle savedInstanceState, Controller firstController);
 
     protected abstract void displayController(Controller controller, boolean addToBackStack);
 
