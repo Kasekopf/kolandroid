@@ -1,6 +1,9 @@
 package com.github.kolandroid.kol.model.models.chat;
 
 import com.github.kolandroid.kol.connection.ServerReply;
+import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.model.models.chat.raw.RawAction;
+import com.github.kolandroid.kol.model.models.chat.raw.RawActionList;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 import com.google.gson.Gson;
@@ -13,6 +16,73 @@ public abstract class ChatModelSegment implements Serializable {
     private static final Regex CHANNEL = new Regex(
             "<br>&nbsp;&nbsp;(.*?)(?=<br>|$)", 1);
 
+    private static final Regex INITIAL_MESSAGES = new Regex(
+            "handleMessage\\((\\{.*?\\})(, true)?\\);", 1);
+    private static final Regex ACTIONS = new Regex(
+            "var actions ?= ?(\\{.*?\\});\n", 1);
+
+    private static final Regex PLAYER_ID = new Regex(
+            "playerid ?= ?[\"']?(\\d+)[\"']?[,;]", 1);
+    private static final Regex PWD = new Regex(
+            "pwdhash  ?= ?[\"']?([0-9a-fA-F]+)[\"']?[,;]", 1);
+    private static final Regex BASEROOM = new Regex("active: \"([^\"]*)\"", 1);
+
+    public static ArrayList<ChatModelSegment> processChatStart(Session session, Gson parser, ServerReply reply) {
+        ArrayList<ChatModelSegment> result = new ArrayList<>();
+
+        if (reply == null) {
+            Logger.log("ChatModel", "Unable to connect to KoL");
+            result.add(new AssertChatStartFailed("Unable to connect to KoL", ""));
+            return result;
+        }
+
+        if (!reply.url.contains("mchat.php")) {
+            if (reply.html.contains("<b>Add E-Mail Address</b>")) {
+                Logger.log("ChatModel", "Player must first add an email address");
+                result.add(new AssertChatStartFailed("You must first add an email address.", "sendmessage.php"));
+                return result;
+            } else {
+                Logger.log("ChatModel", "mchat.php responded with " + reply.url);
+                result.add(new AssertChatStartFailed("Unable to connect to chat", ""));
+                return result;
+            }
+        }
+
+        String playerid = PLAYER_ID.extractSingle(reply.html, "0");
+        String pwd = PWD.extractSingle(reply.html, "0");
+        String visibleChannel = BASEROOM.extractSingle(reply.html, "");
+
+        String actionList = ACTIONS.extractSingle(reply.html, "");
+        ArrayList<ChatAction> baseActions = new ArrayList<>();
+        if (actionList != null) {
+            RawActionList rawActions = parser.fromJson(actionList,
+                    RawActionList.class);
+            for (RawAction raw : rawActions.actions) {
+                baseActions.add(new ChatAction(session, raw));
+            }
+        }
+
+        baseActions.add(0, new ChatAction(session, RawAction.SHOWPROFILE));
+
+        result.add(new ChatModelSegment.AssertChatStarted(playerid, pwd, visibleChannel, baseActions));
+
+        for (String message : INITIAL_MESSAGES.extractAllSingle(reply.html)) {
+            if (message.contains("<span class=\"welcome\">"))
+                continue;
+            Logger.log("ChatModel", message);
+            if (message.equals("{type: 'event', msg: 'Oops!  Sorry, Dave, you appear to be ' + parts[1]}"))
+                continue; //ignore this message
+
+            ChatText messageText = parser.fromJson(message, ChatText.class);
+            ChatModelSegment messageUpdate = ChatModelSegment.disassembleMessage(new HashSet<Integer>(), messageText);
+            if (messageUpdate != null) {
+                result.add(messageUpdate);
+            }
+        }
+
+        return result;
+    }
+
     public static ArrayList<ChatModelSegment> disassembleSegments(Gson parser, HashSet<Integer> seenMessages, ServerReply response, boolean hidden) {
         ArrayList<ChatModelSegment> segments = new ArrayList<>();
 
@@ -23,7 +93,7 @@ public abstract class ChatModelSegment implements Serializable {
 
         if (response.html.length() < 5 || (!response.url.contains("newchatmessages.php")
                 && !response.url.contains("submitnewchat.php"))) {
-            segments.add(new AssertChatClosed());
+            segments.add(AssertChatClosed.ONLY);
             return segments;
         }
 
@@ -99,9 +169,21 @@ public abstract class ChatModelSegment implements Serializable {
         void setCurrentChannels(ArrayList<String> channels);
 
         void executeCommand(ChatModel.ChatModelCommand command);
+
+        void startChat(String playerId, String pwd, String visibleChannel, ArrayList<ChatAction> baseActions);
+
+        void startChatFailed(String message, String redirectUrl);
+
+        void duplicateModel(ChatModel model);
     }
 
     private static final class AssertChatClosed extends ChatModelSegment {
+        public static final AssertChatClosed ONLY = new AssertChatClosed();
+
+        private AssertChatClosed() {
+
+        }
+
         @Override
         public void visit(ChatModelSegmentProcessor processor) {
             processor.chatClosed();
@@ -170,6 +252,53 @@ public abstract class ChatModelSegment implements Serializable {
         @Override
         public void visit(ChatModelSegmentProcessor processor) {
             processor.executeCommand(command);
+        }
+    }
+
+    private static final class AssertChatStarted extends ChatModelSegment {
+        private final String playerId;
+        private final String pwd;
+        private final String visibleChannel;
+        private final ArrayList<ChatAction> baseActions;
+
+        public AssertChatStarted(String playerId, String pwd, String visibleChannel, ArrayList<ChatAction> baseActions) {
+            this.playerId = playerId;
+            this.pwd = pwd;
+            this.visibleChannel = visibleChannel;
+            this.baseActions = baseActions;
+        }
+
+        @Override
+        public void visit(ChatModelSegmentProcessor processor) {
+            processor.startChat(playerId, pwd, visibleChannel, baseActions);
+        }
+    }
+
+    public static final class AssertChatStartFailed extends ChatModelSegment {
+        private final String message;
+        private final String redirectUrl;
+
+        public AssertChatStartFailed(String message, String redirectUrl) {
+            this.message = message;
+            this.redirectUrl = redirectUrl;
+        }
+
+        @Override
+        public void visit(ChatModelSegmentProcessor processor) {
+            processor.startChatFailed(message, redirectUrl);
+        }
+    }
+
+    protected static final class DuplicateModel extends ChatModelSegment {
+        private final ChatModel model;
+
+        protected DuplicateModel(ChatModel model) {
+            this.model = model;
+        }
+
+        @Override
+        public void visit(ChatModelSegmentProcessor processor) {
+            processor.duplicateModel(model);
         }
     }
 

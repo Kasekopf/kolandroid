@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.kolandroid.kol.android.R;
+import com.github.kolandroid.kol.android.chat.ChatBroadcaster;
 import com.github.kolandroid.kol.android.chat.ChatService;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
@@ -15,6 +16,7 @@ import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.util.HandlerCallback;
+import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.util.Logger;
 
 public class LoginScreen extends ActivityScreen {
@@ -59,6 +61,7 @@ public class LoginScreen extends ActivityScreen {
             actionBar.setTitle("The Kingdom of Loathing");
         }
 
+        startService(new Intent(this, ChatService.class));
         return controller;
     }
 
@@ -114,12 +117,15 @@ public class LoginScreen extends ActivityScreen {
     public void onResume() {
         super.onResume();
 
+        Logger.log("LoginScreen", "Resuming...");
+
+        // Stop the chat if running
+        ChatBroadcaster.sendCommand(this, ChatModel.ChatModelCommand.StopChat.ONLY);
+
         // If the currently displayed LoginModel is stale, we have to reload the login page
         if (current != null && current instanceof LoginController && ((LoginController) current).getModel().isStale()) {
             this.displayController(new LoginConnectingController(), false);
         }
-
-        stopService(new Intent(this, ChatService.class));
     }
 
     @Override

@@ -3,21 +3,18 @@ package com.github.kolandroid.kol.model.models.chat;
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
-import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.LinkedModel;
-import com.github.kolandroid.kol.model.models.chat.raw.RawAction;
 import com.github.kolandroid.kol.model.models.chat.raw.RawActionList;
 import com.github.kolandroid.kol.model.models.chat.raw.RawActionListDeserializer;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
 import com.github.kolandroid.kol.request.TentativeRequest;
-import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
-import com.github.kolandroid.kol.util.Regex;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -26,24 +23,14 @@ import java.util.HashSet;
 import java.util.Map;
 
 public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
-
-    private static final Regex INITIAL_MESSAGES = new Regex(
-            "handleMessage\\((\\{.*?\\})(, true)?\\);", 1);
-    private static final Regex ACTIONS = new Regex(
-            "var actions ?= ?(\\{.*?\\});\n", 1);
-
-    private static final Regex PLAYER_ID = new Regex(
-            "playerid ?= ?[\"']?(\\d+)[\"']?[,;]", 1);
-    private static final Regex PWD = new Regex(
-            "pwdhash  ?= ?[\"']?([0-9a-fA-F]+)[\"']?[,;]", 1);
-    private static final Regex BASEROOM = new Regex("active: \"([^\"]*)\"", 1);
-
-    private final Gson parser;
+    private final transient Gson parser;
     private final HashSet<Integer> seenMessages;
     private final ArrayList<ChatText> messages;
     private final Map<String, ChannelModel> channelsByName;
     private final ArrayList<ChannelModel> channels;
     private final ArrayList<ChatAction> baseActions;
+
+    private boolean started;
 
     private String playerid;
     private String pwd;
@@ -51,28 +38,18 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
     private String visibleChannel;
     private String lasttime;
 
-    protected ChatModel(Session s) {
+    /**
+     * Create a new model in the provided session.
+     *
+     * @param s Session to use in all future requests by this model.
+     */
+    public ChatModel(Session s) {
         super(s);
 
         seenMessages = new HashSet<>();
         messages = new ArrayList<>();
         channels = new ArrayList<>();
         channelsByName = new HashMap<>();
-
-        parser = null;
-
-        playerid = "";
-        pwd = "";
-        baseActions = new ArrayList<>();
-    }
-
-    /**
-     * Create a new model in the provided session.
-     *
-     * @param s Session to use in all future requests by this model.
-     */
-    public ChatModel(Session s, ServerReply reply) {
-        super(s);
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(RawActionList.class,
@@ -80,63 +57,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         parser = builder.setFieldNamingPolicy(
                 FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
-        seenMessages = new HashSet<>();
-        messages = new ArrayList<>();
-        channels = new ArrayList<>();
-        channelsByName = new HashMap<>();
-
-        lasttime = "0";
-
-        this.playerid = PLAYER_ID.extractSingle(reply.html, "0");
-        this.pwd = PWD.extractSingle(reply.html, "0");
-        this.visibleChannel = BASEROOM.extractSingle(reply.html, "");
-
-        String actionList = ACTIONS.extractSingle(reply.html, "");
-        this.baseActions = new ArrayList<>();
-        if (actionList != null) {
-            RawActionList rawActions = parser.fromJson(actionList,
-                    RawActionList.class);
-            for (RawAction raw : rawActions.actions) {
-                this.baseActions.add(new ChatAction(s, raw));
-            }
-        }
-
-        baseActions.add(0, new ChatAction(getSession(), RawAction.SHOWPROFILE));
-
-        for (String message : INITIAL_MESSAGES.extractAllSingle(reply.html)) {
-            if (message.contains("<span class=\"welcome\">"))
-                continue;
-            Logger.log("ChatModel", message);
-            if (message.equals("{type: 'event', msg: 'Oops!  Sorry, Dave, you appear to be ' + parts[1]}"))
-                continue; //ignore this message
-
-            ChatText messageText = parser.fromJson(message, ChatText.class);
-            ChatModelSegment messageUpdate = ChatModelSegment.disassembleMessage(seenMessages, messageText);
-            if (messageUpdate != null)
-                this.reassemble(messageUpdate);
-        }
-
-    }
-
-    public static void start(Session session, final Callback<ChatModel> onStart) {
-        Request req = new TentativeRequest("mchat.php", new ResponseHandler() {
-            @Override
-            public void handle(Session session, ServerReply response) {
-                Logger.log("ChatModel", "Unable to start chat");
-            }
-        });
-
-        req.makeAsync(session, LoadingContext.NONE, new ResponseHandler() {
-            @Override
-            public void handle(Session session, ServerReply response) {
-                if (!response.url.contains("mchat.php"))
-                    return;
-                Logger.log("ChatModel", "Chat started");
-
-
-                onStart.execute(new ChatModel(session, response));
-            }
-        });
+        playerid = "";
+        pwd = "";
+        baseActions = new ArrayList<>();
+        started = false;
     }
 
     @SuppressWarnings("deprecation")
@@ -152,30 +76,16 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         return String.format(baseUrl, playerId, pwd, encodedMsg);
     }
 
-    @Override
-    public void attachView(ViewContext context) {
-        super.attachView(context);
-
-        if (!this.stubbed()) {
-            //Update internal list of channels.
-            this.submitCommand(new ChatModelCommand.SubmitChatMessage("/channels", true));
-            this.submitCommand(new ChatModelCommand.SubmitChatMessage("/l", true));
-        }
-    }
-
-    public void duplicate(ChatModel cloneFrom) {
+    protected void duplicate(ChatModel cloneFrom) {
         seenMessages.clear();
         seenMessages.addAll(cloneFrom.seenMessages);
 
         messages.clear();
         messages.addAll(cloneFrom.messages);
 
-        channels.clear();
-        channelsByName.clear();
         for (ChannelModel cloneChannelFrom : cloneFrom.channels) {
-            ChannelModel channel = new ChannelModel(cloneChannelFrom, this);
-            channels.add(channel);
-            channelsByName.put(channel.getName(), channel);
+            ChannelModel channel = getOrCreateChannel(cloneChannelFrom.getName());
+            channel.duplicate(cloneChannelFrom);
         }
 
         baseActions.clear();
@@ -185,6 +95,8 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         pwd = cloneFrom.pwd;
         lasttime = cloneFrom.lasttime;
         visibleChannel = cloneFrom.visibleChannel;
+
+        started = cloneFrom.started;
 
         notifyView(new ArrayList<ChatModelSegment>());
     }
@@ -213,7 +125,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         segment.visit(new ChatModelSegment.ChatModelSegmentProcessor() {
             @Override
             public void chatClosed() {
-
+                started = false;
             }
 
             @Override
@@ -255,6 +167,25 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             @Override
             public void executeCommand(ChatModelCommand command) {
                 command.complete(ChatModel.this); // do not rebroadcast
+            }
+
+            @Override
+            public void startChat(String playerId, String pwd, String visibleChannel, ArrayList<ChatAction> baseActions) {
+                started = true;
+                ChatModel.this.playerid = playerId;
+                ChatModel.this.pwd = pwd;
+                ChatModel.this.visibleChannel = visibleChannel;
+                ChatModel.this.baseActions.addAll(baseActions);
+            }
+
+            @Override
+            public void startChatFailed(String message, String redirectUrl) {
+                started = false;
+            }
+
+            @Override
+            public void duplicateModel(ChatModel model) {
+                duplicate(model);
             }
         });
     }
@@ -305,7 +236,11 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         return visibleChannel;
     }
 
-    public interface ChatModelCommand {
+    public boolean hasStarted() {
+        return started;
+    }
+
+    public interface ChatModelCommand extends Serializable {
         /**
          * Run the command on the the provided model.
          *
@@ -442,6 +377,76 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                 Logger.log("ChatModel", base + " filled partial message " + partial);
                 base.fillPartialChatPrompt(partial);
                 return true;
+            }
+        }
+
+        class StartChat implements ChatModelCommand {
+            private Session session;
+
+            public StartChat(Session session) {
+                this.session = session;
+            }
+
+            public Session getSession() {
+                return session;
+            }
+
+            @Override
+            public boolean complete(final ChatModel base) {
+                if (!base.started) {
+                    Logger.log("ChatModel", "Starting chat with " + base.getSession());
+                    Request req = new TentativeRequest("mchat.php", new ResponseHandler() {
+                        @Override
+                        public void handle(Session session, ServerReply response) {
+                            Logger.log("ChatModel", "Unable to start chat");
+                            ArrayList<ChatModelSegment> result = new ArrayList<>();
+                            result.add(new ChatModelSegment.AssertChatStartFailed("Unable to connect to KoL", ""));
+                        }
+                    });
+
+                    req.makeAsync(base.getSession(), LoadingContext.NONE, new ResponseHandler() {
+                        @Override
+                        public void handle(Session session, ServerReply response) {
+                            ArrayList<ChatModelSegment> result = ChatModelSegment.processChatStart(base.getSession(), base.parser, response);
+                            base.apply(result);
+
+                            if (result.size() > 1) {
+                                // Only 1 is a failure
+                                base.submitCommand(new ChatModelCommand.SubmitChatMessage("/channels", true));
+                                base.submitCommand(new ChatModelCommand.SubmitChatMessage("/l", true));
+                            }
+                        }
+                    });
+                }
+                return false;
+            }
+        }
+
+        class StopChat implements ChatModelCommand {
+            public static final StopChat ONLY = new StopChat();
+
+            private StopChat() {
+            }
+
+            @Override
+            public boolean complete(ChatModel base) {
+                base.started = false;
+                return true;
+            }
+        }
+
+        class RequestDuplication implements ChatModelCommand {
+            public static final RequestDuplication ONLY = new RequestDuplication();
+
+            private RequestDuplication() {
+            }
+
+            @Override
+            public boolean complete(ChatModel base) {
+                ArrayList<ChatModelSegment> result = new ArrayList<>();
+                result.add(new ChatModelSegment.DuplicateModel(base));
+                base.notifyView(result);
+                return false;
             }
         }
     }

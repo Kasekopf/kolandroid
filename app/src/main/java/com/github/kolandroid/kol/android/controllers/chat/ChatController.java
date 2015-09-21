@@ -10,7 +10,6 @@ import android.widget.TabHost.OnTabChangeListener;
 
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.Controller;
-import com.github.kolandroid.kol.android.screen.ForcedViewScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
@@ -35,7 +34,9 @@ public class ChatController extends ChatStubController<ChatStubModel> {
 
     private transient CustomFragmentTabHost tabs;
 
+    private transient ViewScreen submissionScreen;
     private ChatSubmissionController submission;
+
 
     public ChatController(ChatModel model) {
         super(new ChatStubModel(model));
@@ -105,7 +106,7 @@ public class ChatController extends ChatStubController<ChatStubModel> {
         }
 
         View current = tabs.getCurrentTabView();
-        if (current.getVisibility() == View.GONE && currentChannels.size() != 0) {
+        if (current != null && current.getVisibility() == View.GONE && currentChannels.size() != 0) {
             tabs.setCurrentTabByTag(currentChannels.get(0));
         }
     }
@@ -134,8 +135,8 @@ public class ChatController extends ChatStubController<ChatStubModel> {
 
                 Controller channelName = new ChannelCounterController(getModel().getChannel(tag));
                 View tabView = inflater.inflate(channelName.getView(), null);
-                ForcedViewScreen forcedScreen = new ForcedViewScreen(tabView);
-                forcedScreen.display(channelName, host);
+                channelName.connect(tabView, host);
+
                 tabs.addTab(tabs.newTabSpec(tag).setIndicator(tabView),
                         FragmentScreen.class, FragmentScreen.prepare(channel));
             }
@@ -177,6 +178,11 @@ public class ChatController extends ChatStubController<ChatStubModel> {
         View tabTitle = tabs.getTabByTag(tag);
         tabTitle.setVisibility(View.GONE);
         currentTabs.remove(tag);
+    }
+
+    @Override
+    public void disconnect(Screen host) {
+        super.disconnect(host);
     }
 
     @Override

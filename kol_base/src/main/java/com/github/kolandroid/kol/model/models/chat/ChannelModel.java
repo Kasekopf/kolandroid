@@ -11,7 +11,7 @@ public class ChannelModel extends LinkedModel<Void> {
      */
     private static final long serialVersionUID = -7441483376336509694L;
 
-    private final transient ChatModel host;
+    private final ChatModel host;
 
     private final ArrayList<ChatText> messages;
     private final String name;
@@ -31,15 +31,11 @@ public class ChannelModel extends LinkedModel<Void> {
         this.unread = 0;
     }
 
-    public ChannelModel(ChannelModel copyFrom, ChatModel host) {
-        super(copyFrom.getSession());
-
-        this.host = host;
-
-        this.name = copyFrom.name;
-        this.active = copyFrom.active;
-        this.messages = new ArrayList<>(copyFrom.messages);
+    protected void duplicate(ChannelModel copyFrom) {
+        this.messages.clear();
+        this.messages.addAll(copyFrom.messages);
         this.unread = copyFrom.unread;
+        this.active = copyFrom.active;
     }
 
     public void enter() {
@@ -98,7 +94,8 @@ public class ChannelModel extends LinkedModel<Void> {
         if (this.name.startsWith("@"))
             setActive(true);
 
-        unread += 1;
+        this.unread++;
+
         if (message.isEvent()) {
             String text = message.getText();
             if (text.contains("Now listening to channel:"))

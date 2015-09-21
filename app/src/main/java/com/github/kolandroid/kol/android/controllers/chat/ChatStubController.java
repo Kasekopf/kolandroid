@@ -1,74 +1,45 @@
 package com.github.kolandroid.kol.android.controllers.chat;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
+import android.content.BroadcastReceiver;
 import android.view.View;
 
-import com.github.kolandroid.kol.android.chat.ChatService;
-import com.github.kolandroid.kol.android.chat.ChatServiceBinder;
+import com.github.kolandroid.kol.android.chat.ChatBroadcaster;
 import com.github.kolandroid.kol.android.controller.LinkedModelController;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.util.HandlerCallback;
 import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModelSegment;
 import com.github.kolandroid.kol.model.models.chat.stubs.ChatStubModel;
+import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 
 public abstract class ChatStubController<E extends ChatStubModel> extends LinkedModelController<Iterable<ChatModelSegment>, E> {
-    private transient ServiceConnection service;
-    private transient HandlerCallback<ChatModel> callbackWithModel;
-    private transient HandlerCallback<Iterable<ChatModelSegment>> callbackWithUpdates;
+    private transient BroadcastReceiver updateReceiver;
+    private transient HandlerCallback<ChatModel.ChatModelCommand> sendCommand;
 
     public ChatStubController(E model) {
         super(model);
     }
 
     @Override
-    public final void connect(View view, E model, Screen host) {
-        if (service == null) {
-            // The Controller must reconnect
-
-            this.callbackWithModel = new HandlerCallback<ChatModel>() {
+    public final void connect(View view, E model, final Screen host) {
+        if (updateReceiver == null) {
+            Logger.log("ChatStubController", this.getClass().getSimpleName() + " registering");
+            updateReceiver = ChatBroadcaster.registerListener(host, new Callback<Iterable<ChatModelSegment>>() {
                 @Override
-                public void receiveProgress(ChatModel baseModel) {
-                    Logger.log("ChatStubController", "StubModel filled with current state");
-                    getModel().duplicate(baseModel);
-                }
-            };
-            this.callbackWithUpdates = new HandlerCallback<Iterable<ChatModelSegment>>() {
-                @Override
-                public void receiveProgress(Iterable<ChatModelSegment> item) {
+                public void execute(Iterable<ChatModelSegment> item) {
                     getModel().apply(item);
                 }
-            };
+            });
 
-            final HandlerCallback<ChatModel> withModel = this.callbackWithModel;
-            final HandlerCallback<Iterable<ChatModelSegment>> withUpdates = this.callbackWithUpdates;
-            service = new ServiceConnection() {
+            sendCommand = new HandlerCallback<ChatModel.ChatModelCommand>() {
                 @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-                    Logger.log("ChatStubController", "Chat Service bound to " + name);
-                    ChatServiceBinder binder = (ChatServiceBinder) service;
-                    binder.acquireModel(withModel.weak(), withUpdates.weak());
-
-                    getModel().insertCommandCallback(binder.commandSubmissionCallback());
-                }
-
-                @Override
-                public void onServiceDisconnected(ComponentName name) {
-                    Logger.log("ChatStubController", "Chat Service unbound from " + name);
+                protected void receiveProgress(ChatModel.ChatModelCommand command) {
+                    ChatBroadcaster.sendCommand(host, command);
                 }
             };
-
-
-            Logger.log("ChatStubController", "Attempting connection with Service");
-            Context context = host.getActivity();
-            Intent intent = new Intent(context, ChatService.class);
-            context.getApplicationContext().bindService(intent, service,
-                    Context.BIND_AUTO_CREATE);
+            model.insertCommandCallback(sendCommand.weak());
+            ChatBroadcaster.sendCommand(host, ChatModel.ChatModelCommand.RequestDuplication.ONLY);
         }
 
         this.doConnect(view, model, host);
@@ -78,15 +49,15 @@ public abstract class ChatStubController<E extends ChatStubModel> extends Linked
 
     @Override
     public void disconnect(Screen host) {
-        if (service == null) return;
+        if (updateReceiver != null) {
+            Logger.log("ChatStubController", this.getClass().getSimpleName() + " unregistering");
+            ChatBroadcaster.unregisterListener(host, updateReceiver);
+            updateReceiver = null;
+        }
 
-        Context context = host.getActivity();
-        context.getApplicationContext().unbindService(service);
-
-        service = null;
-        callbackWithModel.close();
-        callbackWithModel = null;
-        callbackWithUpdates.close();
-        callbackWithUpdates = null;
+        if (sendCommand != null) {
+            sendCommand.close();
+            sendCommand = null;
+        }
     }
 }

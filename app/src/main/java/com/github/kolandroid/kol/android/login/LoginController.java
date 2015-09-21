@@ -1,7 +1,6 @@
 package com.github.kolandroid.kol.android.login;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -18,7 +17,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.github.kolandroid.kol.android.R;
-import com.github.kolandroid.kol.android.chat.ChatService;
 import com.github.kolandroid.kol.android.controller.LinkedModelController;
 import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.screen.Screen;
@@ -198,15 +196,8 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
     public void receiveProgress(View view, LoginModel model, LoginStatus message, Screen host) {
         switch (message) {
             case SUCCESS:
-                Toast.makeText(host.getActivity(), "Logged in!!",
+                Toast.makeText(host.getActivity(), "Logged in!",
                         Toast.LENGTH_SHORT).show();
-
-                Context context = host.getActivity().getApplicationContext();
-                Intent i = new Intent(context, ChatService.class);
-                i.putExtra("session", getModel().getSession());
-                i.putExtra("start", enterChatImmediately);
-                context.startService(i);
-
                 break;
             default:
                 break;

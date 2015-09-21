@@ -86,6 +86,13 @@ public class LoginModel extends LinkedModel<LoginStatus> {
             @Override
             public void handle(Session session,
                                ServerReply response) {
+                if (response == null) {
+                    // Failure to login
+                    Logger.log("LoginModel", "Failed to Login");
+                    makeRequest(new SimulatedRequest(ErrorModel.generateErrorMessage("Login Failed. Unable to connect to server.", ErrorModel.ErrorType.SEVERE)));
+                    return;
+                }
+
                 session.addCookies(response.cookie);
                 Logger.log("LoginModel", "New game session: " + session);
                 if (session.getCookie("PHPSESSID", "").equals("")) {
@@ -138,6 +145,13 @@ public class LoginModel extends LinkedModel<LoginStatus> {
             makeRequest(r, new ResponseHandler() {
                 @Override
                 public void handle(Session session, ServerReply response) {
+                    if (response == null) {
+                        // Failure to login
+                        Logger.log("LoginModel", "Failed to Login");
+                        makeRequest(new SimulatedRequest(ErrorModel.generateErrorMessage("Login Failed. Unable to connect to server.", ErrorModel.ErrorType.SEVERE)));
+                        return;
+                    }
+
                     session.addCookies(response.cookie);
                     Logger.log("LoginModel", "New game session: " + session);
                     if (session.getCookie("PHPSESSID", "").equals("")) {

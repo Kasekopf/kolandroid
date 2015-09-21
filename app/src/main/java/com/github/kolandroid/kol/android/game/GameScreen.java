@@ -23,7 +23,6 @@ import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.DrawerScreen;
-import com.github.kolandroid.kol.android.screen.ForcedViewScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
@@ -42,9 +41,8 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
 
     private LoadingContext loader;
 
-    private Session session; //todo remove; only for testing chat
-
-    private ForcedViewScreen chatIconScreen;
+    private Controller chatIconController;
+    private View chatIconView;
 
     @Override
     protected AndroidViewContext createViewContext() {
@@ -66,7 +64,8 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
             ModelController<? extends Model> c = (ModelController<? extends Model>) controller;
             Model model = c.getModel();
             Session session = model.getSession();
-            this.session = session;
+
+            chatIconController = new ChatCounterController(session);
 
             // Set up the drawer.
             Controller nav = new NavigationController(new NavigationModel(session));
@@ -164,17 +163,17 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //chat.close(this);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.game_screen, menu);
+        View chatIconView = menu.findItem(R.id.action_chat).getActionView();
+        chatIconController.connect(chatIconView, this);
+        return true;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.game_screen, menu);
-        chatIconScreen = new ForcedViewScreen(menu.findItem(R.id.action_chat).getActionView());
-        chatIconScreen.display(new ChatCounterController(session), this);
-        return true;
+    public void onDestroy() {
+        super.onDestroy();
+        chatIconController.disconnect(this);
     }
 
     @Override

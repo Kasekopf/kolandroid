@@ -72,8 +72,12 @@ public class ChatSubmissionController extends ChatStubController<ChatSubmissionS
 
     @Override
     public void disconnect(Screen host) {
-        onPartialTextFillCallback.close();
-        onPartialTextFillCallback = null;
+        super.disconnect(host);
+
+        if (onPartialTextFillCallback != null) {
+            onPartialTextFillCallback.close();
+            onPartialTextFillCallback = null;
+        }
     }
 
 

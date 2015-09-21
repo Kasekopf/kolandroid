@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controllers.AccountSettingsController;
-import com.github.kolandroid.kol.android.controllers.ChoiceController;
 import com.github.kolandroid.kol.android.controllers.CraftingController;
 import com.github.kolandroid.kol.android.controllers.ErrorController;
 import com.github.kolandroid.kol.android.controllers.chat.ChatController;
@@ -18,7 +17,6 @@ import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.models.AccountSettingsModel;
-import com.github.kolandroid.kol.model.models.ChoiceModel;
 import com.github.kolandroid.kol.model.models.CraftingModel;
 import com.github.kolandroid.kol.model.models.ErrorModel;
 import com.github.kolandroid.kol.model.models.WebModel;
@@ -87,17 +85,18 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
             return new FightController(model);
         }
 
+        /*
         if (response.url.contains("choice.php")) {
             //Ignore a couple badly behaved choice adventures.
             int whichchoice = ChoiceModel.extractChoiceId(response);
-            if (whichchoice == 985 /* Odd-jobs board */) {
+            if (whichchoice == 985 /* Odd-jobs board /) {
                 //do nothing
             } else {
                 ChoiceModel model = new ChoiceModel(session, response);
                 return new ChoiceController(model);
             }
         }
-
+        */
         if (response.url.contains("inventory.php")) {
             InventoryModel model = new InventoryModel(session, response);
             return new ItemStorageController<>(model);

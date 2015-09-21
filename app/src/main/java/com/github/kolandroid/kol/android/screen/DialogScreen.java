@@ -102,6 +102,8 @@ public class DialogScreen extends DialogFragment implements Screen {
 
     @Override
     public void close() {
+        if (controller != null)
+            controller.disconnect(this);
         this.dismiss();
     }
 }

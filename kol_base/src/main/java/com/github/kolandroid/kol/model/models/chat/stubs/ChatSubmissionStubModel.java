@@ -4,7 +4,7 @@ import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.util.Callback;
 
 public class ChatSubmissionStubModel extends ChatStubModel {
-    private Callback<String> partialChatCallback;
+    private transient Callback<String> partialChatCallback;
 
     public ChatSubmissionStubModel(ChatModel base) {
         super(base);
