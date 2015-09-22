@@ -28,7 +28,10 @@ public abstract class ChatStubController<E extends ChatStubModel> extends Linked
             updateReceiver = ChatBroadcaster.registerListener(host, new Callback<Iterable<ChatModelSegment>>() {
                 @Override
                 public void execute(Iterable<ChatModelSegment> item) {
-                    getModel().apply(item);
+                    ChatStubModel stub = getModel();
+                    synchronized (stub) {
+                        stub.apply(item);
+                    }
                 }
             });
 

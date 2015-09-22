@@ -31,8 +31,10 @@ public class ChatBroadcaster {
     private static volatile int listenerCount = 0; //not quite thread safe, but it's only for logging
     private final LocalBroadcastManager broadcastManager;
     private final ViewContext context;
-    private ChatModel chat;
-    private Timer updateTimer;
+
+    private volatile ChatModel chat;
+    private volatile Timer updateTimer;
+
     private final ChatModelSegment.ChatModelSegmentProcessor chatMonitor = new ChatModelSegment.ChatModelSegmentProcessor() {
         @Override
         public void chatClosed() {
@@ -103,7 +105,9 @@ public class ChatBroadcaster {
                     }
 
                     if (chat != null) {
-                        chat.submitCommand(command);
+                        synchronized (chat) {
+                            chat.submitCommand(command);
+                        }
                     }
                 }
             }
@@ -156,9 +160,9 @@ public class ChatBroadcaster {
             updateTimer = null;
         }
 
-        chat = new ChatModel(session);
-        chat.attachView(context);
-        chat.attachCallback(new Callback<Iterable<ChatModelSegment>>() {
+        ChatModel chatLocal = new ChatModel(session);
+        chatLocal.attachView(context);
+        chatLocal.attachCallback(new Callback<Iterable<ChatModelSegment>>() {
             @Override
             public void execute(Iterable<ChatModelSegment> segments) {
                 for (ChatModelSegment segment : segments) {
@@ -170,6 +174,7 @@ public class ChatBroadcaster {
                 broadcastManager.sendBroadcast(intent);
             }
         });
+        chat = chatLocal;
     }
 
     protected void stop() {
