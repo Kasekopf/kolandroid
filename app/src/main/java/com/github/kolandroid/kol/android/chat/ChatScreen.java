@@ -20,6 +20,8 @@ import com.github.kolandroid.kol.util.Logger;
 public class ChatScreen extends ActivityScreen {
     @Override
     public Controller setup(Bundle savedInstanceState, Controller initial) {
+        overridePendingTransition(R.anim.inleftanim, R.anim.outleftanim);
+
         ActionBar bar = getSupportActionBar();
         if (bar != null) {
             bar.setDisplayHomeAsUpEnabled(true);
