@@ -31,7 +31,7 @@ public class MultiusableController implements Controller {
 
     @Override
     public int getView() {
-        return R.layout.dialog_multiuse_screen;
+        return R.layout.multiuse_view;
     }
 
     @Override

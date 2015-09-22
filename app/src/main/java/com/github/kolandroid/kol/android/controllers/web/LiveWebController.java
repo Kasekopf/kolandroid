@@ -26,7 +26,7 @@ public class LiveWebController extends
 
     @Override
     public int getView() {
-        return R.layout.fragment_crafting_subscreen;
+        return R.layout.web_live_view;
     }
 
     @Override

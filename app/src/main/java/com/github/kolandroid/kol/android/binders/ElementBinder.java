@@ -24,7 +24,7 @@ public class ElementBinder implements Binder<ModelElement>, Serializable {
 
     @Override
     public int getView() {
-        return R.layout.list_generic_item;
+        return R.layout.generic_item_view;
     }
 
     @Override

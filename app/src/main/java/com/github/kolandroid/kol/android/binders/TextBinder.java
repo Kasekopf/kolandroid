@@ -22,7 +22,7 @@ public class TextBinder implements Binder<Object>, Serializable {
 
     @Override
     public int getView() {
-        return R.layout.list_generic_item;
+        return R.layout.generic_item_view;
     }
 
     @Override

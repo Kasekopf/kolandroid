@@ -41,7 +41,7 @@ public class SearchListController<E> implements Controller {
 
     @Override
     public int getView() {
-        return R.layout.fragment_search_list;
+        return R.layout.search_list_view;
     }
 
     @Override

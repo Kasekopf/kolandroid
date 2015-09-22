@@ -155,7 +155,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
 
     @Override
     protected int getContentView() {
-        return R.layout.activity_game_screen;
+        return R.layout.activity_game_view;
     }
 
     public void refreshStatsPane() {

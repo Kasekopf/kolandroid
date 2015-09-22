@@ -29,7 +29,7 @@ public class ChatSubmissionController extends ChatStubController<ChatSubmissionS
 
     @Override
     public int getView() {
-        return R.layout.fragment_chat_submission;
+        return R.layout.chat_submission_view;
     }
 
     @Override

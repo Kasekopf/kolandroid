@@ -24,7 +24,7 @@ public class TextInputController implements Controller {
 
     @Override
     public int getView() {
-        return R.layout.dialog_textinput;
+        return R.layout.text_input_view;
     }
 
     @Override

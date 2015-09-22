@@ -34,7 +34,7 @@ public class ItemController extends ModelController<ItemModel> {
 
     @Override
     public int getView() {
-        return R.layout.dialog_item_screen;
+        return R.layout.item_view;
     }
 
     @Override

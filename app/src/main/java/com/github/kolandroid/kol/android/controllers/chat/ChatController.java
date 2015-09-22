@@ -49,7 +49,7 @@ public class ChatController extends ChatStubController<ChatStubModel> {
 
     @Override
     public int getView() {
-        return R.layout.fragment_chat_screen;
+        return R.layout.chat_view;
     }
 
     @Override

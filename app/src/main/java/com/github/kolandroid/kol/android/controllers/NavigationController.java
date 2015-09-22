@@ -28,7 +28,7 @@ public class NavigationController extends LinkedModelController<LiveMessage, Nav
 
     @Override
     public int getView() {
-        return R.layout.fragment_navigation_drawer;
+        return R.layout.navigation_view;
     }
 
     @Override

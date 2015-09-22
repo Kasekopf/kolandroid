@@ -35,7 +35,7 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
 
     @Override
     public int getView() {
-        return R.layout.fragment_equipment_pane;
+        return R.layout.equipment_pocket_view;
     }
 
     @Override

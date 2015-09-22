@@ -27,7 +27,7 @@ public class ChoiceController extends ModelController<ChoiceModel> {
 
     @Override
     public int getView() {
-        return R.layout.fragment_choice_screen;
+        return R.layout.choice_view;
     }
 
     @Override

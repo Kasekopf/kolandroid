@@ -29,7 +29,7 @@ public class SkillController extends ModelController<SkillModel> {
 
     @Override
     public int getView() {
-        return R.layout.dialog_skill_screen;
+        return R.layout.skill_view;
     }
 
     @Override

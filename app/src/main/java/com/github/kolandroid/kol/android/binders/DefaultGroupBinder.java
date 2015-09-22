@@ -21,7 +21,7 @@ public class DefaultGroupBinder implements Binder<ModelGroup<?>>, Serializable {
 
     @Override
     public int getView() {
-        return R.layout.list_generic_header;
+        return R.layout.generic_header_view;
     }
 
     @Override

@@ -22,7 +22,7 @@ public class SubtextBinder implements Binder<SubtextElement>, Serializable {
 
     @Override
     public int getView() {
-        return R.layout.list_subtext_item;
+        return R.layout.subtext_view;
     }
 
     @Override

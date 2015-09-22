@@ -24,7 +24,7 @@ public class StatsController extends LinkedModelController<LiveMessage, StatsMod
 
     @Override
     public int getView() {
-        return R.layout.fragment_stats_small;
+        return R.layout.stats_small_view;
     }
 
     @Override

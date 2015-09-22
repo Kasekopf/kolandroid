@@ -18,7 +18,7 @@ public class ChannelCounterController extends LinkedModelController<Void, Channe
 
     @Override
     public int getView() {
-        return R.layout.view_chat_channelname;
+        return R.layout.chat_channel_tab_view;
     }
 
     @Override

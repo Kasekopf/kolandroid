@@ -16,6 +16,6 @@
         android:id="@+id/action_chat"
         android:orderInCategory="150"
         android:title="Chat"
-        app:actionLayout="@layout/view_game_gochat"
+        app:actionLayout="@layout/enter_chat_button_view"
         app:showAsAction="ifRoom" />
 </menu>

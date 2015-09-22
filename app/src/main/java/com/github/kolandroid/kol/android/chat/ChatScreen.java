@@ -64,7 +64,7 @@ public class ChatScreen extends ActivityScreen {
 
     @Override
     protected int getContentView() {
-        return R.layout.activity_chat_screen;
+        return R.layout.activity_chat_view;
     }
 
     @Override

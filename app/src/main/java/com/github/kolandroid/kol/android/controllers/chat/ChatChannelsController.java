@@ -37,7 +37,7 @@ public class ChatChannelsController extends ChatStubController<ChatStubModel> {
 
     @Override
     public int getView() {
-        return R.layout.dialog_chat_channel_list;
+        return R.layout.chat_channel_list_view;
     }
 
     @Override
@@ -95,7 +95,7 @@ public class ChatChannelsController extends ChatStubController<ChatStubModel> {
 
         @Override
         public int getView() {
-            return R.layout.list_chat_channel_item;
+            return R.layout.chat_channel_summary_view;
         }
 
         @Override

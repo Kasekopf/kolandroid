@@ -24,7 +24,7 @@ public abstract class GroupController<C extends ChildModel, M extends GroupModel
 
     @Override
     public int getView() {
-        return R.layout.fragment_tabs_screen;
+        return R.layout.tabs_view;
     }
 
     protected abstract Controller getController(C child);

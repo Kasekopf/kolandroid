@@ -56,7 +56,7 @@ public class MessageController extends ModelController<MessageModel> {
 
     @Override
     public int getView() {
-        return R.layout.dialog_message_screen;
+        return R.layout.message_view;
     }
 
     @Override

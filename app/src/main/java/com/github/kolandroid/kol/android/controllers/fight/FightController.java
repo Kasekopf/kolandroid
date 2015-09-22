@@ -34,7 +34,7 @@ public class FightController extends ModelController<FightModel> {
 
     @Override
     public int getView() {
-        return R.layout.fragment_fight_screen;
+        return R.layout.fight_view;
     }
 
     @Override

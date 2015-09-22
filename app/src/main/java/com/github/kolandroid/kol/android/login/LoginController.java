@@ -46,7 +46,7 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
 
     @Override
     public int getView() {
-        return R.layout.fragment_login_screen;
+        return R.layout.login_view;
     }
 
     @Override

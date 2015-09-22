@@ -50,19 +50,19 @@ public class WebController extends UpdatableModelController<WebModel> {
     public int getView() {
         return getModel().visitType(new WebModel.WebModelTypeVisitor<Integer>() {
             public Integer forRegular() {
-                return R.layout.fragment_web_screen;
+                return R.layout.web_view;
             }
 
             public Integer forSmall() {
-                return R.layout.dialog_web_screen;
+                return R.layout.web_dialog_view;
             }
 
             public Integer forResults() {
-                return R.layout.dialog_results_screen;
+                return R.layout.results_view;
             }
 
             public Integer forExternal() {
-                return R.layout.fragment_web_screen;
+                return R.layout.web_view;
             }
         });
     }

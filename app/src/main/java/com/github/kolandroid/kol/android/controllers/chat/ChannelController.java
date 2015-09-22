@@ -74,7 +74,7 @@ public class ChannelController extends ChatStubController<ChatStubModel> {
 
     @Override
     public int getView() {
-        return R.layout.fragment_chatroom;
+        return R.layout.chat_channel_view;
     }
 
     @Override

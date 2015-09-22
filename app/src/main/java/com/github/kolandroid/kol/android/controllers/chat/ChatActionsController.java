@@ -33,7 +33,7 @@ public class ChatActionsController extends ChatStubController<ChatStubModel> {
 
     @Override
     public int getView() {
-        return R.layout.dialog_chat_screen;
+        return R.layout.chat_message_actions_view;
     }
 
     @Override

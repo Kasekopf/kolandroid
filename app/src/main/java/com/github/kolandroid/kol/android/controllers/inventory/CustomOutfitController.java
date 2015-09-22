@@ -26,7 +26,7 @@ public class CustomOutfitController implements Controller {
 
     @Override
     public int getView() {
-        return R.layout.dialog_saveoutfit;
+        return R.layout.save_outfit_view;
     }
 
     @Override

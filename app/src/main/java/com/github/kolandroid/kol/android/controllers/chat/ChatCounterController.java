@@ -154,7 +154,7 @@ public class ChatCounterController extends ChatStubController<ChatStubModel> {
 
     @Override
     public int getView() {
-        return R.layout.view_game_gochat;
+        return R.layout.enter_chat_button_view;
     }
 
     @Override

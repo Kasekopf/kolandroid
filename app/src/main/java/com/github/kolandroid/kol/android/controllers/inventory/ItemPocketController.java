@@ -32,7 +32,7 @@ public class ItemPocketController extends
 
     @Override
     public int getView() {
-        return R.layout.fragment_inventory_pane;
+        return R.layout.inventory_pocket_view;
     }
 
     @Override

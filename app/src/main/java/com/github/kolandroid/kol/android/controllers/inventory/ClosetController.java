@@ -23,7 +23,7 @@ public class ClosetController extends ItemStorageController<ClosetModel> {
 
     @Override
     public int getView() {
-        return R.layout.fragment_closet_screen;
+        return R.layout.closet_view;
     }
 
     @Override

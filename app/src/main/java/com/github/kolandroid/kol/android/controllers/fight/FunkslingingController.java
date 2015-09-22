@@ -42,7 +42,7 @@ public class FunkslingingController implements Controller {
 
     @Override
     public int getView() {
-        return R.layout.dialog_funkslinging;
+        return R.layout.funkslinging_view;
     }
 
     private void swapSelected(View view1, View view2) {

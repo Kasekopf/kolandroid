@@ -22,7 +22,7 @@ public class ChatBinder implements Binder<ChatText>, Serializable {
 
     @Override
     public int getView() {
-        return R.layout.list_chat_item;
+        return R.layout.chat_message_view;
     }
 
     @Override

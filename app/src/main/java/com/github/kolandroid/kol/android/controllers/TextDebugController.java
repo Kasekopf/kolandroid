@@ -16,7 +16,7 @@ public class TextDebugController extends ModelController<WebModel> {
 
     @Override
     public int getView() {
-        return R.layout.fragment_text_screen;
+        return R.layout.text_debug_view;
     }
 
     @Override

@@ -45,7 +45,7 @@ public class GroupSearchListController<F> implements Controller {
 
     @Override
     public int getView() {
-        return R.layout.fragment_group_list;
+        return R.layout.group_list_view;
     }
 
     @Override

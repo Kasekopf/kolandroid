@@ -44,7 +44,7 @@ public class LoginConnectingController extends LinkedModelController<ConnectionF
 
     @Override
     public int getView() {
-        return R.layout.fragment_login_connecting;
+        return R.layout.login_connecting_view;
     }
 
     @Override
