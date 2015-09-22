@@ -122,7 +122,6 @@ public class ServerReply implements Serializable {
      */
     public ServerReply extractResultsPane() {
         String resultsPane = RESULTS_PANE.extractSingle(html);
-
         if (resultsPane == null)
             return null;
 

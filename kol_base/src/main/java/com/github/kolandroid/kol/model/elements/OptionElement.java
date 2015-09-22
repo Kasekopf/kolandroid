@@ -73,9 +73,7 @@ public class OptionElement {
         ArrayList<ModelGroup<OptionElement>> options = new ArrayList<>();
 
         for (String group : OPTION_GROUP.extractAllSingle(dropdown)) {
-            String name = OPTION_GROUP_NAME.extractSingle(group);
-            if (name == null)
-                name = defaultName;
+            String name = OPTION_GROUP_NAME.extractSingle(group, defaultName);
 
             ArrayList<OptionElement> option_group = extractOptions(group);
             BasicGroup<OptionElement> section = new BasicGroup<>(
@@ -95,16 +93,14 @@ public class OptionElement {
                 continue;
 
             String num = OPTION_ID.extractSingle(option[0]);
-            String img = OPTION_PIC.extractSingle(option[0]);
+            String img = OPTION_PIC.extractSingle(option[0], "");
             String text = option[1];
             boolean disabled = OPTION_DISABLED.matches(option[0]);
 
             if (num == null || num.length() == 0)
                 continue;
 
-            if (img == null) {
-                img = "";
-            } else {
+            if (!img.isEmpty()) {
                 if (!img.contains("images.kingdomofloathing.com"))
                     img = "images.kingdomofloathing.com/itemimages/" + img;
                 if (!img.endsWith(".gif") && !img.endsWith(".png"))

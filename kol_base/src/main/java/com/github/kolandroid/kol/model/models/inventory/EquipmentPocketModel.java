@@ -36,7 +36,7 @@ public class EquipmentPocketModel extends ItemPocketModel {
     protected void loadContent(ServerReply reply) {
         super.loadContent(reply);
 
-        String pwd = PWD.extractSingle(reply.html);
+        String pwd = PWD.extractSingle(reply.html, "0");
 
         String equipment = EQUIPMENT.extractSingle(reply.html);
         if (equipment != null) {
@@ -49,7 +49,7 @@ public class EquipmentPocketModel extends ItemPocketModel {
         String baseAction = "inv_equip.php?action=outfit&which=2&whichoutfit=";
 
         outfits = new ArrayList<>();
-        String outfit_select = OUTFITS.extractSingle(reply.html);
+        String outfit_select = OUTFITS.extractSingle(reply.html, "");
         ArrayList<ModelGroup<OptionElement>> outfit_options = OptionElement.extractOptionGroups(outfit_select, "Outfits");
         for (ModelGroup<OptionElement> outfit_group : outfit_options) {
             BasicGroup<ActionElement> group = new BasicGroup<>(outfit_group.getName());

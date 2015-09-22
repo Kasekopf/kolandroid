@@ -47,8 +47,8 @@ public class LoginModel extends LinkedModel<LoginStatus> {
         super(s);
 
         stale = false;
-        loginId = LOGIN_ID.extractSingle(reply.url);
-        challenge = CHALLENGE.extractSingle(reply.html);
+        loginId = LOGIN_ID.extractSingle(reply.url, "");
+        challenge = CHALLENGE.extractSingle(reply.html, "");
 
         Logger.log("LoginModel", "Old cookie: " + s);
         s.addCookies(reply.cookie);

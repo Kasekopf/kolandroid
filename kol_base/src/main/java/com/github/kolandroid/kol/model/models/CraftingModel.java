@@ -28,7 +28,7 @@ public class CraftingModel extends GroupModel<LiveWebModel> {
         initialSlot = 0;
         crafts = new LiveWebModel[options.size()];
         for (int i = 0; i < options.size(); i++) {
-            String title = CRAFT_TITLE.extractSingle(options.get(i));
+            String title = CRAFT_TITLE.extractSingle(options.get(i), "[UNKNOWN]");
             String link = CRAFT_LINK.extractSingle(options.get(i));
             if (link == null) {
                 initialSlot = i;

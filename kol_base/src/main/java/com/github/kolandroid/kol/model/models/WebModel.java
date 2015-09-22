@@ -293,7 +293,7 @@ public class WebModel extends Model {
     }
 
     private static String injectJavascript(String html, String url) {
-        String thispage = URL_BASE_FIND.extractSingle(url);
+        String thispage = URL_BASE_FIND.extractSingle(url, "");
 
         for (String form : FORM_FINDER.extractAllSingle(html)) {
             String action = FORM_ACTION.extractSingle(form, thispage);
@@ -375,8 +375,7 @@ public class WebModel extends Model {
         }
 
         if (url.charAt(0) == '?') {
-            String currentBase = URL_BASE_FIND.extractSingle(this.url);
-            if (currentBase == null) currentBase = "main.php";
+            String currentBase = URL_BASE_FIND.extractSingle(this.url, "main.php");
             url = currentBase + url;
         }
 

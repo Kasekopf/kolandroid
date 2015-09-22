@@ -102,7 +102,7 @@ public class FightModel extends WebModel {
                     "fight.php?action=" + action));
         }
 
-        String dropdown = ALL_SKILLS.extractSingle(html);
+        String dropdown = ALL_SKILLS.extractSingle(html, "");
         ArrayList<OptionElement> dropdown_skills = OptionElement
                 .extractOptions(dropdown);
         for (OptionElement option : dropdown_skills) {
@@ -114,7 +114,7 @@ public class FightModel extends WebModel {
     private void processItems(String html) {
         this.items = new ArrayList<>();
 
-        String dropdown = ALL_ITEMS.extractSingle(html);
+        String dropdown = ALL_ITEMS.extractSingle(html, "");
 
         ArrayList<OptionElement> dropdown_items = OptionElement
                 .extractOptions(dropdown);

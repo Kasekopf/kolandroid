@@ -76,10 +76,10 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
     protected void loadContent(ServerReply reply) {
         this.items = new ArrayList<>();
 
-        String pwd = PWD.extractSingle(reply.html);
+        String pwd = PWD.extractSingle(reply.html, "0");
 
         for (String section : SECTION.extractAllSingle(reply.html)) {
-            String sectionName = SECTION_NAME.extractSingle(section);
+            String sectionName = SECTION_NAME.extractSingle(section, "");
             ModelGroup<ItemModel> newSection = parseItems(sectionName,
                     ITEM.extractAllSingle(section), pwd);
 

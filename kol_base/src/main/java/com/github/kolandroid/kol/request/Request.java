@@ -6,13 +6,30 @@ import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 
+/**
+ * A request made to the KoL servers to a specified URL, following redirects.
+ * Although it can be made in a blocking manner, most uses will use the makeAsync method.
+ */
 public class Request {
+    // The url to access
     private final String url;
 
+    /**
+     * Create a new request for the specified url.
+     *
+     * @param url The url to request.
+     */
     public Request(String url) {
         this.url = url;
     }
 
+    /**
+     * Make this request in a new Thread, calling the handler with the result.
+     *
+     * @param session   Session to use to make the request.
+     * @param loading   A context (ex. progress bar) to update with any loading information.
+     * @param handler   The handler to call with a result
+     */
     public void makeAsync(final Session session, final LoadingContext loading, final ResponseHandler handler) {
         Thread t = new Thread() {
             public void run() {
@@ -23,6 +40,14 @@ public class Request {
         t.start();
     }
 
+    /**
+     * Actually make the request and return a response. This should be run on a
+     * background thread only!
+     *
+     * @param session   Session to use to make the request.
+     * @param loading   A context (ex. progress bar) to update with any loading information.
+     * @return the results of the request, or null if the request fails.
+     */
     public ServerReply makeBlocking(Session session, LoadingContext loading) {
         Connection con = getConnection(session.getServer());
         String url = con.getUrl();
@@ -39,6 +64,11 @@ public class Request {
         }
     }
 
+    /**
+     * The connection to use with the request.
+     * @param server The server to use for the request.
+     * @return a fresh connection to use.
+     */
     protected Connection getConnection(String server) {
         return new Connection("http://www.kingdomofloathing.com/" + url);
     }

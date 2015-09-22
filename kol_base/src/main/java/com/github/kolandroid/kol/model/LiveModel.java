@@ -15,10 +15,20 @@ public abstract class LiveModel extends LinkedModel<LiveMessage> {
      */
     private static final long serialVersionUID = 6439988316319232465L;
 
+    //If true, redirect failed updates to the main game loop
     private final boolean foreground;
+    //The url to consult for an update.
     private String updateUrl;
+    //If true, the first request has already been made for content.
     private boolean filling;
 
+    /**
+     * Create a new LiveModel with the provided info.
+     *
+     * @param s          The session to use for any requests.
+     * @param updateUrl  The url to consult for content.
+     * @param foreground If true, redirect failed updates to the main game loop.
+     */
     public LiveModel(Session s, String updateUrl, boolean foreground) {
         super(s);
 
@@ -27,14 +37,25 @@ public abstract class LiveModel extends LinkedModel<LiveMessage> {
         this.foreground = foreground;
     }
 
+    /**
+     * Process a reply from the server, filling the model and notifying the view of an update.
+     * @param response  The reply from the server.
+     */
     public final void process(ServerReply response) {
         this.filling = true;
         this.loadContent(response);
         this.notifyView(LiveMessage.REFRESH);
     }
 
+    /**
+     * Load this model with actual content.
+     * @param content   The content to parse and use to fill the model.
+     */
     protected abstract void loadContent(ServerReply content);
 
+    /**
+     * Request the model to refresh its content.
+     */
     public void update() {
         Request update = new Request(this.updateUrl);
 
@@ -59,6 +80,10 @@ public abstract class LiveModel extends LinkedModel<LiveMessage> {
             this.makeRequestBackground(update, listener);
     }
 
+    /**
+     * If the model is completely empty, trigger an update.
+     * This allows models to load in a lazy fashion.
+     */
     public void access() {
         if (this.filling)
             return;
@@ -67,10 +92,21 @@ public abstract class LiveModel extends LinkedModel<LiveMessage> {
         this.update();
     }
 
+    /**
+     * Change the url to consult for content.
+     * @param url   The new url to consult for content.
+     */
     protected void setUpdateUrl(String url) {
         this.updateUrl = url;
     }
 
+    /**
+     * Determine if the provided url is a valid server response.
+     * By default, the url must contain the requested url.
+     *
+     * @param url   The url the server responded with
+     * @return True if the url should be parsed normally.
+     */
     protected boolean canHandle(String url) {
         return url.contains(updateUrl);
     }

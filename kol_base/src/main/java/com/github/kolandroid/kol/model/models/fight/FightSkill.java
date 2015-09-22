@@ -18,7 +18,7 @@ public class FightSkill extends ActionElement implements SubtextElement {
     public FightSkill(Session session, String text, String img, String action) {
         super(session, OPTION_MP.replaceAll(text, ""), img, action);
 
-        this.subtext = OPTION_MP.extractSingle(text);
+        this.subtext = OPTION_MP.extractSingle(text, "");
     }
 
     @Override

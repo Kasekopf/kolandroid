@@ -65,8 +65,8 @@ public class SkillsListModel extends Model implements SkillsSubmodel {
         Logger.log("SkillsListModel", "Parsing icons");
         ArrayList<ModelGroup<SkillModel>> skills = new ArrayList<>();
 
-        String pwd = ICON_PWD.extractSingle(html);
-        String yourself = ICON_YOURSELF.extractSingle(html);
+        String pwd = ICON_PWD.extractSingle(html, "0");
+        String yourself = ICON_YOURSELF.extractSingle(html, "");
 
         DataCache<String, RawSkill> skillCache = getData().getSkillCache();
 

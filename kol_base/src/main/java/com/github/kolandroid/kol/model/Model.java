@@ -56,7 +56,6 @@ public abstract class Model implements Serializable {
         this.makeRequest(req, session, context.getPrimaryRoute());
     }
 
-
     /**
      * Make a new request in the context of this model.
      *
@@ -119,14 +118,29 @@ public abstract class Model implements Serializable {
         return context.getPrimaryRoute();
     }
 
+    /**
+     * Get the session for the model.
+     *
+     * @return The session this model uses to make requests.
+     */
     public Session getSession() {
         return session;
     }
 
+    /**
+     * Get a context which allows the model to get and set app settings.
+     *
+     * @return A context for changing app global settings.
+     */
     protected SettingsContext getSettings() {
         return context.getSettingsContext();
     }
 
+    /**
+     * Get a context which allows the model to check the app data cache.
+     *
+     * @return A context for accessing the app data cache.
+     */
     protected DataContext getData() {
         return context.getDataContext();
     }
