@@ -49,6 +49,7 @@ public abstract class ChatStubController<E extends ChatStubModel> extends Linked
 
     @Override
     public void disconnect(Screen host) {
+        super.disconnect(host);
         if (updateReceiver != null) {
             Logger.log("ChatStubController", this.getClass().getSimpleName() + " unregistered");
             ChatBroadcaster.unregisterListener(host, updateReceiver);

@@ -118,6 +118,7 @@ public class WebController extends UpdatableModelController<WebModel> {
                 return true;
             }
 
+            @SuppressWarnings("deprecation")
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 if (url.startsWith("data:text/html"))

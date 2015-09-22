@@ -130,13 +130,14 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
                     pass = new PasswordHash(password, false);
                 }
 
-                InputMethodManager inputManager = (InputMethodManager) host.getActivity()
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                inputManager.hideSoftInputFromWindow(host.getActivity()
-                                .getCurrentFocus().getWindowToken(),
-                        InputMethodManager.HIDE_NOT_ALWAYS);
-
+                View focus = host.getActivity().getCurrentFocus();
+                if (focus != null) {
+                    InputMethodManager inputManager = (InputMethodManager) host.getActivity()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(focus.getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+                }
                 getModel().login(username, pass);
 
                 settings.set("login_savePassword", configPass.isChecked());

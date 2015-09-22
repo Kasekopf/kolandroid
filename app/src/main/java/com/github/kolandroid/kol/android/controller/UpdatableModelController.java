@@ -1,5 +1,6 @@
 package com.github.kolandroid.kol.android.controller;
 
+import android.support.annotation.CallSuper;
 import android.view.View;
 
 import com.github.kolandroid.kol.android.screen.Screen;
@@ -23,6 +24,7 @@ public abstract class UpdatableModelController<M extends Model> extends ModelCon
         this.currentScreen = new WeakReference<>(null);
     }
 
+    @CallSuper
     @Override
     public void connect(final View view, final Screen host) {
         this.currentView = new WeakReference<>(view);
@@ -31,6 +33,7 @@ public abstract class UpdatableModelController<M extends Model> extends ModelCon
         super.connect(view, host);
     }
 
+    @CallSuper
     @Override
     public void disconnect(Screen host) {
         super.disconnect(host);

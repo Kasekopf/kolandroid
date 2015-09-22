@@ -28,6 +28,7 @@ public class ChannelCounterController extends LinkedModelController<Void, Channe
 
     @Override
     public void disconnect(Screen host) {
+        super.disconnect(host);
         badge = null;
     }
 

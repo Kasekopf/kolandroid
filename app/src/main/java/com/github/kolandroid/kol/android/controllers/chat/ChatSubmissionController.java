@@ -53,9 +53,12 @@ public class ChatSubmissionController extends ChatStubController<ChatSubmissionS
                 InputMethodManager inputManager = (InputMethodManager) host
                         .getActivity().getSystemService(
                                 Context.INPUT_METHOD_SERVICE);
-                inputManager.hideSoftInputFromWindow(host.getActivity()
-                                .getCurrentFocus().getWindowToken(),
-                        InputMethodManager.HIDE_NOT_ALWAYS);
+
+                View focus = host.getActivity().getCurrentFocus();
+                if (focus != null) {
+                    inputManager.hideSoftInputFromWindow(focus.getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+                }
             }
         });
 

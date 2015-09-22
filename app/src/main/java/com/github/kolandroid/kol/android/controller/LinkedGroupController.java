@@ -1,6 +1,7 @@
 package com.github.kolandroid.kol.android.controller;
 
 import android.app.Fragment;
+import android.support.annotation.CallSuper;
 import android.view.View;
 
 import com.github.kolandroid.kol.android.R;
@@ -25,6 +26,7 @@ public abstract class LinkedGroupController<C extends ChildModel, M extends Grou
 
     protected abstract void linkChild(UpdatableController<C> controller, String tag);
 
+    @CallSuper
     @Override
     public void connect(View view, M model, Screen host) {
         super.connect(view, model, host);

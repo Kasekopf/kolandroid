@@ -1,6 +1,7 @@
 package com.github.kolandroid.kol.android.controller;
 
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.view.View;
 import android.widget.TabHost.TabSpec;
 
@@ -29,6 +30,7 @@ public abstract class GroupController<C extends ChildModel, M extends GroupModel
 
     protected abstract Controller getController(C child);
 
+    @CallSuper
     @Override
     public void connect(View view, M model, Screen host) {
         final CustomFragmentTabHost tabHost = (CustomFragmentTabHost) view

@@ -22,6 +22,7 @@ public class ColoredGroupBinder extends DefaultGroupBinder {
         super.bind(view, model);
 
         View v = view.findViewById(R.id.list_header_background);
+        //noinspection deprecation
         v.setBackgroundColor(view.getResources().getColor(backColor));
     }
 }

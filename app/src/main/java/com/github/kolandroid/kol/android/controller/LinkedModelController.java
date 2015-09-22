@@ -1,5 +1,6 @@
 package com.github.kolandroid.kol.android.controller;
 
+import android.support.annotation.CallSuper;
 import android.view.View;
 
 import com.github.kolandroid.kol.android.screen.Screen;
@@ -18,6 +19,7 @@ public abstract class LinkedModelController<C, M extends LinkedModel<C>> extends
         super(model);
     }
 
+    @CallSuper
     @Override
     public void connect(final View view, final Screen host) {
         if (callback != null) {
@@ -37,6 +39,7 @@ public abstract class LinkedModelController<C, M extends LinkedModel<C>> extends
 
     public abstract void receiveProgress(View view, M model, C message, Screen host);
 
+    @CallSuper
     @Override
     public void disconnect(Screen host) {
         if (callback != null) {
