@@ -33,7 +33,7 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
 
     public ItemPocketModel(String name, Session s, String updateUrl) {
         super(s, updateUrl, true);
-        this.items = new ArrayList<ModelGroup<ItemModel>>();
+        this.items = new ArrayList<>();
         this.name = name;
     }
 
@@ -63,7 +63,7 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
                                                    ArrayList<String> items, String pwd) {
         DataCache<String, RawItem> itemCache = getData().getItemCache();
 
-        BasicGroup<ItemModel> newsection = new BasicGroup<ItemModel>(
+        BasicGroup<ItemModel> newsection = new BasicGroup<>(
                 sectionName);
         for (String item : items) {
             ItemModel newItem = new ItemModel(getSession(), pwd, item);
@@ -74,7 +74,7 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
     }
 
     protected void loadContent(ServerReply reply) {
-        this.items = new ArrayList<ModelGroup<ItemModel>>();
+        this.items = new ArrayList<>();
 
         String pwd = PWD.extractSingle(reply.html);
 

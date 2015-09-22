@@ -27,7 +27,7 @@ public class ChannelModel extends LinkedModel<Void> {
         this.name = name;
         this.active = name.contains("@");
 
-        this.messages = new ArrayList<ChatText>();
+        this.messages = new ArrayList<>();
         this.unread = 0;
     }
 

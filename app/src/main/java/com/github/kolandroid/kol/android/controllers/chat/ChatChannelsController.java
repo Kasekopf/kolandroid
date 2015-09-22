@@ -23,8 +23,8 @@ public class ChatChannelsController extends ChatStubController<ChatStubModel> {
      */
     private static final long serialVersionUID = -7646035545611799838L;
 
-    private Set<String> currentChannels;
-    private ArrayList<ChannelListItemController> controllers;
+    private final Set<String> currentChannels;
+    private final ArrayList<ChannelListItemController> controllers;
 
     private transient ListControllerAdapter<ChannelListItemController> adapter;
 
@@ -46,7 +46,7 @@ public class ChatChannelsController extends ChatStubController<ChatStubModel> {
             addChannel(channel, host);
         }
 
-        adapter = new ListControllerAdapter<ChannelListItemController>(host, controllers);
+        adapter = new ListControllerAdapter<>(host, controllers);
         ListView list = (ListView) view.findViewById(R.id.dialog_chat_list);
         list.setAdapter(adapter);
     }
@@ -130,11 +130,6 @@ public class ChatChannelsController extends ChatStubController<ChatStubModel> {
                     }
                 });
             }
-        }
-
-        @Override
-        public void disconnect(Screen host) {
-            super.disconnect(host);
         }
 
         @Override

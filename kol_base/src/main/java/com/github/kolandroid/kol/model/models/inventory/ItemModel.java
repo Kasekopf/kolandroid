@@ -84,7 +84,7 @@ public class ItemModel extends Model implements SubtextElement {
         id = ITEM_ID.extractSingle(itemInfo, "-1");
         descriptionId = ITEM_DESCID.extractSingle(itemInfo, "0");
 
-        actions = new ArrayList<InventoryAction>();
+        actions = new ArrayList<>();
         for (String action : ITEM_ACTION.extractAllSingle(itemInfo)) {
             InventoryAction parsed = parseAction(pwd, action);
             if (parsed != null)

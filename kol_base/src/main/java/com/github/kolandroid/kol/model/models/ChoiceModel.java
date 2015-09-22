@@ -46,7 +46,7 @@ public class ChoiceModel extends WebModel {
     }
 
     private void extractOptions(String html) {
-        this.options = new ArrayList<ActionElement>();
+        this.options = new ArrayList<>();
         for (String form : OPTIONS.extractAllSingle(html)) {
             System.out.println("Found option: " + form);
 

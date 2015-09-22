@@ -48,7 +48,7 @@ public class ItemRestorersModel extends ItemPocketModel implements SkillsSubmode
             }
         };
         ArrayList<ItemModel> itemList = OptionElement.extractObjects(all_items, itemsparser);
-        items.add(new BasicGroup<ItemModel>("Restorers", itemList));
+        items.add(new BasicGroup<>("Restorers", itemList));
     }
 
     @Override

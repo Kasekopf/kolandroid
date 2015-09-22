@@ -63,8 +63,8 @@ public class CreateCharModel extends Model {
     public CreateCharModel() {
         super(new Session());
 
-        ArrayList<CharacterType> males = new ArrayList<CharacterType>();
-        ArrayList<CharacterType> females = new ArrayList<CharacterType>();
+        ArrayList<CharacterType> males = new ArrayList<>();
+        ArrayList<CharacterType> females = new ArrayList<>();
 
         for (int i = 0; i < 6; i++) {
             males.add(new CharacterType(images[i], names[i], male_desc[i], blurbs[i]));

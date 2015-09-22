@@ -74,7 +74,7 @@ public class LoginScreen extends ActivityScreen {
                 current = c;
 
                 FragmentScreen frag = FragmentScreen.create(c);
-                getFragmentManager().beginTransaction() //.setCustomAnimations(R.animator.fadeinanimator, R.animator.fadeoutanimator)
+                getFragmentManager().beginTransaction()
                         .add(R.id.login_mainfragment, frag, "loginscreen").commit();
 
                 closeDialog.execute(null, 500);

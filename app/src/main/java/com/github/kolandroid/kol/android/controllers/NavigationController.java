@@ -47,7 +47,7 @@ public class NavigationController extends LinkedModelController<LiveMessage, Nav
     public void connect(View view, NavigationModel model, final Screen host) {
         ListView mDrawerListView = (ListView) view.findViewById(R.id.navigation_list);
 
-        adapter = new ListAdapter<ActionElement>(view.getContext(), model.getLocations(), ElementBinder.ONLY);
+        adapter = new ListAdapter<>(view.getContext(), model.getLocations(), ElementBinder.ONLY);
         mDrawerListView.setAdapter(adapter);
 
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

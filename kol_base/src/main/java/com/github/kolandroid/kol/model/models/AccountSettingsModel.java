@@ -12,14 +12,11 @@ public class AccountSettingsModel extends GroupModel<LiveWebModel> {
     private static final Regex TAB = new Regex("<li.*?</li>", 0);
     private static final Regex TAB_NAME = new Regex("/>(.*?)</a>", 1);
     private static final Regex TAB_URL = new Regex("<a href=[\"']?([^\"'>]*?)[\"']?>", 1);
-    private static final Regex PWD = new Regex("var pwd = \"(.*?)\";", 1);
     private static final Regex MARGIN_LEFT = new Regex("margin-left: \\d+px;");
-    private LiveWebModel[] pages;
+    private final LiveWebModel[] pages;
 
     public AccountSettingsModel(Session s, ServerReply reply) {
         super(s);
-
-        String pwd = PWD.extractSingle(reply.html, "");
 
         ArrayList<String> tabs = TAB.extractAllSingle(ALL_TABS.extractSingle(reply.html, ""));
         pages = new LiveWebModel[tabs.size()];

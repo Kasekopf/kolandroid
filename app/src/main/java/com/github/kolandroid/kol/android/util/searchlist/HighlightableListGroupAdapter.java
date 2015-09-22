@@ -24,7 +24,7 @@ public class HighlightableListGroupAdapter<F> extends ListGroupAdapter<ModelGrou
     public HighlightableListGroupAdapter(Context context, List<ModelGroup<F>> base, Binder<? super ModelGroup<F>> groupBinder, Binder<? super F> childBinder) {
         super(context, new ArrayList<ModelGroup<F>>(), groupBinder, childBinder);
 
-        this.displayed = new ArrayList<ModelGroup<F>>();
+        this.displayed = new ArrayList<>();
         this.filter = new Regex("");
         this.setElements(base);
     }
@@ -40,7 +40,7 @@ public class HighlightableListGroupAdapter<F> extends ListGroupAdapter<ModelGrou
         this.base = base;
         displayed.clear();
         for (ModelGroup<F> elem : base) {
-            BasicGroup<F> newgroup = new BasicGroup<F>(elem.getName());
+            BasicGroup<F> newgroup = new BasicGroup<>(elem.getName());
             for (int i = 0; i < elem.size(); i++) {
                 F item = elem.get(i);
                 if (filter.matches(item.toString()))

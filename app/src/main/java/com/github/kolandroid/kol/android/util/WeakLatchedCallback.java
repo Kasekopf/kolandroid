@@ -3,7 +3,7 @@ package com.github.kolandroid.kol.android.util;
 import java.lang.ref.WeakReference;
 
 public class WeakLatchedCallback<E> implements LatchedCallback<E> {
-    public WeakReference<LatchedCallback<E>> callbackRef;
+    public final WeakReference<LatchedCallback<E>> callbackRef;
 
     public WeakLatchedCallback(LatchedCallback<E> callback) {
         this.callbackRef = new WeakReference<>(callback);
@@ -12,9 +12,7 @@ public class WeakLatchedCallback<E> implements LatchedCallback<E> {
     @Override
     public boolean isClosed() {
         LatchedCallback<E> callback = callbackRef.get();
-        if (callback == null)
-            return true;
-        return callback.isClosed();
+        return (callback == null) || callback.isClosed();
     }
 
     @Override

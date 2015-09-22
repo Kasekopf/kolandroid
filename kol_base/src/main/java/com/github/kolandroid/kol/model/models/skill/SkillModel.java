@@ -25,11 +25,11 @@ public class SkillModel extends Model implements SubtextElement {
     private final boolean disabled;
     private final String descriptionUrl;
     private final String castAction;
+    private final String id;
 
     private WebModel description;
     private String image;
     private boolean isBuff;
-    private String id;
 
     /**
      * Create a new model in the provided session.
@@ -88,7 +88,7 @@ public class SkillModel extends Model implements SubtextElement {
     }
 
     public boolean isBuff() {
-        return false;
+        return isBuff;
     }
 
     public boolean getDisabled() {

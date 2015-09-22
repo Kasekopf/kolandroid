@@ -136,7 +136,7 @@ public class AndroidViewContext implements ViewContext {
         final WeakReference<Context> parent;
 
         public ToastLauncher(Context parent) {
-            this.parent = new WeakReference<Context>(parent);
+            this.parent = new WeakReference<>(parent);
         }
 
         @Override
@@ -156,7 +156,7 @@ public class AndroidViewContext implements ViewContext {
         final WeakReference<Context> parent;
 
         public ActivityLauncher(Context parent) {
-            this.parent = new WeakReference<Context>(parent);
+            this.parent = new WeakReference<>(parent);
         }
 
         @Override

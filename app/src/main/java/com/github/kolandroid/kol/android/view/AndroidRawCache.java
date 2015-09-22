@@ -20,7 +20,7 @@ public abstract class AndroidRawCache<E extends RawData> implements DataCache<St
     private final String overrideFile;
 
     private volatile boolean updated;
-    private volatile boolean loaded;
+    private volatile boolean loadRequired;
 
     protected AndroidRawCache(String cacheFile, String overrideFile) {
         preloadedCache = new ConcurrentHashMap<>();
@@ -29,15 +29,15 @@ public abstract class AndroidRawCache<E extends RawData> implements DataCache<St
         this.cacheFile = cacheFile;
         this.overrideFile = overrideFile;
         updated = false;
-        loaded = false;
+        loadRequired = true;
     }
 
-    public boolean loaded() {
-        return loaded;
+    public boolean isLoadRequired() {
+        return loadRequired;
     }
 
     public void load(Context context) {
-        loaded = true;
+        loadRequired = true;
         try {
             InputStream preloaded = context.getAssets().open(cacheFile);
             load(preloadedCache, preloaded);

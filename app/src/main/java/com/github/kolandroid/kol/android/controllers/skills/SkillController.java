@@ -72,7 +72,7 @@ public class SkillController extends ModelController<SkillModel> {
 
                 String num = number.getText().toString();
                 String play = player.getText().toString();
-                if (num == null || play == null || num.length() == 0)
+                if (num.equals(""))
                     return;
                 if (play.equalsIgnoreCase("(yourself)"))
                     play = "";
@@ -80,11 +80,6 @@ public class SkillController extends ModelController<SkillModel> {
                 host.close();
             }
         });
-    }
-
-    @Override
-    public void disconnect(Screen host) {
-        // do nothing
     }
 
     @Override

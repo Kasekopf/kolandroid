@@ -2,6 +2,7 @@ package com.github.kolandroid.kol.model.models.chat.raw;
 
 import java.io.Serializable;
 
+@SuppressWarnings("CanBeFinal")
 public class RawAction implements Serializable {
     public static final RawAction SHOWPROFILE = new RawAction("Show Profile", "showplayer.php", "who", 1);
 

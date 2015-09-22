@@ -27,7 +27,7 @@ public class EquipmentPocketModel extends ItemPocketModel {
 
     private static final Regex OUTFITS = OptionElement.regexFor("whichoutfit");
 
-    private ArrayList<ModelGroup<ActionElement>> outfits = new ArrayList<ModelGroup<ActionElement>>();
+    private ArrayList<ModelGroup<ActionElement>> outfits = new ArrayList<>();
 
     public EquipmentPocketModel(String name, Session s, String updateUrl) {
         super(name, s, updateUrl);
@@ -48,11 +48,11 @@ public class EquipmentPocketModel extends ItemPocketModel {
 
         String baseaction = "inv_equip.php?action=outfit&which=2&whichoutfit=";
 
-        outfits = new ArrayList<ModelGroup<ActionElement>>();
+        outfits = new ArrayList<>();
         String outfit_select = OUTFITS.extractSingle(reply.html);
         ArrayList<ModelGroup<OptionElement>> outfit_options = OptionElement.extractOptionGroups(outfit_select, "Outfits");
         for (ModelGroup<OptionElement> outfit_group : outfit_options) {
-            BasicGroup<ActionElement> group = new BasicGroup<ActionElement>(outfit_group.getName());
+            BasicGroup<ActionElement> group = new BasicGroup<>(outfit_group.getName());
             for (OptionElement option : outfit_group) {
                 if (option.text.contains("(select an outfit)")) continue;
 
@@ -87,11 +87,11 @@ public class EquipmentPocketModel extends ItemPocketModel {
             try {
                 name = URLEncoder.encode(name, "UTF-8")
                         .replaceAll("\\+", "%20")
-                        .replaceAll("\\%21", "!")
-                        .replaceAll("\\%27", "'")
-                        .replaceAll("\\%28", "(")
-                        .replaceAll("\\%29", ")")
-                        .replaceAll("\\%7E", "~");
+                        .replaceAll("%21", "!")
+                        .replaceAll("%27", "'")
+                        .replaceAll("%28", "(")
+                        .replaceAll("%29", ")")
+                        .replaceAll("%7E", "~");
             } catch (UnsupportedEncodingException e) {
                 System.out.println("Unable to URL-Encode outfit name");
                 e.printStackTrace();

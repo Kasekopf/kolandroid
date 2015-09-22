@@ -7,9 +7,6 @@ import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.model.models.AccountSettingsModel;
 import com.github.kolandroid.kol.model.models.LiveWebModel;
 
-/**
- * Created by Jeffrey on 9/16/2015.
- */
 public class AccountSettingsController extends GroupController<LiveWebModel, AccountSettingsModel> {
     public AccountSettingsController(AccountSettingsModel model) {
         super(model);

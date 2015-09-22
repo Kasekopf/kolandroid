@@ -9,7 +9,7 @@ import com.github.kolandroid.kol.util.Logger;
 public class AndroidSettingsContext implements SettingsContext {
     private static final String GLOBAL_STORAGE = "KoL_Global_Storage";
 
-    private SharedPreferences globalSettings;
+    private final SharedPreferences globalSettings;
 
     public AndroidSettingsContext(Context c) {
         this.globalSettings = c.getSharedPreferences(GLOBAL_STORAGE, 0);
@@ -23,7 +23,7 @@ public class AndroidSettingsContext implements SettingsContext {
         Logger.log("AndroidSettingsContext", "[" + name + "] removed");
         SharedPreferences.Editor editor = globalSettings.edit();
         editor.remove(name);
-        editor.commit();
+        editor.apply();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class AndroidSettingsContext implements SettingsContext {
         Logger.log("AndroidSettingsContext", "[" + name + "] set to $boolean[" + value + "]");
         SharedPreferences.Editor editor = globalSettings.edit();
         editor.putBoolean(name, value);
-        editor.commit();
+        editor.apply();
     }
 
     @Override
@@ -69,7 +69,7 @@ public class AndroidSettingsContext implements SettingsContext {
         Logger.log("AndroidSettingsContext", "[" + name + "] set to $int[" + value + "]");
         SharedPreferences.Editor editor = globalSettings.edit();
         editor.putInt(name, value);
-        editor.commit();
+        editor.apply();
     }
 
     @Override
@@ -77,6 +77,6 @@ public class AndroidSettingsContext implements SettingsContext {
         Logger.log("AndroidSettingsContext", "[" + name + "] set to $string[" + value + "]");
         SharedPreferences.Editor editor = globalSettings.edit();
         editor.putString(name, value);
-        editor.commit();
+        editor.apply();
     }
 }

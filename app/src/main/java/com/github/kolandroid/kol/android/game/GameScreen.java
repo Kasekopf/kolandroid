@@ -1,5 +1,6 @@
 package com.github.kolandroid.kol.android.game;
 
+import android.annotation.SuppressLint;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -117,7 +118,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
                 Logger.log("GameScreen", "Displaying " + c + " on primary pane [replace=" + replaceSameType + "]");
                 FragmentScreen screen = FragmentScreen.create(c);
 
-                FragmentTransaction trans = getFragmentManager()
+                @SuppressLint("CommitTransaction") FragmentTransaction trans = getFragmentManager()
                         .beginTransaction().replace(R.id.game_mainfragment, screen, "gamescreen");
 
                 boolean doAddToBackStack = addToBackStack;
@@ -204,15 +205,16 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
         if (!getFragmentManager().popBackStackImmediate()) {
             //TODO: replace with Logout? message
             super.onBackPressed();
-            return;
         }
     }
 
     @Override
     public void update(String username, String subtext) {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(username);
-        actionBar.setSubtitle(subtext);
+        if (actionBar != null) {
+            actionBar.setTitle(username);
+            actionBar.setSubtitle(subtext);
+        }
     }
 
     @Override

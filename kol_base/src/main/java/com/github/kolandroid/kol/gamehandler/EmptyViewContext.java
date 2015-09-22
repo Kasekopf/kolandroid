@@ -11,7 +11,7 @@ import com.github.kolandroid.kol.util.Logger;
 import java.io.Serializable;
 
 public class EmptyViewContext implements ViewContext, Serializable {
-    public static EmptyViewContext ONLY = new EmptyViewContext();
+    public static final EmptyViewContext ONLY = new EmptyViewContext();
 
     private EmptyViewContext() {
     }

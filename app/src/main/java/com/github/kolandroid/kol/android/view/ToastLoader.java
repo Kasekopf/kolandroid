@@ -35,7 +35,7 @@ public class ToastLoader implements LoadingContext {
         private final WeakReference<Context> base;
 
         private ToastLauncher(Context context) {
-            this.base = new WeakReference<Context>(context);
+            this.base = new WeakReference<>(context);
         }
 
         public void handleMessage(Message m) {

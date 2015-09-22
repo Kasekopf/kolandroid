@@ -60,7 +60,7 @@ public class MultiusableController implements Controller {
                         .findViewById(R.id.dialog_multiuse_number);
 
                 String num = number.getText().toString();
-                if (num == null || num.length() == 0)
+                if (num.equals(""))
                     return;
 
                 DeferredGameAction action = base.use(num);

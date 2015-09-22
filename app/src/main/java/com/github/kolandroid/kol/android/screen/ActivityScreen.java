@@ -72,7 +72,6 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
             // i.e. back from the chat
             // Do not shift the displayed controller
             Logger.log("ActivityScreen", this.getClass() + " received intent without controller");
-            return;
         }
     }
 

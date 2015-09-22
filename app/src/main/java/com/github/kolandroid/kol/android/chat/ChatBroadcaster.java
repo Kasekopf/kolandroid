@@ -29,8 +29,8 @@ public class ChatBroadcaster {
     private static final String CHAT_SEGMENT_INTENT_TAG = "CHAT_SEGMENT";
 
     private static volatile int listenerCount = 0; //not quite thread safe, but it's only for logging
-    private LocalBroadcastManager broadcastManager;
-    private ViewContext context;
+    private final LocalBroadcastManager broadcastManager;
+    private final ViewContext context;
     private ChatModel chat;
     private Timer updateTimer;
     private final ChatModelSegment.ChatModelSegmentProcessor chatMonitor = new ChatModelSegment.ChatModelSegmentProcessor() {
@@ -87,26 +87,28 @@ public class ChatBroadcaster {
 
         }
     };
-    private final BroadcastReceiver commandReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.hasExtra("command")) {
-                ChatModel.ChatModelCommand command = (ChatModel.ChatModelCommand) intent.getSerializableExtra("command");
-                Logger.log("ChatBroadcaster", "Received command " + command);
-                if (command instanceof ChatModel.ChatModelCommand.StartChat) {
-                    Session session = ((ChatModel.ChatModelCommand.StartChat) command).getSession();
-                    createNewChat(session);
-                }
-
-                if (chat != null) {
-                    chat.submitCommand(command);
-                }
-            }
-        }
-    };
 
     public ChatBroadcaster(Context context) {
         Logger.log("ChatBroadcaster", "Created");
+
+        BroadcastReceiver commandReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.hasExtra("command")) {
+                    ChatModel.ChatModelCommand command = (ChatModel.ChatModelCommand) intent.getSerializableExtra("command");
+                    Logger.log("ChatBroadcaster", "Received command " + command);
+                    if (command instanceof ChatModel.ChatModelCommand.StartChat) {
+                        Session session = ((ChatModel.ChatModelCommand.StartChat) command).getSession();
+                        createNewChat(session);
+                    }
+
+                    if (chat != null) {
+                        chat.submitCommand(command);
+                    }
+                }
+            }
+        };
+
         broadcastManager = LocalBroadcastManager.getInstance(context);
         broadcastManager.registerReceiver(commandReceiver, new IntentFilter(CHAT_COMMAND_INTENT_TAG));
 

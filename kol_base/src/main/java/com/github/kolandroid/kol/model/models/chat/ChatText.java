@@ -24,7 +24,7 @@ public class ChatText implements Serializable {
     private String type;
 
     public ChatText() {
-        actions = new ArrayList<ChatAction>();
+        actions = new ArrayList<>();
     }
 
     public ChatText(String htmltext) {

@@ -18,7 +18,7 @@ public class Connection {
 
     public Connection(String url) {
         this.URLbase = url;
-        formFields = new ArrayList<String>();
+        formFields = new ArrayList<>();
     }
 
     public void addFormField(String element, String value) {

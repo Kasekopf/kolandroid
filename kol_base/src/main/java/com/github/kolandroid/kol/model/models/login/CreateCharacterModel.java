@@ -26,7 +26,7 @@ public class CreateCharacterModel extends WebModel {
             this.makeRequest(r, new ResponseHandler() {
                 @Override
                 public void handle(Session session, ServerReply response) {
-                    if (response == null || response.redirectLocation == null || response.redirectLocation == "") {
+                    if (response == null || response.redirectLocation == null || response.redirectLocation.equals("")) {
                         Logger.log("CreateCharacterModel", "Error creating character; no response from create.php");
                         makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Unable to Create Character [0x01]", MessageModel.ErrorType.SEVERE)));
                         return;
@@ -47,7 +47,7 @@ public class CreateCharacterModel extends WebModel {
                     makeRequest(r, session, new ResponseHandler() {
                         @Override
                         public void handle(Session session, ServerReply response) {
-                            if (response == null || response.redirectLocation == null || response.redirectLocation == "") {
+                            if (response == null || response.redirectLocation == null || response.redirectLocation.equals("")) {
                                 Logger.log("CreateCharacterModel", "Error creating character; no response from login.php");
                                 makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Unable to Create Character [0x03]", MessageModel.ErrorType.SEVERE)));
                                 return;

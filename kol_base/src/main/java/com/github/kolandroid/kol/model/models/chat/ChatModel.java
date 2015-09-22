@@ -382,7 +382,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         }
 
         class StartChat implements ChatModelCommand {
-            private Session session;
+            private final Session session;
 
             public StartChat(Session session) {
                 this.session = session;
@@ -403,6 +403,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                             ArrayList<ChatModelSegment> result = new ArrayList<>();
                             MessageModel message = new MessageModel("Unable to connect to KoL.", MessageModel.ErrorType.ERROR);
                             result.add(new ChatModelSegment.AssertChatStartFailed(message));
+                            base.apply(result);
                         }
                     });
 

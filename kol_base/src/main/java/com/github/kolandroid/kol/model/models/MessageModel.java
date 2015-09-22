@@ -130,6 +130,7 @@ public class MessageModel extends Model {
         }
     }
 
+    @SuppressWarnings("SameReturnValue")
     public interface ErrorTypeVisitor<E> {
         E forNone();
 

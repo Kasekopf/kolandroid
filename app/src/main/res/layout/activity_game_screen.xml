@@ -61,7 +61,7 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:singleLine="true"
-                android:text="hello" />
+                android:text="" />
         </LinearLayout>
     </RelativeLayout>
 

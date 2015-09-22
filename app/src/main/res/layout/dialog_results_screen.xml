@@ -5,7 +5,7 @@
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
     android:layout_marginTop="20dp"
-    android:background="#00f"
+    android:background="@drawable/blueborder"
     android:orientation="vertical"
     android:paddingBottom="1dp"
     android:paddingLeft="1dp"
@@ -15,6 +15,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#00f"
         android:gravity="center"
         android:text="Results:"
         android:textColor="#fff"

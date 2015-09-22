@@ -41,11 +41,6 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
     private Controller getController(Session session, ServerReply response) {
         Log.i("PrimaryRoute", "Creating model for response: " + response.url);
 
-        if (response == null) {
-            MessageModel model = new MessageModel("Unable to access KoL.", MessageModel.ErrorType.ERROR);
-            return new MessageController(model);
-        }
-
         /**
          * Specifically handle simulated requests.
          * Prevents later models from matching html content.
@@ -138,7 +133,7 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
         if (resultsPane == null) {
             Controller controller = getController(session, response);
             execute(controller);
-        } else if (resultsPane != null && response.url.contains("androiddisplay=results")) {
+        } else if (response.url.contains("androiddisplay=results")) {
             Logger.log("PrimaryRoute", "Results pane was contained in redundant results pane");
             Controller controller = getController(session, resultsPane);
             execute(controller);

@@ -72,7 +72,7 @@ public class FightModel extends WebModel {
     }
 
     private void processSkills(String html) {
-        this.skills = new ArrayList<FightSkill>();
+        this.skills = new ArrayList<>();
 
         ArrayList<String[]> buttons = ACTION_BTN.extractAll(html);
         for (String[] button : buttons) {
@@ -112,7 +112,7 @@ public class FightModel extends WebModel {
     }
 
     private void processItems(String html) {
-        this.items = new ArrayList<FightItem>();
+        this.items = new ArrayList<>();
 
         String dropdown = ALL_ITEMS.extractSingle(html);
 

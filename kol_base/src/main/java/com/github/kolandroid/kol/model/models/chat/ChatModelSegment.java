@@ -109,7 +109,6 @@ public abstract class ChatModelSegment implements Serializable {
         RawMessageList update = parser.fromJson(response.html,
                 RawMessageList.class);
 
-        boolean updated = false;
         for (ChatText message : update.msgs) {
             ChatModelSegment messageSegment = disassembleMessage(seenMessages, message);
             if (messageSegment != null) {
@@ -252,7 +251,7 @@ public abstract class ChatModelSegment implements Serializable {
     }
 
     public static final class ExecuteCommand extends ChatModelSegment {
-        private ChatModel.ChatModelCommand command;
+        private final ChatModel.ChatModelCommand command;
 
         public ExecuteCommand(ChatModel.ChatModelCommand command) {
             this.command = command;

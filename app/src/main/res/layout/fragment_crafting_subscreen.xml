@@ -3,5 +3,5 @@
     android:id="@+id/crafting_web"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f00"
+    android:background="#fff"
     tools:context="com.github.kolandroid.kol.android.game.fragments.CraftingFragment" />

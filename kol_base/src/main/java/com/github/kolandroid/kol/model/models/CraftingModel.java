@@ -2,7 +2,6 @@ package com.github.kolandroid.kol.model.models;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
-import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.GroupModel;
 import com.github.kolandroid.kol.util.Regex;
 
@@ -55,13 +54,6 @@ public class CraftingModel extends GroupModel<LiveWebModel> {
                 return TOP_BAR.replaceAll(html, "$1");
             }
         };
-    }
-
-    @Override
-    public void attachView(ViewContext context) {
-        super.attachView(context);
-
-
     }
 
     @Override

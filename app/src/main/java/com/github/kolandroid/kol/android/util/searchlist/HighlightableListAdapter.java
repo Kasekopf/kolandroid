@@ -22,7 +22,7 @@ public class HighlightableListAdapter<E> extends ListAdapter<E> {
     public HighlightableListAdapter(Context context, List<E> base, Binder<? super E> childBinder) {
         super(context, childBinder);
 
-        this.displayed = new ArrayList<E>();
+        this.displayed = new ArrayList<>();
         this.filter = new Regex("");
         this.setElements(base);
     }

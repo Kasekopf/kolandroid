@@ -34,7 +34,6 @@ public class BasicAction implements DeferredGameAction {
     }
 
     public boolean urlMatches(BasicAction other) {
-        if (other == null) return false;
-        return url.equals(other.url);
+        return (other != null) && url.equals(other.url);
     }
 }

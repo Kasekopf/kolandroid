@@ -19,14 +19,14 @@ public abstract class UpdatableModelController<M extends Model> extends ModelCon
     public UpdatableModelController(M model) {
         super(model);
 
-        this.currentView = new WeakReference<View>(null);
-        this.currentScreen = new WeakReference<Screen>(null);
+        this.currentView = new WeakReference<>(null);
+        this.currentScreen = new WeakReference<>(null);
     }
 
     @Override
     public void connect(final View view, final Screen host) {
-        this.currentView = new WeakReference<View>(view);
-        this.currentScreen = new WeakReference<Screen>(host);
+        this.currentView = new WeakReference<>(view);
+        this.currentScreen = new WeakReference<>(host);
 
         super.connect(view, host);
     }
@@ -35,8 +35,8 @@ public abstract class UpdatableModelController<M extends Model> extends ModelCon
     public void disconnect(Screen host) {
         super.disconnect(host);
 
-        this.currentView = new WeakReference<View>(null);
-        this.currentScreen = new WeakReference<Screen>(null);
+        this.currentView = new WeakReference<>(null);
+        this.currentScreen = new WeakReference<>(null);
     }
 
     public void updateModel(M model) {

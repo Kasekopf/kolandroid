@@ -36,13 +36,13 @@ public class NavigationModel extends LiveModel {
     public NavigationModel(Session session) {
         super(session, "topmenu.php", false);
 
-        this.locations = new ArrayList<ActionElement>();
+        this.locations = new ArrayList<>();
         loadContent(null);
     }
 
     public ArrayList<ActionElement> getLocations() {
         this.access();
-        return new ArrayList<ActionElement>(this.locations);
+        return new ArrayList<>(this.locations);
     }
 
     @Override
@@ -277,7 +277,7 @@ public class NavigationModel extends LiveModel {
                         } else if (MACRO_ACTION_EXAMINE.matches(action)) {
                             action = "desc_item.php?whichitem=" + MACRO_ACTION_EXAMINE.extractSingle(action, "0");
                         } else {
-                            if (action != "") {
+                            if (!action.equals("")) {
                                 Logger.log("NavigationModel", "Unknown macro action: " + action);
                             }
                             continue;

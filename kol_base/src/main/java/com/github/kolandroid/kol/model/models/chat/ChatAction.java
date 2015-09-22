@@ -11,7 +11,7 @@ public class ChatAction extends Model {
      */
     private static final long serialVersionUID = -8557324235833386443L;
 
-    private RawAction base;
+    private final RawAction base;
 
     protected ChatAction(Session s, RawAction base) {
         super(s);

@@ -14,7 +14,7 @@ public class Regex {
     }
 
     public ArrayList<String[]> extractAll(String text) {
-        ArrayList<String[]> results = new ArrayList<String[]>();
+        ArrayList<String[]> results = new ArrayList<>();
         if (text == null)
             return results;
 
@@ -29,7 +29,7 @@ public class Regex {
     }
 
     public ArrayList<String> extractAllSingle(String text) {
-        ArrayList<String> results = new ArrayList<String>();
+        ArrayList<String> results = new ArrayList<>();
         if (text == null)
             return results;
 

@@ -41,17 +41,17 @@ import java.util.ArrayList;
  * <p/>
  * <p>Here is a simple example of using a FragmentTabHost in an Activity:
  * <p/>
- * {@sample development/samples/Support4Demos/src/com/example/android/supportv4/app/FragmentTabs.java
+ * {@see development/samples/Support4Demos/src/com/example/android/supportv4/app/FragmentTabs.java
  * complete}
  * <p/>
  * <p>This can also be used inside of a fragment through fragment nesting:
  * <p/>
- * {@sample development/samples/Support4Demos/src/com/example/android/supportv4/app/FragmentTabsFragmentSupport.java
+ * {@see development/samples/Support4Demos/src/com/example/android/supportv4/app/FragmentTabsFragmentSupport.java
  * complete}
  */
 public class CustomFragmentTabHost extends TabHost
         implements TabHost.OnTabChangeListener {
-    private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
+    private final ArrayList<TabInfo> mTabs = new ArrayList<>();
     private FrameLayout mRealTabContent;
     private Context mContext;
     private FragmentManager mFragmentManager;
@@ -160,7 +160,7 @@ public class CustomFragmentTabHost extends TabHost
     }
 
     public ArrayList<TabInfo> getTabs() {
-        return new ArrayList<TabInfo>(mTabs);
+        return new ArrayList<>(mTabs);
     }
 
     public void addTab(TabHost.TabSpec tabSpec, Class<?> clss, Bundle args) {

@@ -65,7 +65,7 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
                 return false;
             }
         };
-        list = new GroupSearchListController<ItemModel>(model.getItems(), new ColoredGroupBinder(groupColor), SubtextBinder.ONLY, displayPossibleActions);
+        list = new GroupSearchListController<>(model.getItems(), new ColoredGroupBinder(groupColor), SubtextBinder.ONLY, displayPossibleActions);
         screen.display(list, host);
 
         Button equipoutfit = (Button) view.findViewById(R.id.equipment_equipoutfit);

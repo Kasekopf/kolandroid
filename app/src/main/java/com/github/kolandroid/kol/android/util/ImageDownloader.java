@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class ImageDownloader {
-    private static final Hashtable<ImageSlot, String> pendingViews = new Hashtable<ImageSlot, String>();
-    private static final Hashtable<String, ArrayList<ImageSlot>> pendingTasks = new Hashtable<String, ArrayList<ImageSlot>>();
-    private static final Hashtable<String, Bitmap> cache = new Hashtable<String, Bitmap>();
+    private static final Hashtable<ImageSlot, String> pendingViews = new Hashtable<>();
+    private static final Hashtable<String, ArrayList<ImageSlot>> pendingTasks = new Hashtable<>();
+    private static final Hashtable<String, Bitmap> cache = new Hashtable<>();
 
     public static void loadIconFromUrl(Dialog dialog, String url) {
         ImageDownloader.loadFromUrl(new DialogIconSlot(dialog), url);
@@ -56,7 +56,7 @@ public class ImageDownloader {
             return;
         }
 
-        ArrayList<ImageSlot> list = new ArrayList<ImageSlot>();
+        ArrayList<ImageSlot> list = new ArrayList<>();
         list.add(slot);
         pendingTasks.put(url, list);
 
@@ -77,7 +77,7 @@ public class ImageDownloader {
         private final WeakReference<E> base;
 
         public WeakSlot(E base) {
-            this.base = new WeakReference<E>(base);
+            this.base = new WeakReference<>(base);
         }
 
         protected abstract void fill(E base, Bitmap result);

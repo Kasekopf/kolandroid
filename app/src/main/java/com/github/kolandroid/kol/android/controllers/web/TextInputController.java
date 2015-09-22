@@ -15,10 +15,10 @@ import java.lang.ref.WeakReference;
 
 public class TextInputController implements Controller {
     private final String buttonText;
-    private transient WeakReference<Callback<String>> onSubmit;
+    private transient final WeakReference<Callback<String>> onSubmit;
 
     public TextInputController(String buttonText, Callback<String> onSubmit) {
-        this.onSubmit = new WeakReference<Callback<String>>(onSubmit);
+        this.onSubmit = new WeakReference<>(onSubmit);
         this.buttonText = buttonText;
     }
 
@@ -36,9 +36,6 @@ public class TextInputController implements Controller {
                 EditText input = (EditText) view
                         .findViewById(R.id.dialog_textinput_value);
                 String result = input.getText().toString();
-                if (result == null)
-                    result = "";
-
                 Callback<String> callback = onSubmit.get();
                 if (callback == null)
                     Logger.log("TextInputController", "Computed result [" + result + "] but callback was closed");

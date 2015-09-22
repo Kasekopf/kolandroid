@@ -41,10 +41,10 @@ public class OptionElement {
 
     public static <T> ArrayList<ModelGroup<T>> extractObjectGroups(
             String dropdown, String defaultName, OptionElementParser<T> parser) {
-        ArrayList<ModelGroup<T>> result = new ArrayList<ModelGroup<T>>();
+        ArrayList<ModelGroup<T>> result = new ArrayList<>();
         for (ModelGroup<OptionElement> optionGroup : extractOptionGroups(
                 dropdown, defaultName)) {
-            BasicGroup<T> group = new BasicGroup<T>(optionGroup.getName());
+            BasicGroup<T> group = new BasicGroup<>(optionGroup.getName());
             for (OptionElement option : optionGroup) {
                 if (parser.toExclude != null
                         && option.text.contains(parser.toExclude))
@@ -58,7 +58,7 @@ public class OptionElement {
 
     public static <T> ArrayList<T> extractObjects(String dropdown,
                                                   OptionElementParser<T> parser) {
-        ArrayList<T> result = new ArrayList<T>();
+        ArrayList<T> result = new ArrayList<>();
         for (OptionElement option : extractOptions(dropdown)) {
             if (parser.toExclude != null
                     && option.text.contains(parser.toExclude))
@@ -70,7 +70,7 @@ public class OptionElement {
 
     public static ArrayList<ModelGroup<OptionElement>> extractOptionGroups(
             String dropdown, String defaultName) {
-        ArrayList<ModelGroup<OptionElement>> options = new ArrayList<ModelGroup<OptionElement>>();
+        ArrayList<ModelGroup<OptionElement>> options = new ArrayList<>();
 
         for (String group : OPTION_GROUP.extractAllSingle(dropdown)) {
             String name = OPTION_GROUP_NAME.extractSingle(group);
@@ -78,7 +78,7 @@ public class OptionElement {
                 name = defaultName;
 
             ArrayList<OptionElement> option_group = extractOptions(group);
-            BasicGroup<OptionElement> section = new BasicGroup<OptionElement>(
+            BasicGroup<OptionElement> section = new BasicGroup<>(
                     name, option_group);
             options.add(section);
         }
@@ -86,7 +86,7 @@ public class OptionElement {
     }
 
     public static ArrayList<OptionElement> extractOptions(String dropdown) {
-        ArrayList<OptionElement> result = new ArrayList<OptionElement>();
+        ArrayList<OptionElement> result = new ArrayList<>();
 
         ArrayList<String[]> options = OPTION.extractAll(dropdown);
 

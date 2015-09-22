@@ -22,11 +22,11 @@ public class ListControllerAdapter<E extends Controller> extends BaseAdapter {
 
     public ListControllerAdapter(Screen host, List<E> baseList) {
         this.host = host;
-        this.baseList = new ArrayList<E>(baseList);
+        this.baseList = new ArrayList<>(baseList);
     }
 
     public void setElements(List<E> base) {
-        this.baseList = new ArrayList<E>(base);
+        this.baseList = new ArrayList<>(base);
         super.notifyDataSetChanged();
     }
 

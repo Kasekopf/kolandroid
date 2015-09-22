@@ -38,39 +38,6 @@ public class WebController extends UpdatableModelController<WebModel> {
         this.inputChanges = "{}";
     }
 
-    public static String difference(String str1, String str2) {
-        if (str1 == null) {
-            return str2;
-        }
-        if (str2 == null) {
-            return str1;
-        }
-        int at = indexOfDifference(str1, str2);
-        if (at == -1) {
-            return "";
-        }
-        return str2.substring(at);
-    }
-
-    public static int indexOfDifference(String str1, String str2) {
-        if (str1 == str2) {
-            return -1;
-        }
-        if (str1 == null || str2 == null) {
-            return 0;
-        }
-        int i;
-        for (i = 0; i < str1.length() && i < str2.length(); ++i) {
-            if (str1.charAt(i) != str2.charAt(i)) {
-                break;
-            }
-        }
-        if (i < str2.length() || i < str1.length()) {
-            return i;
-        }
-        return -1;
-    }
-
     public void updateModel(WebModel base) {
         super.updateModel(base);
         if (web != null) {
@@ -124,19 +91,6 @@ public class WebController extends UpdatableModelController<WebModel> {
                 return null;
             }
         });
-    }
-
-    @Override
-    public void disconnect(Screen host) {
-        super.disconnect(host);
-
-        /*
-        if(web != null) {
-            //Check all input changes in the document, and pass them to reportInputChanges()
-            web.loadUrl("javascript:checkInputChanges();");
-        }
-        */
-
     }
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})

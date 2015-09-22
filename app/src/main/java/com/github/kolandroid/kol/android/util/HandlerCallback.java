@@ -10,7 +10,7 @@ public abstract class HandlerCallback<E> implements LatchedCallback<E> {
     private boolean closed;
 
     public HandlerCallback() {
-        this.base = new TypedHandler<E>(this);
+        this.base = new TypedHandler<>(this);
         this.closed = false;
     }
 
@@ -49,7 +49,7 @@ public abstract class HandlerCallback<E> implements LatchedCallback<E> {
         private boolean closed;
 
         public TypedHandler(HandlerCallback<E> parent) {
-            this.parent = new WeakReference<HandlerCallback<E>>(parent);
+            this.parent = new WeakReference<>(parent);
             this.closed = false;
         }
 

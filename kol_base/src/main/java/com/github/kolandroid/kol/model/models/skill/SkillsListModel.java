@@ -63,7 +63,7 @@ public class SkillsListModel extends Model implements SkillsSubmodel {
     }
     private ArrayList<ModelGroup<SkillModel>> processSkillsIcons(String html) {
         Logger.log("SkillsListModel", "Parsing icons");
-        ArrayList<ModelGroup<SkillModel>> skills = new ArrayList<ModelGroup<SkillModel>>();
+        ArrayList<ModelGroup<SkillModel>> skills = new ArrayList<>();
 
         String pwd = ICON_PWD.extractSingle(html);
         String yourself = ICON_YOURSELF.extractSingle(html);
@@ -81,7 +81,7 @@ public class SkillsListModel extends Model implements SkillsSubmodel {
             if (elements.size() == 0) continue;
 
             String groupName = ICON_GROUP_NAME.extractSingle(group, "Skills");
-            skills.add(new BasicGroup<SkillModel>(groupName, elements));
+            skills.add(new BasicGroup<>(groupName, elements));
         }
         return skills;
     }
@@ -89,7 +89,7 @@ public class SkillsListModel extends Model implements SkillsSubmodel {
     private ArrayList<ModelGroup<SkillModel>> processSkillsDropdowns(String html) {
         Logger.log("SkillsListModel", "Parsing dropdowns");
 
-        ArrayList<ModelGroup<SkillModel>> skills = new ArrayList<ModelGroup<SkillModel>>();
+        ArrayList<ModelGroup<SkillModel>> skills = new ArrayList<>();
 
         final String pwd = EXTRACT_VALUE.extractSingle(PWD
                 .extractSingle(html), "0");
@@ -123,7 +123,7 @@ public class SkillsListModel extends Model implements SkillsSubmodel {
 
             Logger.log("SkillsListModel", "Parsed skill group " + name);
 
-            skills.add(new BasicGroup(name, elements));
+            skills.add(new BasicGroup<>(name, elements));
         }
 
         return skills;

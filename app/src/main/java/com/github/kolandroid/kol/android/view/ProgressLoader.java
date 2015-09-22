@@ -48,9 +48,9 @@ public class ProgressLoader implements LoadingContext {
         private final WeakReference<View> baseRef;
 
         private ProgressUpdater(View base, ProgressBar bar, TextView text) {
-            this.baseRef = new WeakReference<View>(base);
-            this.barRef = new WeakReference<ProgressBar>(bar);
-            this.textRef = new WeakReference<TextView>(text);
+            this.baseRef = new WeakReference<>(base);
+            this.barRef = new WeakReference<>(bar);
+            this.textRef = new WeakReference<>(text);
         }
 
         public void handleMessage(Message m) {

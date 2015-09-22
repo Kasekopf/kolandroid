@@ -22,13 +22,13 @@ public class ListAdapter<E> extends BaseAdapter {
     }
 
     public ListAdapter(Context c, List<E> baseList, Binder<? super E> binder) {
-        this.baseList = new ArrayList<E>(baseList);
+        this.baseList = new ArrayList<>(baseList);
         this.context = c;
         this.binder = binder;
     }
 
     public void setElements(List<E> base) {
-        this.baseList = new ArrayList<E>(base);
+        this.baseList = new ArrayList<>(base);
         super.notifyDataSetChanged();
     }
 

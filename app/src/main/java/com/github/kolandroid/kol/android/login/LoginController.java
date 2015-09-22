@@ -119,13 +119,13 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
 
                 PasswordHash pass;
 
-                if (username == null || username.length() == 0)
+                if (username.equals(""))
                     return;
 
-                if (savedUser != null && username.equalsIgnoreCase(savedUser) && (password == null || password.length() == 0)) {
+                if (savedUser != null && username.equalsIgnoreCase(savedUser) && (password.equals(""))) {
                     pass = savedPass;
                 } else {
-                    if (password == null || password.length() == 0)
+                    if (password.equals(""))
                         return;
                     pass = new PasswordHash(password, false);
                 }

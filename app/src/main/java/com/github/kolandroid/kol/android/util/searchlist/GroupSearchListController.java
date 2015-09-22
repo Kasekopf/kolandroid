@@ -40,7 +40,7 @@ public class GroupSearchListController<F> implements Controller {
     }
 
     public static <F extends ActionElement> GroupSearchListController<F> create(ArrayList<ModelGroup<F>> items, Binder<? super ModelGroup<F>> groupBinder, Binder<? super F> childBinder) {
-        return new GroupSearchListController<F>(items, groupBinder, childBinder, new ActionSelector<F>());
+        return new GroupSearchListController<>(items, groupBinder, childBinder, new ActionSelector<F>());
     }
 
     @Override
@@ -50,7 +50,7 @@ public class GroupSearchListController<F> implements Controller {
 
     @Override
     public void connect(View view, final Screen host) {
-        adapter = new HighlightableListGroupAdapter<F>(view.getContext(), base, groupBinder, childBinder);
+        adapter = new HighlightableListGroupAdapter<>(view.getContext(), base, groupBinder, childBinder);
         list = (ExpandableListView) view.findViewById(R.id.list_display_list);
         list.setOnChildClickListener(new OnChildClickListener() {
             @Override

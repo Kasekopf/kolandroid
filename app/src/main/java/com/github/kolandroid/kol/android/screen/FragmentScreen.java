@@ -62,8 +62,10 @@ public class FragmentScreen extends Fragment implements Screen {
         Screen host = (Screen) this.getActivity();
         if (host == null) {
             Logger.log("FragmentScreen", controller + " has an old reference to a closed fragment");
+            return null;
+        } else {
+            return host.getViewContext();
         }
-        return host.getViewContext();
     }
 
     @Override

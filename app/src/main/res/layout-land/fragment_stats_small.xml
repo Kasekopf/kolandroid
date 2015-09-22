@@ -29,7 +29,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:orientation="horizontal"
-                android:paddingBottom="1dp">
+                android:paddingBottom="1dp"
+                tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="25dp"
@@ -50,7 +51,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:orientation="horizontal"
-                android:paddingBottom="1dp">
+                android:paddingBottom="1dp"
+                tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="25dp"
@@ -70,7 +72,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="25dp"
@@ -188,7 +191,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingBottom="3dp"
-                android:paddingTop="2dp">
+                android:paddingTop="2dp"
+                tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="25dp"
@@ -210,7 +214,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingBottom="3dp"
-                android:paddingTop="2dp">
+                android:paddingTop="2dp"
+                tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="25dp"

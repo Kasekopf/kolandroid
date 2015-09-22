@@ -36,7 +36,7 @@ public class SearchListController<E> implements Controller {
     }
 
     public static <E extends ActionElement> SearchListController<E> create(ArrayList<E> items, Binder<? super E> binder) {
-        return new SearchListController<E>(items, binder, new ActionSelector<E>());
+        return new SearchListController<>(items, binder, new ActionSelector<E>());
     }
 
     @Override
@@ -46,7 +46,7 @@ public class SearchListController<E> implements Controller {
 
     @Override
     public void connect(View view, final Screen host) {
-        adapter = new HighlightableListAdapter<E>(view.getContext(), initial, binder);
+        adapter = new HighlightableListAdapter<>(view.getContext(), initial, binder);
 
         ListView list = (ListView) view.findViewById(R.id.list_display_list);
         list.setOnItemClickListener(new OnItemClickListener() {

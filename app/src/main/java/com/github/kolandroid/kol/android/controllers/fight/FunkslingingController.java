@@ -34,9 +34,9 @@ public class FunkslingingController implements Controller {
     public FunkslingingController(ArrayList<FightItem> base) {
         this.base = base;
 
-        this.itemSlot1 = new BinderController<FightItem>(
+        this.itemSlot1 = new BinderController<>(
                 ElementBinder.ONLY, FightItem.NONE);
-        this.itemSlot2 = new BinderController<FightItem>(
+        this.itemSlot2 = new BinderController<>(
                 ElementBinder.ONLY, FightItem.NONE);
     }
 
@@ -98,7 +98,7 @@ public class FunkslingingController implements Controller {
             }
 
         };
-        SearchListController<FightItem> list = new SearchListController<FightItem>(
+        SearchListController<FightItem> list = new SearchListController<>(
                 base, ElementBinder.ONLY, selector);
         ViewScreen listscreen = (ViewScreen) view
                 .findViewById(R.id.funkslinging_list);
