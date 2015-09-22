@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:orientation="vertical"
-    tools:context="com.github.kolandroid.kol.android.game.fragments.FightFragment">
+    tools:context="com.github.kolandroid.kol.android.controllers.fight.FightController">
 
     <com.github.kolandroid.kol.android.screen.ViewScreen
-        android:id="@+id/fight_webscreen"
+        android:id="@+id/fight_web_screen"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />

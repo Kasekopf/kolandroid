@@ -31,8 +31,8 @@ public class CustomOutfitController implements Controller {
 
     @Override
     public void connect(View view, final Screen host) {
-        final EditText nameentry = (EditText) view.findViewById(R.id.dialog_saveoutfit_text);
-        Button submit = (Button) view.findViewById(R.id.dialog_saveoutfit_submit);
+        final EditText nameentry = (EditText) view.findViewById(R.id.save_outfit_input);
+        Button submit = (Button) view.findViewById(R.id.save_outfit_submit);
         submit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {

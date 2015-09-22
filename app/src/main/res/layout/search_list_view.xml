@@ -7,7 +7,7 @@
     tools:context="com.github.kolandroid.kol.android.util.searchlist.SearchListFragment">
 
     <EditText
-        android:id="@+id/list_display_text"
+        android:id="@+id/search_list_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -15,7 +15,7 @@
         android:inputType="textNoSuggestions" />
 
     <ListView
-        android:id="@+id/list_display_list"
+        android:id="@+id/search_list_base"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

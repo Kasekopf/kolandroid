@@ -48,7 +48,7 @@ public class SearchListController<E> implements Controller {
     public void connect(View view, final Screen host) {
         adapter = new HighlightableListAdapter<>(view.getContext(), initial, binder);
 
-        ListView list = (ListView) view.findViewById(R.id.list_display_list);
+        ListView list = (ListView) view.findViewById(R.id.search_list_base);
         list.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
@@ -62,7 +62,7 @@ public class SearchListController<E> implements Controller {
         });
         list.setAdapter(adapter);
 
-        final EditText text = (EditText) view.findViewById(R.id.list_display_text);
+        final EditText text = (EditText) view.findViewById(R.id.search_list_input);
         text.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {

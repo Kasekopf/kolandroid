@@ -39,9 +39,9 @@ public class ChatSubmissionController extends ChatStubController<ChatSubmissionS
 
     @Override
     public void doConnect(View view, ChatSubmissionStubModel model, final Screen host) {
-        final EditText text = (EditText) view.findViewById(R.id.chatroom_text_input);
+        final EditText text = (EditText) view.findViewById(R.id.chat_submission_input);
 
-        Button submit = (Button) view.findViewById(R.id.chatroom_submit);
+        Button submit = (Button) view.findViewById(R.id.chat_submission_submit);
         submit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {

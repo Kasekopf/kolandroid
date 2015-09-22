@@ -29,7 +29,7 @@ public class SkillsBinder implements Binder<SkillModel>, Serializable {
     public void bind(View view, SkillModel model) {
         SubtextBinder.ONLY.bind(view, model);
 
-        TextView text = (TextView) view.findViewById(R.id.list_item_text);
+        TextView text = (TextView) view.findViewById(R.id.generic_element_text);
         if (model.getDisabled()) {
             text.setTextColor(Color.LTGRAY);
         } else {

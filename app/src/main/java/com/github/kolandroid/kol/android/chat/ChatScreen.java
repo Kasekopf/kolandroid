@@ -57,7 +57,7 @@ public class ChatScreen extends ActivityScreen {
                 Logger.log("ChatScreen", "Displaying " + c + " on chat pane");
 
                 FragmentScreen chatScreen = FragmentScreen.create(c);
-                getFragmentManager().beginTransaction().replace(R.id.chat_chatscreen, chatScreen).commit();
+                getFragmentManager().beginTransaction().replace(R.id.chat_main_screen, chatScreen).commit();
             }
         });
     }

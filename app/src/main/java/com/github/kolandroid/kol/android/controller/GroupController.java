@@ -32,7 +32,7 @@ public abstract class GroupController<C extends ChildModel, M extends GroupModel
     @Override
     public void connect(View view, M model, Screen host) {
         final CustomFragmentTabHost tabHost = (CustomFragmentTabHost) view
-                .findViewById(R.id.tabs_tabhost);
+                .findViewById(R.id.tabs_tab_host);
         tabHost.setup(host.getActivity(), host.getChildFragmentManager());
 
         for (C child : model.getChildren()) {

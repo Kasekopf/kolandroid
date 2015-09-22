@@ -38,16 +38,16 @@ public class SkillController extends ModelController<SkillModel> {
         if (description == null) {
             // Display image/name of the item as a backup
 
-            TextView text = (TextView) view.findViewById(R.id.dialog_skill_text);
+            TextView text = (TextView) view.findViewById(R.id.skill_name);
             text.setText(model.getText());
             text.setVisibility(View.VISIBLE);
 
-            TextView subtext = (TextView) view.findViewById(R.id.dialog_skill_subtext);
+            TextView subtext = (TextView) view.findViewById(R.id.skill_cost);
             subtext.setText(model.getSubtext());
             subtext.setVisibility(View.VISIBLE);
 
             if (model.getImage() != null && !model.getImage().equals("")) {
-                ImageView img = (ImageView) view.findViewById(R.id.dialog_skill_image);
+                ImageView img = (ImageView) view.findViewById(R.id.skill_image);
                 img.setVisibility(View.VISIBLE);
                 ImageDownloader.loadFromUrl(img, model.getImage());
             }
@@ -57,18 +57,18 @@ public class SkillController extends ModelController<SkillModel> {
         }
 
         if (!model.isBuff()) {
-            View player = view.findViewById(R.id.dialog_skill_player);
-            View playerlabel = view.findViewById(R.id.dialog_skill_playerlabel);
+            View player = view.findViewById(R.id.skill_player_input);
+            View playerlabel = view.findViewById(R.id.skill_player_input_label);
             player.setVisibility(View.GONE);
             playerlabel.setVisibility(View.GONE);
         }
 
-        Button submit = (Button) view.findViewById(R.id.dialog_skill_submit);
+        Button submit = (Button) view.findViewById(R.id.skill_submit);
         submit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                EditText number = (EditText) view.findViewById(R.id.dialog_skill_number);
-                EditText player = (EditText) view.findViewById(R.id.dialog_skill_player);
+                EditText number = (EditText) view.findViewById(R.id.skill_number_input);
+                EditText player = (EditText) view.findViewById(R.id.skill_player_input);
 
                 String num = number.getText().toString();
                 String play = player.getText().toString();

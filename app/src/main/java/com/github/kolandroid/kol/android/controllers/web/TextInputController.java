@@ -29,12 +29,12 @@ public class TextInputController implements Controller {
 
     @Override
     public void connect(final View view, final Screen host) {
-        Button button = (Button) view.findViewById(R.id.dialog_textinput_submit);
+        Button button = (Button) view.findViewById(R.id.text_input_submit);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditText input = (EditText) view
-                        .findViewById(R.id.dialog_textinput_value);
+                        .findViewById(R.id.text_input_input);
                 String result = input.getText().toString();
                 Callback<String> callback = onSubmit.get();
                 if (callback == null)

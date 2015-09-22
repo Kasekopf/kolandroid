@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:orientation="vertical"
-    tools:context="com.github.kolandroid.kol.android.dialogs.BuffDialog">
+    tools:context="com.github.kolandroid.kol.android.controllers.skills.SkillController">
 
 
     <LinearLayout
@@ -14,7 +14,7 @@
         android:paddingLeft="3dp">
 
         <ImageView
-            android:id="@+id/dialog_skill_image"
+            android:id="@+id/skill_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:contentDescription="Image"
@@ -32,7 +32,7 @@
             android:paddingRight="3dp">
 
             <TextView
-                android:id="@+id/dialog_skill_text"
+                android:id="@+id/skill_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -42,7 +42,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/dialog_skill_subtext"
+                android:id="@+id/skill_cost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -69,7 +69,7 @@
         grid:rowCount="2">
 
         <TextView
-            android:id="@+id/dialog_skill_playerlabel"
+            android:id="@+id/skill_player_input_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Use On:"
@@ -87,7 +87,7 @@
             grid:layout_gravity="right|center" />
 
         <EditText
-            android:id="@+id/dialog_skill_player"
+            android:id="@+id/skill_player_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -97,7 +97,7 @@
             android:maxLines="@integer/SingleLine" />
 
         <EditText
-            android:id="@+id/dialog_skill_number"
+            android:id="@+id/skill_number_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -108,7 +108,7 @@
     </android.support.v7.widget.GridLayout>
 
     <Button
-        android:id="@+id/dialog_skill_submit"
+        android:id="@+id/skill_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cast" />

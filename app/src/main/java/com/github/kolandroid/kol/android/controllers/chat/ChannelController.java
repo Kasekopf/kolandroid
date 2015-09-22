@@ -41,7 +41,7 @@ public class ChannelController extends ChatStubController<ChatStubModel> {
                 ChatBinder.ONLY);
 
         ListView list = (ListView) view
-                .findViewById(R.id.chatroom_display_list);
+                .findViewById(R.id.chat_channel_message_list);
         list.setAdapter(adapter);
         list.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
         list.setOnItemClickListener(new OnItemClickListener() {

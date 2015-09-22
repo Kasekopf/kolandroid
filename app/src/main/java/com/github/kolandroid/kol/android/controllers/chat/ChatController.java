@@ -54,7 +54,7 @@ public class ChatController extends ChatStubController<ChatStubModel> {
 
     @Override
     public void doConnect(View view, ChatStubModel model, Screen host) {
-        tabs = (CustomFragmentTabHost) view.findViewById(R.id.tabs_tabhost);
+        tabs = (CustomFragmentTabHost) view.findViewById(R.id.tabs_tab_host);
         tabs.setup(host.getActivity(), host.getChildFragmentManager());
         tabs.clearAllTabs();
         tabs.setOnTabChangedListener(new OnTabChangeListener() {
@@ -69,7 +69,7 @@ public class ChatController extends ChatStubController<ChatStubModel> {
 
         this.currentTabs = new HashSet<>();
 
-        ViewScreen submissionScreen = (ViewScreen) view.findViewById(R.id.chat_submissionscreen);
+        ViewScreen submissionScreen = (ViewScreen) view.findViewById(R.id.chat_submission_screen);
         submissionScreen.display(submission, host);
     }
 

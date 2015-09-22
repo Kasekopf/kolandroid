@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    tools:context="com.github.kolandroid.kol.android.controllers.chat.ChatChannelsController">
 
     <Button
-        android:id="@+id/chat_channel_leave"
+        android:id="@+id/chat_channel_summary_leave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:text="Leave" />
 
     <Button
-        android:id="@+id/chat_channel_enter"
+        android:id="@+id/chat_channel_summary_enter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/chat_channel_leave"
+        android:layout_toLeftOf="@id/chat_channel_summary_leave"
         android:text="Enter" />
 
     <RelativeLayout
@@ -25,12 +27,12 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/chat_channel_enter"
+        android:layout_toLeftOf="@+id/chat_channel_summary_enter"
         android:baselineAligned="false"
         android:gravity="center">
 
         <TextView
-            android:id="@+id/channelname_text"
+            android:id="@+id/chat_channel_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
@@ -39,13 +41,13 @@
             android:textColor="#000" />
 
         <TextView
-            android:id="@+id/channelname_notification"
+            android:id="@+id/chat_channel_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="0dp"
             android:layout_marginTop="1dp"
-            android:layout_toRightOf="@id/channelname_text"
+            android:layout_toRightOf="@id/chat_channel_name"
             android:background="@drawable/rounded_square"
             android:minWidth="17sp"
             android:paddingBottom="1dp"

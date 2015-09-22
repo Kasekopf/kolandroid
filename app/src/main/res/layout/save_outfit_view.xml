@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context="com.github.kolandroid.kol.android.dialogs.SaveOutfitDialog">
+    tools:context="com.github.kolandroid.kol.android.controllers.inventory.CustomOutfitController">
 
     <EditText
-        android:id="@+id/dialog_saveoutfit_text"
+        android:id="@+id/save_outfit_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -15,7 +15,7 @@
         android:inputType="text" />
 
     <Button
-        android:id="@+id/dialog_saveoutfit_submit"
+        android:id="@+id/save_outfit_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save" />

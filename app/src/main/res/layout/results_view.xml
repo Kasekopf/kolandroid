@@ -5,12 +5,12 @@
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
     android:layout_marginTop="20dp"
-    android:background="@drawable/blueborder"
+    android:background="@drawable/blue_border"
     android:orientation="vertical"
     android:paddingBottom="1dp"
     android:paddingLeft="1dp"
     android:paddingRight="1dp"
-    tools:context="com.github.kolandroid.kol.android.WebFragment">
+    tools:context="com.github.kolandroid.kol.android.controllers.web.WebController">
 
     <TextView
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
         android:textStyle="bold" />
 
     <WebView
-        android:id="@+id/webview"
+        android:id="@+id/web_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>

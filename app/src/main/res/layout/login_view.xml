@@ -12,10 +12,10 @@
         android:padding="10dp">
 
         <LinearLayout
-            android:id="@+id/login_magicpanel"
+            android:id="@+id/login_magic_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/blueborder"
+            android:background="@drawable/blue_border"
             android:orientation="vertical"
             android:padding="1dp"
             android:visibility="gone">
@@ -31,7 +31,7 @@
                 android:textStyle="bold" />
 
             <LinearLayout
-                android:id="@+id/login_magiccontainer"
+                android:id="@+id/login_magic_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/blueborder"
+            android:background="@drawable/blue_border"
             android:orientation="vertical"
             android:padding="1dp">
 
@@ -95,14 +95,14 @@
                     android:orientation="horizontal">
 
                     <CheckBox
-                        android:id="@+id/login_savepassword"
+                        android:id="@+id/login_config_save_password"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingRight="5dp"
                         android:text="Save Password" />
 
                     <CheckBox
-                        android:id="@+id/login_enterchat"
+                        android:id="@+id/login_config_enter_chat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingRight="5dp"
@@ -112,7 +112,7 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/login_btnlogin"
+                    android:id="@+id/login_submit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Login" />
@@ -124,7 +124,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/blueborder"
+            android:background="@drawable/blue_border"
             android:orientation="vertical"
             android:paddingBottom="1dp"
             android:paddingLeft="1dp"
@@ -155,7 +155,7 @@
                     android:textColor="#000" />
 
                 <Button
-                    android:id="@+id/login_newaccount"
+                    android:id="@+id/login_create_account"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Play" />
@@ -163,11 +163,11 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/login_announcementspanel"
+            android:id="@+id/login_announcements_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/blueborder"
+            android:background="@drawable/blue_border"
             android:orientation="vertical"
             android:paddingBottom="1dp"
             android:paddingLeft="1dp"
@@ -184,7 +184,7 @@
                 android:textStyle="bold" />
 
             <com.github.kolandroid.kol.android.screen.ViewScreen
-                android:id="@+id/login_announcementsscreen"
+                android:id="@+id/login_announcements_screen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

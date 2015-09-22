@@ -22,15 +22,15 @@ public class TextBinder implements Binder<Object>, Serializable {
 
     @Override
     public int getView() {
-        return R.layout.generic_item_view;
+        return R.layout.generic_element_view;
     }
 
     @Override
     public void bind(View view, Object model) {
-        TextView text = (TextView) view.findViewById(R.id.list_item_text);
+        TextView text = (TextView) view.findViewById(R.id.generic_element_text);
         text.setText(Html.fromHtml(model.toString()));
 
-        ImageView img = (ImageView) view.findViewById(R.id.list_item_image);
+        ImageView img = (ImageView) view.findViewById(R.id.generic_element_image);
         img.setVisibility(View.GONE);
     }
 }

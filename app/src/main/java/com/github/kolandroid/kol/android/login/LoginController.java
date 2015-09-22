@@ -61,9 +61,9 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
         final EditText pass = (EditText) view
                 .findViewById(R.id.login_password);
         final Button login = (Button) view
-                .findViewById(R.id.login_btnlogin);
-        final CheckBox checkpass = (CheckBox) view.findViewById(R.id.login_savepassword);
-        final CheckBox checkchat = (CheckBox) view.findViewById(R.id.login_enterchat);
+                .findViewById(R.id.login_submit);
+        final CheckBox checkpass = (CheckBox) view.findViewById(R.id.login_config_save_password);
+        final CheckBox checkchat = (CheckBox) view.findViewById(R.id.login_config_enter_chat);
 
         final SettingsContext settings = host.getViewContext().getSettingsContext();
         user.addTextChangedListener(new TextWatcher() {
@@ -153,7 +153,7 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
             }
         });
 
-        Button createAccount = (Button) view.findViewById(R.id.login_newaccount);
+        Button createAccount = (Button) view.findViewById(R.id.login_create_account);
         createAccount.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,10 +163,10 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
 
         ArrayList<LoginModel.MagicLoginAction> magicActions = model.getMagicCharacters();
         if (magicActions.size() > 0) {
-            View panel = view.findViewById(R.id.login_magicpanel);
+            View panel = view.findViewById(R.id.login_magic_panel);
             panel.setVisibility(View.VISIBLE);
 
-            ViewGroup container = (ViewGroup) view.findViewById(R.id.login_magiccontainer);
+            ViewGroup container = (ViewGroup) view.findViewById(R.id.login_magic_group);
             for (LoginModel.MagicLoginAction magicAction : magicActions) {
                 final LoginModel.MagicLoginAction action = magicAction;
                 Button magicButton = new Button(host.getActivity());
@@ -183,11 +183,11 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
 
         WebModel announcements = model.getAnnouncementsModel();
         if (announcements == null) {
-            View announcementsPanel = view.findViewById(R.id.login_announcementspanel);
+            View announcementsPanel = view.findViewById(R.id.login_announcements_panel);
             announcementsPanel.setVisibility(View.GONE);
         } else {
             Logger.log("LoginController", "Displaying Announcements!");
-            ViewScreen announcementsScreen = (ViewScreen) view.findViewById(R.id.login_announcementsscreen);
+            ViewScreen announcementsScreen = (ViewScreen) view.findViewById(R.id.login_announcements_screen);
             announcementsScreen.display(new WebController(announcements), host);
         }
 

@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.github.kolandroid.kol.android.dialogs.FunkslingingDialog">
+    tools:context="com.github.kolandroid.kol.android.controllers.fight.FunkslingingController">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
             android:orientation="vertical">
 
             <com.github.kolandroid.kol.android.screen.ViewScreen
-                android:id="@+id/funksling_item1"
+                android:id="@+id/funkslinging_item_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -28,7 +28,7 @@
                 android:background="#000" />
 
             <com.github.kolandroid.kol.android.screen.ViewScreen
-                android:id="@+id/funksling_item2"
+                android:id="@+id/funkslinging_item2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -39,7 +39,7 @@
             android:background="#000" />
 
         <Button
-            android:id="@+id/funksling_submit"
+            android:id="@+id/funkslinging_submit"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Use" />

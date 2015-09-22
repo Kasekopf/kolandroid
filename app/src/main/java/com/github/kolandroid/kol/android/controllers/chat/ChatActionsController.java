@@ -41,7 +41,7 @@ public class ChatActionsController extends ChatStubController<ChatStubModel> {
         ArrayList<ChatAction> actions = base.getActions();
         ListAdapter<ChatAction> adapter = new ListAdapter<>(host.getActivity(), actions, TextBinder.ONLY);
 
-        ListView list = (ListView) view.findViewById(R.id.dialog_chat_list);
+        ListView list = (ListView) view.findViewById(R.id.chat_channel_list_list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new OnItemClickListener() {
             @Override

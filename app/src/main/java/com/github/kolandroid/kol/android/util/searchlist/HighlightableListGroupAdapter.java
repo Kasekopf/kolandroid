@@ -58,7 +58,7 @@ public class HighlightableListGroupAdapter<F> extends ListGroupAdapter<ModelGrou
                              boolean isLastChild, View convertView, ViewGroup parent) {
         View view = super.getChildView(groupPosition, childPosition, isLastChild, convertView, parent);
 
-        TextView text = (TextView) view.findViewById(R.id.list_item_text);
+        TextView text = (TextView) view.findViewById(R.id.generic_element_text);
         String highlighted = filter.replaceAll(text.getText().toString(), "<b>$0</b>");
         text.setText(Html.fromHtml(highlighted));
         return view;

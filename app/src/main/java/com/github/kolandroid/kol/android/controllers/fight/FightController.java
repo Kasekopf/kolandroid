@@ -89,7 +89,7 @@ public class FightController extends ModelController<FightModel> {
         }
 
         ViewScreen webscreen = (ViewScreen) view
-                .findViewById(R.id.fight_webscreen);
+                .findViewById(R.id.fight_web_screen);
         WebController web = new WebController(model);
         webscreen.display(web, host);
     }

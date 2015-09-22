@@ -78,7 +78,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
 
             // Set up the stats pane.
             this.stats = new StatsController(new StatsModel(session));
-            ViewScreen statsScreen = (ViewScreen) findViewById(R.id.game_statsscreen);
+            ViewScreen statsScreen = (ViewScreen) findViewById(R.id.game_stats_screen);
             statsScreen.display(stats, this);
         } else {
             Logger.log("GameScreen", "Controller " + controller + " has no session; cannot be used to start GameScreen");
@@ -119,7 +119,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
                 FragmentScreen screen = FragmentScreen.create(c);
 
                 @SuppressLint("CommitTransaction") FragmentTransaction trans = getFragmentManager()
-                        .beginTransaction().replace(R.id.game_mainfragment, screen, "gamescreen");
+                        .beginTransaction().replace(R.id.game_main_screen, screen, "gamescreen");
 
                 boolean doAddToBackStack = addToBackStack;
                 if (doAddToBackStack && replaceSameType) {

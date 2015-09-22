@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.github.kolandroid.kol.android.dialogs.BuffDialog">
+    tools:context="com.github.kolandroid.kol.android.controllers.MultiusableController">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,14 +14,14 @@
         android:paddingTop="5dp">
 
         <ImageView
-            android:id="@+id/dialog_multiuse_image"
+            android:id="@+id/multiuse_item_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:contentDescription="Image"
             android:paddingLeft="3dp" />
 
         <TextView
-            android:id="@+id/dialog_multiuse_name"
+            android:id="@+id/multiuse_item_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -49,7 +49,7 @@
             android:textSize="20sp" />
 
         <EditText
-            android:id="@+id/dialog_multiuse_number"
+            android:id="@+id/multiuse_input"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -60,7 +60,7 @@
             android:text="1" />
 
         <Button
-            android:id="@+id/dialog_multiuse_submit"
+            android:id="@+id/multiuse_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Use" />

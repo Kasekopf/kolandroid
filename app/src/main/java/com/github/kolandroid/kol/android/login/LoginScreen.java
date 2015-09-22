@@ -75,7 +75,7 @@ public class LoginScreen extends ActivityScreen {
 
                 FragmentScreen frag = FragmentScreen.create(c);
                 getFragmentManager().beginTransaction()
-                        .add(R.id.login_mainfragment, frag, "loginscreen").commit();
+                        .add(R.id.login_main_screen, frag, "loginscreen").commit();
 
                 closeDialog.execute(null, 500);
             }

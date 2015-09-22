@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:orientation="vertical"
-    tools:context="com.github.kolandroid.kol.android.util.searchlist.SearchListFragment">
+    tools:context="com.github.kolandroid.kol.android.util.searchlist.SearchListController">
 
     <EditText
-        android:id="@+id/list_display_text"
+        android:id="@+id/search_list_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -17,7 +17,7 @@
     </EditText>
 
     <ExpandableListView
-        android:id="@+id/list_display_list"
+        android:id="@+id/search_list_base"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

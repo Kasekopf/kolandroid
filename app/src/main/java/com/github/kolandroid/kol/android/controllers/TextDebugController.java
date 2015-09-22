@@ -21,7 +21,7 @@ public class TextDebugController extends ModelController<WebModel> {
 
     @Override
     public void connect(View view, WebModel model, Screen host) {
-        TextView text = (TextView) view.findViewById(R.id.textdebug_text);
+        TextView text = (TextView) view.findViewById(R.id.text_debug_message);
         text.setText(model.getHTML());
     }
 

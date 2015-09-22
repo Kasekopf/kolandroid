@@ -24,15 +24,15 @@ public class ElementBinder implements Binder<ModelElement>, Serializable {
 
     @Override
     public int getView() {
-        return R.layout.generic_item_view;
+        return R.layout.generic_element_view;
     }
 
     @Override
     public void bind(View view, ModelElement model) {
-        TextView text = (TextView) view.findViewById(R.id.list_item_text);
+        TextView text = (TextView) view.findViewById(R.id.generic_element_text);
         text.setText(Html.fromHtml(model.getText()));
 
-        ImageView img = (ImageView) view.findViewById(R.id.list_item_image);
+        ImageView img = (ImageView) view.findViewById(R.id.generic_element_image);
         if (model.getImage() == null || model.getImage().length() == 0) {
             img.setVisibility(View.GONE);
         } else {

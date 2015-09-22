@@ -45,13 +45,13 @@ public class GroupSearchListController<F> implements Controller {
 
     @Override
     public int getView() {
-        return R.layout.group_list_view;
+        return R.layout.group_search_list_view;
     }
 
     @Override
     public void connect(View view, final Screen host) {
         adapter = new HighlightableListGroupAdapter<>(view.getContext(), base, groupBinder, childBinder);
-        list = (ExpandableListView) view.findViewById(R.id.list_display_list);
+        list = (ExpandableListView) view.findViewById(R.id.search_list_base);
         list.setOnChildClickListener(new OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView arg0, View arg1,
@@ -71,7 +71,7 @@ public class GroupSearchListController<F> implements Controller {
             list.expandGroup(i);
 
         final EditText text = (EditText) view
-                .findViewById(R.id.list_display_text);
+                .findViewById(R.id.search_list_input);
         text.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {

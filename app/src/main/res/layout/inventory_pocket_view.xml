@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.github.kolandroid.kol.android.dialogs.InventoryPaneFragment">
+    tools:context="com.github.kolandroid.kol.android.controllers.inventory.ItemPocketController">
 
     <com.github.kolandroid.kol.android.screen.ViewScreen
         android:id="@+id/inventory_list"

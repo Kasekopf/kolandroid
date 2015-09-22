@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/item_selector"
     android:orientation="horizontal"
     android:paddingBottom="3dp"
-    android:paddingTop="3dp">
+    android:paddingTop="3dp"
+    tools:context="com.github.kolandroid.kol.android.binders.SubtextBinder">
 
     <ImageView
-        android:id="@+id/list_item_image"
+        android:id="@+id/generic_element_image"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center_vertical"
@@ -24,7 +26,7 @@
         android:paddingLeft="3dp">
 
         <TextView
-            android:id="@+id/list_item_text"
+            android:id="@+id/generic_element_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -32,7 +34,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/list_item_subtext"
+            android:id="@+id/generic_element_subtext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"

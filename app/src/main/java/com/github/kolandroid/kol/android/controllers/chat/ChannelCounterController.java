@@ -50,10 +50,10 @@ public class ChannelCounterController extends LinkedModelController<Void, Channe
 
     @Override
     public void connect(View view, ChannelModel model, Screen host) {
-        TextView nameText = (TextView) view.findViewById(R.id.channelname_text);
+        TextView nameText = (TextView) view.findViewById(R.id.chat_channel_name);
         nameText.setText(model.getName());
 
-        badge = (TextView) view.findViewById(R.id.channelname_notification);
+        badge = (TextView) view.findViewById(R.id.chat_channel_notification);
         checkNotificationBadge();
     }
 }

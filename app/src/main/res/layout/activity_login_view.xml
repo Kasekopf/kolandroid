@@ -1,6 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/login_mainfragment"
+    android:id="@+id/login_main_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.github.kolandroid.kol.android.login.LoginScreen"

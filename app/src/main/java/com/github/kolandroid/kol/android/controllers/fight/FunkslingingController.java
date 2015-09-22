@@ -66,7 +66,7 @@ public class FunkslingingController implements Controller {
     @Override
     public void connect(View view, final Screen host) {
         final ViewScreen itemScreen1 = (ViewScreen) view
-                .findViewById(R.id.funksling_item1);
+                .findViewById(R.id.funkslinging_item_1);
         itemScreen1.display(itemSlot1, host);
         itemScreen1.setOnTouchListener(new OnTouchListener() {
             @Override
@@ -77,7 +77,7 @@ public class FunkslingingController implements Controller {
         });
 
         final ViewScreen itemScreen2 = (ViewScreen) view
-                .findViewById(R.id.funksling_item2);
+                .findViewById(R.id.funkslinging_item2);
         itemScreen2.display(itemSlot2, host);
         itemScreen2.setOnTouchListener(new OnTouchListener() {
             @Override
@@ -104,7 +104,7 @@ public class FunkslingingController implements Controller {
                 .findViewById(R.id.funkslinging_list);
         listscreen.display(list, host);
 
-        Button submit = (Button) view.findViewById(R.id.funksling_submit);
+        Button submit = (Button) view.findViewById(R.id.funkslinging_submit);
         submit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {

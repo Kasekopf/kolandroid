@@ -34,7 +34,7 @@ public class ChatCounterController extends ChatStubController<ChatStubModel> {
 
     @Override
     public void doConnect(View view, ChatStubModel model, final Screen host) {
-        popup = (TextView) view.findViewById(R.id.gochat_notification);
+        popup = (TextView) view.findViewById(R.id.enter_chat_notification);
         if (popup != null) {
             popup.setVisibility(View.GONE);
         }

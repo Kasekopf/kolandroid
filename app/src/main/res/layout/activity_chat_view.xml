@@ -1,12 +1,7 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chat_main_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
-    android:orientation="vertical">
-
-    <FrameLayout
-        android:id="@+id/chat_chatscreen"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-</LinearLayout>
+    tools:context="com.github.kolandroid.kol.android.chat.ChatScreen"
+    tools:ignore="MergeRootFrame" />

@@ -5,15 +5,15 @@
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
     android:layout_marginTop="20dp"
-    android:background="@drawable/blueborder"
+    android:background="@drawable/blue_border"
     android:orientation="vertical"
     android:paddingBottom="1dp"
     android:paddingLeft="1dp"
     android:paddingRight="1dp"
-    tools:context="com.github.kolandroid.kol.android.WebFragment">
+    tools:context="com.github.kolandroid.kol.android.controllers.MessageController">
 
     <TextView
-        android:id="@+id/confirmation_title"
+        android:id="@+id/message_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#00f"
@@ -29,7 +29,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/confirmation_message"
+            android:id="@+id/message_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="1px"
@@ -39,7 +39,7 @@
             android:textSize="20sp" />
 
         <Button
-            android:id="@+id/confirmation_action"
+            android:id="@+id/message_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

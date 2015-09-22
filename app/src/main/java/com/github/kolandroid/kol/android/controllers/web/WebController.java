@@ -140,7 +140,7 @@ public class WebController extends UpdatableModelController<WebModel> {
             }
         };
 
-        web = (WebView) view.findViewById(R.id.webview);
+        web = (WebView) view.findViewById(R.id.web_view);
 
         web.getSettings().setJavaScriptEnabled(true);
 

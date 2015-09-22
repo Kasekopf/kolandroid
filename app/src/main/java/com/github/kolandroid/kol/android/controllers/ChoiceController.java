@@ -37,7 +37,7 @@ public class ChoiceController extends ModelController<ChoiceModel> {
 
     @Override
     public void connect(View view, ChoiceModel model, final Screen host) {
-        LinearLayout options = (LinearLayout) view.findViewById(R.id.choice_choices);
+        LinearLayout options = (LinearLayout) view.findViewById(R.id.choice_button_group);
         for (ActionElement option : model.getOptions()) {
             Log.i("ChoiceFragment", "Making button for " + option.getText());
             Button optionBtn = new Button(options.getContext());
@@ -54,7 +54,7 @@ public class ChoiceController extends ModelController<ChoiceModel> {
             options.addView(optionBtn);
         }
 
-        ViewScreen webscreen = (ViewScreen) view.findViewById(R.id.choice_webscreen);
+        ViewScreen webscreen = (ViewScreen) view.findViewById(R.id.choice_web_screen);
         WebController web = new WebController(model);
         webscreen.display(web, host);
     }

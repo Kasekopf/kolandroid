@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@android:style/Widget.ActionButton"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:clickable="true"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.github.kolandroid.kol.android.controllers.chat.ChatCounterController">
 
     <ImageView
-        android:id="@+id/gochat_icon"
+        android:id="@+id/enter_chat_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
@@ -18,11 +20,11 @@
         android:src="@drawable/ic_chat_bubble_outline_black_24dp" />
 
     <TextView
-        android:id="@+id/gochat_notification"
+        android:id="@+id/enter_chat_notification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/gochat_icon"
-        android:layout_alignTop="@id/gochat_icon"
+        android:layout_alignLeft="@id/enter_chat_icon"
+        android:layout_alignTop="@id/enter_chat_icon"
         android:layout_marginLeft="6dp"
         android:layout_marginTop="-3dp"
         android:background="@drawable/rounded_square"

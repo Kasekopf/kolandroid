@@ -47,7 +47,7 @@ public class ChatChannelsController extends ChatStubController<ChatStubModel> {
         }
 
         adapter = new ListControllerAdapter<>(host, controllers);
-        ListView list = (ListView) view.findViewById(R.id.dialog_chat_list);
+        ListView list = (ListView) view.findViewById(R.id.chat_channel_list_list);
         list.setAdapter(adapter);
     }
 
@@ -107,8 +107,8 @@ public class ChatChannelsController extends ChatStubController<ChatStubModel> {
         }
 
         private void setButtonState(View view, ChannelModel model, final Screen host) {
-            Button enter = (Button) view.findViewById(R.id.chat_channel_enter);
-            Button leave = (Button) view.findViewById(R.id.chat_channel_leave);
+            Button enter = (Button) view.findViewById(R.id.chat_channel_summary_enter);
+            Button leave = (Button) view.findViewById(R.id.chat_channel_summary_leave);
 
             active = model.isActive();
             if (model.isActive()) {

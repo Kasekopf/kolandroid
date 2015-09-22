@@ -4,17 +4,17 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:orientation="vertical"
-    tools:context="com.github.kolandroid.kol.android.game.fragments.ChoiceFragment">
+    tools:context="com.github.kolandroid.kol.android.controllers.ChoiceController">
 
 
     <com.github.kolandroid.kol.android.screen.ViewScreen
-        android:id="@+id/choice_webscreen"
+        android:id="@+id/choice_web_screen"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
     <LinearLayout
-        android:id="@+id/choice_choices"
+        android:id="@+id/choice_button_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" />

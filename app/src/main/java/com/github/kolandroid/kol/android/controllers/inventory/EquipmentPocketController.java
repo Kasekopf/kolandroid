@@ -68,7 +68,7 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
         list = new GroupSearchListController<>(model.getItems(), new ColoredGroupBinder(groupColor), SubtextBinder.ONLY, displayPossibleActions);
         screen.display(list, host);
 
-        Button equipoutfit = (Button) view.findViewById(R.id.equipment_equipoutfit);
+        Button equipoutfit = (Button) view.findViewById(R.id.equipment_equip_outfit);
         equipoutfit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -77,7 +77,7 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
             }
         });
 
-        Button saveoutfit = (Button) view.findViewById(R.id.equipment_saveoutfit);
+        Button saveoutfit = (Button) view.findViewById(R.id.equipment_save_outfit);
         saveoutfit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -4,4 +4,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
-    tools:context="com.github.kolandroid.kol.android.game.fragments.CraftingFragment" />
+    tools:context="com.github.kolandroid.kol.android.controllers.web.LiveWebController" />

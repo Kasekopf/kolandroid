@@ -29,7 +29,7 @@ public abstract class LinkedGroupController<C extends ChildModel, M extends Grou
     public void connect(View view, M model, Screen host) {
         super.connect(view, model, host);
         final CustomFragmentTabHost tabHost = (CustomFragmentTabHost) view
-                .findViewById(R.id.tabs_tabhost);
+                .findViewById(R.id.tabs_tab_host);
         tabHost.setOnCreateFragmentListener(new OnCreateFragmentListener() {
             @SuppressWarnings("unchecked")
             @Override

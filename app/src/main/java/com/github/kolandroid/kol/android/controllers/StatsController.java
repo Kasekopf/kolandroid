@@ -48,28 +48,28 @@ public class StatsController extends LinkedModelController<LiveMessage, StatsMod
             activity.update(model.getUsername(), model.getCharInfo());
         }
 
-        TextView txtMuscle = (TextView) view.findViewById(R.id.stats_small_muscle);
+        TextView txtMuscle = (TextView) view.findViewById(R.id.stats_muscle);
         String muscle = model.getMuscle() + " (" + model.getMuscleBase() + ")";
         txtMuscle.setText(muscle);
 
-        TextView txtMyst = (TextView) view.findViewById(R.id.stats_small_myst);
+        TextView txtMyst = (TextView) view.findViewById(R.id.stats_myst);
         String myst = model.getMyst() + " (" + model.getMystBase() + ")";
         txtMyst.setText(myst);
 
-        TextView txtMoxie = (TextView) view.findViewById(R.id.stats_small_moxie);
+        TextView txtMoxie = (TextView) view.findViewById(R.id.stats_moxie);
         String moxie = model.getMoxie() + " (" + model.getMoxieBase() + ")";
         txtMoxie.setText(moxie);
 
-        ProgressBar barHP = (ProgressBar) view.findViewById(R.id.stats_small_hp);
+        ProgressBar barHP = (ProgressBar) view.findViewById(R.id.stats_hp);
         barHP.setProgress(model.getHP(), model.getHPBase());
 
-        ProgressBar barMP = (ProgressBar) view.findViewById(R.id.stats_small_mp);
+        ProgressBar barMP = (ProgressBar) view.findViewById(R.id.stats_mp);
         barMP.setProgress(model.getMP(), model.getMPBase());
 
-        TextView txtAdv = (TextView) view.findViewById(R.id.stats_small_adv);
+        TextView txtAdv = (TextView) view.findViewById(R.id.stats_adventures);
         txtAdv.setText(model.getAdv() + "");
 
-        TextView txtMeat = (TextView) view.findViewById(R.id.stats_small_meat);
+        TextView txtMeat = (TextView) view.findViewById(R.id.stats_meat);
         txtMeat.setText(model.getMeat() + "");
     }
 

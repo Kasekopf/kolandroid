@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.github.kolandroid.kol.android.dialogs.EquipmentPaneFragment">
+    tools:context="com.github.kolandroid.kol.android.controllers.inventory.EquipmentPocketController">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/equipment_equipoutfit"
+            android:id="@+id/equipment_equip_outfit"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             android:text="Equip Outfit" />
 
         <Button
-            android:id="@+id/equipment_saveoutfit"
+            android:id="@+id/equipment_save_outfit"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

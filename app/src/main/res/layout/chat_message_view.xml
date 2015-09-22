@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list_chat_text"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,4 +9,5 @@
     android:paddingLeft="3dp"
     android:text=""
     android:textColor="#000"
-    android:textSize="14sp" />
+    android:textSize="14sp"
+    tools:context="com.github.kolandroid.kol.android.controllers.chat.ChannelController" />

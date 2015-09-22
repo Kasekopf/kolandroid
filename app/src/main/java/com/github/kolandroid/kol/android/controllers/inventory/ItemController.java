@@ -55,21 +55,21 @@ public class ItemController extends ModelController<ItemModel> {
         WebModel description = model.getDescription();
         if (description == null) {
             // Display image/name of the item as a backup
-            TextView text = (TextView) view.findViewById(R.id.dialog_item_text);
+            TextView text = (TextView) view.findViewById(R.id.item_name);
             text.setText(model.getText());
             text.setVisibility(View.VISIBLE);
 
             if (model.getImage() != null && !model.getImage().equals("")) {
-                ImageView img = (ImageView) view.findViewById(R.id.dialog_item_image);
+                ImageView img = (ImageView) view.findViewById(R.id.item_image);
                 img.setVisibility(View.VISIBLE);
                 ImageDownloader.loadFromUrl(img, model.getImage());
             }
         } else {
-            ViewScreen desc = (ViewScreen) view.findViewById(R.id.dialog_item_description);
+            ViewScreen desc = (ViewScreen) view.findViewById(R.id.item_description_screen);
             desc.display(new WebController(description), host);
         }
 
-        ViewGroup group = (ViewGroup) view.findViewById(R.id.dialog_item_group);
+        ViewGroup group = (ViewGroup) view.findViewById(R.id.item_action_group);
         for (InventoryAction invAction : model.getActions()) {
             final InventoryAction action = invAction;
             Button button = new Button(host.getActivity());

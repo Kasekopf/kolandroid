@@ -34,13 +34,13 @@ public class MessageController extends ModelController<MessageModel> {
             }
         }));
 
-        TextView title = (TextView) view.findViewById(R.id.confirmation_title);
+        TextView title = (TextView) view.findViewById(R.id.message_title);
         title.setText(model.getTitle());
 
-        TextView txtMessage = (TextView) view.findViewById(R.id.confirmation_message);
+        TextView txtMessage = (TextView) view.findViewById(R.id.message_text);
         txtMessage.setText(model.getMessage());
 
-        Button actionButton = (Button) view.findViewById(R.id.confirmation_action);
+        Button actionButton = (Button) view.findViewById(R.id.message_action);
         if (model.hasAction()) {
             actionButton.setText(model.getActionText());
             actionButton.setOnClickListener(new View.OnClickListener() {

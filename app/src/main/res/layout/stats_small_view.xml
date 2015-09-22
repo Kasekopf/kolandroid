@@ -6,7 +6,7 @@
     android:background="#fff"
     android:baselineAligned="false"
     android:paddingLeft="5dp"
-    tools:context="com.github.kolandroid.kol.android.game.fragments.StatsFragment">
+    tools:context="com.github.kolandroid.kol.android.controllers.StatsController">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
                 android:src="@drawable/musc" />
 
             <TextView
-                android:id="@+id/stats_small_muscle"
+                android:id="@+id/stats_muscle"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:text="-" />
@@ -50,7 +50,7 @@
                 android:src="@drawable/myst" />
 
             <TextView
-                android:id="@+id/stats_small_myst"
+                android:id="@+id/stats_myst"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:text="-" />
@@ -71,7 +71,7 @@
                 android:src="@drawable/moxie" />
 
             <TextView
-                android:id="@+id/stats_small_moxie"
+                android:id="@+id/stats_moxie"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:text="-" />
@@ -101,7 +101,7 @@
                 android:src="@drawable/hp" />
 
             <com.github.kolandroid.kol.android.util.ProgressBar
-                android:id="@+id/stats_small_hp"
+                android:id="@+id/stats_hp"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:background="#ccc"
@@ -126,7 +126,7 @@
                 android:src="@drawable/mp" />
 
             <com.github.kolandroid.kol.android.util.ProgressBar
-                android:id="@+id/stats_small_mp"
+                android:id="@+id/stats_mp"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:background="#ccc"
@@ -161,7 +161,7 @@
                 android:src="@drawable/hourglass" />
 
             <TextView
-                android:id="@+id/stats_small_adv"
+                android:id="@+id/stats_adventures"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:text="-" />
@@ -183,7 +183,7 @@
                 android:src="@drawable/meat" />
 
             <TextView
-                android:id="@+id/stats_small_meat"
+                android:id="@+id/stats_meat"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:text="-" />

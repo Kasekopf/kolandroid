@@ -21,7 +21,7 @@
             android:orientation="horizontal">
 
             <com.github.kolandroid.kol.android.screen.ViewScreen
-                android:id="@+id/game_statsscreen"
+                android:id="@+id/game_stats_screen"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
 
@@ -32,7 +32,7 @@
 
 
             <FrameLayout
-                android:id="@+id/game_mainfragment"
+                android:id="@+id/game_main_screen"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1" />

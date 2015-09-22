@@ -29,7 +29,7 @@ public class SubtextBinder implements Binder<SubtextElement>, Serializable {
     public void bind(View view, SubtextElement model) {
         ElementBinder.ONLY.bind(view, model);
 
-        TextView subtext = (TextView) view.findViewById(R.id.list_item_subtext);
+        TextView subtext = (TextView) view.findViewById(R.id.generic_element_subtext);
         subtext.setText(Html.fromHtml(model.getSubtext()));
         subtext.setVisibility((model.getSubtext().length() <= 2) ? View.GONE : View.VISIBLE);
     }

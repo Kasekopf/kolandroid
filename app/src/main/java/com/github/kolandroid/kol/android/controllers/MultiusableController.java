@@ -37,11 +37,11 @@ public class MultiusableController implements Controller {
     @Override
     public void connect(final View view, final Screen host) {
         TextView text = (TextView) view
-                .findViewById(R.id.dialog_multiuse_name);
+                .findViewById(R.id.multiuse_item_name);
         text.setText(base.getText());
 
         ImageView img = (ImageView) view
-                .findViewById(R.id.dialog_multiuse_image);
+                .findViewById(R.id.multiuse_item_image);
         if (base.getImage() == null || base.getImage().length() == 0) {
             img.setVisibility(View.GONE);
         } else {
@@ -50,14 +50,14 @@ public class MultiusableController implements Controller {
         }
 
         Button submit = (Button) view
-                .findViewById(R.id.dialog_multiuse_submit);
+                .findViewById(R.id.multiuse_submit);
         submit.setText(useText);
 
         submit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 EditText number = (EditText) view
-                        .findViewById(R.id.dialog_multiuse_number);
+                        .findViewById(R.id.multiuse_input);
 
                 String num = number.getText().toString();
                 if (num.equals(""))

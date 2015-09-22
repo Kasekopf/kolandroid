@@ -2,10 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.github.kolandroid.kol.android.WebFragment">
+    tools:context="com.github.kolandroid.kol.android.controllers.web.WebController">
 
     <WebView
-        android:id="@+id/webview"
+        android:id="@+id/web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

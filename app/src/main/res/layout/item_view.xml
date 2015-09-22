@@ -18,7 +18,7 @@
             android:paddingRight="3dp">
 
             <ImageView
-                android:id="@+id/dialog_item_image"
+                android:id="@+id/item_image"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:contentDescription="Image"
@@ -27,7 +27,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/dialog_item_text"
+                android:id="@+id/item_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -41,14 +41,14 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/dialog_item_group"
+            android:id="@+id/item_action_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#fff"
             android:orientation="vertical" />
 
         <com.github.kolandroid.kol.android.screen.ViewScreen
-            android:id="@+id/dialog_item_description"
+            android:id="@+id/item_description_screen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
