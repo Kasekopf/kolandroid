@@ -104,7 +104,6 @@ public class WebController extends UpdatableModelController<WebModel> {
                 if (url.startsWith("data:text/html"))
                     return true;
 
-                url = url.replace("reallyquitefake/", "");
                 Logger.log("WebModel", "Request made to " + url);
                 if (!getModel().makeRequest(url)) {
                     Logger.log("WedModel", "External request: " + url);

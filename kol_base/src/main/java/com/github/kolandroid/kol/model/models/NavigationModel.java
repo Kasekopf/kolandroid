@@ -29,7 +29,7 @@ public class NavigationModel extends LiveModel {
     private static final Regex MACRO_RESPONSE_TEXT = new Regex("<font[^>]*>(.*?)(<!--.*?)?</font>", 1);
     private static final Regex MACRO_RESPONSE_ACTION = new Regex("<!--js\\((.*?)\\)-->", 1);
     private static final Regex MACRO_ACTION_REDIRECT = new Regex("top.mainpane.location.href='(.*?)'", 1);
-    private static final Regex MACRO_ACTION_GETRESULTS = new Regex("dojax\\('(.*?)'\\);", 1);
+    private static final Regex MACRO_ACTION_GET_RESULTS = new Regex("dojax\\('(.*?)'\\);", 1);
     private static final Regex MACRO_ACTION_EXAMINE = new Regex("descitem\\((\\d+)\\)", 1);
     private final ArrayList<ActionElement> locations;
 
@@ -271,8 +271,8 @@ public class NavigationModel extends LiveModel {
 
                         if (MACRO_ACTION_REDIRECT.matches(action)) {
                             action = MACRO_ACTION_REDIRECT.extractSingle(action, "");
-                        } else if (MACRO_ACTION_GETRESULTS.matches(action)) {
-                            action = MACRO_ACTION_GETRESULTS.extractSingle(action, "");
+                        } else if (MACRO_ACTION_GET_RESULTS.matches(action)) {
+                            action = MACRO_ACTION_GET_RESULTS.extractSingle(action, "");
                             action += (action.contains("?")) ? "&androiddisplay=results" : "?androiddisplay=results";
                         } else if (MACRO_ACTION_EXAMINE.matches(action)) {
                             action = "desc_item.php?whichitem=" + MACRO_ACTION_EXAMINE.extractSingle(action, "0");

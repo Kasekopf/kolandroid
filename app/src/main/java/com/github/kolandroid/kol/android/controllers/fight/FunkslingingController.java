@@ -100,9 +100,9 @@ public class FunkslingingController implements Controller {
         };
         SearchListController<FightItem> list = new SearchListController<>(
                 base, ElementBinder.ONLY, selector);
-        ViewScreen listscreen = (ViewScreen) view
+        ViewScreen listScreen = (ViewScreen) view
                 .findViewById(R.id.funkslinging_list);
-        listscreen.display(list, host);
+        listScreen.display(list, host);
 
         Button submit = (Button) view.findViewById(R.id.funkslinging_submit);
         submit.setOnClickListener(new OnClickListener() {

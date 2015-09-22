@@ -62,8 +62,8 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
                 .findViewById(R.id.login_password);
         final Button login = (Button) view
                 .findViewById(R.id.login_submit);
-        final CheckBox checkpass = (CheckBox) view.findViewById(R.id.login_config_save_password);
-        final CheckBox checkchat = (CheckBox) view.findViewById(R.id.login_config_enter_chat);
+        final CheckBox configPass = (CheckBox) view.findViewById(R.id.login_config_save_password);
+        final CheckBox configChat = (CheckBox) view.findViewById(R.id.login_config_enter_chat);
 
         final SettingsContext settings = host.getViewContext().getSettingsContext();
         user.addTextChangedListener(new TextWatcher() {
@@ -94,8 +94,8 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
         savedUser = passwordHash[0];
         savedPass = new PasswordHash(passwordHash[1], true);
 
-        checkpass.setChecked(settings.get("login_savePassword", true));
-        checkchat.setChecked(settings.get("login_enterChat", true));
+        configPass.setChecked(settings.get("login_savePassword", true));
+        configChat.setChecked(settings.get("login_enterChat", true));
 
 
         pass.setOnEditorActionListener(new OnEditorActionListener() {
@@ -139,11 +139,11 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
 
                 getModel().login(username, pass);
 
-                settings.set("login_savePassword", checkpass.isChecked());
-                settings.set("login_enterChat", checkchat.isChecked());
-                enterChatImmediately = checkchat.isChecked();
+                settings.set("login_savePassword", configPass.isChecked());
+                settings.set("login_enterChat", configChat.isChecked());
+                enterChatImmediately = configChat.isChecked();
 
-                if (checkpass.isChecked()) {
+                if (configPass.isChecked()) {
                     settings.set("login_defaultUsername", username);
                     settings.set("login_defaultPassword", username + ":" + pass.getBaseHash());
                 } else {

@@ -20,7 +20,7 @@ public class RawActionListDeserializer implements
         JsonObject jsonObject = element.getAsJsonObject();
         for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
             // For individual City objects, we can use default
-            // deserialisation:
+            // deserialization:
             RawAction action = context.deserialize(entry.getValue(),
                     RawAction.class);
             action.setEntry(entry.getKey());

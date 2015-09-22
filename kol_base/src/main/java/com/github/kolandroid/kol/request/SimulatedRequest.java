@@ -7,8 +7,8 @@ import com.github.kolandroid.kol.gamehandler.LoadingContext;
 public class SimulatedRequest extends Request {
     private final ServerReply toReply;
 
-    public SimulatedRequest(ServerReply prototype, String newurl, String newhtml) {
-        this(new ServerReply(prototype.responseCode, prototype.redirectLocation, prototype.date, newhtml, newurl, prototype.cookie));
+    public SimulatedRequest(ServerReply prototype, String newUrl, String newHtml) {
+        this(new ServerReply(prototype.responseCode, prototype.redirectLocation, prototype.date, newHtml, newUrl, prototype.cookie));
     }
 
     public SimulatedRequest(ServerReply toReply) {

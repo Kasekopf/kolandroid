@@ -47,7 +47,7 @@ public class ChannelController extends ChatStubController<ChatStubModel> {
         list.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> myAdapter, View myView,
-                                    int myItemInt, long mylng) {
+                                    int myItemInt, long myLong) {
                 final ChatText choice = (ChatText) myAdapter
                         .getItemAtPosition(myItemInt);
 

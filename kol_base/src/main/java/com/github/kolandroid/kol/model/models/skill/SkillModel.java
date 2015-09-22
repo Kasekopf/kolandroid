@@ -14,7 +14,7 @@ import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Regex;
 
 public class SkillModel extends Model implements SubtextElement {
-    private static final Regex ICON_SKILLID = new Regex("<div[^>]*rel=[\"']?(\\d+)[\"']>", 1);
+    private static final Regex ICON_SKILL_ID = new Regex("<div[^>]*rel=[\"']?(\\d+)[\"']>", 1);
     private static final Regex ICON_NAME = new Regex("title=\"([^\"]*)\"", 1);
     private static final Regex ICON_IMG = new Regex("src=\"([^\"]*)\"", 1);
     private static final Regex ICON_COST = new Regex("<div[^>]*cost[^>]*>([^<]*)</div>", 1);
@@ -43,7 +43,7 @@ public class SkillModel extends Model implements SubtextElement {
         cost = ICON_COST.extractSingle(skillInfo, "");
         disabled = ICON_DISABLED.matches(skillInfo);
 
-        id = ICON_SKILLID.extractSingle(skillInfo, "0");
+        id = ICON_SKILL_ID.extractSingle(skillInfo, "0");
         descriptionUrl = "desc_skill.php?whichskill=" + id;
 
         castAction = "runskillz.php?pwd=" + pwd + "&action=Skillz&targetplayer=" + yourself + "&whichskill=" + id;

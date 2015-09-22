@@ -119,12 +119,12 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
                 FragmentScreen screen = FragmentScreen.create(c);
 
                 @SuppressLint("CommitTransaction") FragmentTransaction trans = getFragmentManager()
-                        .beginTransaction().replace(R.id.game_main_screen, screen, "gamescreen");
+                        .beginTransaction().replace(R.id.game_main_screen, screen, "game_screen");
 
                 boolean doAddToBackStack = addToBackStack;
                 if (doAddToBackStack && replaceSameType) {
                     // We have to do a more complicated check to see if the same controller type is currently displayed
-                    Fragment current = getFragmentManager().findFragmentByTag("gamescreen");
+                    Fragment current = getFragmentManager().findFragmentByTag("game_screen");
                     if (current != null && current instanceof FragmentScreen) {
                         Controller currentController = ((FragmentScreen) current).getController();
                         if (currentController != null && c.getClass() == currentController.getClass()) {

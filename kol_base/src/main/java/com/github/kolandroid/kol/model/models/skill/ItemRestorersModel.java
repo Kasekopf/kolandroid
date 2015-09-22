@@ -34,7 +34,7 @@ public class ItemRestorersModel extends ItemPocketModel implements SkillsSubmode
         String all_items = ITEMS_FORM.extractSingle(reply.html, "");
         final String pwd = EXTRACT_VALUE.extractSingle(PWD.extractSingle(all_items), "0");
 
-        OptionElementParser<ItemModel> itemsparser = new OptionElementParser<ItemModel>(
+        OptionElementParser<ItemModel> itemsParser = new OptionElementParser<ItemModel>(
                 "(select a skill)") {
             @Override
             public ItemModel make(OptionElement base) {
@@ -47,7 +47,7 @@ public class ItemRestorersModel extends ItemPocketModel implements SkillsSubmode
                 return new ItemModel(getSession(), pwd, base, action);
             }
         };
-        ArrayList<ItemModel> itemList = OptionElement.extractObjects(all_items, itemsparser);
+        ArrayList<ItemModel> itemList = OptionElement.extractObjects(all_items, itemsParser);
         items.add(new BasicGroup<>("Restorers", itemList));
     }
 

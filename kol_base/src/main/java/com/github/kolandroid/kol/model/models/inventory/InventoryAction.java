@@ -1,7 +1,7 @@
 package com.github.kolandroid.kol.model.models.inventory;
 
 import com.github.kolandroid.kol.connection.Session;
-import com.github.kolandroid.kol.model.elements.MultiusableElement;
+import com.github.kolandroid.kol.model.elements.MultiuseElement;
 import com.github.kolandroid.kol.model.elements.basic.BasicAction;
 import com.github.kolandroid.kol.model.elements.basic.BasicElement;
 import com.github.kolandroid.kol.model.elements.interfaces.Multiuseable;
@@ -44,7 +44,7 @@ public abstract class InventoryAction extends BasicElement {
          */
         private static final long serialVersionUID = 5269277435965864590L;
 
-        private final Multiuseable toMultisell;
+        private final Multiuseable toSellMultiple;
 
         public AutosellItemAction(final Session session,
                                   final ItemModel base, final String defaultAction,
@@ -57,12 +57,12 @@ public abstract class InventoryAction extends BasicElement {
             action += "&pwd=" + pwd;
             action += "&quantity=";
 
-            this.toMultisell = new MultiusableElement(session, base, action);
+            this.toSellMultiple = new MultiuseElement(session, base, action);
         }
 
         @Override
         public void select(InventoryActionVisitor visitor) {
-            visitor.displayMultiuse(toMultisell, "Sell");
+            visitor.displayMultiuse(toSellMultiple, "Sell");
         }
     }
 
@@ -85,13 +85,13 @@ public abstract class InventoryAction extends BasicElement {
             action += "&pwd=" + pwd;
             action += "&quantity=";
 
-            this.toMultiuse = new MultiusableElement(session, base, action);
+            this.toMultiuse = new MultiuseElement(session, base, action);
         }
 
         public MultiuseItemAction(final Session session,
                                   final ItemModel base, String action) {
             super("Use multiple");
-            this.toMultiuse = new MultiusableElement(session, base, action);
+            this.toMultiuse = new MultiuseElement(session, base, action);
         }
 
         @Override
@@ -113,7 +113,7 @@ public abstract class InventoryAction extends BasicElement {
                                      final ItemModel base, final String name, final String defaultAction,
                                      final String pwd) {
             super(name);
-            this.toMultiuse = new MultiusableElement(session, base, defaultAction);
+            this.toMultiuse = new MultiuseElement(session, base, defaultAction);
         }
 
         @Override

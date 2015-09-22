@@ -27,7 +27,7 @@ public class WebModel extends Model {
             "^(?:.*/)?([^/?]*)(?:\\?.*)?$", 1);
 
     /**
-     * Regexes for fixing item descriptions.
+     * Regex for fixing item descriptions.
      */
     private static final Regex ITEM_DESC = new Regex(
             "<img[^>]*descitem\\((\\d+)(, event)?\\)[^>]*>");
@@ -35,7 +35,7 @@ public class WebModel extends Model {
             "<img[^>]*descitem\\((\\d+),(\\d+)(, event)?\\)[^>]*>");
 
     /**
-     * Regexes for fixing effect descriptions.
+     * Regex for fixing effect descriptions.
      */
     /* private static final Regex EFFECT_DESC = new Regex(
             "(<img[^>]*)on[Cc]lick=[\"']?eff\\([\"']?(.*?)[\"']?\\);?[\"']?([^>]*>)", 0);
@@ -44,7 +44,7 @@ public class WebModel extends Model {
             "<img[^>]*eff\\([\"']?(.*?)[\"']?\\)[^>]*>");
 
     /**
-     * Regexes for replacing static buttons.
+     * Regex for replacing static buttons.
      */
     private static final Regex FIND_FORM = new Regex(
             "<form[^>]*>(<input[^>]*type=[\"']?hidden[^>]*>)*<input[^>]*button[^>]*></form>",

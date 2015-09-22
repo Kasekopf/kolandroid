@@ -23,10 +23,10 @@ public class ItemModel extends Model implements SubtextElement {
 
     private static final Regex ITEM_IMG = new Regex(
             "<img[^>]*src=[\"']?([^\"' >]*)[\"' >]", 1);
-    private static final Regex ITEM_DESCID = new Regex(
+    private static final Regex ITEM_DESCRIPTION_ID = new Regex(
             "<img[^>]*descitem\\((\\d+)[,\\)]", 1);
     private static final Regex ITEM_NAME = new Regex("<b[^>]*>(.*?)</b>", 1);
-    private static final Regex ITEM_QNTY = new Regex(
+    private static final Regex ITEM_QUANTITY = new Regex(
             "<b[^>]*ircm[^>]*>.*?</b>&nbsp;<span>\\((\\d+)\\)</span>", 1);
 
     private static final Regex ITEM_ID = new Regex("<td[^>]*id=['\"]?i(\\d+)['\"]?'", 1);
@@ -68,7 +68,7 @@ public class ItemModel extends Model implements SubtextElement {
         name = partialName;
 
         String slot = ITEM_SLOT.extractSingle(itemInfo, "");
-        String number = ITEM_QNTY.extractSingle(itemInfo, "");
+        String number = ITEM_QUANTITY.extractSingle(itemInfo, "");
         if (number.equals("")) {
             quantity = "1";
         } else {
@@ -82,7 +82,7 @@ public class ItemModel extends Model implements SubtextElement {
         displayName = partialName;
 
         id = ITEM_ID.extractSingle(itemInfo, "-1");
-        descriptionId = ITEM_DESCID.extractSingle(itemInfo, "0");
+        descriptionId = ITEM_DESCRIPTION_ID.extractSingle(itemInfo, "0");
 
         actions = new ArrayList<>();
         for (String action : ITEM_ACTION.extractAllSingle(itemInfo)) {
@@ -128,13 +128,13 @@ public class ItemModel extends Model implements SubtextElement {
         if (actName == null || actDest == null)
             return null;
 
-        String lowername = actName.toLowerCase();
-        if (lowername.contains("use multiple")) {
+        String lowerName = actName.toLowerCase();
+        if (lowerName.contains("use multiple")) {
             return new InventoryAction.MultiuseItemAction(getSession(), this, actDest, pwd);
-        } else if (lowername.contains("take some") || lowername.contains("store some")) {
+        } else if (lowerName.contains("take some") || lowerName.contains("store some")) {
             return new InventoryAction.MultiClosetItemAction(getSession(), this, actName, actDest, pwd);
-        } else if (lowername.contains("eat some")
-                || lowername.contains("drink some")) {
+        } else if (lowerName.contains("eat some")
+                || lowerName.contains("drink some")) {
             // do nothing for now
             return null;
         } else {

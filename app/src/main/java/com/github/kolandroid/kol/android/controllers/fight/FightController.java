@@ -54,8 +54,8 @@ public class FightController extends ModelController<FightModel> {
             }
         });
 
-        final Button useskill = (Button) view.findViewById(R.id.fight_skill);
-        useskill.setOnClickListener(new OnClickListener() {
+        final Button useSkill = (Button) view.findViewById(R.id.fight_skill);
+        useSkill.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View btn) {
                 ArrayList<FightSkill> skills = model.getSkills();
@@ -65,8 +65,8 @@ public class FightController extends ModelController<FightModel> {
             }
         });
 
-        final Button useitem = (Button) view.findViewById(R.id.fight_items);
-        useitem.setOnClickListener(new OnClickListener() {
+        final Button useItem = (Button) view.findViewById(R.id.fight_items);
+        useItem.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View btn) {
                 ArrayList<FightItem> items = model.getItems();
@@ -84,14 +84,14 @@ public class FightController extends ModelController<FightModel> {
 
         if (model.isFightOver()) {
             attack.setEnabled(false);
-            useskill.setEnabled(false);
-            useitem.setEnabled(false);
+            useSkill.setEnabled(false);
+            useItem.setEnabled(false);
         }
 
-        ViewScreen webscreen = (ViewScreen) view
+        ViewScreen webScreen = (ViewScreen) view
                 .findViewById(R.id.fight_web_screen);
         WebController web = new WebController(model);
-        webscreen.display(web, host);
+        webScreen.display(web, host);
     }
 
 }

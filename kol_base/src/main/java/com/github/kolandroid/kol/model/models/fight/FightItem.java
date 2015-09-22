@@ -12,7 +12,7 @@ public class FightItem extends ActionElement {
         private static final long serialVersionUID = 6441158699205312769L;
 
         @Override
-        protected void submit(ViewContext context, String urloverride) {
+        protected void submit(ViewContext context, String urlOverride) {
             //do nothing
         }
 

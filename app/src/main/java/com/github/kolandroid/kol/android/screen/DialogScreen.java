@@ -79,8 +79,8 @@ public class DialogScreen extends DialogFragment implements Screen {
             Logger.log("DialogScreen", "Unable to load controller from bundle");
         }
 
-        int layoutid = controller.getView();
-        View view = inflater.inflate(layoutid, container, false);
+        int layoutId = controller.getView();
+        View view = inflater.inflate(layoutId, container, false);
         controller.connect(view, this);
         return view;
     }

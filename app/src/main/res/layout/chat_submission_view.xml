@@ -5,7 +5,6 @@
     android:background="#fff"
     android:orientation="horizontal"
     tools:context="com.github.kolandroid.kol.android.controllers.chat.ChatSubmissionController">
-    >
 
     <EditText
         android:id="@+id/chat_submission_input"

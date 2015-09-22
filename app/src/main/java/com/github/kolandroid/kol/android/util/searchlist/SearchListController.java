@@ -51,7 +51,7 @@ public class SearchListController<E> implements Controller {
         ListView list = (ListView) view.findViewById(R.id.search_list_base);
         list.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
+            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long myLong) {
                 @SuppressWarnings("unchecked")
                 E choice = (E) myAdapter.getItemAtPosition(myItemInt);
                 if (selector != null)

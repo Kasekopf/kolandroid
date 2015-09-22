@@ -8,6 +8,7 @@ import com.github.kolandroid.kol.model.models.chat.raw.RawActionList;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,8 +26,8 @@ public abstract class ChatModelSegment implements Serializable {
     private static final Regex PLAYER_ID = new Regex(
             "playerid ?= ?[\"']?(\\d+)[\"']?[,;]", 1);
     private static final Regex PWD = new Regex(
-            "pwdhash  ?= ?[\"']?([0-9a-fA-F]+)[\"']?[,;]", 1);
-    private static final Regex BASEROOM = new Regex("active: \"([^\"]*)\"", 1);
+            "pwdhash ? ?= ?[\"']?([0-9a-fA-F]+)[\"']?[,;]", 1);
+    private static final Regex BASE_ROOM = new Regex("active: \"([^\"]*)\"", 1);
 
     public static ArrayList<ChatModelSegment> processChatStart(Session session, Gson parser, ServerReply reply) {
         ArrayList<ChatModelSegment> result = new ArrayList<>();
@@ -59,7 +60,7 @@ public abstract class ChatModelSegment implements Serializable {
 
         String playerid = PLAYER_ID.extractSingle(reply.html, "0");
         String pwd = PWD.extractSingle(reply.html, "0");
-        String visibleChannel = BASEROOM.extractSingle(reply.html, "");
+        String visibleChannel = BASE_ROOM.extractSingle(reply.html, "");
 
         String actionList = ACTIONS.extractSingle(reply.html, "");
         ArrayList<ChatAction> baseActions = new ArrayList<>();
@@ -71,7 +72,7 @@ public abstract class ChatModelSegment implements Serializable {
             }
         }
 
-        baseActions.add(0, new ChatAction(session, RawAction.SHOWPROFILE));
+        baseActions.add(0, new ChatAction(session, RawAction.SHOW_PROFILE));
 
         result.add(new ChatModelSegment.AssertChatStarted(playerid, pwd, visibleChannel, baseActions));
 
@@ -109,7 +110,7 @@ public abstract class ChatModelSegment implements Serializable {
         RawMessageList update = parser.fromJson(response.html,
                 RawMessageList.class);
 
-        for (ChatText message : update.msgs) {
+        for (ChatText message : update.messages) {
             ChatModelSegment messageSegment = disassembleMessage(seenMessages, message);
             if (messageSegment != null) {
                 segments.add(messageSegment);
@@ -309,7 +310,8 @@ public abstract class ChatModelSegment implements Serializable {
     }
 
     public static class RawMessageList {
-        public ChatText[] msgs;
+        @SerializedName("msgs")
+        public ChatText[] messages;
         public String last;
         public String output;
     }

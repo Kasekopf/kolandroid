@@ -38,8 +38,8 @@ public class FragmentScreen extends Fragment implements Screen {
             controller = new MessageController(error);
         }
 
-        int layoutid = controller.getView();
-        View view = inflater.inflate(layoutid, container, false);
+        int layoutId = controller.getView();
+        View view = inflater.inflate(layoutId, container, false);
         controller.connect(view, this);
         return view;
     }

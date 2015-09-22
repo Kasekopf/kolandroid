@@ -26,7 +26,7 @@ public class ChatAction extends Model {
 
         String player;
 
-        if (base.useid) {
+        if (base.useId) {
             player = baseMessage.getUser().getId() + "";
         } else {
             player = baseMessage.getUser().getName();
@@ -44,11 +44,11 @@ public class ChatAction extends Model {
                     context.submitCommand(new ChatModel.ChatModelCommand.SubmitChatMessage(base.entry + " " + player));
                     break;
                 } else {
-                    // fallthrough to filling up textview
+                    // fallthrough to filling up chat prompt
                 }
             case 3: // prompt for text
             case 4: // confirm action
-                // in either case, we'll default to filling up the textview
+                // in either case, we'll default to filling up the chat prompt
                 context.submitCommand(new ChatModel.ChatModelCommand.FillPartialChat(base.entry + " " + player));
                 break;
             case 5:

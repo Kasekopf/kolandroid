@@ -63,14 +63,14 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
                                                    ArrayList<String> items, String pwd) {
         DataCache<String, RawItem> itemCache = getData().getItemCache();
 
-        BasicGroup<ItemModel> newsection = new BasicGroup<>(
+        BasicGroup<ItemModel> newSection = new BasicGroup<>(
                 sectionName);
         for (String item : items) {
             ItemModel newItem = new ItemModel(getSession(), pwd, item);
             newItem.searchCache(itemCache);
-            newsection.add(newItem);
+            newSection.add(newItem);
         }
-        return newsection;
+        return newSection;
     }
 
     protected void loadContent(ServerReply reply) {
@@ -80,11 +80,11 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
 
         for (String section : SECTION.extractAllSingle(reply.html)) {
             String sectionName = SECTION_NAME.extractSingle(section);
-            ModelGroup<ItemModel> newsection = parseItems(sectionName,
+            ModelGroup<ItemModel> newSection = parseItems(sectionName,
                     ITEM.extractAllSingle(section), pwd);
 
-            if (newsection.size() > 0)
-                this.items.add(newsection);
+            if (newSection.size() > 0)
+                this.items.add(newSection);
         }
     }
 

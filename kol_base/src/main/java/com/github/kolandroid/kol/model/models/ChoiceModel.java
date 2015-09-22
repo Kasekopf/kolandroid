@@ -20,7 +20,7 @@ public class ChoiceModel extends WebModel {
     private static final Regex OPTION_INPUT = new Regex("(<input[^>]*name=[\"']?option[^>]*>)", 1);
     private static final Regex SUBMIT_INPUT = new Regex("(<input[^>]*type=[\"']?submit[^>]*>)", 1);
 
-    private static final Regex ALPHANUM_VALUE = new Regex("value=[\"']?([a-f0-9]+)[\"'>]", 1);
+    private static final Regex ALPHA_NUM_VALUE = new Regex("value=[\"']?([a-f0-9]+)[\"'>]", 1);
     private static final Regex NUM_VALUE = new Regex("value=[\"']?(\\d+)[\"'>]", 1);
     private static final Regex VALUE = new Regex("value=[\"]?(.*?)[\">]", 1);
 
@@ -50,7 +50,7 @@ public class ChoiceModel extends WebModel {
         for (String form : OPTIONS.extractAllSingle(html)) {
             System.out.println("Found option: " + form);
 
-            String pwd = ALPHANUM_VALUE.extractSingle(PWD_INPUT.extractSingle(form));
+            String pwd = ALPHA_NUM_VALUE.extractSingle(PWD_INPUT.extractSingle(form));
             String whichchoice = NUM_VALUE.extractSingle(WHICH_INPUT.extractSingle(form));
             String option = NUM_VALUE.extractSingle(OPTION_INPUT.extractSingle(form));
             String text = VALUE.extractSingle(SUBMIT_INPUT.extractSingle(form));

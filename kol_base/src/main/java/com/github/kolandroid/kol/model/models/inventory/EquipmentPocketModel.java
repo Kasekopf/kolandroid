@@ -46,7 +46,7 @@ public class EquipmentPocketModel extends ItemPocketModel {
                 items.add(0, equipped);
         }
 
-        String baseaction = "inv_equip.php?action=outfit&which=2&whichoutfit=";
+        String baseAction = "inv_equip.php?action=outfit&which=2&whichoutfit=";
 
         outfits = new ArrayList<>();
         String outfit_select = OUTFITS.extractSingle(reply.html);
@@ -56,7 +56,7 @@ public class EquipmentPocketModel extends ItemPocketModel {
             for (OptionElement option : outfit_group) {
                 if (option.text.contains("(select an outfit)")) continue;
 
-                group.add(new ActionElement(getSession(), option.text, option.img, baseaction + option.value));
+                group.add(new ActionElement(getSession(), option.text, option.img, baseAction + option.value));
             }
             outfits.add(group);
         }

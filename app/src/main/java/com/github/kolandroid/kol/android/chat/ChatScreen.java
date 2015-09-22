@@ -85,7 +85,7 @@ public class ChatScreen extends ActivityScreen {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.chat, menu);
+        getMenuInflater().inflate(R.menu.chat_screen, menu);
         return true;
     }
 }

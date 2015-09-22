@@ -54,9 +54,9 @@ public class ChoiceController extends ModelController<ChoiceModel> {
             options.addView(optionBtn);
         }
 
-        ViewScreen webscreen = (ViewScreen) view.findViewById(R.id.choice_web_screen);
+        ViewScreen webScreen = (ViewScreen) view.findViewById(R.id.choice_web_screen);
         WebController web = new WebController(model);
-        webscreen.display(web, host);
+        webScreen.display(web, host);
     }
 
 }

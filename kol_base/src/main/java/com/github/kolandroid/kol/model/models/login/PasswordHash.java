@@ -13,8 +13,8 @@ public class PasswordHash implements Serializable {
 
     private final String hash;
 
-    public PasswordHash(String password, boolean prehashed) {
-        if (prehashed)
+    public PasswordHash(String password, boolean preHashed) {
+        if (preHashed)
             hash = password;
         else
             this.hash = getHash(password);

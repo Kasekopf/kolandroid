@@ -69,8 +69,8 @@ public class Connection {
 
     private HttpURLConnection connect(String cookie) throws IOException {
         String base = getBaseURL();
-        boolean dopost = base.contains("POST/");
-        if (dopost) {
+        boolean doPost = base.contains("POST/");
+        if (doPost) {
             base = base.replace("POST/", "");
         } else {
             String args = getArguments();
@@ -80,9 +80,9 @@ public class Connection {
         }
 
         URL url = new URL(base);
-        if (dopost) {
+        if (doPost) {
             Logger.log("Connection", "Making POST request to " + url + " [" + getArguments() + "]");
-        } else if (!base.contains("newchatmessages.php")) { //filter out the endless newchatmessage requests
+        } else if (!base.contains("newchatmessages.php")) { //filter out the endless new chat message requests
             Logger.log("Connection", "Making GET request to " + url);
         }
 
@@ -96,7 +96,7 @@ public class Connection {
         connection.setInstanceFollowRedirects(redirect);
 
 
-        if (dopost) {
+        if (doPost) {
             connection.setUseCaches(false);
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");

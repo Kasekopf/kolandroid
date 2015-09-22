@@ -139,7 +139,7 @@ public class ImageDownloader {
         }
 
         @Override
-        protected Bitmap doInBackground(Void... noargs) {
+        protected Bitmap doInBackground(Void... noArgs) {
             Bitmap result = null;
             InputStream in;
 
@@ -160,7 +160,7 @@ public class ImageDownloader {
 
             //System.out.println("Got bitmap for " + url);
             if (!pendingTasks.containsKey(url)) {
-                System.out.println("...No task in hashtable?");
+                System.out.println("...No task in hash table?");
                 return;
             }
 

@@ -134,7 +134,7 @@ public class CustomFragmentTabHost extends TabHost
         mRealTabContent.setId(containerId);
 
         // We must have an ID to be able to save/restore our state.  If
-        // the owner hasn't set one at this point, we will set it ourself.
+        // the owner hasn't set one at this point, we will set it our self.
         if (getId() == View.NO_ID) {
             setId(android.R.id.tabhost);
         }
@@ -163,11 +163,11 @@ public class CustomFragmentTabHost extends TabHost
         return new ArrayList<>(mTabs);
     }
 
-    public void addTab(TabHost.TabSpec tabSpec, Class<?> clss, Bundle args) {
+    public void addTab(TabHost.TabSpec tabSpec, Class<?> classId, Bundle args) {
         tabSpec.setContent(new DummyTabFactory(mContext));
         String tag = tabSpec.getTag();
 
-        TabInfo info = new TabInfo(tag, clss, args);
+        TabInfo info = new TabInfo(tag, classId, args);
 
         if (mAttached) {
             // If we are already attached to the window, then check to make
@@ -300,7 +300,7 @@ public class CustomFragmentTabHost extends TabHost
 
             if (newTab.fragment == null) {
                 newTab.fragment = Fragment.instantiate(mContext,
-                        newTab.clss.getName(), newTab.args);
+                        newTab.classId.getName(), newTab.args);
 
                 if (mOnCreateFragmentListener != null)
                     mOnCreateFragmentListener.setup(newTab.fragment, newTab.tag);
@@ -320,13 +320,13 @@ public class CustomFragmentTabHost extends TabHost
 
     public static final class TabInfo {
         private final String tag;
-        private final Class<?> clss;
+        private final Class<?> classId;
         private final Bundle args;
         private Fragment fragment;
 
         TabInfo(String _tag, Class<?> _class, Bundle _args) {
             tag = _tag;
-            clss = _class;
+            classId = _class;
             args = _args;
         }
 

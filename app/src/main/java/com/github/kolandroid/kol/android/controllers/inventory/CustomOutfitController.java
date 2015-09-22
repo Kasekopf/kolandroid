@@ -31,12 +31,12 @@ public class CustomOutfitController implements Controller {
 
     @Override
     public void connect(View view, final Screen host) {
-        final EditText nameentry = (EditText) view.findViewById(R.id.save_outfit_input);
+        final EditText nameEdit = (EditText) view.findViewById(R.id.save_outfit_input);
         Button submit = (Button) view.findViewById(R.id.save_outfit_submit);
         submit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                String name = nameentry.getText().toString();
+                String name = nameEdit.getText().toString();
                 if (name.equals("")) return;
 
                 DeferredGameAction action = base.saveOutfit(name);

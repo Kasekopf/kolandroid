@@ -58,9 +58,9 @@ public class SkillController extends ModelController<SkillModel> {
 
         if (!model.isBuff()) {
             View player = view.findViewById(R.id.skill_player_input);
-            View playerlabel = view.findViewById(R.id.skill_player_input_label);
+            View playerLabel = view.findViewById(R.id.skill_player_input_label);
             player.setVisibility(View.GONE);
-            playerlabel.setVisibility(View.GONE);
+            playerLabel.setVisibility(View.GONE);
         }
 
         Button submit = (Button) view.findViewById(R.id.skill_submit);

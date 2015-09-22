@@ -40,15 +40,15 @@ public class HighlightableListGroupAdapter<F> extends ListGroupAdapter<ModelGrou
         this.base = base;
         displayed.clear();
         for (ModelGroup<F> elem : base) {
-            BasicGroup<F> newgroup = new BasicGroup<>(elem.getName());
+            BasicGroup<F> newGroup = new BasicGroup<>(elem.getName());
             for (int i = 0; i < elem.size(); i++) {
                 F item = elem.get(i);
                 if (filter.matches(item.toString()))
-                    newgroup.add(item);
+                    newGroup.add(item);
             }
 
-            if (newgroup.size() > 0)
-                displayed.add(newgroup);
+            if (newGroup.size() > 0)
+                displayed.add(newGroup);
         }
         super.setElements(displayed);
     }

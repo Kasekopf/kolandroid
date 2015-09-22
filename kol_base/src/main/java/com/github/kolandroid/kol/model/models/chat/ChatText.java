@@ -27,10 +27,10 @@ public class ChatText implements Serializable {
         actions = new ArrayList<>();
     }
 
-    public ChatText(String htmltext) {
+    public ChatText(String htmlText) {
         this();
 
-        this.content = htmltext;
+        this.content = htmlText;
         this.format = -1;
         this.mid = 0;
     }
@@ -85,7 +85,7 @@ public class ChatText implements Serializable {
     public String getText() {
         switch (format) {
             case -1:
-                //preformatted message
+                //pre-formatted message
                 break;
             case 1: // emote
                 return content;

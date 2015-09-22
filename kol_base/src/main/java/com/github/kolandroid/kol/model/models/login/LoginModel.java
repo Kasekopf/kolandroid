@@ -40,7 +40,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
     private final String loginId;
     private final String challenge;
     private final ArrayList<MagicLoginAction> magicCharacters;
-    private final WebModel announcmentsModel;
+    private final WebModel announcementsModel;
     private boolean stale;
 
     public LoginModel(Session s, ServerReply reply) {
@@ -57,18 +57,18 @@ public class LoginModel extends LinkedModel<LoginStatus> {
         magicCharacters = new ArrayList<>();
         String magic = MAGIC_DETECTOR.extractSingle(reply.html, "");
         if (!magic.equals("")) {
-            for (String listitem : MAGIC_CHARACTERS.extractAllSingle(magic)) {
-                magicCharacters.add(new MagicLoginAction(listitem));
+            for (String listItem : MAGIC_CHARACTERS.extractAllSingle(magic)) {
+                magicCharacters.add(new MagicLoginAction(listItem));
             }
         }
 
         String announcements = ANNOUNCEMENTS.extractSingle(reply.html);
         if (announcements == null) {
-            announcmentsModel = null;
+            announcementsModel = null;
         } else {
             announcements = BLANK_TARGETS.replaceAll(announcements, "");
             Logger.log("LoginModel", "Announcements:" + announcements);
-            announcmentsModel = new WebModel(s, reply.substituteBody("http://www.kingdomofloathing.com/announcements.php", announcements));
+            announcementsModel = new WebModel(s, reply.substituteBody("http://www.kingdomofloathing.com/announcements.php", announcements));
         }
     }
 
@@ -76,12 +76,12 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                       final PasswordHash hash) {
         String[] names = {"loginid", "loginname", "password",
                 "loggingin", "challenge", "response", "secure"};
-        String[] vals = {loginId, username, "", "Yup.", challenge,
+        String[] values = {loginId, username, "", "Yup.", challenge,
                 hash.completeChallenge(challenge), "1"};
 
         stale = true;
 
-        Request login = new SingleRequest("login.php", names, vals);
+        Request login = new SingleRequest("login.php", names, values);
         this.makeRequest(login, new ResponseHandler() {
             @Override
             public void handle(Session session,
@@ -124,7 +124,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
     }
 
     public WebModel getAnnouncementsModel() {
-        return announcmentsModel;
+        return announcementsModel;
     }
 
     public class MagicLoginAction implements Serializable {

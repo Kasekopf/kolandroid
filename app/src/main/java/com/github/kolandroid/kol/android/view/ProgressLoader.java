@@ -77,12 +77,12 @@ public class ProgressLoader implements LoadingContext {
                     break;
                 case ERROR:
                     base.setBackgroundColor(Color.RED);
-                    AlphaAnimation animerror = new AlphaAnimation(1.0f, 0.0f);
-                    animerror.setDuration(1000);
-                    animerror.setRepeatCount(0);
-                    animerror.setFillAfter(true);
-                    animerror.setStartOffset(1000);
-                    base.startAnimation(animerror);
+                    AlphaAnimation animError = new AlphaAnimation(1.0f, 0.0f);
+                    animError.setDuration(1000);
+                    animError.setRepeatCount(0);
+                    animError.setFillAfter(true);
+                    animError.setStartOffset(1000);
+                    base.startAnimation(animError);
                     break;
             }
         }
