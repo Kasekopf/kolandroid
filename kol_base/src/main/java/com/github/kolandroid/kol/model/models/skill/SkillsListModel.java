@@ -2,6 +2,9 @@ package com.github.kolandroid.kol.model.models.skill;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.data.DataCache;
+import com.github.kolandroid.kol.data.RawSkill;
+import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.model.elements.OptionElement;
 import com.github.kolandroid.kol.model.elements.OptionElement.OptionElementParser;
@@ -47,6 +50,17 @@ public class SkillsListModel extends Model implements SkillsSubmodel {
         }
     }
 
+    @Override
+    public void attachView(ViewContext context) {
+        super.attachView(context);
+
+        DataCache<String, RawSkill> skillCache = getData().getSkillCache();
+        for (ModelGroup<SkillModel> skillGroup : skills) {
+            for (SkillModel skill : skillGroup) {
+                skill.searchCache(skillCache);
+            }
+        }
+    }
     private ArrayList<ModelGroup<SkillModel>> processSkillsIcons(String html) {
         Logger.log("SkillsListModel", "Parsing icons");
         ArrayList<ModelGroup<SkillModel>> skills = new ArrayList<ModelGroup<SkillModel>>();
@@ -54,10 +68,14 @@ public class SkillsListModel extends Model implements SkillsSubmodel {
         String pwd = ICON_PWD.extractSingle(html);
         String yourself = ICON_YOURSELF.extractSingle(html);
 
+        DataCache<String, RawSkill> skillCache = getData().getSkillCache();
+
         for (String group : ICON_GROUP.extractAllSingle(html)) {
             ArrayList<SkillModel> elements = new ArrayList<>();
             for (String skill : ICON_SKILL.extractAllSingle(group)) {
-                elements.add(new SkillModel(getSession(), pwd, yourself, skill));
+                SkillModel skillModel = new SkillModel(getSession(), pwd, yourself, skill);
+                skillModel.searchCache(skillCache);
+                elements.add(skillModel);
             }
 
             if (elements.size() == 0) continue;
@@ -77,19 +95,14 @@ public class SkillsListModel extends Model implements SkillsSubmodel {
                 .extractSingle(html), "0");
         final String yourself = OPTION_YOURSELF.extractSingle(html, "");
 
-        OptionElementParser<SkillModel> skillparser = new OptionElementParser<SkillModel>(
+        final DataCache<String, RawSkill> skillCache = getData().getSkillCache();
+        OptionElementParser<SkillModel> skillParser = new OptionElementParser<SkillModel>(
                 "(select a skill)") {
             @Override
             public SkillModel make(OptionElement base) {
-                return new SkillModel(getSession(), pwd, yourself, base);
-            }
-        };
-
-        OptionElementParser<SkillModel> buffparser = new OptionElementParser<SkillModel>(
-                "(select a skill)") {
-            @Override
-            public SkillModel make(OptionElement base) {
-                return new SkillModel(getSession(), pwd, yourself, base);
+                SkillModel skill = new SkillModel(getSession(), pwd, yourself, base);
+                skill.searchCache(skillCache);
+                return skill;
             }
         };
 
@@ -106,12 +119,7 @@ public class SkillsListModel extends Model implements SkillsSubmodel {
             form = TARGETS.replaceAll(form, "");
 
             ArrayList<SkillModel> elements;
-            if (name.equalsIgnoreCase("Not-Buff") || yourself.equals("")) {
-                //We can be sure the elements are not buffs
-                elements = OptionElement.extractObjects(form, skillparser);
-            } else {
-                elements = OptionElement.extractObjects(form, buffparser);
-            }
+            elements = OptionElement.extractObjects(form, skillParser);
 
             Logger.log("SkillsListModel", "Parsed skill group " + name);
 

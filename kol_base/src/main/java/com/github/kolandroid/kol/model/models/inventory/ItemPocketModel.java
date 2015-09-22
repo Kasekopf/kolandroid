@@ -2,6 +2,9 @@ package com.github.kolandroid.kol.model.models.inventory;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.data.DataCache;
+import com.github.kolandroid.kol.data.RawItem;
+import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.GroupModel.ChildModel;
 import com.github.kolandroid.kol.model.LiveModel;
 import com.github.kolandroid.kol.model.elements.basic.BasicGroup;
@@ -40,6 +43,17 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
         process(reply);
     }
 
+    @Override
+    public void attachView(ViewContext context) {
+        super.attachView(context);
+
+        DataCache<String, RawItem> itemCache = getData().getItemCache();
+        for (ModelGroup<ItemModel> itemGroup : items) {
+            for (ItemModel item : itemGroup) {
+                item.searchCache(itemCache);
+            }
+        }
+    }
     public ArrayList<ModelGroup<ItemModel>> getItems() {
         this.access();
         return items;
@@ -47,10 +61,14 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
 
     protected ModelGroup<ItemModel> parseItems(String sectionName,
                                                    ArrayList<String> items, String pwd) {
+        DataCache<String, RawItem> itemCache = getData().getItemCache();
+
         BasicGroup<ItemModel> newsection = new BasicGroup<ItemModel>(
                 sectionName);
         for (String item : items) {
-            newsection.add(new ItemModel(getSession(), pwd, item));
+            ItemModel newItem = new ItemModel(getSession(), pwd, item);
+            newItem.searchCache(itemCache);
+            newsection.add(newItem);
         }
         return newsection;
     }

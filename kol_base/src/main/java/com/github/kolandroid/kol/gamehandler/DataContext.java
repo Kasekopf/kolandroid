@@ -1,9 +1,11 @@
 package com.github.kolandroid.kol.gamehandler;
 
-import com.github.kolandroid.kol.data.DataMapper;
+import com.github.kolandroid.kol.data.DataCache;
+import com.github.kolandroid.kol.data.RawItem;
+import com.github.kolandroid.kol.data.RawSkill;
 
 public interface DataContext {
-    DataMapper<String, String> getSkillsImageFinder();
+    DataCache<String, RawSkill> getSkillCache();
 
-    DataMapper<String, String> getItemsImageFinder();
+    DataCache<String, RawItem> getItemCache();
 }

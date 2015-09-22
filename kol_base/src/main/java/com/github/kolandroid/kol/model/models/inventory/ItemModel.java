@@ -2,6 +2,8 @@ package com.github.kolandroid.kol.model.models.inventory;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.data.DataCache;
+import com.github.kolandroid.kol.data.RawItem;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.model.elements.OptionElement;
 import com.github.kolandroid.kol.model.elements.interfaces.SubtextElement;
@@ -27,6 +29,8 @@ public class ItemModel extends Model implements SubtextElement {
     private static final Regex ITEM_QNTY = new Regex(
             "<b[^>]*ircm[^>]*>.*?</b>&nbsp;<span>\\((\\d+)\\)</span>", 1);
 
+    private static final Regex ITEM_ID = new Regex("<td[^>]*id=['\"]?i(\\d+)['\"]?'", 1);
+
     private static final Regex ITEM_SLOT = new Regex("<a[^>]*>([^<]*?)</a>:", 1);
 
     private static final Regex ITEM_ACTION = new Regex("<a.*?</a>", 0);
@@ -38,14 +42,20 @@ public class ItemModel extends Model implements SubtextElement {
             "<font[^>]*size=[\"']?1[^>]*>.*?(\\([^<]*\\))</font>", 1);
 
     private static final Regex DESCRIPTION_END = new Regex("</blockquote>");
-    private static final Regex OPTION_QUANTITY = new Regex("\\([^\\)]*?\\)$", 0);
+    private static final Regex OPTION_QUANTITY = new Regex(" \\([^\\)]*?\\)$", 0);
     private final ArrayList<InventoryAction> actions;
+
+    private final String id;
     private final String name;
-    private final String image;
     private final String subtext;
-    private final String descriptionUrl;
     private final String quantity;
+    private final String displayName;
     private WebModel description;
+
+
+    // Might be updated from cache
+    private String image;
+    private String descriptionId;
 
     public ItemModel(Session s, String pwd, String itemInfo) {
         super(s);
@@ -55,6 +65,8 @@ public class ItemModel extends Model implements SubtextElement {
 
         // Determine the name of the item
         String partialName = ITEM_NAME.extractSingle(itemInfo, "");
+        name = partialName;
+
         String slot = ITEM_SLOT.extractSingle(itemInfo, "");
         String number = ITEM_QNTY.extractSingle(itemInfo, "");
         if (number.equals("")) {
@@ -67,9 +79,10 @@ public class ItemModel extends Model implements SubtextElement {
         if (!slot.equals("")) {
             partialName = slot + ": " + partialName;
         }
-        name = partialName;
+        displayName = partialName;
 
-        descriptionUrl = "desc_item.php?whichitem=" + ITEM_DESCID.extractSingle(itemInfo, "0");
+        id = ITEM_ID.extractSingle(itemInfo, "-1");
+        descriptionId = ITEM_DESCID.extractSingle(itemInfo, "0");
 
         actions = new ArrayList<InventoryAction>();
         for (String action : ITEM_ACTION.extractAllSingle(itemInfo)) {
@@ -82,11 +95,13 @@ public class ItemModel extends Model implements SubtextElement {
     public ItemModel(Session s, String pwd, OptionElement base, String baseAction) {
         super(s);
 
-        this.name = base.text;
+        this.displayName = base.text;
+        this.name = OPTION_QUANTITY.replaceAll(base.text, "");
         this.quantity = OPTION_QUANTITY.extractSingle(base.text, "1");
         this.image = base.img;
+        this.id = base.value;
         this.subtext = "";
-        descriptionUrl = ""; //TODO: get this description url from elsewhere?
+        descriptionId = "";
 
         this.actions = new ArrayList<>();
         actions.add(new InventoryAction.ImmediateItemAction(getSession(), "Use", baseAction + "1"));
@@ -94,6 +109,17 @@ public class ItemModel extends Model implements SubtextElement {
         if (!quantity.equals("1")) {
             actions.add(new InventoryAction.MultiuseItemAction(getSession(), this, baseAction));
         }
+    }
+
+    public void searchCache(DataCache<String, RawItem> cache) {
+        RawItem match = cache.find(this.id);
+        if (match != null) {
+            if (this.image.equals("")) this.image = match.getImage();
+            if (this.descriptionId.equals("")) this.descriptionId = match.descriptionId;
+        }
+
+        RawItem newCacheValue = RawItem.create(id, image, descriptionId, name);
+        cache.store(newCacheValue);
     }
 
     private InventoryAction parseAction(String pwd, String action) {
@@ -124,14 +150,15 @@ public class ItemModel extends Model implements SubtextElement {
     }
 
     public void loadDescription(final Callback<ItemModel> onResult) {
-        if (description != null || descriptionUrl.equals("")) {
+        if (description != null || descriptionId.equals("")) {
             onResult.execute(this);
         } else {
-            this.makeRequest(new Request(descriptionUrl), new ResponseHandler() {
+            this.makeRequest(new Request("desc_item.php?whichitem=" + descriptionId),
+                    new ResponseHandler() {
                 @Override
                 public void handle(Session session, ServerReply response) {
                     if (response == null) return;
-                    if (!response.url.contains(descriptionUrl)) return;
+                    if (!response.url.contains(descriptionId)) return;
 
                     String html = response.html;
                     html = DESCRIPTION_END.replaceAll(html, "<br>You Have: <b>" + quantity + "</b>$0");
@@ -153,7 +180,7 @@ public class ItemModel extends Model implements SubtextElement {
 
     @Override
     public String getText() {
-        return name;
+        return displayName;
     }
 
     @Override

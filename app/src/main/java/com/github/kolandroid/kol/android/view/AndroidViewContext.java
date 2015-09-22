@@ -26,7 +26,7 @@ import java.lang.ref.WeakReference;
 public class AndroidViewContext implements ViewContext {
     private Handler activityLauncher;
     private Handler toastLauncher;
-    private AndroidDataContext data;
+    private DataContext data;
 
     private SettingsContext settings;
     private PrimaryRoute primaryRoute;
@@ -43,7 +43,7 @@ public class AndroidViewContext implements ViewContext {
 
         this.activityLauncher = new ActivityLauncher(context);
         this.toastLauncher = new ToastLauncher(context);
-        this.data = new AndroidDataContext(context);
+        this.data = (DataContext) context.getApplicationContext();
         this.loadingContext = loadingContext;
         this.settings = new AndroidSettingsContext(context);
 

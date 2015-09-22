@@ -2,6 +2,7 @@ package com.github.kolandroid.kol.model.models.skill;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.GroupModel;
 
 public class SkillsModel extends GroupModel<SkillsSubmodel> {
@@ -17,6 +18,13 @@ public class SkillsModel extends GroupModel<SkillsSubmodel> {
 
         this.skills = new SkillsListModel(s, text);
         this.items = new ItemRestorersModel(s, text);
+    }
+
+    @Override
+    public void attachView(ViewContext context) {
+        super.attachView(context);
+
+        skills.attachView(context);
     }
 
     @Override

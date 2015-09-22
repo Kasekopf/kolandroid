@@ -2,6 +2,8 @@ package com.github.kolandroid.kol.model.models.skill;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.data.DataCache;
+import com.github.kolandroid.kol.data.RawSkill;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.model.elements.OptionElement;
 import com.github.kolandroid.kol.model.elements.interfaces.SubtextElement;
@@ -20,12 +22,14 @@ public class SkillModel extends Model implements SubtextElement {
     private static final Regex OPTION_MP = new Regex("\\(.*?\\)", 0);
     private final String name;
     private final String cost;
-    private final String image;
     private final boolean disabled;
     private final String descriptionUrl;
     private final String castAction;
+
     private WebModel description;
+    private String image;
     private boolean isBuff;
+    private String id;
 
     /**
      * Create a new model in the provided session.
@@ -39,7 +43,7 @@ public class SkillModel extends Model implements SubtextElement {
         cost = ICON_COST.extractSingle(skillInfo, "");
         disabled = ICON_DISABLED.matches(skillInfo);
 
-        String id = ICON_SKILLID.extractSingle(skillInfo, "0");
+        id = ICON_SKILLID.extractSingle(skillInfo, "0");
         descriptionUrl = "desc_skill.php?whichskill=" + id;
 
         castAction = "runskillz.php?pwd=" + pwd + "&action=Skillz&targetplayer=" + yourself + "&whichskill=" + id;
@@ -50,8 +54,9 @@ public class SkillModel extends Model implements SubtextElement {
         super(s);
         name = OPTION_MP.replaceAll(base.text, "");
         cost = OPTION_MP.extractSingle(base.text, "");
-        image = base.img;
+        image = (base.img == null) ? "" : base.img;
         disabled = base.disabled;
+        id = base.value;
         descriptionUrl = "desc_skill.php?whichskill=" + base.value;
 
         castAction = "runskillz.php?pwd=" + pwd + "&action=Skillz&targetplayer=" + yourself + "&whichskill=" + base.value;
@@ -92,6 +97,17 @@ public class SkillModel extends Model implements SubtextElement {
 
     public WebModel getDescription() {
         return description;
+    }
+
+    public void searchCache(DataCache<String, RawSkill> cache) {
+        RawSkill match = cache.find(this.id);
+        if (match != null) {
+            if (this.image.equals("")) this.image = match.getImage();
+            this.isBuff = match.isBuff;
+        }
+
+        RawSkill newCacheValue = RawSkill.create(id, image, isBuff, name);
+        cache.store(newCacheValue);
     }
 
     public void loadDescription(final Callback<SkillModel> onResult) {

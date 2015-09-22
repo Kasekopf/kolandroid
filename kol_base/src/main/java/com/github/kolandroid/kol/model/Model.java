@@ -2,6 +2,8 @@ package com.github.kolandroid.kol.model;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.gamehandler.DataContext;
+import com.github.kolandroid.kol.gamehandler.EmptyViewContext;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
@@ -25,7 +27,7 @@ public abstract class Model implements Serializable {
     // The current user session information.
     private final Session session;
     // The current context this model is displayed in.
-    private transient ViewContext context;
+    private transient ViewContext context = EmptyViewContext.ONLY;
 
     /**
      * Create a new model in the provided session.
@@ -123,5 +125,9 @@ public abstract class Model implements Serializable {
 
     protected SettingsContext getSettings() {
         return context.getSettingsContext();
+    }
+
+    protected DataContext getData() {
+        return context.getDataContext();
     }
 }
