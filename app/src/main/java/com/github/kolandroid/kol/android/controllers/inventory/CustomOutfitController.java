@@ -30,7 +30,7 @@ public class CustomOutfitController implements Controller {
     }
 
     @Override
-    public void connect(View view, final Screen host) {
+    public void attach(View view, final Screen host) {
         final EditText nameEdit = (EditText) view.findViewById(R.id.save_outfit_input);
         Button submit = (Button) view.findViewById(R.id.save_outfit_submit);
         submit.setOnClickListener(new OnClickListener() {
@@ -47,8 +47,13 @@ public class CustomOutfitController implements Controller {
     }
 
     @Override
+    public void connect(View view, Screen host) {
+        // Do nothing
+    }
+
+    @Override
     public void disconnect(Screen host) {
-        // do nothing
+        // Do nothing
     }
 
     @Override

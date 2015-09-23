@@ -49,7 +49,7 @@ public class GroupSearchListController<F> implements Controller {
     }
 
     @Override
-    public void connect(View view, final Screen host) {
+    public void attach(View view, final Screen host) {
         adapter = new HighlightableListGroupAdapter<>(view.getContext(), base, groupBinder, childBinder);
         list = (ExpandableListView) view.findViewById(R.id.search_list_base);
         list.setOnChildClickListener(new OnChildClickListener() {
@@ -92,6 +92,11 @@ public class GroupSearchListController<F> implements Controller {
                 // ignored
             }
         });
+    }
+
+    @Override
+    public void connect(View view, Screen host) {
+        // Do nothing
     }
 
     public void setItems(ArrayList<ModelGroup<F>> base) {

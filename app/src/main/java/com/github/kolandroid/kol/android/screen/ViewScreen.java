@@ -33,6 +33,7 @@ public class ViewScreen extends FrameLayout implements Screen {
 
         LayoutInflater inflater = base.getActivity().getLayoutInflater();
         View view = inflater.inflate(controller.getView(), this, true);
+        controller.attach(view, this);
         controller.connect(view, this);
     }
 

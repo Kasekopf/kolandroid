@@ -81,7 +81,7 @@ public class DialogScreen extends DialogFragment implements Screen {
 
         int layoutId = controller.getView();
         View view = inflater.inflate(layoutId, container, false);
-        controller.connect(view, this);
+        controller.attach(view, this);
         return view;
     }
 
@@ -90,10 +90,19 @@ public class DialogScreen extends DialogFragment implements Screen {
     }
 
     @Override
-    public void onDestroyView() {
-        if (controller != null)
+    public void onStart() {
+        super.onStart();
+        if (controller != null) {
+            controller.connect(getView(), this);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (controller != null) {
             controller.disconnect(this);
-        super.onDestroyView();
+        }
     }
 
     @Override

@@ -35,7 +35,7 @@ public class LiveWebController extends
     }
 
     @Override
-    public void connect(View view, LiveWebModel model, Screen host) {
+    public void attach(View view, LiveWebModel model, Screen host) {
         if (web == null) {
             web = new WebController(model.getBaseModel());
         }

@@ -43,7 +43,7 @@ public class FightController extends ModelController<FightModel> {
     }
 
     @Override
-    public void connect(View view, final FightModel model, final Screen host) {
+    public void attach(View view, final FightModel model, final Screen host) {
         final Button attack = (Button) view.findViewById(R.id.fight_attack);
         attack.setOnClickListener(new OnClickListener() {
             @Override

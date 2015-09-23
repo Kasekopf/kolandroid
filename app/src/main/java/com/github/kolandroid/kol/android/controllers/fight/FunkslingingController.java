@@ -64,7 +64,7 @@ public class FunkslingingController implements Controller {
     }
 
     @Override
-    public void connect(View view, final Screen host) {
+    public void attach(View view, final Screen host) {
         final ViewScreen itemScreen1 = (ViewScreen) view
                 .findViewById(R.id.funkslinging_item_1);
         itemScreen1.display(itemSlot1, host);
@@ -119,8 +119,13 @@ public class FunkslingingController implements Controller {
     }
 
     @Override
+    public void connect(View view, Screen host) {
+        // Do nothing
+    }
+
+    @Override
     public void disconnect(Screen host) {
-        // do nothing
+        // Do nothing
     }
 
     @Override

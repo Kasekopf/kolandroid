@@ -44,7 +44,7 @@ public class NavigationController extends LinkedModelController<LiveMessage, Nav
     }
 
     @Override
-    public void connect(View view, NavigationModel model, final Screen host) {
+    public void attach(View view, NavigationModel model, final Screen host) {
         ListView mDrawerListView = (ListView) view.findViewById(R.id.navigation_list);
 
         adapter = new ListAdapter<>(view.getContext(), model.getLocations(), ElementBinder.ONLY);

@@ -38,7 +38,7 @@ public class LoginConnectingController extends LinkedModelController<ConnectionF
     }
 
     @Override
-    public void connect(View view, LoginConnectingModel model, Screen host) {
+    public void attach(View view, LoginConnectingModel model, Screen host) {
         model.doLogin(host.getViewContext());
     }
 

@@ -46,26 +46,7 @@ public class ItemPocketController extends
             list.setItems(model.getItems());
     }
 
-    @Override
-    public void disconnect(Screen host) {
-        super.disconnect(host);
-        displayModel.close();
-        list = null;
-    }
-
-    @Override
     public void connect(View view, ItemPocketModel model, final Screen host) {
-        ViewScreen screen = (ViewScreen) view.findViewById(R.id.inventory_list);
-        list = new GroupSearchListController<>(model.getItems(), new ColoredGroupBinder(groupColor), SubtextBinder.ONLY, new ListSelector<ItemModel>() {
-            @Override
-            public boolean selectItem(Screen host, ItemModel item) {
-                item.attachView(host.getViewContext());
-                item.loadDescription(displayModel.weak());
-                return true;
-            }
-        });
-        screen.display(list, host);
-
         displayModel = new HandlerCallback<ItemModel>() {
             @Override
             protected void receiveProgress(ItemModel message) {
@@ -73,5 +54,27 @@ public class ItemPocketController extends
                 host.getViewContext().getPrimaryRoute().execute(controller);
             }
         };
+    }
+
+    @Override
+    public void disconnect(Screen host) {
+        super.disconnect(host);
+        displayModel.close();
+    }
+
+    @Override
+    public void attach(View view, ItemPocketModel model, final Screen host) {
+        ViewScreen screen = (ViewScreen) view.findViewById(R.id.inventory_list);
+        list = new GroupSearchListController<>(model.getItems(), new ColoredGroupBinder(groupColor), SubtextBinder.ONLY, new ListSelector<ItemModel>() {
+            @Override
+            public boolean selectItem(Screen host, ItemModel item) {
+                item.attachView(host.getViewContext());
+                if (displayModel != null) {
+                    item.loadDescription(displayModel.weak());
+                }
+                return true;
+            }
+        });
+        screen.display(list, host);
     }
 }

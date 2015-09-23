@@ -26,18 +26,16 @@ public abstract class UpdatableModelController<M extends Model> extends ModelCon
 
     @CallSuper
     @Override
-    public void connect(final View view, final Screen host) {
+    public void connect(View view, Screen host) {
+        super.connect(view, host);
         this.currentView = new WeakReference<>(view);
         this.currentScreen = new WeakReference<>(host);
-
-        super.connect(view, host);
     }
 
     @CallSuper
     @Override
     public void disconnect(Screen host) {
         super.disconnect(host);
-
         this.currentView = new WeakReference<>(null);
         this.currentScreen = new WeakReference<>(null);
     }
@@ -48,6 +46,8 @@ public abstract class UpdatableModelController<M extends Model> extends ModelCon
         View view = currentView.get();
         Screen screen = currentScreen.get();
         if (view != null && screen != null) {
+            disconnect(screen);
+            attach(view, screen);
             connect(view, screen);
         }
     }

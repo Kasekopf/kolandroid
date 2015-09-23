@@ -33,7 +33,7 @@ public class SkillController extends ModelController<SkillModel> {
     }
 
     @Override
-    public void connect(final View view, SkillModel model, final Screen host) {
+    public void attach(final View view, SkillModel model, final Screen host) {
         WebModel description = model.getDescription();
         if (description == null) {
             // Display image/name of the item as a backup

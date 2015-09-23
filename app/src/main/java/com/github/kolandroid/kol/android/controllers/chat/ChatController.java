@@ -58,15 +58,18 @@ public class ChatController extends ChatStubController<ChatStubModel> {
     @Override
     public void disconnect(Screen host) {
         super.disconnect(host);
-        tabs = null;
         submission.disconnect(host);
-        for (Controller c : tabControllers.values()) {
-            c.disconnect(host);
-        }
     }
 
     @Override
-    public void doConnect(View view, ChatStubModel model, Screen host) {
+    public void connect(View view, ChatStubModel model, Screen host) {
+        super.connect(view, model, host);
+        ViewScreen submissionScreen = (ViewScreen) view.findViewById(R.id.chat_submission_screen);
+        submissionScreen.display(submission, host);
+    }
+
+    @Override
+    public void attach(View view, ChatStubModel model, Screen host) {
         tabs = (CustomFragmentTabHost) view.findViewById(R.id.tabs_tab_host);
         tabs.setup(host.getActivity(), host.getChildFragmentManager());
         tabs.clearAllTabs();
@@ -81,9 +84,6 @@ public class ChatController extends ChatStubController<ChatStubModel> {
         });
 
         this.currentTabs = new HashSet<>();
-
-        ViewScreen submissionScreen = (ViewScreen) view.findViewById(R.id.chat_submission_screen);
-        submissionScreen.display(submission, host);
     }
 
     private void updateTabs(ChatModel model, Screen host) {
@@ -156,6 +156,7 @@ public class ChatController extends ChatStubController<ChatStubModel> {
                 }
 
                 View tabView = inflater.inflate(channelName.getView(), null);
+                channelName.attach(tabView, host);
                 channelName.connect(tabView, host);
 
                 tabs.addTab(tabs.newTabSpec(tag).setIndicator(tabView),

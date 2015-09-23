@@ -28,7 +28,7 @@ public class StatsController extends LinkedModelController<LiveMessage, StatsMod
     }
 
     @Override
-    public void connect(View view, final StatsModel model, Screen host) {
+    public void attach(View view, final StatsModel model, Screen host) {
         view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {

@@ -28,7 +28,7 @@ public class TextInputController implements Controller {
     }
 
     @Override
-    public void connect(final View view, final Screen host) {
+    public void attach(final View view, final Screen host) {
         Button button = (Button) view.findViewById(R.id.text_input_submit);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,8 +48,13 @@ public class TextInputController implements Controller {
     }
 
     @Override
-    public void disconnect(Screen host) {
+    public void connect(View view, Screen host) {
+        // Do nothing
+    }
 
+    @Override
+    public void disconnect(Screen host) {
+        // Do nothing
     }
 
     @Override

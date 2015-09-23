@@ -50,7 +50,7 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
     }
 
     @Override
-    public void connect(View view, final EquipmentPocketModel model, final Screen host) {
+    public void attach(View view, final EquipmentPocketModel model, final Screen host) {
         ViewScreen screen = (ViewScreen) view.findViewById(R.id.inventory_list);
         ListSelector<ItemModel> displayPossibleActions = new ListSelector<ItemModel>() {
             /**

@@ -18,12 +18,21 @@ public abstract class ModelController<M extends Model> implements Controller {
     }
 
     @Override
-    public void connect(final View view, final Screen host) {
+    public void attach(final View view, final Screen host) {
         this.model.attachView(host.getViewContext());
+        this.attach(view, model, host);
+    }
+
+    public abstract void attach(View view, M model, Screen host);
+
+    @Override
+    public void connect(final View view, final Screen host) {
         this.connect(view, model, host);
     }
 
-    public abstract void connect(View view, M model, Screen host);
+    public void connect(View view, M model, Screen host) {
+        // Do nothing by default
+    }
 
     @Override
     public void disconnect(Screen host) {

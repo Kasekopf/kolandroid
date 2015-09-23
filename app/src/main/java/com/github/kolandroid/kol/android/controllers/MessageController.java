@@ -16,7 +16,7 @@ public class MessageController extends ModelController<MessageModel> {
     }
 
     @Override
-    public void connect(View view, MessageModel model, Screen host) {
+    public void attach(View view, MessageModel model, Screen host) {
         view.setBackgroundColor(model.visitErrorType(new MessageModel.ErrorTypeVisitor<Integer>() {
             @Override
             public Integer forNone() {

@@ -28,8 +28,8 @@ public abstract class LinkedGroupController<C extends ChildModel, M extends Grou
 
     @CallSuper
     @Override
-    public void connect(View view, M model, Screen host) {
-        super.connect(view, model, host);
+    public void attach(View view, M model, Screen host) {
+        super.attach(view, model, host);
         final CustomFragmentTabHost tabHost = (CustomFragmentTabHost) view
                 .findViewById(R.id.tabs_tab_host);
         tabHost.setOnCreateFragmentListener(new OnCreateFragmentListener() {

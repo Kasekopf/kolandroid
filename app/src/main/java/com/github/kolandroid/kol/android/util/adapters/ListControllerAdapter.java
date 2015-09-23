@@ -77,6 +77,7 @@ public class ListControllerAdapter<E extends Controller> extends BaseAdapter {
         }
 
         view.setTag(controller);
+        controller.attach(view, host);
         controller.connect(view, host);
         return view;
     }

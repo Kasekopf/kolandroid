@@ -36,7 +36,7 @@ public class ChoiceController extends ModelController<ChoiceModel> {
     }
 
     @Override
-    public void connect(View view, ChoiceModel model, final Screen host) {
+    public void attach(View view, ChoiceModel model, final Screen host) {
         LinearLayout options = (LinearLayout) view.findViewById(R.id.choice_button_group);
         for (ActionElement option : model.getOptions()) {
             Log.i("ChoiceFragment", "Making button for " + option.getText());

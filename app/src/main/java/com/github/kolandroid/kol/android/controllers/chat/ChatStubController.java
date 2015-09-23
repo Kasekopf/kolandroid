@@ -1,6 +1,7 @@
 package com.github.kolandroid.kol.android.controllers.chat;
 
 import android.content.BroadcastReceiver;
+import android.support.annotation.CallSuper;
 import android.view.View;
 
 import com.github.kolandroid.kol.android.chat.ChatBroadcaster;
@@ -21,8 +22,9 @@ public abstract class ChatStubController<E extends ChatStubModel> extends Linked
         super(model);
     }
 
+    @CallSuper
     @Override
-    public final void connect(View view, E model, final Screen host) {
+    public void connect(View view, E model, final Screen host) {
         if (updateReceiver == null) {
             Logger.log("ChatStubController", this.getClass().getSimpleName() + " registering");
             updateReceiver = ChatBroadcaster.registerListener(host, new Callback<Iterable<ChatModelSegment>>() {
@@ -43,11 +45,7 @@ public abstract class ChatStubController<E extends ChatStubModel> extends Linked
             };
             model.insertCommandCallback(sendCommand.weak());
         }
-
-        this.doConnect(view, model, host);
     }
-
-    public abstract void doConnect(View view, E model, Screen host);
 
     @Override
     public void disconnect(Screen host) {

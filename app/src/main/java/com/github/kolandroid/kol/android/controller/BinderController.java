@@ -39,9 +39,14 @@ public class BinderController<E> implements UpdatableController<E> {
     }
 
     @Override
-    public void connect(View view, Screen host) {
+    public void attach(View view, Screen host) {
         this.view = view;
         binder.bind(view, displayed);
+    }
+
+    @Override
+    public void connect(View view, Screen host) {
+        // Do nothing
     }
 
     @Override

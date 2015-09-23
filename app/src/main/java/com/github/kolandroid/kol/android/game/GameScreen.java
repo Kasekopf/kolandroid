@@ -167,7 +167,9 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.game_screen, menu);
         View chatIconView = menu.findItem(R.id.action_chat).getActionView();
+        chatIconController.attach(chatIconView, this);
         chatIconController.connect(chatIconView, this);
+
         return true;
     }
 

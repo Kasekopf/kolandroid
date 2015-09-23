@@ -95,7 +95,7 @@ public class WebController extends UpdatableModelController<WebModel> {
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     @Override
-    public void connect(View view, WebModel model, final Screen host) {
+    public void attach(View view, WebModel model, final Screen host) {
         WebViewClient client = new WebViewClient() {
             private final Regex INTERNAL_FULL_URL = new Regex("^(https?://)?([^\\.]*\\.)?kingdomofloathing\\.com");
 

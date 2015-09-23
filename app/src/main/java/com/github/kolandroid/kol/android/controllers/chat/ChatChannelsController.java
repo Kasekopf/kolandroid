@@ -41,7 +41,7 @@ public class ChatChannelsController extends ChatStubController<ChatStubModel> {
     }
 
     @Override
-    public void doConnect(View view, ChatStubModel model, final Screen host) {
+    public void attach(View view, ChatStubModel model, final Screen host) {
         for (ChannelModel channel : model.getChannels()) {
             addChannel(channel, host);
         }
@@ -60,12 +60,6 @@ public class ChatChannelsController extends ChatStubController<ChatStubModel> {
 
         ChannelListItemController controller = new ChannelListItemController(channel);
         controllers.add(controller);
-    }
-
-    @Override
-    public void disconnect(Screen host) {
-        this.adapter = null;
-        super.disconnect(host);
     }
 
     @Override
@@ -133,8 +127,8 @@ public class ChatChannelsController extends ChatStubController<ChatStubModel> {
         }
 
         @Override
-        public void connect(View view, ChannelModel model, final Screen host) {
-            super.connect(view, model, host);
+        public void attach(View view, ChannelModel model, final Screen host) {
+            super.attach(view, model, host);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

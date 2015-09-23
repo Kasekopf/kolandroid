@@ -39,7 +39,9 @@ public class FragmentScreen extends Fragment implements Screen {
         }
 
         int layoutId = controller.getView();
-        return inflater.inflate(layoutId, container, false);
+        View view = inflater.inflate(layoutId, container, false);
+        controller.attach(view, this);
+        return view;
     }
 
     public Controller getController() {
@@ -49,16 +51,18 @@ public class FragmentScreen extends Fragment implements Screen {
     @Override
     public void onStart() {
         super.onStart();
-        controller.connect(getView(), this);
+        if (controller != null) {
+            controller.connect(getView(), this);
+        }
     }
 
     @Override
     public void onStop() {
+        super.onStop();
         if (controller != null) {
             controller.disconnect(this);
             this.getArguments().putSerializable("controller", controller); // save the current controller
         }
-        super.onStop();
     }
 
     @Override

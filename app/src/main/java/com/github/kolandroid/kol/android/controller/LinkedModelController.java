@@ -19,7 +19,6 @@ public abstract class LinkedModelController<C, M extends LinkedModel<C>> extends
         super(model);
     }
 
-    @CallSuper
     @Override
     public void connect(final View view, final Screen host) {
         if (callback != null) {

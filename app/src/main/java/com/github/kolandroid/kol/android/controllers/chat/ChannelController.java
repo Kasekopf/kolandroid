@@ -35,7 +35,7 @@ public class ChannelController extends ChatStubController<ChannelStubModel> {
     }
 
     @Override
-    public void doConnect(View view, ChannelStubModel model, final Screen host) {
+    public void attach(View view, ChannelStubModel model, final Screen host) {
         List<ChatText> messages = new ArrayList<>();
         adapter = new ListAdapter<>(view.getContext(), messages,
                 ChatBinder.ONLY);

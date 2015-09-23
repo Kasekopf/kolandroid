@@ -37,7 +37,7 @@ public class ChatActionsController extends ChatStubController<ChatStubModel> {
     }
 
     @Override
-    public void doConnect(View view, ChatStubModel model, final Screen host) {
+    public void attach(View view, ChatStubModel model, final Screen host) {
         ArrayList<ChatAction> actions = base.getActions();
         ListAdapter<ChatAction> adapter = new ListAdapter<>(host.getActivity(), actions, TextBinder.ONLY);
 

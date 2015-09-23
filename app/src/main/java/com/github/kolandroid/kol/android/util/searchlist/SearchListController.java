@@ -45,7 +45,7 @@ public class SearchListController<E> implements Controller {
     }
 
     @Override
-    public void connect(View view, final Screen host) {
+    public void attach(View view, final Screen host) {
         adapter = new HighlightableListAdapter<>(view.getContext(), initial, binder);
 
         ListView list = (ListView) view.findViewById(R.id.search_list_base);
@@ -81,6 +81,11 @@ public class SearchListController<E> implements Controller {
                 //ignored
             }
         });
+    }
+
+    @Override
+    public void connect(View view, Screen host) {
+        // do nothing
     }
 
     @Override

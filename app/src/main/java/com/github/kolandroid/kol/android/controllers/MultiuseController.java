@@ -35,7 +35,7 @@ public class MultiuseController implements Controller {
     }
 
     @Override
-    public void connect(final View view, final Screen host) {
+    public void attach(final View view, final Screen host) {
         TextView text = (TextView) view
                 .findViewById(R.id.multiuse_item_name);
         text.setText(base.getText());
@@ -68,6 +68,11 @@ public class MultiuseController implements Controller {
                 host.close();
             }
         });
+    }
+
+    @Override
+    public void connect(View view, Screen host) {
+        // Do nothing
     }
 
     @Override

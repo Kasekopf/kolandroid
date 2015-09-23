@@ -38,7 +38,7 @@ public class ChatSubmissionController extends ChatStubController<ChatSubmissionS
     }
 
     @Override
-    public void doConnect(View view, ChatSubmissionStubModel model, final Screen host) {
+    public void attach(View view, ChatSubmissionStubModel model, final Screen host) {
         final EditText text = (EditText) view.findViewById(R.id.chat_submission_input);
 
         Button submit = (Button) view.findViewById(R.id.chat_submission_submit);
@@ -62,6 +62,12 @@ public class ChatSubmissionController extends ChatStubController<ChatSubmissionS
             }
         });
 
+    }
+
+    @Override
+    public void connect(View view, ChatSubmissionStubModel model, Screen host) {
+        super.connect(view, model, host);
+        final EditText text = (EditText) view.findViewById(R.id.chat_submission_input);
         onPartialTextFillCallback = new HandlerCallback<String>() {
             @Override
             protected void receiveProgress(String message) {
@@ -70,7 +76,7 @@ public class ChatSubmissionController extends ChatStubController<ChatSubmissionS
                 }
             }
         };
-        getModel().setPartialChatCallback(onPartialTextFillCallback.weak());
+        model.setPartialChatCallback(onPartialTextFillCallback.weak());
     }
 
     @Override

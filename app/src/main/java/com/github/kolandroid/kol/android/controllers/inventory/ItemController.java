@@ -38,7 +38,7 @@ public class ItemController extends ModelController<ItemModel> {
     }
 
     @Override
-    public void connect(View view, ItemModel model, final Screen host) {
+    public void attach(View view, ItemModel model, final Screen host) {
         final InventoryActionVisitor visitor = new InventoryActionVisitor() {
             @Override
             public void executeRequest(DeferredGameAction action) {

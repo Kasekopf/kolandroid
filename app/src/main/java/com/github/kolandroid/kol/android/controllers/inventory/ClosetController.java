@@ -28,8 +28,8 @@ public class ClosetController extends ItemStorageController<ClosetModel> {
     }
 
     @Override
-    public void connect(View view, ClosetModel model, final Screen host) {
-        super.connect(view, model, host);
+    public void attach(View view, ClosetModel model, final Screen host) {
+        super.attach(view, model, host);
 
         TextView description = (TextView) view.findViewById(R.id.closet_description);
         description.setText(model.getCurrentState());

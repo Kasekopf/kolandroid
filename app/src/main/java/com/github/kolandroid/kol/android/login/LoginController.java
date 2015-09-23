@@ -55,7 +55,7 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
     }
 
     @Override
-    public void connect(View view, LoginModel model, final Screen host) {
+    public void attach(View view, LoginModel model, final Screen host) {
         final EditText user = (EditText) view
                 .findViewById(R.id.login_username);
         final EditText pass = (EditText) view
