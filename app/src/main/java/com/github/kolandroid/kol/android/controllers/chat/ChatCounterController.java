@@ -86,10 +86,12 @@ public class ChatCounterController extends ChatStubController<ChatStubModel> {
 
             @Override
             public void startChat(String playerId, String pwd, String visibleChannel, ArrayList<ChatAction> baseActions) {
-                if (popupChatIfStarted)
+                if (popupChatIfStarted) {
+                    popupChatIfStarted = false;
                     openChat(host);
-                else
+                } else {
                     Logger.log("ChatCounterController", "Chat silently started");
+                }
             }
 
             @Override
@@ -99,7 +101,14 @@ public class ChatCounterController extends ChatStubController<ChatStubModel> {
 
             @Override
             public void duplicateModel(ChatModel model) {
-                // Do nothing
+                SettingsContext settings = host.getViewContext().getSettingsContext();
+                boolean shouldStartChat = settings.get("login_enterChat", false);
+                if (shouldStartChat && !triedInitialStart && !getModel().hasStarted()) {
+                    Logger.log("ChatCounterController", "Automatically opening Chat");
+                    getModel().submitCommand(new ChatModel.ChatModelCommand.StartChat(getModel().getSession()));
+                    triedInitialStart = true;
+                    popupChatIfStarted = false;
+                }
             }
 
             @Override
@@ -107,15 +116,6 @@ public class ChatCounterController extends ChatStubController<ChatStubModel> {
                 // Do nothing
             }
         };
-
-        SettingsContext settings = host.getViewContext().getSettingsContext();
-        boolean shouldStartChat = settings.get("login_enterChat", false);
-        if (shouldStartChat && !triedInitialStart && !getModel().hasStarted()) {
-            Logger.log("ChatCounterController", "Automatically opening Chat");
-            getModel().submitCommand(new ChatModel.ChatModelCommand.StartChat(getModel().getSession()));
-            triedInitialStart = true;
-            popupChatIfStarted = false;
-        }
     }
 
     private void openChat(Screen host) {
