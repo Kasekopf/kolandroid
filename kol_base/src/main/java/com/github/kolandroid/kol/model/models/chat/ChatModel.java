@@ -487,5 +487,17 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                 return new ChatModelSegment.DuplicateChannel(channel);
             }
         }
+
+        class RequestCurrentChannel implements ChatModelCommand {
+            public static final RequestCurrentChannel ONLY = new RequestCurrentChannel();
+
+            private RequestCurrentChannel() {
+            }
+
+            @Override
+            public ChatModelSegment complete(ChatModel base) {
+                return new ChatModelSegment.ExecuteCommand(new SetCurrentChannel(base.visibleChannel));
+            }
+        }
     }
 }

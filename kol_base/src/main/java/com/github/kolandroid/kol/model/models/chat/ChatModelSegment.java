@@ -255,7 +255,7 @@ public abstract class ChatModelSegment implements Serializable {
 
         @Override
         public String toString() {
-            return "$chat.AssertNewMessage[" + message + "]";
+            return "$chat.AssertNewMessage[...]";
         }
     }
 

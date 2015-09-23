@@ -77,6 +77,8 @@ public class ChannelModel extends LinkedModel<Void> {
 
     protected void setActive(boolean active) {
         this.active = active;
+        if (!active)
+            unread = 0;
         notifyView(null);
     }
 
@@ -96,7 +98,8 @@ public class ChannelModel extends LinkedModel<Void> {
         if (this.name.startsWith("@"))
             setActive(true);
 
-        this.unread++;
+        if (active)
+            this.unread++;
 
         if (message.isEvent()) {
             String text = message.getText();
