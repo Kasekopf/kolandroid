@@ -191,14 +191,20 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             public void duplicateModel(ChatModel model) {
                 duplicate(model);
             }
+
+            @Override
+            public void duplicateChannel(ChannelModel channel) {
+                ChannelModel current = getOrCreateChannel(channel.getName());
+                current.duplicate(channel);
+            }
         });
     }
 
     public void submitCommand(ChatModelCommand command) {
-        boolean rebroadcast = command.complete(this);
-        if (rebroadcast) {
+        ChatModelSegment toBroadcast = command.complete(this);
+        if (toBroadcast != null) {
             ArrayList<ChatModelSegment> update = new ArrayList<>();
-            update.add(new ChatModelSegment.ExecuteCommand(command));
+            update.add(toBroadcast);
             this.notifyView(update);
         }
     }
@@ -261,15 +267,15 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
          * Run the command on the the provided model.
          *
          * @param base Chat model to execute command on
-         * @return True if the chat model should rebroadcast the command
+         * @return A segment to broadcast in response, or null if no broadcast should occur
          */
-        boolean complete(ChatModel base);
+        ChatModelSegment complete(ChatModel base);
 
         class UpdateChat implements ChatModelCommand {
             public static final UpdateChat ONLY = new UpdateChat();
 
             @Override
-            public boolean complete(final ChatModel base) {
+            public ChatModelSegment complete(final ChatModel base) {
                 Request r = new Request("newchatmessages.php?j=1&lasttime=" + base.lasttime);
                 base.makeRequest(r, new ResponseHandler() {
                     @Override
@@ -280,7 +286,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                         }
                     }
                 });
-                return false;
+                return null;
             }
         }
 
@@ -292,9 +298,9 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             }
 
             @Override
-            public boolean complete(ChatModel base) {
+            public ChatModelSegment complete(ChatModel base) {
                 base.changePrimaryChannel(channel);
-                return true;
+                return new ChatModelSegment.ExecuteCommand(this);
             }
         }
 
@@ -328,7 +334,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             }
 
             @Override
-            public boolean complete(final ChatModel base) {
+            public ChatModelSegment complete(final ChatModel base) {
                 String url = encodeChatMessage("submitnewchat.php?playerid=%s&pwd=%s&graf=%s&j=1", base.playerid, base.pwd, message);
                 Logger.log("ChatModel", "Submitting chat for " + url);
 
@@ -342,7 +348,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                         }
                     }
                 });
-                return false;
+                return null;
             }
         }
 
@@ -355,10 +361,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
 
 
             @Override
-            public boolean complete(ChatModel base) {
+            public ChatModelSegment complete(ChatModel base) {
                 ChannelModel model = base.getOrCreateChannel(channel);
                 model.setActive(false);
-                return true;
+                return new ChatModelSegment.ExecuteCommand(this);
             }
         }
 
@@ -370,12 +376,12 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             }
 
             @Override
-            public boolean complete(ChatModel base) {
+            public ChatModelSegment complete(ChatModel base) {
                 ChannelModel model = base.getChannel(channel);
                 if (model != null) {
                     model.setMessagesRead();
                 }
-                return true;
+                return new ChatModelSegment.ExecuteCommand(this);
             }
         }
 
@@ -388,10 +394,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
 
 
             @Override
-            public boolean complete(ChatModel base) {
+            public ChatModelSegment complete(ChatModel base) {
                 Logger.log("ChatModel", base + " filled partial message " + partial);
                 base.fillPartialChatPrompt(partial);
-                return true;
+                return new ChatModelSegment.ExecuteCommand(this);
             }
         }
 
@@ -407,7 +413,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             }
 
             @Override
-            public boolean complete(final ChatModel base) {
+            public ChatModelSegment complete(final ChatModel base) {
                 if (!base.started) {
                     Logger.log("ChatModel", "Starting chat with " + base.getSession());
                     Request req = new TentativeRequest("mchat.php", new ResponseHandler() {
@@ -435,7 +441,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                         }
                     });
                 }
-                return false;
+                return null;
             }
         }
 
@@ -446,9 +452,9 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             }
 
             @Override
-            public boolean complete(ChatModel base) {
+            public ChatModelSegment complete(ChatModel base) {
                 base.started = false;
-                return true;
+                return new ChatModelSegment.ExecuteCommand(this);
             }
         }
 
@@ -459,11 +465,26 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             }
 
             @Override
-            public boolean complete(ChatModel base) {
-                ArrayList<ChatModelSegment> result = new ArrayList<>();
-                result.add(new ChatModelSegment.DuplicateModel(base));
-                base.notifyView(result);
-                return false;
+            public ChatModelSegment complete(ChatModel base) {
+                return new ChatModelSegment.DuplicateModel(base);
+            }
+        }
+
+        class RequestChannelDuplication implements ChatModelCommand {
+            private final String tag;
+
+            public RequestChannelDuplication(String channelTag) {
+                this.tag = channelTag;
+            }
+
+            @Override
+            public ChatModelSegment complete(ChatModel base) {
+                if (tag == null)
+                    return null;
+                ChannelModel channel = base.getChannel(tag);
+                if (channel == null)
+                    return null;
+                return new ChatModelSegment.DuplicateChannel(channel);
             }
         }
     }

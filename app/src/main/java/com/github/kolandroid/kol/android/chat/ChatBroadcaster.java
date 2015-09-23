@@ -12,6 +12,7 @@ import com.github.kolandroid.kol.android.view.AndroidViewContext;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.models.MessageModel;
+import com.github.kolandroid.kol.model.models.chat.ChannelModel;
 import com.github.kolandroid.kol.model.models.chat.ChatAction;
 import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModelSegment;
@@ -43,27 +44,27 @@ public class ChatBroadcaster {
 
         @Override
         public void setLastTime(String time) {
-
+            // Do nothing
         }
 
         @Override
         public void receiveMessage(ChatText message) {
-
+            // Do nothing
         }
 
         @Override
         public void setAvailableChannels(ArrayList<String> channels) {
-
+            // Do nothing
         }
 
         @Override
         public void setCurrentChannels(ArrayList<String> channels) {
-
+            // Do nothing
         }
 
         @Override
         public void executeCommand(ChatModel.ChatModelCommand command) {
-
+            // Do nothing
         }
 
         @Override
@@ -86,7 +87,12 @@ public class ChatBroadcaster {
 
         @Override
         public void duplicateModel(ChatModel model) {
+            // Do nothing
+        }
 
+        @Override
+        public void duplicateChannel(ChannelModel channel) {
+            // Do nothing
         }
     };
 

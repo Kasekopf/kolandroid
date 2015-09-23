@@ -186,6 +186,8 @@ public abstract class ChatModelSegment implements Serializable {
         void startChatFailed(MessageModel message);
 
         void duplicateModel(ChatModel model);
+
+        void duplicateChannel(ChannelModel channel);
     }
 
     private static final class AssertChatClosed extends ChatModelSegment {
@@ -398,6 +400,24 @@ public abstract class ChatModelSegment implements Serializable {
         @Override
         public String toString() {
             return "$chat.DuplicateModel[" + model + "]";
+        }
+    }
+
+    protected static final class DuplicateChannel extends ChatModelSegment {
+        private final ChannelModel channel;
+
+        public DuplicateChannel(ChannelModel channel) {
+            this.channel = channel;
+        }
+
+        @Override
+        public void visit(ChatModelSegmentProcessor processor) {
+            processor.duplicateChannel(channel);
+        }
+
+        @Override
+        protected boolean applyToStubs() {
+            return true;
         }
     }
 

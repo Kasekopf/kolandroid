@@ -42,7 +42,6 @@ public abstract class ChatStubController<E extends ChatStubModel> extends Linked
                 }
             };
             model.insertCommandCallback(sendCommand.weak());
-            ChatBroadcaster.sendCommand(host, ChatModel.ChatModelCommand.RequestDuplication.ONLY);
         }
 
         this.doConnect(view, model, host);

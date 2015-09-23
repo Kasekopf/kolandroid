@@ -20,4 +20,9 @@ public class ChatSubmissionStubModel extends ChatStubModel {
             partialChatCallback.execute(message);
         }
     }
+
+    @Override
+    public void triggerFill() {
+        // Do nothing
+    }
 }

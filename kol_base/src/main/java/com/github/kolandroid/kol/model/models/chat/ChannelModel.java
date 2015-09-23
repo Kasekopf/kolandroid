@@ -2,7 +2,6 @@ package com.github.kolandroid.kol.model.models.chat;
 
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.LinkedModel;
-import com.github.kolandroid.kol.util.Logger;
 
 import java.util.ArrayList;
 
@@ -125,7 +124,6 @@ public class ChannelModel extends LinkedModel<Void> {
     }
 
     protected void notifyPrimaryChanged() {
-        Logger.log("ChannelModel", name + " primary status changed");
         notifyView(null);
     }
 }

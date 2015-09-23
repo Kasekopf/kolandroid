@@ -20,6 +20,7 @@ public class ChatStubModel extends ChatModel {
 
     public void insertCommandCallback(Callback<ChatModelCommand> commandCallback) {
         this.submitCommandCallback = commandCallback;
+        triggerFill();
     }
 
     public void submitCommand(ChatModelCommand command) {
@@ -28,6 +29,10 @@ public class ChatStubModel extends ChatModel {
         } else {
             submitCommandCallback.execute(command);
         }
+    }
+
+    public void triggerFill() {
+        submitCommand(ChatModelCommand.RequestDuplication.ONLY);
     }
 
     @Override

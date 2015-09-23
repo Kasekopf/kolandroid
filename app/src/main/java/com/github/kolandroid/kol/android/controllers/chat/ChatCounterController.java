@@ -99,7 +99,12 @@ public class ChatCounterController extends ChatStubController<ChatStubModel> {
 
             @Override
             public void duplicateModel(ChatModel model) {
+                // Do nothing
+            }
 
+            @Override
+            public void duplicateChannel(ChannelModel channel) {
+                // Do nothing
             }
         };
 
