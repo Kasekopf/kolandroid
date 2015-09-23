@@ -66,6 +66,8 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
         BasicGroup<ItemModel> newSection = new BasicGroup<>(
                 sectionName);
         for (String item : items) {
+            if (item.contains("action=unequipall")) continue;
+
             ItemModel newItem = new ItemModel(getSession(), pwd, item);
             newItem.searchCache(itemCache);
             newSection.add(newItem);

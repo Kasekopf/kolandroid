@@ -31,7 +31,7 @@ public class ItemModel extends Model implements SubtextElement {
 
     private static final Regex ITEM_ID = new Regex("<td[^>]*id=['\"]?i(\\d+)['\"]?'", 1);
 
-    private static final Regex ITEM_SLOT = new Regex("<a[^>]*>([^<]*?)</a>:", 1);
+    private static final Regex ITEM_SLOT = new Regex("<a[^>]*>([^<]*?)</a>(&nbsp;(\\d))?:", 1, 3);
 
     private static final Regex ITEM_ACTION = new Regex("<a.*?</a>", 0);
     private static final Regex ITEM_ACTION_NAME = new Regex(
@@ -67,7 +67,7 @@ public class ItemModel extends Model implements SubtextElement {
         String partialName = ITEM_NAME.extractSingle(itemInfo, "");
         name = partialName;
 
-        String slot = ITEM_SLOT.extractSingle(itemInfo, "");
+        // Determine the quantity of the item
         String number = ITEM_QUANTITY.extractSingle(itemInfo, "");
         if (number.equals("")) {
             quantity = "1";
@@ -76,10 +76,19 @@ public class ItemModel extends Model implements SubtextElement {
             partialName += " (" + number + ")";
         }
 
-        if (!slot.equals("")) {
-            partialName = slot + ": " + partialName;
+        // Determine the slot of the item
+        String[] slotInfo = ITEM_SLOT.extract(itemInfo);
+        if (slotInfo == null) {
+            //No slot
+            displayName = partialName;
+        } else if (slotInfo[1] == null || slotInfo[1].isEmpty()) {
+            //Non-accessory slot
+            displayName = slotInfo[0] + ": " + partialName;
+        } else {
+            //Accessory slot
+            displayName = slotInfo[0] + " " + slotInfo[1] + ": " + partialName;
         }
-        displayName = partialName;
+
 
         id = ITEM_ID.extractSingle(itemInfo, "-1");
         descriptionId = ITEM_DESCRIPTION_ID.extractSingle(itemInfo, "0");
