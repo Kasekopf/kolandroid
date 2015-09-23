@@ -8,6 +8,7 @@
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/MyActionBarTabText</item>
         <item name="android:actionMenuTextColor">@color/actionbar_text</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_map_black_24dp</item>
     </style>
 
     <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar">

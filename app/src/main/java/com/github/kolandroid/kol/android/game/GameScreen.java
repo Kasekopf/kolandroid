@@ -74,7 +74,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
             getFragmentManager().beginTransaction()
                     .replace(R.id.navigation_drawer, navigationScreen).commit();
             navigationScreen.setUp(this, R.id.navigation_drawer,
-                    (DrawerLayout) findViewById(R.id.drawer_layout));
+                    (DrawerLayout) findViewById(R.id.drawer_layout), R.drawable.ic_map_black_24dp);
 
             // Set up the stats pane.
             this.stats = new StatsController(new StatsModel(session));

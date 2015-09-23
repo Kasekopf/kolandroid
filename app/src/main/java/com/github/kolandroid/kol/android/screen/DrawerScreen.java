@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.DrawableRes;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -44,10 +45,12 @@ public class DrawerScreen extends FragmentScreen {
     /**
      * Users of this fragment must call this method to set up the navigation drawer interactions.
      *
+     * @param host  The host of this navigation bar
      * @param fragmentId   The android:id of this fragment in its activity's layout.
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
+     * @param topIcon   The icon to use in the top left to summon the navigation bar
      */
-    public void setUp(final ActionBarActivity host, int fragmentId, DrawerLayout drawerLayout) {
+    public void setUp(final ActionBarActivity host, int fragmentId, DrawerLayout drawerLayout, @DrawableRes int topIcon) {
         mFragmentContainerView = host.findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
 
@@ -56,6 +59,7 @@ public class DrawerScreen extends FragmentScreen {
 
         ActionBar actionBar = host.getSupportActionBar();
         if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(topIcon);
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
         }
@@ -65,7 +69,7 @@ public class DrawerScreen extends FragmentScreen {
         mDrawerToggle = new ActionBarDrawerToggle(
                 host,                    /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
-                R.drawable.ic_drawer,             /* nav drawer image to replace 'Up' caret */
+                topIcon,             /* nav drawer image to replace 'Up' caret */
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
         ) {
