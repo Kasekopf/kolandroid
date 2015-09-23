@@ -166,6 +166,8 @@ public abstract class ChatModelSegment implements Serializable {
 
     public abstract void visit(ChatModelSegmentProcessor processor);
 
+    protected abstract boolean applyToStubs();
+
     public interface ChatModelSegmentProcessor {
         void chatClosed();
 
@@ -197,6 +199,16 @@ public abstract class ChatModelSegment implements Serializable {
         public void visit(ChatModelSegmentProcessor processor) {
             processor.chatClosed();
         }
+
+        @Override
+        protected boolean applyToStubs() {
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return "$chat.AssertChatClosed[]";
+        }
     }
 
     private static final class AssertNewTime extends ChatModelSegment {
@@ -207,8 +219,18 @@ public abstract class ChatModelSegment implements Serializable {
         }
 
         @Override
+        protected boolean applyToStubs() {
+            return false;
+        }
+
+        @Override
         public void visit(ChatModelSegmentProcessor processor) {
             processor.setLastTime(time);
+        }
+
+        @Override
+        public String toString() {
+            return "$chat.AssertNewTime[" + time + "]";
         }
     }
 
@@ -220,8 +242,18 @@ public abstract class ChatModelSegment implements Serializable {
         }
 
         @Override
+        protected boolean applyToStubs() {
+            return true;
+        }
+
+        @Override
         public void visit(ChatModelSegmentProcessor processor) {
             processor.receiveMessage(message);
+        }
+
+        @Override
+        public String toString() {
+            return "$chat.AssertNewMessage[" + message + "]";
         }
     }
 
@@ -233,8 +265,18 @@ public abstract class ChatModelSegment implements Serializable {
         }
 
         @Override
+        protected boolean applyToStubs() {
+            return true;
+        }
+
+        @Override
         public void visit(ChatModelSegmentProcessor processor) {
             processor.setAvailableChannels(channels);
+        }
+
+        @Override
+        public String toString() {
+            return "$chat.AssertAvailableChannels[" + channels.size() + "]";
         }
     }
 
@@ -246,8 +288,18 @@ public abstract class ChatModelSegment implements Serializable {
         }
 
         @Override
+        protected boolean applyToStubs() {
+            return true;
+        }
+
+        @Override
         public void visit(ChatModelSegmentProcessor processor) {
             processor.setCurrentChannels(channels);
+        }
+
+        @Override
+        public String toString() {
+            return "$chat.AssertCurrentChannels[" + channels.size() + "]";
         }
     }
 
@@ -259,8 +311,18 @@ public abstract class ChatModelSegment implements Serializable {
         }
 
         @Override
+        protected boolean applyToStubs() {
+            return true;
+        }
+
+        @Override
         public void visit(ChatModelSegmentProcessor processor) {
             processor.executeCommand(command);
+        }
+
+        @Override
+        public String toString() {
+            return "$chat.ExecuteCommand[" + command + "]";
         }
     }
 
@@ -278,8 +340,18 @@ public abstract class ChatModelSegment implements Serializable {
         }
 
         @Override
+        protected boolean applyToStubs() {
+            return true;
+        }
+
+        @Override
         public void visit(ChatModelSegmentProcessor processor) {
             processor.startChat(playerId, pwd, visibleChannel, baseActions);
+        }
+
+        @Override
+        public String toString() {
+            return "$chat.AssertChatStarted[" + visibleChannel + "]";
         }
     }
 
@@ -291,8 +363,18 @@ public abstract class ChatModelSegment implements Serializable {
         }
 
         @Override
+        protected boolean applyToStubs() {
+            return true;
+        }
+
+        @Override
         public void visit(ChatModelSegmentProcessor processor) {
             processor.startChatFailed(message);
+        }
+
+        @Override
+        public String toString() {
+            return "$chat.AssertChatStartedFailed[" + message + "]";
         }
     }
 
@@ -304,8 +386,18 @@ public abstract class ChatModelSegment implements Serializable {
         }
 
         @Override
+        protected boolean applyToStubs() {
+            return true;
+        }
+
+        @Override
         public void visit(ChatModelSegmentProcessor processor) {
             processor.duplicateModel(model);
+        }
+
+        @Override
+        public String toString() {
+            return "$chat.DuplicateModel[" + model + "]";
         }
     }
 

@@ -95,8 +95,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         playerid = cloneFrom.playerid;
         pwd = cloneFrom.pwd;
         lasttime = cloneFrom.lasttime;
-        visibleChannel = cloneFrom.visibleChannel;
-
+        changePrimaryChannel(cloneFrom.visibleChannel);
         started = cloneFrom.started;
 
         notifyView(new ArrayList<ChatModelSegment>());
@@ -116,10 +115,14 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
     }
 
     public void apply(Iterable<ChatModelSegment> segments) {
+        ArrayList<ChatModelSegment> broadcastSegments = new ArrayList<>();
         for(ChatModelSegment seg : segments) {
             this.reassemble(seg);
+            if (seg.applyToStubs()) {
+                broadcastSegments.add(seg);
+            }
         }
-        notifyView(segments);
+        notifyView(broadcastSegments);
     }
 
     private void reassemble(ChatModelSegment segment) {
@@ -232,6 +235,27 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         return started;
     }
 
+    private void changePrimaryChannel(String newPrimaryChannel) {
+        if (newPrimaryChannel == null) {
+            return;
+        }
+
+        if (visibleChannel == null) {
+            log("Current channel set from NULL to " + newPrimaryChannel);
+            visibleChannel = newPrimaryChannel;
+            getOrCreateChannel(visibleChannel).notifyPrimaryChanged();
+        } else if (!visibleChannel.equals(newPrimaryChannel)) {
+            log("Current channel set from " + visibleChannel + " to " + newPrimaryChannel);
+            ChannelModel oldChannel = getOrCreateChannel(visibleChannel);
+            ChannelModel newChannel = getOrCreateChannel(newPrimaryChannel);
+            visibleChannel = newPrimaryChannel;
+
+            oldChannel.notifyPrimaryChanged();
+            newChannel.notifyPrimaryChanged();
+        }
+
+    }
+
     public interface ChatModelCommand extends Serializable {
         /**
          * Run the command on the the provided model.
@@ -269,8 +293,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
 
             @Override
             public boolean complete(ChatModel base) {
-                base.log(base + ": Current channel set to " + channel);
-                base.visibleChannel = channel;
+                base.changePrimaryChannel(channel);
                 return true;
             }
         }

@@ -25,10 +25,9 @@ public class ChatStubModel extends ChatModel {
     public void submitCommand(ChatModelCommand command) {
         if (submitCommandCallback == null) {
             Logger.log("ChatStubModel", "Unable to submit command " + command + "; null callback");
-            return;
+        } else {
+            submitCommandCallback.execute(command);
         }
-
-        submitCommandCallback.execute(command);
     }
 
     @Override

@@ -23,6 +23,7 @@ import com.github.kolandroid.kol.util.Logger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 public class ChatController extends ChatStubController<ChatStubModel> {
     /**
@@ -30,10 +31,8 @@ public class ChatController extends ChatStubController<ChatStubModel> {
      */
     private static final long serialVersionUID = -2290839327914902450L;
     private final ChatSubmissionController submission;
-    private HashSet<String> currentTabs;
+    private Set<String> currentTabs;
     private transient CustomFragmentTabHost tabs;
-    private transient ViewScreen submissionScreen;
-
 
     public ChatController(ChatModel model) {
         super(new ChatStubModel(model));

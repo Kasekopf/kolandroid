@@ -2,6 +2,7 @@ package com.github.kolandroid.kol.model.models.chat;
 
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.LinkedModel;
+import com.github.kolandroid.kol.util.Logger;
 
 import java.util.ArrayList;
 
@@ -36,6 +37,8 @@ public class ChannelModel extends LinkedModel<Void> {
         this.messages.addAll(copyFrom.messages);
         this.unread = copyFrom.unread;
         this.active = copyFrom.active;
+
+        notifyView(null);
     }
 
     public void enter() {
@@ -115,5 +118,14 @@ public class ChannelModel extends LinkedModel<Void> {
 
     public int getUnreadCount() {
         return unread;
+    }
+
+    public boolean isPrimaryChannel() {
+        return host.getCurrentChannel().equals(this.name);
+    }
+
+    protected void notifyPrimaryChanged() {
+        Logger.log("ChannelModel", name + " primary status changed");
+        notifyView(null);
     }
 }

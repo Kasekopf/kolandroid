@@ -86,7 +86,7 @@ public class ChatChannelsController extends ChatStubController<ChatStubModel> {
         choice.displayDialog(this);
     }
 
-    private static class ChannelListItemController extends ChannelCounterController {
+    private class ChannelListItemController extends ChannelCounterController {
         private boolean active;
 
         public ChannelListItemController(ChannelModel channel) {
@@ -141,7 +141,6 @@ public class ChatChannelsController extends ChatStubController<ChatStubModel> {
                 public void onClick(View v) {
                     if (getModel().isActive()) {
                         getModel().makePrimaryChannel();
-                        host.close();
                     }
                 }
             });
