@@ -23,28 +23,24 @@ public class KolApplication extends Application implements DataContext {
     };
 
     @Override
-    public DataCache<String, RawSkill> getSkillCache() {
-        if (skillsCache.isLoadRequired()) {
-            synchronized (skillsCache) {
-                if (skillsCache.isLoadRequired()) {
-                    skillsCache.load(this);
-                }
+    public void onCreate() {
+        super.onCreate();
+        new Thread() {
+            @Override
+            public void run() {
+                skillsCache.load(KolApplication.this);
+                itemsCache.load(KolApplication.this);
             }
-        }
+        }.start();
+    }
 
+    @Override
+    public DataCache<String, RawSkill> getSkillCache() {
         return skillsCache;
     }
 
     @Override
     public DataCache<String, RawItem> getItemCache() {
-        if (itemsCache.isLoadRequired()) {
-            synchronized (itemsCache) {
-                if (itemsCache.isLoadRequired()) {
-                    itemsCache.load(this);
-                }
-            }
-        }
-
         return itemsCache;
     }
 }
