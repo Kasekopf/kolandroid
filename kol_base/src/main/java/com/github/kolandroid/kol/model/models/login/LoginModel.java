@@ -45,6 +45,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
 
     public LoginModel(Session s, ServerReply reply) {
         super(s);
+        s.removeCookie("PHPSESSID");
 
         stale = false;
         loginId = LOGIN_ID.extractSingle(reply.url, "");
@@ -68,7 +69,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
         } else {
             announcements = BLANK_TARGETS.replaceAll(announcements, "");
             Logger.log("LoginModel", "Announcements:" + announcements);
-            announcementsModel = new WebModel(s, reply.substituteBody("http://www.kingdomofloathing.com/announcements.php", announcements));
+            announcementsModel = new WebModel(s, reply.substituteBody("http://www.kingdomofloathing.com/announcements.php", announcements), WebModel.WebModelType.EXTERNAL);
         }
     }
 

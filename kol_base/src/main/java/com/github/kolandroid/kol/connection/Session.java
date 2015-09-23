@@ -39,6 +39,12 @@ public class Session implements Serializable {
         return defaultVal;
     }
 
+    public void removeCookie(String which) {
+        if (cookieMap.containsKey(which)) {
+            cookieMap.remove(which);
+        }
+    }
+
     public void addCookies(String cookies) {
         if (cookies == null) return;
 

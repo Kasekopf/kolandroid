@@ -224,6 +224,11 @@ public class WebModel extends Model {
                 return type;
         }
 
+        // If there is no session token, the request must be external
+        if (session.getCookie("PHPSESSID", null) == null) {
+            return WebModelType.EXTERNAL;
+        }
+
         if (text.url.contains("desc_item.php")
                 || text.url.contains("desc_effect.php")
                 || text.url.contains("desc_skill.php"))
