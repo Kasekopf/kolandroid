@@ -129,10 +129,10 @@
                 <com.github.kolandroid.kol.android.util.ProgressBar
                     android:id="@+id/stats_hp"
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
+                    android:layout_height="wrap_content"
                     android:background="#ccc"
                     android:gravity="center"
-                    android:singleLine="true"
+                    android:singleLine="false"
                     app:emptyColor="#fff"
                     app:fullColor="#f55" />
             </LinearLayout>
@@ -154,10 +154,10 @@
                 <com.github.kolandroid.kol.android.util.ProgressBar
                     android:id="@+id/stats_mp"
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
+                    android:layout_height="wrap_content"
                     android:background="#ccc"
                     android:gravity="center"
-                    android:singleLine="true"
+                    android:singleLine="false"
                     app:emptyColor="#fff"
                     app:fullColor="#77f" />
             </LinearLayout>
