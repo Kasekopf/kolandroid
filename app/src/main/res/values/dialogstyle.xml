@@ -3,7 +3,6 @@
 
     <style name="Dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowTitleStyle">@style/CustomDialogTitle</item>
-        <item name="android:background">#fff</item>
     </style>
 
     <style name="CustomDialogTitle">

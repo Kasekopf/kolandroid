@@ -2,6 +2,7 @@ package com.github.kolandroid.kol.android.controllers.inventory;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.Controller;
@@ -29,6 +30,9 @@ public class ClosetController extends ItemStorageController<ClosetModel> {
     @Override
     public void connect(View view, ClosetModel model, final Screen host) {
         super.connect(view, model, host);
+
+        TextView description = (TextView) view.findViewById(R.id.closet_description);
+        description.setText(model.getCurrentState());
 
         Button switchButton = (Button) view.findViewById(R.id.closet_switch_fill);
         final ActionElement changeState = model.getChangeState();

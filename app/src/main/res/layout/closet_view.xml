@@ -38,6 +38,18 @@
         </LinearLayout>
     </com.github.kolandroid.kol.android.util.CustomFragmentTabHost>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/closet_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textSize="12dp"/>
+
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"

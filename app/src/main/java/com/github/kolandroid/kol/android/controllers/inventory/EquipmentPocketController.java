@@ -72,8 +72,8 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
         equipOutfit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                Controller c = GroupSearchListController.create(model.getOutfits(), new ColoredGroupBinder(groupColor), ElementBinder.ONLY);
-                DialogScreen.display(c, host, "Equip outfit");
+                Controller controller = GroupSearchListController.create(model.getOutfits(), new ColoredGroupBinder(groupColor), ElementBinder.ONLY);
+                DialogScreen.display(controller, host, "Equip outfit:");
             }
         });
 
@@ -82,7 +82,7 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
             @Override
             public void onClick(View v) {
                 Controller controller = new CustomOutfitController(model.saveOutfit());
-                host.getViewContext().getPrimaryRoute().execute(controller);
+                DialogScreen.display(controller, host, "Save outfit as:");
             }
         });
     }

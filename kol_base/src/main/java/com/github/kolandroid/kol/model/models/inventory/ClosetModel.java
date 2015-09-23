@@ -19,6 +19,7 @@ public class ClosetModel extends ItemStorageModel {
     private final ActionElement changeState;
     private final MultiuseElement manageMeat;
     private final String meatAction;
+    private final String currentState;
 
     public ClosetModel(Session s, ServerReply text) {
         super(s, fixServerReply(text), (text.url.contains("fillcloset.php") ? "fillcloset.php" : "closet.php"), false);
@@ -32,10 +33,12 @@ public class ClosetModel extends ItemStorageModel {
             changeState = new ActionElement(this.getSession(), "Return to Closet", "closet.php");
             manageMeat = new MultiuseElement(getSession(), meat, "POST/fillcloset.php?addtake=add&action=addtakeclosetmeat&pwd=" + pwd + "&quantity=");
             meatAction = "Put in Closet";
+            currentState = "Moving items into closet.";
         } else {
             changeState = new ActionElement(this.getSession(), "Fill Your Closet", "fillcloset.php");
             manageMeat = new MultiuseElement(getSession(), meat, "POST/closet.php?addtake=take&action=addtakeclosetmeat&pwd=" + pwd + "&quantity=");
             meatAction = "Take from Closet";
+            currentState = "Moving items out of closet.";
         }
     }
 
@@ -52,6 +55,10 @@ public class ClosetModel extends ItemStorageModel {
         html = html.replace("[some]", "[" + message + " some]");
         html = html.replace("[all]", "[" + message + " all]");
         return new ServerReply(text, html);
+    }
+
+    public String getCurrentState() {
+        return currentState;
     }
 
     public ActionElement getChangeState() {
