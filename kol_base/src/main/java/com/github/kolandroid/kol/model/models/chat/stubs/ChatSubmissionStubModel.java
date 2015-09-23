@@ -23,6 +23,10 @@ public class ChatSubmissionStubModel extends ChatStubModel {
 
     @Override
     public void triggerFill() {
-        // Do nothing
+        submitCommand(ChatModelCommand.RequestCurrentChannel.ONLY);
+    }
+
+    public void doChatSubmission(String message) {
+        submitCommand(new ChatModel.ChatModelCommand.SubmitChatMessage(getCurrentChannel(), message));
     }
 }
