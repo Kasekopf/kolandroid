@@ -87,8 +87,11 @@ public class LoginScreen extends ActivityScreen {
                     dialog.close();
                 }
 
-                dialog = DialogScreen.display(c, LoginScreen.this);
-                dialog.setCancelable(cancellable);
+                DialogScreen newDialog = DialogScreen.display(c, LoginScreen.this);
+                newDialog.setCancelable(cancellable);
+                if (!cancellable) {
+                    LoginScreen.this.dialog = newDialog; //it will automatically be closed when a new model appears
+                }
             }
 
             @Override
