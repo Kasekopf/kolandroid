@@ -75,8 +75,6 @@ public class DrawerScreen extends FragmentScreen {
                 if (!isAdded()) {
                     return;
                 }
-
-                host.supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
 
             @Override
@@ -89,7 +87,6 @@ public class DrawerScreen extends FragmentScreen {
                 SharedPreferences sp = PreferenceManager
                         .getDefaultSharedPreferences(host);
                 sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
-                host.supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
         };
 
