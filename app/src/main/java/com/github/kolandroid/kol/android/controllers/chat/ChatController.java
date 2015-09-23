@@ -22,7 +22,9 @@ import com.github.kolandroid.kol.model.models.chat.stubs.ChatStubModel;
 import com.github.kolandroid.kol.util.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class ChatController extends ChatStubController<ChatStubModel> {
@@ -32,6 +34,7 @@ public class ChatController extends ChatStubController<ChatStubModel> {
     private static final long serialVersionUID = -2290839327914902450L;
     private final ChatSubmissionController submission;
     private Set<String> currentTabs;
+    private Map<String, Controller> tabControllers;
     private transient CustomFragmentTabHost tabs;
 
     public ChatController(ChatModel model) {
@@ -39,6 +42,7 @@ public class ChatController extends ChatStubController<ChatStubModel> {
 
         submission = new ChatSubmissionController(model);
         this.currentTabs = new HashSet<>();
+        this.tabControllers = new HashMap<>();
     }
 
     @Override
@@ -49,6 +53,16 @@ public class ChatController extends ChatStubController<ChatStubModel> {
     @Override
     public int getView() {
         return R.layout.chat_view;
+    }
+
+    @Override
+    public void disconnect(Screen host) {
+        super.disconnect(host);
+        tabs = null;
+        submission.disconnect(host);
+        for (Controller c : tabControllers.values()) {
+            c.disconnect(host);
+        }
     }
 
     @Override
@@ -73,6 +87,9 @@ public class ChatController extends ChatStubController<ChatStubModel> {
     }
 
     private void updateTabs(ChatModel model, Screen host) {
+        if (tabs == null)
+            return;
+
         ArrayList<String> currentChannels = new ArrayList<>();
         for (ChannelModel child : model.getChannels()) {
             if (child.isActive())
@@ -124,12 +141,20 @@ public class ChatController extends ChatStubController<ChatStubModel> {
                 tabs.addTab(tabs.newTabSpec(tag).setIndicator(tag),
                         FragmentScreen.class, FragmentScreen.prepare(channel));
             } else {
-                ChannelModel channelModel = getModel().getChannel(tag);
-                if (channelModel == null) {
-                    return; // unable to link to channel which does not exist
+
+                Controller channelName;
+                if (tabControllers.containsKey(tag)) {
+                    channelName = tabControllers.get(tag);
+                } else {
+                    ChannelModel channelModel = getModel().getChannel(tag);
+                    if (channelModel == null) {
+                        return; // unable to link to channel which does not exist
+                    }
+
+                    channelName = new ChannelCounterController(getModel().getChannel(tag));
+                    tabControllers.put(tag, channelName);
                 }
 
-                Controller channelName = new ChannelCounterController(getModel().getChannel(tag));
                 View tabView = inflater.inflate(channelName.getView(), null);
                 channelName.connect(tabView, host);
 
