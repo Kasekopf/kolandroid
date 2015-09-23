@@ -128,6 +128,7 @@ public class WebModel extends Model {
             "       selects[i].androidUniqueId = count;" +
             "       count += 1;" +
             "       selects[i].androidInitialValue = selects[i].selectedIndex;" +
+            "       selects[i].onchange = checkInputChanges;" +
             "   }" +
             "   var texts = document.getElementsByTagName('textarea');" +
             "   if(inputs.length + selects.length + texts.length > 0) {" +
@@ -137,6 +138,7 @@ public class WebModel extends Model {
             "       texts[i].androidUniqueId = count;" +
             "       count += 1;" +
             "       texts[i].androidInitialValue = texts[i].value;" +
+            "       texts[i].onchange = checkInputChanges;" +
             "   }" +
             "   applyInputChanges(window.ANDROIDAPP.getInputChanges())" +
             "}\n" +
@@ -177,7 +179,7 @@ public class WebModel extends Model {
             "   for (var i = 0; i < selects.length; i++) {" +
             "      var id = selects[i].androidUniqueId;" +
             "      if(id && cache[id] && selects[i].name == cache[id].name) {" +
-            "         selects[i].selectedIndex = cache[id].selectedIndex;" +
+            "         selects[i].selectedIndex = cache[id].value;" +
             "      }" +
             "   }" +
             "   var texts = document.getElementsByTagName('textarea');" +
