@@ -1,17 +1,19 @@
 package com.github.kolandroid.kol.android.util;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Looper;
-import android.util.Log;
 import android.view.Window;
 import android.widget.ImageView;
 
 import com.github.kolandroid.kol.android.BuildConfig;
+import com.github.kolandroid.kol.util.Logger;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
@@ -71,13 +73,17 @@ public class ImageDownloader {
         int hashCode();
 
         boolean equals(Object other);
+
+        Context getContext();
     }
 
     private abstract static class WeakSlot<E> implements ImageSlot {
         private final WeakReference<E> base;
+        private final WeakReference<Context> context;
 
-        public WeakSlot(E base) {
+        public WeakSlot(E base, Context context) {
             this.base = new WeakReference<>(base);
+            this.context = new WeakReference<Context>(context);
         }
 
         protected abstract void fill(E base, Bitmap result);
@@ -95,6 +101,10 @@ public class ImageDownloader {
             return base.hashCode();
         }
 
+        public Context getContext() {
+            return context.get();
+        }
+
         public boolean equals(Object other) {
             if (other instanceof WeakSlot<?>) {
                 E slot = base.get();
@@ -110,7 +120,7 @@ public class ImageDownloader {
 
     public static class ViewSlot extends WeakSlot<ImageView> {
         public ViewSlot(ImageView base) {
-            super(base);
+            super(base, base.getContext());
         }
 
         @Override
@@ -122,7 +132,7 @@ public class ImageDownloader {
 
     public static class DialogIconSlot extends WeakSlot<Dialog> {
         public DialogIconSlot(Dialog base) {
-            super(base);
+            super(base, base.getContext());
         }
 
         @Override
@@ -143,12 +153,33 @@ public class ImageDownloader {
             Bitmap result = null;
             InputStream in;
 
+            // Search for a non-null context to load the assets folder
+            Context context = null;
+            for (ImageSlot slot : pendingTasks.get(url)) {
+                context = slot.getContext();
+                if (context != null)
+                    break;
+            }
+
+            if (context == null) {
+                return null; // All views have been garbage collected anyway
+            }
+
+            try {
+                in = context.getAssets().open(url.replace("http://images.kingdomofloathing.com/", "images/"));
+                result = BitmapFactory.decodeStream(in);
+                in.close();
+                return result;
+            } catch (IOException e) {
+                // Failed to find the file in assets, so we have to download it from online
+            }
+
             try {
                 in = new URL(url).openStream();
                 result = BitmapFactory.decodeStream(in);
                 in.close();
             } catch (Exception e) {
-                Log.i("Image", url);
+                Logger.log("ImageDownloader", "Unable to download: " + url);
                 e.printStackTrace();
             }
 
@@ -157,13 +188,11 @@ public class ImageDownloader {
 
         @Override
         protected void onPostExecute(Bitmap result) {
-
             //System.out.println("Got bitmap for " + url);
             if (!pendingTasks.containsKey(url)) {
                 System.out.println("...No task in hash table?");
                 return;
             }
-
 
             if (result != null) {
                 for (ImageSlot slot : pendingTasks.get(url)) {

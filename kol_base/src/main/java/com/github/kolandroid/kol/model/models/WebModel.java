@@ -131,14 +131,14 @@ public class WebModel extends Model {
             "       selects[i].onchange = checkInputChanges;" +
             "   }" +
             "   var texts = document.getElementsByTagName('textarea');" +
-            "   if(inputs.length + selects.length + texts.length > 0) {" +
-            "       console.log('Adding unique input ids: (' + inputs.length + ' + ' + selects.length + ' + ' + texts.length + ')');" +
-            "   }" +
             "   for (var i = 0; i < texts.length; i++) {" +
             "       texts[i].androidUniqueId = count;" +
             "       count += 1;" +
             "       texts[i].androidInitialValue = texts[i].value;" +
             "       texts[i].onchange = checkInputChanges;" +
+            "   }" +
+            "   if(inputs.length + selects.length + texts.length > 0) {" +
+            "       console.log('Adding unique input ids: (' + inputs.length + ' + ' + selects.length + ' + ' + texts.length + ')');" +
             "   }" +
             "   applyInputChanges(window.ANDROIDAPP.getInputChanges())" +
             "}\n" +

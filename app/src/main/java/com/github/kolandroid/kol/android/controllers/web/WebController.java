@@ -19,6 +19,7 @@ import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
@@ -124,6 +125,19 @@ public class WebController extends UpdatableModelController<WebModel> {
                 if (url.startsWith("data:text/html"))
                     return null;
 
+                if (url.contains("images.kingdomofloathing.com")) {
+                    // Attempt to load the image from file
+                    url = url.replace("beach", "totallynotafile");
+                    try {
+                        InputStream image = view.getContext().getAssets().open(url.replace("http://images.kingdomofloathing.com/", "images/"));
+                        return new WebResourceResponse("image/jpeg", null, image);
+                    } catch (IOException e) {
+                        // unable to load the image
+                        return null;
+                    }
+                }
+
+                // in = context.getAssets().open(url.replace("http://images.kingdomofloathing.com/", "images/"));
                 if (url.contains(".php")) {
                     if ((url.startsWith("http://") || url.startsWith("https://") || url.startsWith("www"))
                             && !INTERNAL_FULL_URL.matches(url)) {
