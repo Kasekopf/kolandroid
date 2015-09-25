@@ -98,7 +98,7 @@ public class ChannelModel extends LinkedModel<Void> {
         if (this.name.startsWith("@"))
             setActive(true);
 
-        if (active)
+        if (active && host.hasStarted())
             this.unread++;
 
         if (message.isEvent()) {

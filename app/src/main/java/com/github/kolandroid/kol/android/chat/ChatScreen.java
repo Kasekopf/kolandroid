@@ -14,6 +14,7 @@ import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.connection.Session;
+import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.model.models.chat.stubs.ChatStubModel;
 import com.github.kolandroid.kol.util.Logger;
 
@@ -80,6 +81,10 @@ public class ChatScreen extends ActivityScreen {
             case R.id.action_channels:
                 ChatChannelsController controller = new ChatChannelsController(new ChatStubModel(new Session())); //TODO
                 this.getViewContext().getPrimaryRoute().execute(controller);
+                return true;
+            case R.id.action_disconnect:
+                ChatBroadcaster.sendCommand(this, ChatModel.ChatModelCommand.StopChat.ONLY);
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -6,4 +6,10 @@
         android:orderInCategory="100"
         android:title="Channels"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_disconnect"
+        android:orderInCategory="100"
+        android:title="Disconnect"
+        app:showAsAction="never" />
 </menu>

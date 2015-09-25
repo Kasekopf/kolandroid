@@ -454,7 +454,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             @Override
             public ChatModelSegment complete(ChatModel base) {
                 base.started = false;
-                return new ChatModelSegment.ExecuteCommand(this);
+                for (ChannelModel c : base.getChannels()) {
+                    c.readAllMessages();
+                }
+                return ChatModelSegment.AssertChatClosed.ONLY;
             }
         }
 

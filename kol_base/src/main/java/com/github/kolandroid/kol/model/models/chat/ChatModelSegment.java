@@ -190,7 +190,7 @@ public abstract class ChatModelSegment implements Serializable {
         void duplicateChannel(ChannelModel channel);
     }
 
-    private static final class AssertChatClosed extends ChatModelSegment {
+    protected static final class AssertChatClosed extends ChatModelSegment {
         public static final AssertChatClosed ONLY = new AssertChatClosed();
 
         private AssertChatClosed() {
