@@ -8,8 +8,13 @@ import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class WebModel extends Model {
     /**
@@ -79,7 +84,7 @@ public class WebModel extends Model {
      */
     private static final Regex FRAME_REDIRECT = new Regex("if\\s*\\(parent\\.frames\\.length\\s*==\\s*0\\)\\s*location.href\\s*=\\s*[\"']?game\\.php[\"']?;", 0);
     private static final Regex HEAD_TAG = new Regex("<head>");
-    private final static String jsInjectCode = "" +
+    private static final String jsInjectCode = "" +
             "\nfunction customParseForm(form, action, method) { " +
             "   var inputs = form.getElementsByTagName('input');" +
             "   var data = action ? action : '';" +
@@ -195,8 +200,8 @@ public class WebModel extends Model {
 
     private static final Regex TYPE_EXTRACTION = new Regex("[&?]androiddisplay=([^&]*)", 1);
     private static final Regex TOP_PANE_REFRESH = new Regex("top.charpane.location(.href)?=[\"']?charpane.php[\"']?;");
-    private final String url;
-    private final WebModelType type;
+    private String url;
+    private WebModelType type;
     private String html;
 
     public WebModel(Session s, ServerReply text, WebModelType type) {
@@ -424,6 +429,48 @@ public class WebModel extends Model {
                 }
             };
         }
+    }
+
+
+    /**
+     * Custom serialization code to compress the html.
+     *
+     * @param oos The stream to save this object to
+     * @throws IOException
+     */
+    private void writeObject(ObjectOutputStream oos)
+            throws IOException {
+        oos.writeObject(type);
+        oos.writeObject(url);
+        GZIPOutputStream gos = new GZIPOutputStream(oos);
+        gos.write(html.getBytes());
+        gos.close();
+    }
+
+    /**
+     * Custom deserialization code to decompress the html.
+     *
+     * @param ois The stream to load this object from
+     * @throws ClassNotFoundException
+     * @throws IOException
+     */
+    private void readObject(ObjectInputStream ois)
+            throws ClassNotFoundException, IOException {
+        type = (WebModelType) ois.readObject();
+        url = (String) ois.readObject();
+
+        GZIPInputStream gzipInputStream = new GZIPInputStream(ois);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        for (int value = 0; value != -1; ) {
+            value = gzipInputStream.read();
+            if (value != -1) {
+                baos.write(value);
+            }
+        }
+        gzipInputStream.close();
+        baos.close();
+        html = new String(baos.toByteArray(), "UTF-8");
     }
 
     public enum WebModelType {
