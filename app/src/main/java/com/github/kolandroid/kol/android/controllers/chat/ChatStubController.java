@@ -7,7 +7,8 @@ import android.view.View;
 import com.github.kolandroid.kol.android.chat.ChatBroadcaster;
 import com.github.kolandroid.kol.android.controller.LinkedModelController;
 import com.github.kolandroid.kol.android.screen.Screen;
-import com.github.kolandroid.kol.android.util.HandlerCallback;
+import com.github.kolandroid.kol.android.util.BasicLatchedCallback;
+import com.github.kolandroid.kol.android.util.LatchedCallback;
 import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModelSegment;
 import com.github.kolandroid.kol.model.models.chat.stubs.ChatStubModel;
@@ -16,7 +17,7 @@ import com.github.kolandroid.kol.util.Logger;
 
 public abstract class ChatStubController<E extends ChatStubModel> extends LinkedModelController<Iterable<ChatModelSegment>, E> {
     private transient BroadcastReceiver updateReceiver;
-    private transient HandlerCallback<ChatModel.ChatModelCommand> sendCommand;
+    private transient LatchedCallback<ChatModel.ChatModelCommand> sendCommand;
 
     public ChatStubController(E model) {
         super(model);
@@ -37,9 +38,10 @@ public abstract class ChatStubController<E extends ChatStubModel> extends Linked
                 }
             });
 
-            sendCommand = new HandlerCallback<ChatModel.ChatModelCommand>() {
+            sendCommand = new BasicLatchedCallback<ChatModel.ChatModelCommand>() {
                 @Override
                 protected void receiveProgress(ChatModel.ChatModelCommand command) {
+                    Logger.log("ChatStubController", "Attempting to broadcast command " + command);
                     ChatBroadcaster.sendCommand(host, command);
                 }
             };

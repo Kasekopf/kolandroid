@@ -130,8 +130,9 @@ public class WebController extends UpdatableModelController<WebModel> {
                     url = url.replace("beach", "totallynotafile");
                     try {
                         InputStream image = view.getContext().getAssets().open(url.replace("http://images.kingdomofloathing.com/", "images/"));
-                        return new WebResourceResponse("image/jpeg", null, image);
+                        return new WebResourceResponse("image/gif", null, image);
                     } catch (IOException e) {
+                        Logger.log("WebController", url);
                         // unable to load the image
                         return null;
                     }

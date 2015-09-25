@@ -13,6 +13,7 @@ import com.github.kolandroid.kol.android.view.AndroidViewContext;
 
 public class ViewScreen extends FrameLayout implements Screen {
     private Controller controller;
+    private View baseView;
     private Screen base;
 
     public ViewScreen(Context context) {
@@ -28,21 +29,35 @@ public class ViewScreen extends FrameLayout implements Screen {
     }
 
     public void display(Controller c, Screen base) {
+        this.attach(c, base);
+        this.connect();
+    }
+
+    public void attach(Controller c, Screen base) {
         this.base = base;
         this.controller = c;
 
         LayoutInflater inflater = base.getActivity().getLayoutInflater();
-        View view = inflater.inflate(controller.getView(), this, true);
-        controller.attach(view, this);
-        controller.connect(view, this);
+        baseView = inflater.inflate(controller.getView(), this, true);
+        controller.attach(baseView, this);
     }
 
+    public void connect() {
+        if (controller != null) {
+            controller.connect(baseView, this);
+        }
+    }
+
+    public void disconnect() {
+        if (controller != null) {
+            controller.disconnect(this);
+        }
+    }
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         // View is now detached, and about to be destroyed
-        if (controller != null)
-            controller.disconnect(this);
+        disconnect();
     }
 
     @Override

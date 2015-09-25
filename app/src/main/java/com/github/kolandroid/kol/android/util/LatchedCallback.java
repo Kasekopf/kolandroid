@@ -4,4 +4,8 @@ import com.github.kolandroid.kol.util.Callback;
 
 public interface LatchedCallback<E> extends Callback<E> {
     boolean isClosed();
+
+    void close();
+
+    LatchedCallback<E> weak();
 }

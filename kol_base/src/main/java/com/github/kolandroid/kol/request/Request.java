@@ -70,7 +70,11 @@ public class Request {
      * @return a fresh connection to use.
      */
     protected Connection getConnection(String server) {
-        return new Connection("http://www.kingdomofloathing.com/" + url);
+        if(url.contains("http://www.kingdomofloathing.com/")) {
+            return new Connection(url);
+        } else {
+            return new Connection("http://www.kingdomofloathing.com/" + url);
+        }
     }
 
 

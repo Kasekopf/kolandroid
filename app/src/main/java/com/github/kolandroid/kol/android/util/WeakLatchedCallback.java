@@ -16,6 +16,17 @@ public class WeakLatchedCallback<E> implements LatchedCallback<E> {
     }
 
     @Override
+    public void close() {
+        LatchedCallback<E> callback = callbackRef.get();
+        if (callback != null) callback.close();
+    }
+
+    @Override
+    public LatchedCallback<E> weak() {
+        return this;
+    }
+
+    @Override
     public void execute(E item) {
         LatchedCallback<E> callback = callbackRef.get();
         if (callback != null)

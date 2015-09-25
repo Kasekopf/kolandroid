@@ -29,11 +29,13 @@ public abstract class HandlerCallback<E> implements LatchedCallback<E> {
         base.sendMessageDelayed(Message.obtain(base, 0, item), delay);
     }
 
+    @Override
     public void close() {
         closed = true;
         base.close();
     }
 
+    @Override
     public LatchedCallback<E> weak() {
         return new WeakLatchedCallback<>(this);
     }

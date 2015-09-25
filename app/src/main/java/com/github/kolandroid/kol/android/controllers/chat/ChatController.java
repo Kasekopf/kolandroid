@@ -36,6 +36,7 @@ public class ChatController extends ChatStubController<ChatStubModel> {
     private Set<String> currentTabs;
     private Map<String, Controller> tabControllers;
     private transient CustomFragmentTabHost tabs;
+    private transient ViewScreen submissionScreen;
 
     public ChatController(ChatModel model) {
         super(new ChatStubModel(model));
@@ -58,14 +59,17 @@ public class ChatController extends ChatStubController<ChatStubModel> {
     @Override
     public void disconnect(Screen host) {
         super.disconnect(host);
-        submission.disconnect(host);
+
+        if (submissionScreen != null)
+            submissionScreen.disconnect();
     }
 
     @Override
     public void connect(View view, ChatStubModel model, Screen host) {
         super.connect(view, model, host);
-        ViewScreen submissionScreen = (ViewScreen) view.findViewById(R.id.chat_submission_screen);
-        submissionScreen.display(submission, host);
+
+        if (submissionScreen != null)
+            submissionScreen.connect();
     }
 
     @Override
@@ -84,6 +88,9 @@ public class ChatController extends ChatStubController<ChatStubModel> {
         });
 
         this.currentTabs = new HashSet<>();
+
+        submissionScreen = (ViewScreen) view.findViewById(R.id.chat_submission_screen);
+        submissionScreen.attach(submission, host);
     }
 
     private void updateTabs(ChatModel model, Screen host) {

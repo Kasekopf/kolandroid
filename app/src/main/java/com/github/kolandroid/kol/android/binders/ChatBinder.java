@@ -27,7 +27,7 @@ public class ChatBinder implements Binder<ChatText>, Serializable {
 
     @Override
     public void bind(View view, ChatText model) {
-        TextView text = (TextView) view.findViewById(R.id.list_chat_text);
+        TextView text = (TextView) view.findViewById(R.id.chat_message_text);
         text.setText(Html.fromHtml(model.getText()));
     }
 

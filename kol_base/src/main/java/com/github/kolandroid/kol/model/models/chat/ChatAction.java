@@ -4,6 +4,7 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.model.models.chat.raw.RawAction;
 import com.github.kolandroid.kol.request.Request;
+import com.github.kolandroid.kol.util.Callback;
 
 public class ChatAction extends Model {
     /**
@@ -11,30 +12,46 @@ public class ChatAction extends Model {
      */
     private static final long serialVersionUID = -8557324235833386443L;
 
+    private final String name;
     private final RawAction base;
 
+    protected ChatAction(Session s, String name) {
+        super(s);
+        this.name = name;
+        this.base = null;
+    }
     protected ChatAction(Session s, RawAction base) {
         super(s);
 
         this.base = base;
+        if (base == null) {
+            this.name = "[null]";
+        } else if (base.title == null) {
+            this.name = (base.entry == null) ? "[null]" : base.entry;
+        } else {
+            this.name = base.title;
+        }
     }
 
+    public void submit(ChatText message, ChatModel context, Callback<String> submitExternalUrl) {
+        if (base == null)
+            return;
 
-    public void submit(ChatText baseMessage, ChatModel context) {
-        if (baseMessage.getUser() == null)
+        ChatText.ChatUser messageSender = message.getUser();
+        if (messageSender == null)
             return; //cannot submit with no user
 
         String player;
 
         if (base.useId) {
-            player = baseMessage.getUser().getId() + "";
+            player = messageSender.getId() + "";
         } else {
-            player = baseMessage.getUser().getName();
+            player = messageSender.getName();
         }
 
         switch (base.action) {
             case 1:
-                Request webReq = new Request(base.entry + "?" + base.arg + "=" + baseMessage.getUser().getId());
+                Request webReq = new Request(base.entry + "?" + base.arg + "=" + messageSender.getId());
                 makeRequest(webReq);
                 break;
             case 2:
@@ -52,17 +69,13 @@ public class ChatAction extends Model {
                 context.submitCommand(new ChatModel.ChatModelCommand.FillPartialChat(base.entry + " " + player));
                 break;
             case 5:
-                Request chatReq = new Request(base.entry + baseMessage.getUser().getId());
+                Request chatReq = new Request(base.entry + messageSender.getId());
                 makeRequest(chatReq);
         }
     }
 
     @Override
     public String toString() {
-        if (base.title == null) {
-            if (base.entry == null) return "[null]";
-            return base.entry;
-        }
-        return base.title;
+        return this.name;
     }
 }

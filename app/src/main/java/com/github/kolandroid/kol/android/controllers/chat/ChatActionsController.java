@@ -1,9 +1,13 @@
 package com.github.kolandroid.kol.android.controllers.chat;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.text.Html;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.binders.TextBinder;
@@ -15,6 +19,8 @@ import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModelSegment;
 import com.github.kolandroid.kol.model.models.chat.ChatText;
 import com.github.kolandroid.kol.model.models.chat.stubs.ChatStubModel;
+import com.github.kolandroid.kol.model.models.chat.stubs.ChatSubmissionStubModel;
+import com.github.kolandroid.kol.util.Callback;
 
 import java.util.ArrayList;
 
@@ -27,7 +33,7 @@ public class ChatActionsController extends ChatStubController<ChatStubModel> {
     private final ChatText base;
 
     public ChatActionsController(ChatModel model, ChatText base) {
-        super(new ChatStubModel(model));
+        super(new ChatSubmissionStubModel(model));
         this.base = base;
     }
 
@@ -41,18 +47,29 @@ public class ChatActionsController extends ChatStubController<ChatStubModel> {
         ArrayList<ChatAction> actions = base.getActions();
         ListAdapter<ChatAction> adapter = new ListAdapter<>(host.getActivity(), actions, TextBinder.ONLY);
 
-        ListView list = (ListView) view.findViewById(R.id.chat_channel_list_list);
+        ListView list = (ListView) view.findViewById(R.id.chat_message_actions_list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> ad, View list, int pos,
+            public void onItemClick(AdapterView<?> ad, final View list, int pos,
                                     long arg3) {
                 ChatAction select = (ChatAction) ad.getItemAtPosition(pos);
                 select.attachView(host.getViewContext());
-                select.submit(base, getModel());
+                select.submit(base, getModel(), new Callback<String>() {
+                    @Override
+                    public void execute(String url) {
+                        // Linked to a non-kol page; launch an external activity
+                        Intent intent = new Intent(Intent.ACTION_VIEW,
+                                Uri.parse(url));
+                        list.getContext().startActivity(intent);
+                    }
+                });
                 host.close();
             }
         });
+
+        TextView message = (TextView) view.findViewById(R.id.chat_message_text);
+        message.setText(Html.fromHtml(base.getText()));
     }
 
     @Override

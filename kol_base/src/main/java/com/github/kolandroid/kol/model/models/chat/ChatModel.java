@@ -140,7 +140,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             @Override
             public void receiveMessage(ChatText message) {
                 seenMessages.add(message.getID());
-                message.prepare(baseActions, visibleChannel);
+                message.prepare(getSession(), baseActions, visibleChannel);
 
                 String channelName = message.getChannel();
                 ChannelModel channel = getOrCreateChannel(channelName);
