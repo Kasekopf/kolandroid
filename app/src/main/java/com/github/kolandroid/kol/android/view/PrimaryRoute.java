@@ -139,9 +139,12 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
             execute(controller);
         } else {
             Logger.log("PrimaryRoute", "Split results pane off of response " + response.url);
-            Controller mainController = getController(session, response.removeResultsPane());
+            ServerReply base = response.removeResultsPane();
+            if (base.hasBody()) {
+                Controller mainController = getController(session, base);
+                execute(mainController);
+            }
             Controller resultsController = getController(session, resultsPane);
-            execute(mainController);
             execute(resultsController);
         }
     }

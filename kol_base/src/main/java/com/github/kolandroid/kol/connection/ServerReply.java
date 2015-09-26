@@ -145,6 +145,11 @@ public class ServerReply implements Serializable {
 
     public ServerReply removeResultsPane() {
         String newHtml = RESULTS_PANE.replaceAll(html, "");
+        Logger.log("ServerReply", newHtml);
         return new ServerReply(this, newHtml);
+    }
+
+    public boolean hasBody() {
+        return this.html.contains("body");
     }
 }
