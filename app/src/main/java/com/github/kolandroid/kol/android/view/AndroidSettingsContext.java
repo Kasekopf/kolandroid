@@ -79,4 +79,19 @@ public class AndroidSettingsContext implements SettingsContext {
         editor.putString(name, value);
         editor.apply();
     }
+
+    /**
+     * Normally, settings are slightly asynchronously applied.
+     * This commits the settings change immediately.
+     *
+     * @param name
+     * @param value
+     */
+    public void setImmediately(String name, String value) {
+        Logger.log("AndroidSettingsContext", "[" + name + "] set to $string[" + value + "]");
+        SharedPreferences.Editor editor = globalSettings.edit();
+        editor.putString(name, value);
+        editor.commit();
+
+    }
 }

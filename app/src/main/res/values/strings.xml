@@ -8,4 +8,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_chat">Chat</string>
 
+    <string name="error_reporting_dialog_title">KoL Android crash detected</string>
+    <string name="error_reporting_warning">Important: Any information you submit will be sent to the app developer, Kasekopf.</string>
+    <string name="error_reporting_dialog_text">An unexpected error recently occurred in the application. Please help us improve by emailing us error data!</string>
+    <string name="error_reporting_comment_prompt">Please add any additional comments; perhaps a description of what you were doing or any related KoL settings.</string>
 </resources>

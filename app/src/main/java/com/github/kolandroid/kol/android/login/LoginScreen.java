@@ -11,11 +11,14 @@ import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.chat.ChatBroadcaster;
 import com.github.kolandroid.kol.android.chat.ChatService;
 import com.github.kolandroid.kol.android.controller.Controller;
+import com.github.kolandroid.kol.android.controllers.ErrorReportingController;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.util.HandlerCallback;
+import com.github.kolandroid.kol.gamehandler.SettingsContext;
+import com.github.kolandroid.kol.model.models.ErrorReportingModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.util.Logger;
 
@@ -50,6 +53,11 @@ public class LoginScreen extends ActivityScreen {
                 Log.v(tag, message);
             }
         });
+
+        SettingsContext settings = this.getViewContext().getSettingsContext();
+        if (ErrorReportingModel.detectError(settings)) {
+            controller = new ErrorReportingController(new ErrorReportingModel(settings));
+        }
 
         // Default to displaying the Login Screen on app startup
         if (controller == null) {
@@ -117,16 +125,17 @@ public class LoginScreen extends ActivityScreen {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onRestart() {
+        super.onRestart();
 
-        Logger.log("LoginScreen", "Resuming...");
+        Logger.log("LoginScreen", "Restarting LoginScreen");
 
         // Stop the chat if running
         ChatBroadcaster.sendCommand(this, ChatModel.ChatModelCommand.StopChat.ONLY);
 
-        // If the currently displayed LoginModel is stale, we have to reload the login page
-        if (current != null && current instanceof LoginController && ((LoginController) current).getModel().isStale()) {
+        // If the currently displayed Controller is stale, we have to reload the login page
+        if (current != null && current instanceof ExpiringController && ((ExpiringController) current).hasExpired()) {
+            Logger.log("LoginScreen", "Detected stale controller " + current);
             this.displayController(new LoginConnectingController(), false);
         }
     }

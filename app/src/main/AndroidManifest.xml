@@ -19,6 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="com.github.kolandroid.kol.android.game.GameScreen"
             android:label="@string/title_activity_game_screen"

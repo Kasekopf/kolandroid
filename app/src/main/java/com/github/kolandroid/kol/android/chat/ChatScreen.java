@@ -23,6 +23,7 @@ public class ChatScreen extends ActivityScreen {
     public Controller setup(Bundle savedInstanceState, Controller initial) {
         overridePendingTransition(R.anim.inleftanim, R.anim.outleftanim);
 
+        int a = Integer.parseInt("abc");
         ActionBar bar = getSupportActionBar();
         if (bar != null) {
             bar.setDisplayHomeAsUpEnabled(true);

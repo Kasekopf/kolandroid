@@ -17,7 +17,6 @@ import com.github.kolandroid.kol.android.login.LoginScreen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.gamehandler.DataContext;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
-import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.util.Logger;
 
@@ -28,7 +27,7 @@ public class AndroidViewContext implements ViewContext {
     private Handler toastLauncher;
     private DataContext data;
 
-    private SettingsContext settings;
+    private AndroidSettingsContext settings;
     private PrimaryRoute primaryRoute;
     private LoadingContext loadingContext;
 
@@ -103,7 +102,7 @@ public class AndroidViewContext implements ViewContext {
     }
 
     @Override
-    public SettingsContext getSettingsContext() {
+    public AndroidSettingsContext getSettingsContext() {
         return settings;
     }
 

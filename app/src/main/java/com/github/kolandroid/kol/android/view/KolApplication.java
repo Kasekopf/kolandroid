@@ -25,6 +25,7 @@ public class KolApplication extends Application implements DataContext {
     @Override
     public void onCreate() {
         super.onCreate();
+
         new Thread() {
             @Override
             public void run() {
