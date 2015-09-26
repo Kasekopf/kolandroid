@@ -79,6 +79,6 @@ public class ChannelController extends ChatStubController<ChannelStubModel> {
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this, true);
+        choice.displayChat(this);
     }
 }

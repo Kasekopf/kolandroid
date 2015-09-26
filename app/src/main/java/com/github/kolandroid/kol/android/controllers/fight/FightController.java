@@ -39,7 +39,7 @@ public class FightController extends ModelController<FightModel> {
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this, false);
+        choice.displayPrimary(this);
     }
 
     @Override

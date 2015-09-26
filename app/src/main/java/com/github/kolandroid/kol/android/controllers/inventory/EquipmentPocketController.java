@@ -42,7 +42,7 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this, true);
+        // do nothing
     }
 
     @Override

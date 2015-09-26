@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.Controller;
+import com.github.kolandroid.kol.android.controller.UpdateController;
 import com.github.kolandroid.kol.android.controllers.chat.ChatChannelsController;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
@@ -45,7 +46,12 @@ public class ChatScreen extends ActivityScreen {
             }
 
             @Override
-            public void displayPrimary(Controller c, boolean replaceSameType) {
+            public void displayPrimaryUpdate(UpdateController c, boolean displayIfUnable) {
+                Logger.log("ChatScreen", "ERROR: Controller " + c + " has chosen to update a primary screen. Ignoring.");
+            }
+
+            @Override
+            public void displayPrimary(Controller c) {
                 Logger.log("ChatScreen", "ERROR: Controller " + c + " has chosen to appear on a primary screen. Ignoring.");
             }
 

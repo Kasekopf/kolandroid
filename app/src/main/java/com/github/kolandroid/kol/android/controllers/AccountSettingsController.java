@@ -2,12 +2,13 @@ package com.github.kolandroid.kol.android.controllers;
 
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.GroupController;
+import com.github.kolandroid.kol.android.controller.UpdateController;
 import com.github.kolandroid.kol.android.controllers.web.LiveWebController;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.model.models.AccountSettingsModel;
 import com.github.kolandroid.kol.model.models.LiveWebModel;
 
-public class AccountSettingsController extends GroupController<LiveWebModel, AccountSettingsModel> {
+public class AccountSettingsController extends GroupController<LiveWebModel, AccountSettingsModel> implements UpdateController<AccountSettingsModel> {
     public AccountSettingsController(AccountSettingsModel model) {
         super(model);
     }
@@ -19,6 +20,11 @@ public class AccountSettingsController extends GroupController<LiveWebModel, Acc
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this, true);
+        choice.displayPrimaryUpdate(this, true);
+    }
+
+    @Override
+    public Class<AccountSettingsModel> getUpdateType() {
+        return AccountSettingsModel.class;
     }
 }

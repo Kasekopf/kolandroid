@@ -76,6 +76,23 @@ public class CustomFragmentTabHost extends TabHost
         super.setOnTabChangedListener(this);
     }
 
+    public void clearAllTabs() {
+        /*
+        for(TabInfo info : mTabs) {
+            if (info.fragment != null && !info.fragment.isDetached()) {
+                Logger.log("CustomFragmentTabHost", "Clearing " + info.tag);
+                FragmentTransaction ft = mFragmentManager.beginTransaction();
+                ft.detach(info.fragment);
+                ft.commit();
+            }
+        }
+        */
+
+        super.clearAllTabs();
+        mLastTab = null;
+        mTabs.clear();
+    }
+
     private void initFragmentTabHost(Context context) {
         // If owner hasn't made its own view hierarchy, then as a convenience
         // we will construct a standard one here.
@@ -178,6 +195,10 @@ public class CustomFragmentTabHost extends TabHost
                 FragmentTransaction ft = mFragmentManager.beginTransaction();
                 ft.detach(info.fragment);
                 ft.commit();
+            }
+
+            if (info.fragment != null) {
+                info.fragment = null;
             }
         }
 
@@ -320,8 +341,8 @@ public class CustomFragmentTabHost extends TabHost
 
     public static final class TabInfo {
         private final String tag;
-        private final Class<?> classId;
-        private final Bundle args;
+        private Class<?> classId;
+        private Bundle args;
         private Fragment fragment;
 
         TabInfo(String _tag, Class<?> _class, Bundle _args) {

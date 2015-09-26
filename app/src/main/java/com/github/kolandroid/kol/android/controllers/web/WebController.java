@@ -38,11 +38,10 @@ public class WebController extends UpdatableModelController<WebModel> {
         this.inputChanges = "{}";
     }
 
-    public void updateModel(WebModel base) {
-        super.updateModel(base);
+    @Override
+    protected void doReplace(WebModel model) {
         if (web != null) {
-            //inputChanges = "{}";
-            loadContent(base);
+            loadContent(model);
         }
     }
 
@@ -71,7 +70,7 @@ public class WebController extends UpdatableModelController<WebModel> {
     public void chooseScreen(final ScreenSelection choice) {
         getModel().visitType(new WebModel.WebModelTypeVisitor<Void>() {
             public Void forRegular() {
-                choice.displayPrimary(WebController.this, false);
+                choice.displayPrimary(WebController.this);
                 return null;
             }
 

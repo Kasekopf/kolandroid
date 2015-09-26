@@ -37,7 +37,7 @@ public class ItemPocketController extends
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this, true);
+        // do nothing
     }
 
     @Override

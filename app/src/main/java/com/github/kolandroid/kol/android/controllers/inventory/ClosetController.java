@@ -56,4 +56,9 @@ public class ClosetController extends ItemStorageController<ClosetModel> {
             }
         });
     }
+
+    @Override
+    public Class<ClosetModel> getUpdateType() {
+        return ClosetModel.class;
+    }
 }

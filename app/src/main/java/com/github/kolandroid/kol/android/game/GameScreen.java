@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.ModelController;
+import com.github.kolandroid.kol.android.controller.UpdatableController;
+import com.github.kolandroid.kol.android.controller.UpdateController;
 import com.github.kolandroid.kol.android.controllers.NavigationController;
 import com.github.kolandroid.kol.android.controllers.StatsController;
 import com.github.kolandroid.kol.android.controllers.StatsController.StatsCallbacks;
@@ -109,32 +111,39 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
             }
 
             @Override
+            public void displayPrimaryUpdate(UpdateController c, boolean displayIfUnable) {
+                // We have to do a more complicated check to see if the same controller type is currently displayed
+                Fragment current = getFragmentManager().findFragmentByTag("game_screen");
+                if (current != null && current instanceof FragmentScreen) {
+                    Controller currentController = ((FragmentScreen) current).getController();
+                    if (currentController != null && currentController instanceof UpdatableController) {
+                        UpdatableController toUpdate = (UpdatableController) currentController;
+
+                        if (toUpdate.tryApply(c.getUpdateType(), c.getModel())) {
+                            Logger.log("GameScreen", "Update " + c + " applied to " + toUpdate);
+                            return;
+                        }
+                        Logger.log("GameScreen", "Unable to apply update " + c + " to " + toUpdate);
+                    }
+                }
+
+                if (displayIfUnable) {
+                    displayPrimary(c);
+                }
+            }
+
+            @Override
             public void displayChat(Controller c) {
                 Logger.log("GameScreen", "ERROR: Controller " + c + " has chosen to appear on in the chat. Ignoring.");
             }
 
-            @Override
-            public void displayPrimary(Controller c, boolean replaceSameType) {
-                Logger.log("GameScreen", "Displaying " + c + " on primary pane [replace=" + replaceSameType + "]");
+            private void displayPrimary(Controller c, boolean addToBackStack) {
                 FragmentScreen screen = FragmentScreen.create(c);
 
                 @SuppressLint("CommitTransaction") FragmentTransaction trans = getFragmentManager()
                         .beginTransaction().replace(R.id.game_main_screen, screen, "game_screen");
 
-                boolean doAddToBackStack = addToBackStack;
-                if (doAddToBackStack && replaceSameType) {
-                    // We have to do a more complicated check to see if the same controller type is currently displayed
-                    Fragment current = getFragmentManager().findFragmentByTag("game_screen");
-                    if (current != null && current instanceof FragmentScreen) {
-                        Controller currentController = ((FragmentScreen) current).getController();
-                        if (currentController != null && c.getClass() == currentController.getClass()) {
-                            Logger.log("GameScreen", "<" + c.getClass() + "> already on screen");
-                            doAddToBackStack = false;
-                        }
-                    }
-                }
-
-                if (doAddToBackStack) {
+                if (addToBackStack) {
                     Logger.log("GameScreen", "History saved");
                     trans = trans.addToBackStack("a");
                 }
@@ -143,6 +152,12 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
                 if (!(c instanceof WebController)) {
                     refreshStatsPane();
                 }
+            }
+
+            @Override
+            public void displayPrimary(Controller c) {
+                Logger.log("GameScreen", "Displaying " + c + " on primary pane");
+                displayPrimary(c, addToBackStack);
             }
 
             @Override

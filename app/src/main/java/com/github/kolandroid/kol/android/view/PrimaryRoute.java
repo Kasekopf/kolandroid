@@ -9,7 +9,7 @@ import com.github.kolandroid.kol.android.controllers.MessageController;
 import com.github.kolandroid.kol.android.controllers.chat.ChatController;
 import com.github.kolandroid.kol.android.controllers.fight.FightController;
 import com.github.kolandroid.kol.android.controllers.inventory.ClosetController;
-import com.github.kolandroid.kol.android.controllers.inventory.ItemStorageController;
+import com.github.kolandroid.kol.android.controllers.inventory.InventoryController;
 import com.github.kolandroid.kol.android.controllers.skills.SkillsController;
 import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.login.LoginController;
@@ -92,7 +92,7 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
         */
         if (response.url.contains("inventory.php")) {
             InventoryModel model = new InventoryModel(session, response);
-            return new ItemStorageController<>(model);
+            return new InventoryController(model);
         }
 
         if (response.url.contains("closet.php")) {

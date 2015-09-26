@@ -10,6 +10,7 @@ import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.chat.ChatBroadcaster;
 import com.github.kolandroid.kol.android.chat.ChatService;
 import com.github.kolandroid.kol.android.controller.Controller;
+import com.github.kolandroid.kol.android.controller.UpdateController;
 import com.github.kolandroid.kol.android.controllers.ErrorReportingController;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
@@ -102,8 +103,13 @@ public class LoginScreen extends ActivityScreen {
             }
 
             @Override
-            public void displayPrimary(Controller c, boolean replaceSameType) {
+            public void displayPrimary(Controller c) {
                 Logger.log("LoginScreen", "ERROR: Controller " + c + " has chosen to appear on a primary screen. Ignoring.");
+            }
+
+            @Override
+            public void displayPrimaryUpdate(UpdateController c, boolean displayIfUnable) {
+                Logger.log("LoginScreen", "ERROR: Controller " + c + " has chosen to update a primary screen. Ignoring.");
             }
 
             @Override

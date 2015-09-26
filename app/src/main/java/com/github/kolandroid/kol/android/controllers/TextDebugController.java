@@ -27,6 +27,6 @@ public class TextDebugController extends ModelController<WebModel> {
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this, false);
+        choice.displayPrimary(this);
     }
 }

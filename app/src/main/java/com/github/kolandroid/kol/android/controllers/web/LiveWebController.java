@@ -10,6 +10,7 @@ import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
 import com.github.kolandroid.kol.model.LiveModel;
 import com.github.kolandroid.kol.model.models.LiveWebModel;
+import com.github.kolandroid.kol.model.models.WebModel;
 
 public class LiveWebController extends
         LinkedModelController<LiveModel.LiveMessage, LiveWebModel> {
@@ -31,7 +32,7 @@ public class LiveWebController extends
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this, false);
+        choice.displayPrimary(this);
     }
 
     @Override
@@ -45,7 +46,9 @@ public class LiveWebController extends
 
     @Override
     public void receiveProgress(View view, LiveWebModel model, LiveModel.LiveMessage message, Screen host) {
-        if (web != null)
-            web.updateModel(model.getBaseModel());
+        if (web != null) {
+            WebModel base = model.getBaseModel();
+            web.tryApply(WebModel.class, base);
+        }
     }
 }

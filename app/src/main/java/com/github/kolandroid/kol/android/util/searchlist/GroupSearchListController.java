@@ -115,7 +115,7 @@ public class GroupSearchListController<F> implements Controller {
 
     @Override
     public void chooseScreen(ScreenSelection choice) {
-        choice.displayPrimary(this, false);
+        choice.displayPrimary(this);
     }
 
 }
