@@ -26,7 +26,7 @@ public class ErrorHandler implements Thread.UncaughtExceptionHandler {
         error += "PhoneModel: " + Build.MODEL + "\n";
         error += "PhoneManufacturer: " + Build.MANUFACTURER + "\n";
         error += "StackTrace: " + Log.getStackTraceString(ex);
-        settings.set(ErrorReportingModel.ERROR_SETTING, error);
+        settings.setImmediately(ErrorReportingModel.ERROR_SETTING, error);
         System.exit(2);
     }
 }

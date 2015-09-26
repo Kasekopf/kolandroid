@@ -54,17 +54,36 @@ public class ItemModel extends Model implements SubtextElement {
     private final String subtext;
     private final String quantity;
     private final String displayName;
+    private final boolean disabled;
     private WebModel description;
-
-
     // Might be updated from cache
     private String image;
     private String descriptionId;
 
     private MultiActionElement test;
 
-    public ItemModel(Session s, String pwd, String itemInfo, Iterable<InventoryActionFactory> additonalActions) {
+    public ItemModel(Session s, String pwd, String itemInfo, Iterable<InventoryActionFactory> additionalActions) {
         super(s);
+
+        if (itemInfo.contains("<font size=-1>none</font>")) {
+            this.id = "0";
+            this.actions = new ArrayList<>();
+            this.name = "None";
+            String[] slotInfo = ITEM_SLOT.extract(itemInfo);
+            if (slotInfo == null || slotInfo.length == 0) {
+                this.displayName = "None";
+            } else {
+                this.displayName = slotInfo[0] + ": " + "None";
+            }
+            this.subtext = "";
+            this.quantity = "0";
+            this.image = "http://images.kingdomofloathing.com/itemimages/blank.gif";
+            this.disabled = true;
+            this.descriptionId = "";
+            return;
+        }
+
+        this.disabled = false;
 
         image = ITEM_IMG.extractSingle(itemInfo, "");
         subtext = ITEM_SUBTEXT.extractSingle(itemInfo, "").replace("&nbsp;", "");
@@ -117,7 +136,7 @@ public class ItemModel extends Model implements SubtextElement {
         }
 
         // Add all applicable right-click actions
-        for (InventoryActionFactory factory : additonalActions) {
+        for (InventoryActionFactory factory : additionalActions) {
             if (factory.appliesTo(relMap)) {
                 actions.add(factory.make(getSession(), quantity.equals("1"), id, pwd));
             }
@@ -133,6 +152,7 @@ public class ItemModel extends Model implements SubtextElement {
         this.image = base.img;
         this.id = base.value;
         this.subtext = "";
+        this.disabled = base.disabled;
         descriptionId = "";
 
         boolean single = quantity.equals("1");
@@ -190,6 +210,8 @@ public class ItemModel extends Model implements SubtextElement {
     }
 
     public void loadDescription(final Callback<ItemModel> onResult) {
+        if (disabled) return;
+
         if (description != null || descriptionId.equals("")) {
             onResult.execute(this);
         } else {

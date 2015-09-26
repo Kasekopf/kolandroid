@@ -14,6 +14,11 @@ public class RawItem implements RawData {
     }
 
     public static RawItem create(String id, String image, String descriptionId, String name) {
+        if (id == null) id = "";
+        if (image == null) image = "";
+        if (descriptionId == null) descriptionId = "";
+        if (name == null) name = "";
+
         id = id.replace("\n", "");
         image = image.replace("\n", "");
         if (image.contains("/")) {
