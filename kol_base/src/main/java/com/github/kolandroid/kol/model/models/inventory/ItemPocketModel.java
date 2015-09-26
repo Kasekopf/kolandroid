@@ -60,7 +60,7 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
     }
 
     protected ModelGroup<ItemModel> parseItems(String sectionName,
-                                                   ArrayList<String> items, String pwd) {
+                                               ArrayList<String> items, String pwd, Iterable<InventoryActionFactory> defaultActions) {
         DataCache<String, RawItem> itemCache = getData().getItemCache();
 
         BasicGroup<ItemModel> newSection = new BasicGroup<>(
@@ -68,7 +68,7 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
         for (String item : items) {
             if (item.contains("action=unequipall")) continue;
 
-            ItemModel newItem = new ItemModel(getSession(), pwd, item);
+            ItemModel newItem = new ItemModel(getSession(), pwd, item, defaultActions);
             newItem.searchCache(itemCache);
             newSection.add(newItem);
         }
@@ -80,14 +80,25 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
 
         String pwd = PWD.extractSingle(reply.html, "0");
 
+        Iterable<InventoryActionFactory> additonalActions = getAdditionalActions(reply);
         for (String section : SECTION.extractAllSingle(reply.html)) {
             String sectionName = SECTION_NAME.extractSingle(section, "");
             ModelGroup<ItemModel> newSection = parseItems(sectionName,
-                    ITEM.extractAllSingle(section), pwd);
+                    ITEM.extractAllSingle(section), pwd, additonalActions);
 
             if (newSection.size() > 0)
                 this.items.add(newSection);
         }
+    }
+
+    protected Iterable<InventoryActionFactory> getAdditionalActions(ServerReply reply) {
+        ArrayList<InventoryActionFactory> res = new ArrayList<>();
+        for (InventoryActionFactory factory : InventoryActionFactory.values()) {
+            if (factory.findOnPage(reply)) {
+                res.add(factory);
+            }
+        }
+        return res;
     }
 
     public <Result> Result execute(PocketVisitor<Result> visitor) {

@@ -47,6 +47,11 @@ public class MultiActionController extends ModelController<MultiActionElement> {
                 }
 
                 if (submitted && closeOnSubmit) {
+                    Activity a = host.getActivity();
+                    if (a != null) {
+                        InputMethodManager imm = (InputMethodManager) a.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.toggleSoftInput(0, 0);
+                    }
                     host.close();
                 }
             }
@@ -79,7 +84,7 @@ public class MultiActionController extends ModelController<MultiActionElement> {
                     Activity a = host.getActivity();
                     if (a != null) {
                         InputMethodManager imm = (InputMethodManager) a.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
                     }
                 }
             }

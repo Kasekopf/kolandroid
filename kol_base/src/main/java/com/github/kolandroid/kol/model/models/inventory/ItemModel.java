@@ -15,6 +15,8 @@ import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Regex;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ItemModel extends Model implements SubtextElement {
     /**
@@ -31,6 +33,7 @@ public class ItemModel extends Model implements SubtextElement {
             "<b[^>]*ircm[^>]*>.*?</b>&nbsp;<span>\\((\\d+)\\)</span>", 1);
 
     private static final Regex ITEM_ID = new Regex("<td[^>]*id=['\"]?i(\\d+)['\"]?'", 1);
+    private static final Regex ITEM_REL = new Regex("<table[^>]*rel=['\"]?([^\"'>]*)['\">]", 1);
 
     private static final Regex ITEM_SLOT = new Regex("<a[^>]*>([^<]*?)</a>(&nbsp;(\\d))?:", 1, 3);
 
@@ -60,7 +63,7 @@ public class ItemModel extends Model implements SubtextElement {
 
     private MultiActionElement test;
 
-    public ItemModel(Session s, String pwd, String itemInfo) {
+    public ItemModel(Session s, String pwd, String itemInfo, Iterable<InventoryActionFactory> additonalActions) {
         super(s);
 
         image = ITEM_IMG.extractSingle(itemInfo, "");
@@ -96,11 +99,28 @@ public class ItemModel extends Model implements SubtextElement {
         id = ITEM_ID.extractSingle(itemInfo, "-1");
         descriptionId = ITEM_DESCRIPTION_ID.extractSingle(itemInfo, "0");
 
+        // Parse and add all visible actions
         actions = new ArrayList<>();
         for (String action : ITEM_ACTION.extractAllSingle(itemInfo)) {
             MultiActionElement parsed = parseAction(pwd, action, itemInfo);
             if (parsed != null)
                 actions.add(parsed);
+        }
+
+        // Extract the rel="..." phrase and break into key/value pairs
+        String rel = ITEM_REL.extractSingle(itemInfo, "");
+        Map<String, String> relMap = new HashMap<>();
+        for (String pair : rel.split("&")) {
+            String[] splitPair = pair.split("=");
+            if (splitPair.length != 2) continue;
+            relMap.put(splitPair[0], splitPair[1]);
+        }
+
+        // Add all applicable right-click actions
+        for (InventoryActionFactory factory : additonalActions) {
+            if (factory.appliesTo(relMap)) {
+                actions.add(factory.make(getSession(), quantity.equals("1"), id, pwd));
+            }
         }
     }
 
@@ -117,7 +137,7 @@ public class ItemModel extends Model implements SubtextElement {
 
         boolean single = quantity.equals("1");
         this.actions = new ArrayList<>();
-        actions.add(new MultiActionElement(getSession(), "Use", single, "http://www.kingdomofloathing.com/multiuse.php?whichitem=" + id + "&action=useitem&ajax=1&pwd=" + pwd + "&quantity=#"));
+        actions.add(InventoryActionFactory.USE.make(s, single, id, pwd));
     }
 
     public void searchCache(DataCache<String, RawItem> cache) {
@@ -146,7 +166,7 @@ public class ItemModel extends Model implements SubtextElement {
 
         if (!quantity.equals("1")) {
             if (lowerName.contains("use") && fullInfo.contains("use multiple") && !actDest.contains("inv_spleen.php")) {
-                return new MultiActionElement(getSession(), "Use", false, "http://www.kingdomofloathing.com/multiuse.php?whichitem=" + id + "&action=useitem&ajax=1&pwd=" + pwd + "&quantity=#");
+                return InventoryActionFactory.USE.make(getSession(), false, id, pwd);
             }
 
             if ((lowerName.contains("eat") && fullInfo.contains("eat some"))
