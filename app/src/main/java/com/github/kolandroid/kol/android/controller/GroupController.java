@@ -37,7 +37,6 @@ public abstract class GroupController<C extends ChildModel, M extends GroupModel
                 .findViewById(R.id.tabs_tab_host);
         tabHost.setup(host.getActivity(), host.getChildFragmentManager());
 
-        tabHost.clearAllTabs();
         for (C child : model.getChildren()) {
             Controller c = getController(child);
             Bundle bundle = FragmentScreen.prepare(c);

@@ -202,6 +202,20 @@ public class CustomFragmentTabHost extends TabHost
             }
         }
 
+        for (TabInfo existingTab : mTabs) {
+            if (existingTab.tag.equals(tag)) {
+                existingTab.reset(classId, args);
+                //If we are replacing the current tab, we have to replace the contents as well
+                if (existingTab == mLastTab) {
+                    FragmentTransaction res = doTabChanged(tag, null, true);
+                    if (res != null)
+                        res.commit();
+                }
+                return;
+            }
+        }
+
+        //Otherwise, no existing tab found
         mTabs.add(info);
         addTab(tabSpec);
     }
@@ -298,6 +312,10 @@ public class CustomFragmentTabHost extends TabHost
     }
 
     private FragmentTransaction doTabChanged(String tabId, FragmentTransaction ft) {
+        return doTabChanged(tabId, ft, false);
+    }
+
+    private FragmentTransaction doTabChanged(String tabId, FragmentTransaction ft, boolean forced) {
         TabInfo newTab = null;
         for (int i = 0; i < mTabs.size(); i++) {
             TabInfo tab = mTabs.get(i);
@@ -309,7 +327,7 @@ public class CustomFragmentTabHost extends TabHost
             if (tabId == null) return ft;
             throw new IllegalStateException("No tab known for tag " + tabId);
         }
-        if (mLastTab != newTab) {
+        if (forced || mLastTab != newTab) {
             if (ft == null) {
                 ft = mFragmentManager.beginTransaction();
             }
@@ -357,6 +375,12 @@ public class CustomFragmentTabHost extends TabHost
 
         public Fragment getFragment() {
             return fragment;
+        }
+
+        private void reset(Class<?> _class, Bundle _args) {
+            this.classId = _class;
+            this.args = _args;
+            this.fragment = null;
         }
     }
 
