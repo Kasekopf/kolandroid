@@ -46,6 +46,7 @@ public class ItemPocketController extends
             list.setItems(model.getItems());
     }
 
+    @Override
     public void connect(View view, ItemPocketModel model, final Screen host) {
         displayModel = new HandlerCallback<ItemModel>() {
             @Override

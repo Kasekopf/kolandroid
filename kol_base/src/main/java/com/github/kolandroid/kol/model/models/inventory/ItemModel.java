@@ -5,6 +5,7 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.data.DataCache;
 import com.github.kolandroid.kol.data.RawItem;
 import com.github.kolandroid.kol.model.Model;
+import com.github.kolandroid.kol.model.elements.MultiActionElement;
 import com.github.kolandroid.kol.model.elements.OptionElement;
 import com.github.kolandroid.kol.model.elements.interfaces.SubtextElement;
 import com.github.kolandroid.kol.model.models.WebModel;
@@ -43,7 +44,7 @@ public class ItemModel extends Model implements SubtextElement {
 
     private static final Regex DESCRIPTION_START = new Regex("<!-- itemid:[^>]*><br>");
     private static final Regex OPTION_QUANTITY = new Regex(" \\([^\\)]*?\\)$", 0);
-    private final ArrayList<InventoryAction> actions;
+    private final ArrayList<MultiActionElement> actions;
 
     private final String id;
     private final String name;
@@ -56,6 +57,8 @@ public class ItemModel extends Model implements SubtextElement {
     // Might be updated from cache
     private String image;
     private String descriptionId;
+
+    private MultiActionElement test;
 
     public ItemModel(Session s, String pwd, String itemInfo) {
         super(s);
@@ -95,7 +98,7 @@ public class ItemModel extends Model implements SubtextElement {
 
         actions = new ArrayList<>();
         for (String action : ITEM_ACTION.extractAllSingle(itemInfo)) {
-            InventoryAction parsed = parseAction(pwd, action);
+            MultiActionElement parsed = parseAction(pwd, action, itemInfo);
             if (parsed != null)
                 actions.add(parsed);
         }
@@ -112,12 +115,9 @@ public class ItemModel extends Model implements SubtextElement {
         this.subtext = "";
         descriptionId = "";
 
+        boolean single = quantity.equals("1");
         this.actions = new ArrayList<>();
-        actions.add(new InventoryAction.ImmediateItemAction(getSession(), "Use", baseAction + "1"));
-
-        if (!quantity.equals("1")) {
-            actions.add(new InventoryAction.MultiuseItemAction(getSession(), this, baseAction));
-        }
+        actions.add(new MultiActionElement(getSession(), "Use", single, "http://www.kingdomofloathing.com/multiuse.php?whichitem=" + id + "&action=useitem&ajax=1&pwd=" + pwd + "&quantity=#"));
     }
 
     public void searchCache(DataCache<String, RawItem> cache) {
@@ -131,27 +131,38 @@ public class ItemModel extends Model implements SubtextElement {
         cache.store(newCacheValue);
     }
 
-    private InventoryAction parseAction(String pwd, String action) {
+    private MultiActionElement parseAction(String pwd, String action, String fullInfo) {
         String actName = ITEM_ACTION_NAME.extractSingle(action);
         String actDest = ITEM_ACTION_LINK.extractSingle(action);
         if (actName == null || actDest == null)
             return null;
 
         String lowerName = actName.toLowerCase();
-        if (lowerName.contains("use multiple")) {
-            return new InventoryAction.MultiuseItemAction(getSession(), this, actDest, pwd);
-        } else if (lowerName.contains("take some") || lowerName.contains("store some")) {
-            return new InventoryAction.MultiClosetItemAction(getSession(), this, actName, actDest, pwd);
-        } else if (lowerName.contains("eat some")
-                || lowerName.contains("drink some")) {
-            // do nothing for now
+        if (lowerName.contains("use multiple") || lowerName.contains("some") || lowerName.contains("all")) {
             return null;
-        } else {
-            actName = actName.substring(0, 1).toUpperCase()
-                    + actName.substring(1);
-
-            return new InventoryAction.ImmediateItemAction(getSession(), actName, actDest);
         }
+
+        boolean restrictSingle = true;
+
+        if (!quantity.equals("1")) {
+            if (lowerName.contains("use") && fullInfo.contains("use multiple") && !actDest.contains("inv_spleen.php")) {
+                return new MultiActionElement(getSession(), "Use", false, "http://www.kingdomofloathing.com/multiuse.php?whichitem=" + id + "&action=useitem&ajax=1&pwd=" + pwd + "&quantity=#");
+            }
+
+            if ((lowerName.contains("eat") && fullInfo.contains("eat some"))
+                    || (lowerName.contains("drink") && fullInfo.contains("drink some"))
+                    || (lowerName.contains("use") && fullInfo.contains("use some"))) {
+                actDest += "&ajax=1&quantity=#";
+                restrictSingle = false;
+            }
+
+            if (lowerName.contains("store") || lowerName.contains("take")) {
+                actDest = actDest.replace("&qty=1", "&qty=#");
+                restrictSingle = false;
+            }
+        }
+
+        return new MultiActionElement(getSession(), actName, restrictSingle, actDest);
     }
 
     public WebModel getDescription() {
@@ -178,7 +189,7 @@ public class ItemModel extends Model implements SubtextElement {
         }
     }
 
-    public ArrayList<InventoryAction> getActions() {
+    public ArrayList<MultiActionElement> getActions() {
         return actions;
     }
 

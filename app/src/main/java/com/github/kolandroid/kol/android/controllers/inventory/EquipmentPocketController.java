@@ -14,6 +14,7 @@ import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
+import com.github.kolandroid.kol.android.util.HandlerCallback;
 import com.github.kolandroid.kol.android.util.searchlist.GroupSearchListController;
 import com.github.kolandroid.kol.android.util.searchlist.ListSelector;
 import com.github.kolandroid.kol.model.LiveModel.LiveMessage;
@@ -27,6 +28,7 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
     private static final long serialVersionUID = 5593217234616379830L;
     private final int groupColor;
     private transient GroupSearchListController<ItemModel> list;
+    private transient HandlerCallback<ItemModel> displayModel;
 
     public EquipmentPocketController(EquipmentPocketModel model, int groupColor) {
         super(model);
@@ -50,6 +52,23 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
     }
 
     @Override
+    public void connect(View view, EquipmentPocketModel model, final Screen host) {
+        displayModel = new HandlerCallback<ItemModel>() {
+            @Override
+            protected void receiveProgress(ItemModel message) {
+                ItemController controller = new ItemController(message);
+                host.getViewContext().getPrimaryRoute().execute(controller);
+            }
+        };
+    }
+
+    @Override
+    public void disconnect(Screen host) {
+        super.disconnect(host);
+        displayModel.close();
+    }
+
+    @Override
     public void attach(View view, final EquipmentPocketModel model, final Screen host) {
         ViewScreen screen = (ViewScreen) view.findViewById(R.id.inventory_list);
         ListSelector<ItemModel> displayPossibleActions = new ListSelector<ItemModel>() {
@@ -65,7 +84,16 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
                 return false;
             }
         };
-        list = new GroupSearchListController<>(model.getItems(), new ColoredGroupBinder(groupColor), SubtextBinder.ONLY, displayPossibleActions);
+        list = new GroupSearchListController<>(model.getItems(), new ColoredGroupBinder(groupColor), SubtextBinder.ONLY, new ListSelector<ItemModel>() {
+            @Override
+            public boolean selectItem(Screen host, ItemModel item) {
+                item.attachView(host.getViewContext());
+                if (displayModel != null) {
+                    item.loadDescription(displayModel.weak());
+                }
+                return true;
+            }
+        });
         screen.display(list, host);
 
         Button equipOutfit = (Button) view.findViewById(R.id.equipment_equip_outfit);

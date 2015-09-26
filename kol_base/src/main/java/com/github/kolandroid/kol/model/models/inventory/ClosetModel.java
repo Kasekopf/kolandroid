@@ -51,7 +51,7 @@ public class ClosetModel extends ItemStorageModel {
         }
 
         String html = text.html;
-        html = html.replace("[one]", "[" + message + " one]");
+        html = html.replace("[one]", "[" + message + "]");
         html = html.replace("[some]", "[" + message + " some]");
         html = html.replace("[all]", "[" + message + " all]");
         return new ServerReply(text, html);

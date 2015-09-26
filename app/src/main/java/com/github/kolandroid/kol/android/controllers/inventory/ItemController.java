@@ -2,25 +2,20 @@ package com.github.kolandroid.kol.android.controllers.inventory;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.kolandroid.kol.android.R;
-import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.ModelController;
-import com.github.kolandroid.kol.android.controllers.MultiuseController;
 import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
 import com.github.kolandroid.kol.android.util.ImageDownloader;
-import com.github.kolandroid.kol.model.elements.interfaces.DeferredGameAction;
-import com.github.kolandroid.kol.model.elements.interfaces.Multiuseable;
+import com.github.kolandroid.kol.model.elements.MultiActionElement;
 import com.github.kolandroid.kol.model.models.WebModel;
-import com.github.kolandroid.kol.model.models.inventory.InventoryAction;
-import com.github.kolandroid.kol.model.models.inventory.InventoryActionVisitor;
 import com.github.kolandroid.kol.model.models.inventory.ItemModel;
+import com.github.kolandroid.kol.util.Logger;
 
 public class ItemController extends ModelController<ItemModel> {
     /**
@@ -39,19 +34,6 @@ public class ItemController extends ModelController<ItemModel> {
 
     @Override
     public void attach(View view, ItemModel model, final Screen host) {
-        final InventoryActionVisitor visitor = new InventoryActionVisitor() {
-            @Override
-            public void executeRequest(DeferredGameAction action) {
-                action.submit(host.getViewContext());
-            }
-
-            @Override
-            public void displayMultiuse(Multiuseable item, String useText) {
-                Controller controller = new MultiuseController(item, useText);
-                host.getViewContext().getPrimaryRoute().execute(controller);
-            }
-        };
-
         WebModel description = model.getDescription();
         if (description == null) {
             // Display image/name of the item as a backup
@@ -70,18 +52,11 @@ public class ItemController extends ModelController<ItemModel> {
         }
 
         ViewGroup group = (ViewGroup) view.findViewById(R.id.item_action_group);
-        for (InventoryAction invAction : model.getActions()) {
-            final InventoryAction action = invAction;
-            Button button = new Button(host.getActivity());
-            button.setText(action.getText());
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    action.select(visitor);
-                    host.close();
-                }
-            });
-            group.addView(button);
+        for (MultiActionElement invAction : model.getActions()) {
+            ViewScreen newScreen = new ViewScreen(host.getActivity());
+            newScreen.display(new MultiActionController(invAction, true), host);
+            group.addView(newScreen);
+            Logger.log("ItemController", invAction.toString());
         }
     }
 

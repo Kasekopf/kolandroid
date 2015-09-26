@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:orientation="horizontal"
+    tools:context="com.github.kolandroid.kol.android.controllers.MultiuseController">
+
+    <EditText
+        android:id="@+id/multiaction_amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:imeOptions="actionGo"
+        android:inputType="number"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/multiaction_one_submit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="" />
+
+    <Button
+        android:id="@+id/multiaction_more_load"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="..." />
+
+</LinearLayout>

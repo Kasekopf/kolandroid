@@ -40,16 +40,16 @@
                 android:visibility="gone" />
         </LinearLayout>
 
+        <com.github.kolandroid.kol.android.screen.ViewScreen
+            android:id="@+id/item_description_screen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <LinearLayout
             android:id="@+id/item_action_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#fff"
             android:orientation="vertical" />
-
-        <com.github.kolandroid.kol.android.screen.ViewScreen
-            android:id="@+id/item_description_screen"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
     </LinearLayout>
 </ScrollView>
