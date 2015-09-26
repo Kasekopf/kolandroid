@@ -10,6 +10,7 @@ import com.github.kolandroid.kol.android.controllers.chat.ChatController;
 import com.github.kolandroid.kol.android.controllers.fight.FightController;
 import com.github.kolandroid.kol.android.controllers.inventory.ClosetController;
 import com.github.kolandroid.kol.android.controllers.inventory.InventoryController;
+import com.github.kolandroid.kol.android.controllers.inventory.InventoryUpdateController;
 import com.github.kolandroid.kol.android.controllers.skills.SkillsController;
 import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.login.LoginController;
@@ -24,6 +25,7 @@ import com.github.kolandroid.kol.model.models.chat.stubs.ChatStubModel;
 import com.github.kolandroid.kol.model.models.fight.FightModel;
 import com.github.kolandroid.kol.model.models.inventory.ClosetModel;
 import com.github.kolandroid.kol.model.models.inventory.InventoryModel;
+import com.github.kolandroid.kol.model.models.inventory.InventoryUpdateModel;
 import com.github.kolandroid.kol.model.models.login.CreateCharacterModel;
 import com.github.kolandroid.kol.model.models.login.LoginModel;
 import com.github.kolandroid.kol.model.models.skill.SkillsModel;
@@ -40,6 +42,16 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
 
     private Controller getController(Session session, ServerReply response) {
         Log.i("PrimaryRoute", "Creating model for response: " + response.url);
+
+        if (!response.hasBody()) {
+            if (response.html.contains("parent.mainpane.updateInv")) {
+                InventoryUpdateModel model = new InventoryUpdateModel(session, response);
+                return new InventoryUpdateController(model);
+            } else {
+                Logger.log("Captured empty body: ", response.url + "; " + response.html);
+                return null;
+            }
+        }
 
         /**
          * Specifically handle simulated requests.
@@ -140,10 +152,8 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
         } else {
             Logger.log("PrimaryRoute", "Split results pane off of response " + response.url);
             ServerReply base = response.removeResultsPane();
-            if (base.hasBody()) {
-                Controller mainController = getController(session, base);
-                execute(mainController);
-            }
+            Controller mainController = getController(session, base);
+            execute(mainController);
             Controller resultsController = getController(session, resultsPane);
             execute(resultsController);
         }
@@ -151,6 +161,6 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
 
     @Override
     public void execute(Controller controller) {
-        controller.chooseScreen(screens);
+        if (controller != null) controller.chooseScreen(screens);
     }
 }

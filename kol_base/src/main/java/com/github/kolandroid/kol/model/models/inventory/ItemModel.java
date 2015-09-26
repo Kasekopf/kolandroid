@@ -52,15 +52,13 @@ public class ItemModel extends Model implements SubtextElement {
     private final String id;
     private final String name;
     private final String subtext;
-    private final String quantity;
-    private final String displayName;
     private final boolean disabled;
+    private final String slotName;
+    private final int quantity;
     private WebModel description;
     // Might be updated from cache
     private String image;
     private String descriptionId;
-
-    private MultiActionElement test;
 
     public ItemModel(Session s, String pwd, String itemInfo, Iterable<InventoryActionFactory> additionalActions) {
         super(s);
@@ -71,12 +69,13 @@ public class ItemModel extends Model implements SubtextElement {
             this.name = "None";
             String[] slotInfo = ITEM_SLOT.extract(itemInfo);
             if (slotInfo == null || slotInfo.length == 0) {
-                this.displayName = "None";
+                this.slotName = "None";
             } else {
-                this.displayName = slotInfo[0] + ": " + "None";
+                this.slotName = slotInfo[0] + ": " + "None";
             }
             this.subtext = "";
-            this.quantity = "0";
+
+            this.quantity = 1;
             this.image = "http://images.kingdomofloathing.com/itemimages/blank.gif";
             this.disabled = true;
             this.descriptionId = "";
@@ -93,25 +92,25 @@ public class ItemModel extends Model implements SubtextElement {
         name = partialName;
 
         // Determine the quantity of the item
-        String number = ITEM_QUANTITY.extractSingle(itemInfo, "");
-        if (number.equals("")) {
-            quantity = "1";
-        } else {
-            quantity = number;
-            partialName += " (" + number + ")";
+        int amount;
+        try {
+            amount = Integer.parseInt(ITEM_QUANTITY.extractSingle(itemInfo, "1"));
+        } catch (NumberFormatException e) {
+            amount = 1;
         }
+        quantity = amount;
 
         // Determine the slot of the item
         String[] slotInfo = ITEM_SLOT.extract(itemInfo);
         if (slotInfo == null) {
             //No slot
-            displayName = partialName;
+            slotName = partialName;
         } else if (slotInfo[1] == null || slotInfo[1].isEmpty()) {
             //Non-accessory slot
-            displayName = slotInfo[0] + ": " + partialName;
+            slotName = slotInfo[0] + ": " + partialName;
         } else {
             //Accessory slot
-            displayName = slotInfo[0] + " " + slotInfo[1] + ": " + partialName;
+            slotName = slotInfo[0] + " " + slotInfo[1] + ": " + partialName;
         }
 
 
@@ -138,7 +137,7 @@ public class ItemModel extends Model implements SubtextElement {
         // Add all applicable right-click actions
         for (InventoryActionFactory factory : additionalActions) {
             if (factory.appliesTo(relMap)) {
-                actions.add(factory.make(getSession(), quantity.equals("1"), id, pwd));
+                actions.add(factory.make(getSession(), quantity == 1, id, pwd));
             }
         }
     }
@@ -146,18 +145,49 @@ public class ItemModel extends Model implements SubtextElement {
     public ItemModel(Session s, String pwd, OptionElement base, String baseAction) {
         super(s);
 
-        this.displayName = base.text;
         this.name = OPTION_QUANTITY.replaceAll(base.text, "");
-        this.quantity = OPTION_QUANTITY.extractSingle(base.text, "1");
+        this.slotName = name;
+
+        int amount;
+        try {
+            amount = Integer.parseInt(OPTION_QUANTITY.extractSingle(base.text, "1"));
+        } catch (NumberFormatException e) {
+            amount = 1;
+        }
+        this.quantity = amount;
+
         this.image = base.img;
         this.id = base.value;
         this.subtext = "";
         this.disabled = base.disabled;
         descriptionId = "";
 
-        boolean single = quantity.equals("1");
+        boolean single = quantity == 1;
         this.actions = new ArrayList<>();
         actions.add(InventoryActionFactory.USE.make(s, single, id, pwd));
+    }
+
+    public ItemModel(ItemModel base, int quantityChange) {
+        super(base.getSession());
+
+        this.slotName = base.slotName;
+        this.name = base.name;
+        this.image = base.image;
+        this.id = base.id;
+        this.subtext = base.subtext;
+        this.disabled = base.disabled;
+        descriptionId = base.descriptionId;
+        this.actions = base.actions;
+
+        this.quantity = base.quantity + quantityChange;
+    }
+
+    public boolean matches(String id) {
+        return this.id.equals(id);
+    }
+
+    public boolean moreThanZero() {
+        return quantity > 0;
     }
 
     public void searchCache(DataCache<String, RawItem> cache) {
@@ -184,7 +214,7 @@ public class ItemModel extends Model implements SubtextElement {
 
         boolean restrictSingle = true;
 
-        if (!quantity.equals("1")) {
+        if (quantity != 1) {
             if (lowerName.contains("use") && fullInfo.contains("use multiple") && !actDest.contains("inv_spleen.php")) {
                 return InventoryActionFactory.USE.make(getSession(), false, id, pwd);
             }
@@ -242,7 +272,11 @@ public class ItemModel extends Model implements SubtextElement {
 
     @Override
     public String getText() {
-        return displayName;
+        if (quantity == 1) {
+            return slotName;
+        } else {
+            return slotName + " (" + quantity + ")";
+        }
     }
 
     @Override

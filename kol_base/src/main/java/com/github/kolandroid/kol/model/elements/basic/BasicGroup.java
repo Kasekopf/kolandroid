@@ -33,6 +33,16 @@ public class BasicGroup<E> implements ModelGroup<E> {
         return items.get(index);
     }
 
+    @Override
+    public void set(int index, E value) {
+        items.set(index, value);
+    }
+
+    @Override
+    public void remove(int index) {
+        items.remove(index);
+    }
+
     public void add(E item) {
         items.add(item);
     }

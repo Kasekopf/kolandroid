@@ -91,6 +91,25 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
         }
     }
 
+    protected boolean apply(String itemId, int amountDifference) {
+        boolean found = false;
+        for (ModelGroup<ItemModel> group : this.items) {
+            for (int i = 0; i < group.size(); i++) {
+                if (group.get(i).matches(itemId)) {
+                    ItemModel newItem = new ItemModel(group.get(i), amountDifference);
+                    if (newItem.moreThanZero()) {
+                        group.set(i, newItem);
+                    } else {
+                        group.remove(i);
+                        i--; //move on to the next item in the group
+                    }
+                    found = true;
+                }
+            }
+        }
+        return found;
+    }
+
     protected Iterable<InventoryActionFactory> getAdditionalActions(ServerReply reply) {
         ArrayList<InventoryActionFactory> res = new ArrayList<>();
         for (InventoryActionFactory factory : InventoryActionFactory.values()) {

@@ -18,14 +18,13 @@ public class CraftingModel extends GroupModel<LiveWebModel> {
     private static final Regex TOP_BAR = new Regex("(<body>.*?)<table.*?</table>.*?</table>", 0);
 
     private LiveWebModel[] crafts;
-    private int initialSlot;
 
     public CraftingModel(Session s, ServerReply reply) {
         super(s);
 
         ArrayList<String> options = SELECTION.extractAllSingle(TOP_BAR.extractSingle(reply.html));
 
-        initialSlot = 0;
+        int initialSlot = 0;
         crafts = new LiveWebModel[options.size()];
         for (int i = 0; i < options.size(); i++) {
             String title = CRAFT_TITLE.extractSingle(options.get(i), "[UNKNOWN]");
@@ -45,6 +44,7 @@ public class CraftingModel extends GroupModel<LiveWebModel> {
         System.out.println("Loaded " + crafts.length + " crafts; selected " + initialSlot);
 
         crafts[initialSlot].process(reply);
+        this.setActiveChild(initialSlot);
     }
 
     private static LiveWebModel createCraftingSubModel(Session s, String title, String updateUrl) {
@@ -54,11 +54,6 @@ public class CraftingModel extends GroupModel<LiveWebModel> {
                 return TOP_BAR.replaceAll(html, "$1");
             }
         };
-    }
-
-    @Override
-    public int getActiveChild() {
-        return initialSlot;
     }
 
     @Override

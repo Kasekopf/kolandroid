@@ -81,6 +81,15 @@ public abstract class LiveModel extends LinkedModel<LiveMessage> {
     }
 
     /**
+     * Request the model to refresh its content, but only if it has already loaded.
+     */
+    public void refreshIfLoaded() {
+        if (this.filling) {
+            update();
+        }
+    }
+
+    /**
      * If the model is completely empty, trigger an update.
      * This allows models to load in a lazy fashion.
      */

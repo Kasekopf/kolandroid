@@ -7,5 +7,9 @@ public interface ModelGroup<E> extends Serializable, Iterable<E> {
 
     E get(int index);
 
+    void set(int index, E value);
+
+    void remove(int index);
+
     String getName();
 }

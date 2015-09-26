@@ -42,6 +42,8 @@ public class AccountSettingsModel extends GroupModel<LiveWebModel> {
 
             pages[i] = createPageSubModel(s, name, url);
         }
+
+        this.setActiveChild(0);
     }
 
     /**
@@ -60,15 +62,6 @@ public class AccountSettingsModel extends GroupModel<LiveWebModel> {
                 return html;
             }
         };
-    }
-
-    /**
-     * Get the active child of this model; in this case, the first one.
-     * @return  0
-     */
-    @Override
-    public int getActiveChild() {
-        return 0;
     }
 
     /**

@@ -19,6 +19,8 @@ public abstract class GroupController<C extends ChildModel, M extends GroupModel
      */
     private static final long serialVersionUID = 5797782671758587158L;
 
+    private transient CustomFragmentTabHost tabHost;
+
     public GroupController(M model) {
         super(model);
     }
@@ -33,7 +35,7 @@ public abstract class GroupController<C extends ChildModel, M extends GroupModel
     @CallSuper
     @Override
     public void attach(View view, M model, Screen host) {
-        final CustomFragmentTabHost tabHost = (CustomFragmentTabHost) view
+        tabHost = (CustomFragmentTabHost) view
                 .findViewById(R.id.tabs_tab_host);
         tabHost.setup(host.getActivity(), host.getChildFragmentManager());
 
@@ -47,6 +49,14 @@ public abstract class GroupController<C extends ChildModel, M extends GroupModel
         tabHost.setCurrentTab(model.getActiveChild());
     }
 
+    @Override
+    protected void setModel(M model) {
+        // Before setting the model, we maintain the currently selected tab
+        if (tabHost != null) {
+            model.setActiveChild(tabHost.getCurrentTab());
+        }
+        super.setModel(model);
+    }
 
     @Override
     public void connect(View view, M model, Screen host) {

@@ -18,6 +18,7 @@ public class SkillsModel extends GroupModel<SkillsSubmodel> {
 
         this.skills = new SkillsListModel(s, text);
         this.items = new ItemRestorersModel(s, text);
+        this.setActiveChild(0);
     }
 
     @Override
@@ -25,11 +26,6 @@ public class SkillsModel extends GroupModel<SkillsSubmodel> {
         super.attachView(context);
 
         skills.attachView(context);
-    }
-
-    @Override
-    public int getActiveChild() {
-        return 0;
     }
 
     @Override

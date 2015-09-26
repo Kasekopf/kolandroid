@@ -5,6 +5,7 @@ import com.github.kolandroid.kol.android.controller.GroupController;
 import com.github.kolandroid.kol.android.controller.UpdateController;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.model.models.inventory.EquipmentPocketModel;
+import com.github.kolandroid.kol.model.models.inventory.InventoryUpdateModel;
 import com.github.kolandroid.kol.model.models.inventory.ItemPocketModel;
 import com.github.kolandroid.kol.model.models.inventory.ItemStorageModel;
 import com.github.kolandroid.kol.model.models.inventory.PocketVisitor;
@@ -42,5 +43,18 @@ public abstract class ItemStorageController<E extends ItemStorageModel> extends 
                 return new EquipmentPocketController(model, groupColor);
             }
         });
+    }
+
+    @Override
+    public <F> boolean tryApply(Class<F> type, F object) {
+        if (super.tryApply(type, object)) return true;
+
+        if (type.equals(InventoryUpdateModel.class)) {
+            InventoryUpdateModel newUpdate = (InventoryUpdateModel) object;
+            getModel().apply(newUpdate);
+            this.doReplace(getModel()); //reload the views
+            return true;
+        }
+        return false;
     }
 }
