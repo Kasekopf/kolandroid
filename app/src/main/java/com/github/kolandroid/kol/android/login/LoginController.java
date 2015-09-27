@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
+import com.github.kolandroid.kol.android.BuildConfig;
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.LinkedModelController;
 import com.github.kolandroid.kol.android.controllers.web.WebController;
@@ -197,6 +198,8 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
             announcementsScreen.display(new WebController(announcements), host);
         }
 
+        TextView versionInfo = (TextView) view.findViewById(R.id.login_version);
+        versionInfo.setText("Application Version " + BuildConfig.VERSION_NAME);
     }
 
     public void receiveProgress(View view, LoginModel model, LoginStatus message, Screen host) {

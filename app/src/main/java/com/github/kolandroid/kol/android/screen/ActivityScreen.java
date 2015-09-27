@@ -50,6 +50,7 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
             controller = new MessageController(error);
         }
 
+        this.currentController = controller;
         displayController(controller, false);
     }
 
@@ -59,6 +60,7 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
 
         Logger.log(this.getLocalClassName(), "Saving instance state");
         if (currentController != null) {
+            Logger.log(this.getLocalClassName(), "Saved controller: " + currentController);
             savedInstanceState.putSerializable("controller", currentController);
         }
     }
@@ -79,7 +81,7 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
             if (controller == null) {
                 Logger.log(this.getLocalClassName(), "Received new intent, but controller id was stale");
             } else {
-                currentController = controller;
+                this.currentController = controller;
                 displayController(controller, true);
             }
         } else {
