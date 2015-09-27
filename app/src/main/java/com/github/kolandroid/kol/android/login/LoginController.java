@@ -91,8 +91,13 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
         user.setText(settings.get("login_defaultUsername", ""));
 
         String[] passwordHash = settings.get("login_defaultPassword", ":").split(":");
-        savedUser = passwordHash[0];
-        savedPass = new PasswordHash(passwordHash[1], true);
+        if(passwordHash.length == 2) {
+            savedUser = passwordHash[0];
+            savedPass = new PasswordHash(passwordHash[1], true);
+        } else {
+            savedUser = null;
+            savedPass = null;
+        }
 
         configPass.setChecked(settings.get("login_savePassword", true));
         configChat.setChecked(settings.get("login_enterChat", true));
@@ -122,7 +127,7 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
                 if (username.equals(""))
                     return;
 
-                if (savedUser != null && username.equalsIgnoreCase(savedUser) && (password.equals(""))) {
+                if (savedUser != null && username.equalsIgnoreCase(savedUser) && (password.equals("")) && savedPass != null) {
                     pass = savedPass;
                 } else {
                     if (password.equals(""))

@@ -111,6 +111,13 @@ public class WebModel extends Model {
             "       tobegin = false;" +
             "       data += encodeURIComponent(field.name) + '=' + encodeURIComponent(field.options[field.selectedIndex].value);" +
             "   }" +
+            "   var texts = form.getElementsByTagName('textarea');" +
+            "   for (var i = 0; i < texts.length; i++) {" +
+            "       var field = texts[i];" +
+            "       data += (tobegin ? '?' : '&');" +
+            "       tobegin = false;" +
+            "       data += encodeURIComponent(field.name) + '=' + encodeURIComponent(field.value);" +
+            "   }" +
             "   window.ANDROIDAPP.processFormData(data);" +
             "   return false;" +
             "}\n" +
