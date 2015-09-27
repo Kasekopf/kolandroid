@@ -81,7 +81,7 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
             if (controller == null) {
                 Logger.log(this.getLocalClassName(), "Received new intent, but controller id was stale");
             } else {
-                this.currentController = controller;
+                currentController = controller;
                 displayController(controller, true);
             }
         } else {

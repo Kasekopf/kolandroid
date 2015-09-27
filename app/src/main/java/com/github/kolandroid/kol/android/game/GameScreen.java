@@ -40,12 +40,12 @@ import com.github.kolandroid.kol.util.Logger;
 
 public class GameScreen extends ActivityScreen implements StatsCallbacks {
     private StatsController stats;
+    private NavigationController navigation;
     private DrawerScreen navigationScreen;
 
     private LoadingContext loader;
 
     private Controller chatIconController;
-    private View chatIconView;
 
     @Override
     protected AndroidViewContext createViewContext() {
@@ -71,15 +71,23 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
             chatIconController = new ChatCounterController(session);
 
             // Set up the drawer.
-            Controller nav = new NavigationController(new NavigationModel(session));
-            navigationScreen = DrawerScreen.create(nav);
+            if (savedInstanceState != null && savedInstanceState.containsKey("navigation_controller")) {
+                navigation = (NavigationController) savedInstanceState.getSerializable("navigation_controller");
+            } else {
+                navigation = new NavigationController(new NavigationModel(session));
+            }
+            navigationScreen = DrawerScreen.create(navigation);
             getFragmentManager().beginTransaction()
                     .replace(R.id.navigation_drawer, navigationScreen).commit();
             navigationScreen.setUp(this, R.id.navigation_drawer,
                     (DrawerLayout) findViewById(R.id.drawer_layout), R.drawable.ic_map_black_24dp);
 
             // Set up the stats pane.
-            this.stats = new StatsController(new StatsModel(session));
+            if (savedInstanceState != null && savedInstanceState.containsKey("stats_controller")) {
+                stats = (StatsController) savedInstanceState.get("stats_controller");
+            } else {
+                stats = new StatsController(new StatsModel(session));
+            }
             ViewScreen statsScreen = (ViewScreen) findViewById(R.id.game_stats_screen);
             statsScreen.display(stats, this);
         } else {
@@ -176,6 +184,14 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
     public void refreshStatsPane() {
         if (stats != null)
             stats.refresh();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putSerializable("stats_controller", stats);
+        savedInstanceState.putSerializable("navigation_controller", navigation);
     }
 
     @Override

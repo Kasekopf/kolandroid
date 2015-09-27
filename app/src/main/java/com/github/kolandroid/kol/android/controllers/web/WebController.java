@@ -175,6 +175,7 @@ public class WebController extends UpdatableModelController<WebModel> {
         });
 
         web.getSettings().setBuiltInZoomControls(allowZoom);
+        web.getSettings().setDisplayZoomControls(false); //otherwise, context leaks on orientation change
         web.getSettings().setLoadWithOverviewMode(true);
         web.getSettings().setUseWideViewPort(true);
 
