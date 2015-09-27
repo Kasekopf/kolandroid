@@ -45,7 +45,7 @@ public class ItemModel extends Model implements SubtextElement {
     private static final Regex ITEM_SUBTEXT = new Regex(
             "<font[^>]*size=[\"']?1[^>]*>.*?(\\([^<]*\\))</font>", 1);
 
-    private static final Regex DESCRIPTION_START = new Regex("<!-- itemid:[^>]*><br>");
+    private static final Regex NAME_END = new Regex("</center><p><blockquote>");
     private static final Regex OPTION_QUANTITY = new Regex(" \\([^\\)]*?\\)$", 0);
     private final ArrayList<MultiActionElement> actions;
 
@@ -253,7 +253,9 @@ public class ItemModel extends Model implements SubtextElement {
                     if (!response.url.contains(descriptionId)) return;
 
                     String html = response.html;
-                    html = DESCRIPTION_START.replaceAll(html, "$0<br>You Have: <b>" + quantity + "</b>");
+                    if (quantity > 1) {
+                        html = NAME_END.replaceAll(html, " (" + quantity + ")$0");
+                    }
                     description = new WebModel(session, new ServerReply(response, html));
                     onResult.execute(ItemModel.this);
                 }
