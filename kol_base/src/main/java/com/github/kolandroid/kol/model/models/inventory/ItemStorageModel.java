@@ -70,7 +70,12 @@ public class ItemStorageModel extends GroupModel<ItemPocketModel> {
 
                 name = name.replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"");
                 Logger.log("ItemStorageModel", "Found tab: " + name + ", " + url);
-                foundPockets.add(new ItemPocketModel(name, s, url));
+
+                if (useEquipmentModel && name.equalsIgnoreCase("equip")) {
+                    foundPockets.add(new EquipmentPocketModel(name, s, url));
+                } else {
+                    foundPockets.add(new ItemPocketModel(name, s, url));
+                }
             }
         }
 
