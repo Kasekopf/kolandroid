@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_quests"
-        android:icon="@drawable/ic_help_outline_black_24dp"
+        android:icon="@drawable/ic_info"
         android:orderInCategory="100"
         android:title="Quests"
         app:showAsAction="ifRoom" />
