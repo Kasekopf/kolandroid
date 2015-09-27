@@ -37,7 +37,9 @@ public abstract class GroupModel<Child extends ChildModel> extends Model {
      * @param child The child to be active in the model.
      */
     public void setActiveChild(int child) {
-        this.chosen = child;
+        if (child >= 0 && child < getChildren().length) {
+            this.chosen = child;
+        }
     }
 
     /**

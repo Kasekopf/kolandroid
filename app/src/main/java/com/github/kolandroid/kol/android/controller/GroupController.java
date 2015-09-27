@@ -11,6 +11,7 @@ import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.util.CustomFragmentTabHost;
 import com.github.kolandroid.kol.model.GroupModel;
 import com.github.kolandroid.kol.model.GroupModel.ChildModel;
+import com.github.kolandroid.kol.util.Logger;
 
 public abstract class GroupController<C extends ChildModel, M extends GroupModel<C>>
         extends UpdatableModelController<M> implements UpdatableController {
@@ -53,6 +54,7 @@ public abstract class GroupController<C extends ChildModel, M extends GroupModel
     protected void setModel(M model) {
         // Before setting the model, we maintain the currently selected tab
         if (tabHost != null) {
+            Logger.log("GroupController", "Active child set to " + tabHost.getCurrentTab());
             model.setActiveChild(tabHost.getCurrentTab());
         }
         super.setModel(model);

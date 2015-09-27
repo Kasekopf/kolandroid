@@ -9,7 +9,6 @@ import com.github.kolandroid.kol.model.models.inventory.InventoryUpdateModel;
 import com.github.kolandroid.kol.model.models.inventory.ItemPocketModel;
 import com.github.kolandroid.kol.model.models.inventory.ItemStorageModel;
 import com.github.kolandroid.kol.model.models.inventory.PocketVisitor;
-import com.github.kolandroid.kol.util.Logger;
 
 public abstract class ItemStorageController<E extends ItemStorageModel> extends GroupController<ItemPocketModel, E> implements UpdateController<E> {
     /**
@@ -34,7 +33,6 @@ public abstract class ItemStorageController<E extends ItemStorageModel> extends 
         return child.execute(new PocketVisitor<Controller>() {
             @Override
             public Controller display(ItemPocketModel model) {
-                Logger.log("ItemStorageController", "Creating new controller!");
                 return new ItemPocketController(model, groupColor);
             }
 
@@ -52,6 +50,7 @@ public abstract class ItemStorageController<E extends ItemStorageModel> extends 
         if (type.equals(InventoryUpdateModel.class)) {
             InventoryUpdateModel newUpdate = (InventoryUpdateModel) object;
             getModel().apply(newUpdate);
+            this.setModel(getModel()); //set the selected child
             this.doReplace(getModel()); //reload the views
             return true;
         }

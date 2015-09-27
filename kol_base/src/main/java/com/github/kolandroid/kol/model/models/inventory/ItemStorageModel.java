@@ -6,6 +6,7 @@ import com.github.kolandroid.kol.model.GroupModel;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class ItemStorageModel extends GroupModel<ItemPocketModel> {
@@ -14,28 +15,66 @@ public class ItemStorageModel extends GroupModel<ItemPocketModel> {
      */
     private static final long serialVersionUID = 34637430160L;
 
-    private static final Regex CHOSEN_CONSUME = new Regex("\\[consumables\\]");
-    private static final Regex CHOSEN_EQUIP = new Regex("\\[equipment\\]");
-    private static final Regex CHOSEN_MISC = new Regex("\\[miscellaneous\\]");
-    private static final Regex CHOSEN_RECENT = new Regex("\\[recent items\\]");
-    private final ItemPocketModel consume;
-    private final ItemPocketModel equip;
-    private final ItemPocketModel misc;
-    private final ItemPocketModel recent;
+    private static final Regex HEADER_TABS = new Regex("<center>\\[.*?</center>", 0);
+
+    private static final Regex TAB = new Regex("\\[(.*?)\\]( |&nbsp;|</center>)", 1);
+    private static final Regex TAB_NAME = new Regex("(<[^>]*>)?([^<>]*)(<[^>]*>)?", 2);
+    private static final Regex TAB_LINK = new Regex("<a[^>]*href ?= ?[\"']?([^\"'>]*)[\"'>]", 1);
+
+    // inventory.php, closet.php, and storage.php all have a $.get of this form
+    //  If this is ever applied to any other pages, this should be revisited
+    private static final Regex THIS_TAB_LINK = new Regex("\\$\\.get\\('[^']*(which=[^&']+)[&']", 1);
+
     private final String baseUrl;
+
+    private final ItemPocketModel[] pockets;
 
     public ItemStorageModel(Session s, ServerReply text, String baseUrl, boolean useEquipmentModel) {
         super(s);
 
         this.baseUrl = baseUrl;
-        consume = new ItemPocketModel("Consume", s, baseUrl + "?which=1");
-        if (useEquipmentModel) {
-            equip = new EquipmentPocketModel("Equip", s, baseUrl + "?which=2");
+
+        ArrayList<ItemPocketModel> foundPockets = new ArrayList<ItemPocketModel>();
+        String tabs = HEADER_TABS.extractSingle(text.html, "");
+        if (tabs.isEmpty()) {
+            Logger.log("ItemStorageModel", "Unable to find tabs");
+
+            foundPockets.add(new ItemPocketModel("Consume", s, baseUrl + "?which=1"));
+            if (useEquipmentModel) {
+                foundPockets.add(new EquipmentPocketModel("Equip", s, baseUrl + "?which=2"));
+            } else {
+                foundPockets.add(new ItemPocketModel("Equip", s, baseUrl + "?which=2"));
+            }
+
+            foundPockets.add(new ItemPocketModel("Misc", s, baseUrl + "?which=3"));
+            foundPockets.add(new ItemPocketModel("Recent", s, baseUrl + "?which=f-1"));
         } else {
-            equip = new ItemPocketModel("Equip", s, baseUrl + "?which=2");
+            Logger.log("ItemStorageModel", "Found tabs: " + tabs);
+            String thisTab = THIS_TAB_LINK.extractSingle(text.html, "");
+            if (thisTab.isEmpty()) {
+                Logger.log("ItemStorageModel", "Unable to determine current tab");
+                thisTab = text.url;
+            } else {
+                thisTab = baseUrl + "?" + thisTab;
+            }
+
+            for (String tab : TAB.extractAllSingle(tabs)) {
+                String name = TAB_NAME.extractSingle(tab, "");
+                String url = TAB_LINK.extractSingle(tab, thisTab); //default to the page we are loading
+
+                if (name.equals("+")) continue;
+                else if (name.equalsIgnoreCase("consumables")) name = "Consume";
+                else if (name.equalsIgnoreCase("equipment")) name = "Equip";
+                else if (name.equalsIgnoreCase("miscellaneous")) name = "Misc";
+                else if (name.equalsIgnoreCase("recent items")) name = "Recent";
+
+                name = name.replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"");
+                Logger.log("ItemStorageModel", "Found tab: " + name + ", " + url);
+                foundPockets.add(new ItemPocketModel(name, s, url));
+            }
         }
-        misc = new ItemPocketModel("Misc", s, baseUrl + "?which=3");
-        recent = new ItemPocketModel("Recent", s, baseUrl + "?which=f-1");
+
+        pockets = foundPockets.toArray(new ItemPocketModel[foundPockets.size()]);
 
         loadContent(text);
     }
@@ -47,23 +86,22 @@ public class ItemStorageModel extends GroupModel<ItemPocketModel> {
             return;
         }
 
-        int chosen;
-        if (CHOSEN_CONSUME.matches(text.html)) {
-            chosen = 1;
-        } else if (CHOSEN_EQUIP.matches(text.html)) {
-            chosen = 2;
-        } else if (CHOSEN_MISC.matches(text.html)) {
-            chosen = 3;
-        } else if (CHOSEN_RECENT.matches(text.html)) {
-            chosen = 0;
-        } else
-            throw new RuntimeException(
-                    "Unable to determine current pane");
+        ArrayList<String> tabs = TAB.extractAllSingle(HEADER_TABS.extractSingle(text.html, ""));
+        for (int i = 0; i < tabs.size(); i++) {
+            if (TAB_LINK.extractSingle(tabs.get(i), null) == null) {
+                //No link found to go to this tab; we must be IN this tab
+                ItemPocketModel[] children = this.getChildren();
+                if (i >= children.length) {
+                    Logger.log("ItemStorageModel", "Unable to find child " + TAB_NAME.extractSingle(tabs.get(i), "[?]") + "; this model has only " + children.length + " children");
+                } else {
+                    children[i].process(text);
+                    Logger.log("ItemStorageModel", "Loaded " + TAB_NAME.extractSingle(tabs.get(i), "[?]") + " into " + children[i].getTitle());
+                    this.setActiveChild(i);
+                }
+                return;
+            }
+        }
 
-        ItemPocketModel[] children = this.getChildren();
-        children[chosen].process(text);
-        System.out.println("Loaded into slot " + chosen);
-        this.setActiveChild(chosen);
     }
 
     public void apply(InventoryUpdateModel update) {
@@ -95,6 +133,6 @@ public class ItemStorageModel extends GroupModel<ItemPocketModel> {
 
     @Override
     public ItemPocketModel[] getChildren() {
-        return new ItemPocketModel[]{recent, consume, equip, misc};
+        return pockets;
     }
 }
