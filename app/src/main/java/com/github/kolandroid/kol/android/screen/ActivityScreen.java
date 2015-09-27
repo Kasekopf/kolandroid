@@ -9,12 +9,17 @@ import android.support.v7.app.ActionBarActivity;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controllers.MessageController;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
+import com.github.kolandroid.kol.android.view.ControllerPasser;
 import com.github.kolandroid.kol.android.view.ErrorHandler;
 import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.util.Logger;
 
+import java.util.UUID;
+
 public abstract class ActivityScreen extends ActionBarActivity implements Screen {
     private AndroidViewContext base;
+
+    private Controller currentController = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +33,13 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
         if (savedInstanceState != null && savedInstanceState.containsKey("controller")) {
             controller = (Controller) savedInstanceState.getSerializable("controller");
             Logger.log(this.getClass().getSimpleName(), "Restarting with " + controller);
-        } else if (getIntent() != null && getIntent().hasExtra("controller")) {
-            controller = (Controller) getIntent().getSerializableExtra("controller");
-            Logger.log(this.getClass().getSimpleName(), "Starting with " + controller);
+        } else if (getIntent() != null && getIntent().hasExtra("controllerId")) {
+            controller = ControllerPasser.popController((UUID) getIntent().getSerializableExtra("controllerId"));
+            if (controller == null) {
+                Logger.log(this.getClass().getSimpleName(), "Unable to find controller to display; controller in intent was already accessed");
+            } else {
+                Logger.log(this.getClass().getSimpleName(), "Starting with " + controller);
+            }
         } else {
             Logger.log(this.getClass().getSimpleName(), "Unable to find controller to display");
         }
@@ -49,9 +58,8 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
         super.onSaveInstanceState(savedInstanceState);
 
         Logger.log(this.getLocalClassName(), "Saving instance state");
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("controller")) {
-            savedInstanceState.putSerializable("controller", intent.getSerializableExtra("controller"));
+        if (currentController != null) {
+            savedInstanceState.putSerializable("controller", currentController);
         }
     }
 
@@ -66,14 +74,19 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
     public void onNewIntent(Intent intent) {
         this.setIntent(intent);
 
-        if (intent.hasExtra("controller")) {
-            Controller controller = (Controller) intent.getSerializableExtra("controller");
-            displayController(controller, true);
+        if (intent.hasExtra("controllerId")) {
+            Controller controller = ControllerPasser.popController((UUID) getIntent().getSerializableExtra("controllerId"));
+            if (controller == null) {
+                Logger.log(this.getLocalClassName(), "Received new intent, but controller id was stale");
+            } else {
+                currentController = controller;
+                displayController(controller, true);
+            }
         } else {
             // the intent to launch this came from a back action
             // i.e. back from the chat
             // Do not shift the displayed controller
-            Logger.log("ActivityScreen", this.getClass() + " received intent without controller");
+            Logger.log("ActivityScreen", this.getClass() + " received intent without controller id");
         }
     }
 

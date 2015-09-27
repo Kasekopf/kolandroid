@@ -22,6 +22,7 @@ import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.util.Logger;
 
 import java.lang.ref.WeakReference;
+import java.util.UUID;
 
 public class AndroidViewContext implements ViewContext {
     private Handler activityLauncher;
@@ -114,6 +115,7 @@ public class AndroidViewContext implements ViewContext {
     }
 
     private static class IntentBuilder {
+        private static byte count = 2;
         private final Class<?> toLaunch;
         private final Controller toInclude;
         private final int intentFlags;
@@ -130,12 +132,12 @@ public class AndroidViewContext implements ViewContext {
 
         public Intent build(Context context) {
             Intent intent = new Intent(context, toLaunch);
-            intent.putExtra("controller", toInclude);
+            UUID staticId = ControllerPasser.placeController(toInclude);
+            intent.putExtra("controllerId", staticId);
             intent.addFlags(intentFlags);
             Log.i("ViewContext", "Constructing new intent for " + toInclude.getClass());
             return intent;
         }
-
     }
 
     private static class ToastLauncher extends Handler {
