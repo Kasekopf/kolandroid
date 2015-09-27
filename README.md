@@ -5,7 +5,7 @@ Beta! Unofficial Android App for The Kingdom of Loathing
 http://imgur.com/a/7z0vC
 
 # Want to try out the app?
-https://dl.dropboxusercontent.com/u/8596555/kolandroid.apk
+https://bitly.com/1R92N37
 
 USE THE APP AT YOUR OWN RISK. Although I have fixed any bugs I've encounted the app is still DEFINITELY in the beta phase.
 
