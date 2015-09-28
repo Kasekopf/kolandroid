@@ -69,7 +69,7 @@ public class FightModel extends WebModel {
         // Remove the "Show old combat form" link
         String actionClear = BUTTON_REVEALER.replaceAll(renamed, "");
 
-        if (!html.contains("<!--faaaaaaart-->")) { //do not trigger on inner-wolf pages
+        if (!html.contains("name=\"whichskill\" value=\"7193\"")) { //do not trigger on inner-wolf pages
             // Finally, remove all forms from the older version of the fight page.
             return BUTTONS.replaceAll(actionClear, "");
         } else {
