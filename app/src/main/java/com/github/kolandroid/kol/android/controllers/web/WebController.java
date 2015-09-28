@@ -1,6 +1,7 @@
 package com.github.kolandroid.kol.android.controllers.web;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
@@ -211,10 +212,13 @@ public class WebController extends UpdatableModelController<WebModel> {
             Screen host = this.host.get();
             if (host == null) return;
 
-            if (host instanceof GameScreen) {
-                ((GameScreen) host).refreshStatsPane();
+            Activity hostActivity = host.getActivity();
+            if (hostActivity == null) {
+                Logger.log("WebController", "Pane refresh triggered by javascript, but host was stale");
+            } else if (hostActivity instanceof GameScreen) {
+                ((GameScreen) hostActivity).refreshStatsPane();
             } else {
-                Logger.log("WebController", "Pane refresh triggered by javascript, but host was " + host);
+                Logger.log("WebController", "Pane refresh triggered by javascript, but host was " + hostActivity);
             }
         }
 
