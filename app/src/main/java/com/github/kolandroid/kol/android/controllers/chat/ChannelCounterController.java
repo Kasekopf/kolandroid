@@ -34,7 +34,7 @@ public class ChannelCounterController extends LinkedModelController<Void, Channe
         if (badge == null)
             return;
 
-        if (getModel().getUnreadCount() == 0) {
+        if (getModel().getUnreadCount() == 0 || getModel().isPrimaryChannel()) {
             badge.setVisibility(View.GONE);
         } else {
             badge.setText("" + getModel().getUnreadCount());
