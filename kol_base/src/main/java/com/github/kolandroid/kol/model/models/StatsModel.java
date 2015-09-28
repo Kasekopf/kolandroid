@@ -5,7 +5,6 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.LiveModel;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.SimulatedRequest;
-import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
 public class StatsModel extends LiveModel {
@@ -158,7 +157,6 @@ public class StatsModel extends LiveModel {
     }
 
     public String getCharInfo() {
-        Logger.logBig("StatsModel", lastUpdate.html);
         String level = "Level " + extractInt(lastUpdate.html, 0, LEVEL);
         String text = extractString(lastUpdate.html, null, LEVEL_TEXT);
         if (text == null)
