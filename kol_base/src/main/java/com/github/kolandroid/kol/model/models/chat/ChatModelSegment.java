@@ -117,7 +117,7 @@ public abstract class ChatModelSegment implements Serializable {
             }
         }
 
-        if (update.output != null) {
+        if (update.output != null && !update.output.isEmpty()) {
             ChatModelSegment commandSegment = disassembleCommand(update.output, hidden);
             if (commandSegment == null && !hidden) {
                 commandSegment = disassembleMessage(seenMessages, new ChatText(update.output));

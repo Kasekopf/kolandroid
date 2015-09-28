@@ -315,7 +315,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                         message = String
                                 .format("/msg %s %s", channel.replace("@", ""), message);
                     } else {
-                        message = String.format("/c %s %s", channel, message);
+                        message = String.format("/%s %s", channel, message);
                     }
                 }
 
