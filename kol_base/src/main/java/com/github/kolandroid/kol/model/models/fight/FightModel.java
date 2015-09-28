@@ -5,6 +5,7 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.elements.ActionElement;
 import com.github.kolandroid.kol.model.elements.OptionElement;
 import com.github.kolandroid.kol.model.models.WebModel;
+import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class FightModel extends WebModel {
         processSkills(text.html);
         processItems(text.html);
 
+        Logger.logBig("FightModel", text.html);
         if (FIGHT_OVER.matches(text.html))
             fightFinished = true;
     }
@@ -67,8 +69,12 @@ public class FightModel extends WebModel {
         // Remove the "Show old combat form" link
         String actionClear = BUTTON_REVEALER.replaceAll(renamed, "");
 
-        // Finally, remove all forms from the older version of the fight page.
-        return BUTTONS.replaceAll(actionClear, "");
+        if (!html.contains("<!--faaaaaaart-->")) { //do not trigger on inner-wolf pages
+            // Finally, remove all forms from the older version of the fight page.
+            return BUTTONS.replaceAll(actionClear, "");
+        } else {
+            return actionClear;
+        }
     }
 
     private void processSkills(String html) {
