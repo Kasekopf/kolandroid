@@ -129,6 +129,7 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
 
                         if (toUpdate.tryApply(c.getUpdateType(), c.getModel())) {
                             Logger.log("GameScreen", "Update " + c + " applied to " + toUpdate);
+                            refreshStatsPane();
                             return;
                         }
                         Logger.log("GameScreen", "Unable to apply update " + c + " to " + toUpdate);
