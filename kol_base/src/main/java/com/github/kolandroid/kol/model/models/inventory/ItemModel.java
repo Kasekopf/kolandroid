@@ -46,10 +46,9 @@ public class ItemModel extends Model implements SubtextElement {
             "<font[^>]*size=[\"']?1[^>]*>.*?(\\([^<]*\\))</font>", 1);
 
     private static final Regex NAME_END = new Regex("</center><p><blockquote>");
-    private static final Regex OPTION_QUANTITY = new Regex(" \\([^\\)]*?\\)$", 0);
+    private static final Regex OPTION_QUANTITY = new Regex(" \\(([^\\)]*)\\)$", 1);
+    protected final String id;
     private final ArrayList<MultiActionElement> actions;
-
-    private final String id;
     private final String name;
     private final String subtext;
     private final boolean disabled;
@@ -142,7 +141,7 @@ public class ItemModel extends Model implements SubtextElement {
         }
     }
 
-    public ItemModel(Session s, String pwd, OptionElement base, String baseAction) {
+    public ItemModel(Session s, String pwd, OptionElement base, InventoryActionFactory... baseActions) {
         super(s);
 
         this.name = OPTION_QUANTITY.replaceAll(base.text, "");
@@ -164,7 +163,10 @@ public class ItemModel extends Model implements SubtextElement {
 
         boolean single = quantity == 1;
         this.actions = new ArrayList<>();
-        actions.add(InventoryActionFactory.USE.make(s, single, id, pwd));
+
+        for (InventoryActionFactory action : baseActions) {
+            actions.add(action.make(s, single, id, pwd));
+        }
     }
 
     public ItemModel(ItemModel base, int quantityChange) {

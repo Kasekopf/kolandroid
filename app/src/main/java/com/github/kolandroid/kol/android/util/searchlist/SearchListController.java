@@ -25,11 +25,11 @@ public class SearchListController<E> implements Controller {
 
     private final ArrayList<E> initial;
     private final Binder<? super E> binder;
-    private final ListSelector<E> selector;
+    private final ListSelector<? super E> selector;
     private transient HighlightableListAdapter<E> adapter;
 
     public SearchListController(ArrayList<E> initial,
-                                Binder<? super E> binder, ListSelector<E> selector) {
+                                Binder<? super E> binder, ListSelector<? super E> selector) {
         this.binder = binder;
         this.initial = initial;
         this.selector = selector;

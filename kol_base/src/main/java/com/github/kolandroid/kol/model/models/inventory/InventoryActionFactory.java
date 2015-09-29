@@ -13,6 +13,11 @@ public enum InventoryActionFactory {
             return true;
         }
     },
+    USE_RESTORER("Use", "THISISNEVERONTHISPAGE", "inv_use.php?pwd=PWD&action=useitem&bounce=skillz.php%3Faction%3Duseditem&whichitem=IID&itemquantity=#") {
+        public boolean appliesTo(Map<String, String> res) {
+            return false;
+        }
+    },
     AUTOSELL("Autosell", "", "sellstuff.php?action=sell&ajax=1&type=quant&whichitem%5B%5D=IID&howmany=#&pwd=PWD") {
         @Override
         public boolean appliesTo(Map<String, String> rel) {

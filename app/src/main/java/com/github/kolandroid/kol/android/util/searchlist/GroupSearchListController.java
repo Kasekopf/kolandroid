@@ -23,7 +23,7 @@ public class GroupSearchListController<F> implements Controller {
      */
     private static final long serialVersionUID = -3034860712134386719L;
 
-    private final ListSelector<F> selector;
+    private final ListSelector<? super F> selector;
     private final Binder<? super ModelGroup<F>> groupBinder;
     private final Binder<? super F> childBinder;
 
@@ -32,7 +32,7 @@ public class GroupSearchListController<F> implements Controller {
     private transient HighlightableListGroupAdapter<F> adapter;
     private transient ExpandableListView list;
 
-    public GroupSearchListController(ArrayList<ModelGroup<F>> items, Binder<? super ModelGroup<F>> groupBinder, Binder<? super F> childBinder, ListSelector<F> selector) {
+    public GroupSearchListController(ArrayList<ModelGroup<F>> items, Binder<? super ModelGroup<F>> groupBinder, Binder<? super F> childBinder, ListSelector<? super F> selector) {
         this.base = items;
         this.groupBinder = groupBinder;
         this.childBinder = childBinder;

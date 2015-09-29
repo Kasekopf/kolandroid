@@ -111,7 +111,10 @@ public class FunkslingingController implements Controller {
                 FightItem item1 = itemSlot1.getValue();
                 FightItem item2 = itemSlot2.getValue();
 
-                boolean submitted = item1.useWith(host.getViewContext(), item2);
+                item1.attachView(host.getViewContext());
+                item2.attachView(host.getViewContext());
+
+                boolean submitted = FightItem.funksling(item1, item2);
                 if (submitted)
                     host.close();
             }

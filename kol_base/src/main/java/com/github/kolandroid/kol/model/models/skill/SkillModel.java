@@ -20,13 +20,12 @@ public class SkillModel extends Model implements SubtextElement {
     private static final Regex ICON_COST = new Regex("<div[^>]*cost[^>]*>([^<]*)</div>", 1);
     private static final Regex ICON_DISABLED = new Regex("skill *disabled", 1);
     private static final Regex OPTION_MP = new Regex("\\(.*?\\)", 0);
+    protected final String id;
     private final String name;
     private final String cost;
     private final boolean disabled;
     private final String descriptionUrl;
     private final String castAction;
-    private final String id;
-
     private WebModel description;
     private String image;
     private boolean isBuff;

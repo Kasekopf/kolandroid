@@ -5,6 +5,7 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.elements.OptionElement;
 import com.github.kolandroid.kol.model.elements.OptionElement.OptionElementParser;
 import com.github.kolandroid.kol.model.elements.basic.BasicGroup;
+import com.github.kolandroid.kol.model.models.inventory.InventoryActionFactory;
 import com.github.kolandroid.kol.model.models.inventory.ItemModel;
 import com.github.kolandroid.kol.model.models.inventory.ItemPocketModel;
 import com.github.kolandroid.kol.util.Regex;
@@ -38,13 +39,7 @@ public class ItemRestorersModel extends ItemPocketModel implements SkillsSubmode
                 "(select a skill)") {
             @Override
             public ItemModel make(OptionElement base) {
-                String action = "inv_use.php";
-                action += "?pwd=" + pwd;
-                action += "&action=useitem&bounce=skillz.php%3Faction%3Duseditem";
-                action += "&whichitem=" + base.value;
-                action += "&itemquantity=";
-
-                return new ItemModel(getSession(), pwd, base, action);
+                return new ItemModel(getSession(), pwd, base, InventoryActionFactory.USE_RESTORER);
             }
         };
         ArrayList<ItemModel> itemList = OptionElement.extractObjects(all_items, itemsParser);

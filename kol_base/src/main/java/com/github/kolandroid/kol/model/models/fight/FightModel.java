@@ -41,7 +41,7 @@ public class FightModel extends WebModel {
     private static final Regex HAS_FUNKSLINGING = new Regex(
             "<select[^>]*whichitem2[^>]*>");
     private final ActionElement attack;
-    private ArrayList<FightSkill> skills;
+    private ArrayList<FightAction> skills;
     private ArrayList<FightItem> items;
     private boolean fightFinished = false;
     private boolean funkslinging;
@@ -53,7 +53,6 @@ public class FightModel extends WebModel {
         processSkills(text.html);
         processItems(text.html);
 
-        Logger.logBig("FightModel", text.html);
         if (FIGHT_OVER.matches(text.html))
             fightFinished = true;
     }
@@ -86,7 +85,7 @@ public class FightModel extends WebModel {
                 continue;
             String action = button[0];
             String text = button[1];
-            String img = "";
+            String img;
 
             System.out.println("Found button: " + action);
             if (action == null || text == null || text.length() == 0)
@@ -102,9 +101,12 @@ public class FightModel extends WebModel {
                 case "runaway":
                     img = "http://images.kingdomofloathing.com/itemimages/runaway.gif";
                     break;
+                default:
+                    img = "http://images.kingdomofloathing.com/itemimages/blank.gif";
+                    break;
             }
 
-            this.skills.add(new FightSkill(getSession(), text, img,
+            this.skills.add(new FightBasicAction(getSession(), text, img,
                     "fight.php?action=" + action));
         }
 
@@ -112,8 +114,7 @@ public class FightModel extends WebModel {
         ArrayList<OptionElement> dropdown_skills = OptionElement
                 .extractOptions(dropdown);
         for (OptionElement option : dropdown_skills) {
-            skills.add(new FightSkill(getSession(), option.text, option.img,
-                    "fight.php?action=skill&whichskill=" + option.value));
+            skills.add(new FightSkill(getSession(), option));
         }
     }
 
@@ -122,19 +123,20 @@ public class FightModel extends WebModel {
 
         String dropdown = ALL_ITEMS.extractSingle(html, "");
 
+        Logger.logBig("FightModel", html);
         ArrayList<OptionElement> dropdown_items = OptionElement
                 .extractOptions(dropdown);
         for (OptionElement option : dropdown_items) {
             if (option.text.contains("(select an item)"))
                 continue;
-            items.add(new FightItem(getSession(), option.text, option.img,
-                    option.value));
+
+            items.add(new FightItem(getSession(), option));
         }
 
         this.funkslinging = HAS_FUNKSLINGING.matches(html);
     }
 
-    public ArrayList<FightSkill> getSkills() {
+    public ArrayList<FightAction> getSkills() {
         return this.skills;
     }
 
