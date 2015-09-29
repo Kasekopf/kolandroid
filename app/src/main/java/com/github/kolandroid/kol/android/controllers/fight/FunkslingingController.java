@@ -31,7 +31,7 @@ public class FunkslingingController implements Controller {
 
     private final BinderController<FightItem> itemSlot1, itemSlot2;
     private BinderController<FightItem> selected;
-    private View selectedView;
+    private transient View selectedView;
 
     public FunkslingingController(ArrayList<ModelGroup<FightItem>> base) {
         this.base = base;
@@ -56,6 +56,10 @@ public class FunkslingingController implements Controller {
 
     private void setSelected(BinderController<FightItem> controller,
                              View view) {
+        if (view == null) {
+            return;
+        }
+
         if (selectedView != null) {
             selectedView.setPressed(false);
         }
