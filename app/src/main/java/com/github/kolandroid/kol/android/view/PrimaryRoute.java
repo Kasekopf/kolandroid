@@ -43,6 +43,11 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
     private Controller getController(Session session, ServerReply response) {
         Log.i("PrimaryRoute", "Creating model for response: " + response.url);
 
+        if (response.url.contains("androiderror.php")) {
+            MessageModel model = new MessageModel(session, response);
+            return new MessageController(model);
+        }
+
         if (!response.hasBody()) {
             if (response.html.contains("parent.mainpane.updateInv")) {
                 InventoryUpdateModel model = new InventoryUpdateModel(session, response);
@@ -64,11 +69,6 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
 
         if (response.url.contains("donatepopup.php")) {
             MessageModel model = new MessageModel("Thanks for donating to KoL! Unfortunately, this unofficial mobile app does not yet support donations. Please use the mobile web browser.", MessageModel.ErrorType.NONE);
-            return new MessageController(model);
-        }
-
-        if (response.url.contains("androiderror.php")) {
-            MessageModel model = new MessageModel(session, response);
             return new MessageController(model);
         }
 

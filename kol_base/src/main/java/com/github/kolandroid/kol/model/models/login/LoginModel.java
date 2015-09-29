@@ -97,10 +97,18 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                 session.addCookies(response.cookie);
                 Logger.log("LoginModel", "New game session: " + session);
                 if (session.getCookie("PHPSESSID", "").equals("")) {
-                    // Failure to login
-                    Logger.log("LoginModel", "Failed to Login");
-                    makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Login Failed. Bad Password.", MessageModel.ErrorType.SEVERE)));
-                    return;
+                    // First, display the updated login page
+                    getGameHandler().handle(session, response);
+
+                    if (response.html.contains("<b>That login page was really stale.  Try again, please?</b>")) {
+                        // Login page stale
+                        Logger.log("LoginModel", "Stale login page detected");
+                        makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("That login page was really stale. Try again please?", MessageModel.ErrorType.SEVERE)));
+                    } else {
+                        // Failure to login
+                        Logger.log("LoginModel", "Failed to Login");
+                        makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Login Failed. Bad Password.", MessageModel.ErrorType.SEVERE)));
+                    }
                 }
 
                 notifyView(LoginStatus.SUCCESS);
@@ -156,9 +164,18 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                     session.addCookies(response.cookie);
                     Logger.log("LoginModel", "New game session: " + session);
                     if (session.getCookie("PHPSESSID", "").equals("")) {
-                        // Failure to login
-                        Logger.log("LoginModel", "Failed to Login");
-                        makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Login Failed. Bad Password.", MessageModel.ErrorType.SEVERE)));
+                        // Display the new login screen if it exists
+                        getGameHandler().handle(session, response);
+
+                        if (response.html.contains("<b>That login page was really stale.  Try again, please?</b>")) {
+                            // Login page stale
+                            Logger.log("LoginModel", "Stale login page detected");
+                            makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("That login page was really stale. Try again please?", MessageModel.ErrorType.SEVERE)));
+                        } else {
+                            // Failure to login
+                            Logger.log("LoginModel", "Failed to Login");
+                            makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Login Failed. Perhaps you've set a password for this character?", MessageModel.ErrorType.SEVERE)));
+                        }
                         return;
                     }
 
