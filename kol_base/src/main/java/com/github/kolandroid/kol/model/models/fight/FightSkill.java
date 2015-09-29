@@ -11,11 +11,22 @@ public class FightSkill extends SkillModel implements FightAction {
      */
     private static final long serialVersionUID = 3970718234205335257L;
 
-    public FightSkill(Session session, OptionElement base) {
+    private final String identifier;
+    private final FightActionHistory<? super FightSkill> storage;
+
+    public FightSkill(Session session, OptionElement base, FightActionHistory<? super FightSkill> storage) {
         super(session, "", "", base);
+        this.storage = storage;
+        this.identifier = "skill:" + base.value;
     }
 
     public void use() {
+        storage.store(this, getSettings());
         this.makeRequest(new Request("fight.php?action=skill&whichskill=" + this.id));
+    }
+
+    @Override
+    public String getIdentifier() {
+        return this.identifier;
     }
 }

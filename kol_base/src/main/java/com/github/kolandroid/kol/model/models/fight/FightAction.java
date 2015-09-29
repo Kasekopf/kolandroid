@@ -7,4 +7,6 @@ public interface FightAction extends SubtextElement {
     void attachView(ViewContext context);
 
     void use();
+
+    String getIdentifier();
 }

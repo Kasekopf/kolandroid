@@ -7,14 +7,16 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 
 import com.github.kolandroid.kol.android.R;
+import com.github.kolandroid.kol.android.binders.DefaultGroupBinder;
 import com.github.kolandroid.kol.android.binders.ElementBinder;
 import com.github.kolandroid.kol.android.controller.BinderController;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
+import com.github.kolandroid.kol.android.util.searchlist.GroupSearchListController;
 import com.github.kolandroid.kol.android.util.searchlist.ListSelector;
-import com.github.kolandroid.kol.android.util.searchlist.SearchListController;
+import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
 import com.github.kolandroid.kol.model.models.fight.FightItem;
 
 import java.util.ArrayList;
@@ -25,13 +27,13 @@ public class FunkslingingController implements Controller {
      */
     private static final long serialVersionUID = 2042614583620187701L;
 
-    private final ArrayList<FightItem> base;
+    private final ArrayList<ModelGroup<FightItem>> base;
 
     private final BinderController<FightItem> itemSlot1, itemSlot2;
     private BinderController<FightItem> selected;
     private View selectedView;
 
-    public FunkslingingController(ArrayList<FightItem> base) {
+    public FunkslingingController(ArrayList<ModelGroup<FightItem>> base) {
         this.base = base;
 
         this.itemSlot1 = new BinderController<>(
@@ -98,8 +100,9 @@ public class FunkslingingController implements Controller {
             }
 
         };
-        SearchListController<FightItem> list = new SearchListController<>(
-                base, ElementBinder.ONLY, selector);
+
+        GroupSearchListController<FightItem> list = new GroupSearchListController<>(
+                base, DefaultGroupBinder.ONLY, ElementBinder.ONLY, selector);
         ViewScreen listScreen = (ViewScreen) view
                 .findViewById(R.id.funkslinging_list);
         listScreen.display(list, host);

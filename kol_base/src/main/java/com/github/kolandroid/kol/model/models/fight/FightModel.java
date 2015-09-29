@@ -4,6 +4,8 @@ import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.elements.ActionElement;
 import com.github.kolandroid.kol.model.elements.OptionElement;
+import com.github.kolandroid.kol.model.elements.basic.BasicGroup;
+import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
 import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
@@ -40,6 +42,8 @@ public class FightModel extends WebModel {
 
     private static final Regex HAS_FUNKSLINGING = new Regex(
             "<select[^>]*whichitem2[^>]*>");
+    private static FightActionHistory ITEM_HISTORY = new FightActionHistory<FightItem>("Items");
+    private static FightActionHistory SKILL_HISTORY = new FightActionHistory<FightAction>("Skills");
     private final ActionElement attack;
     private ArrayList<FightAction> skills;
     private ArrayList<FightItem> items;
@@ -87,7 +91,7 @@ public class FightModel extends WebModel {
             String text = button[1];
             String img;
 
-            System.out.println("Found button: " + action);
+            Logger.log("FightModel", "Found button: " + action);
             if (action == null || text == null || text.length() == 0)
                 continue;
             if (action.contentEquals("attack") || action.contentEquals("skill")
@@ -107,14 +111,14 @@ public class FightModel extends WebModel {
             }
 
             this.skills.add(new FightBasicAction(getSession(), text, img,
-                    "fight.php?action=" + action));
+                    "fight.php?action=" + action, SKILL_HISTORY));
         }
 
         String dropdown = ALL_SKILLS.extractSingle(html, "");
         ArrayList<OptionElement> dropdown_skills = OptionElement
                 .extractOptions(dropdown);
         for (OptionElement option : dropdown_skills) {
-            skills.add(new FightSkill(getSession(), option));
+            this.skills.add(new FightSkill(getSession(), option, SKILL_HISTORY));
         }
     }
 
@@ -123,25 +127,42 @@ public class FightModel extends WebModel {
 
         String dropdown = ALL_ITEMS.extractSingle(html, "");
 
-        Logger.logBig("FightModel", html);
         ArrayList<OptionElement> dropdown_items = OptionElement
                 .extractOptions(dropdown);
         for (OptionElement option : dropdown_items) {
             if (option.text.contains("(select an item)"))
                 continue;
 
-            items.add(new FightItem(getSession(), option));
+            items.add(new FightItem(getSession(), option, ITEM_HISTORY));
         }
 
         this.funkslinging = HAS_FUNKSLINGING.matches(html);
     }
 
-    public ArrayList<FightAction> getSkills() {
-        return this.skills;
+    public ArrayList<ModelGroup<FightAction>> getSkills() {
+        ArrayList<ModelGroup<FightAction>> result = new ArrayList<>();
+        if (skills != null) {
+            ArrayList<FightAction> recentSkills = SKILL_HISTORY.identify(skills, getSettings());
+            if (recentSkills.size() > 0) {
+                result.add(new BasicGroup<>("Recently Used:", recentSkills));
+            }
+
+            result.add(new BasicGroup<>("All Skills:", skills));
+        }
+        return result;
     }
 
-    public ArrayList<FightItem> getItems() {
-        return this.items;
+    public ArrayList<ModelGroup<FightItem>> getItems() {
+        ArrayList<ModelGroup<FightItem>> result = new ArrayList<>();
+        if (items != null) {
+            ArrayList<FightItem> recentItems = ITEM_HISTORY.identify(items, getSettings());
+            if (recentItems.size() > 0) {
+                result.add(new BasicGroup<>("Recently Used:", recentItems));
+            }
+
+            result.add(new BasicGroup<>("All Items:", items));
+        }
+        return result;
     }
 
     public boolean isFightOver() {

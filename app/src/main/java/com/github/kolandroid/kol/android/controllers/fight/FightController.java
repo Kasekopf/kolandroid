@@ -5,6 +5,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.github.kolandroid.kol.android.R;
+import com.github.kolandroid.kol.android.binders.DefaultGroupBinder;
 import com.github.kolandroid.kol.android.binders.ElementBinder;
 import com.github.kolandroid.kol.android.binders.SubtextBinder;
 import com.github.kolandroid.kol.android.controller.Controller;
@@ -14,10 +15,11 @@ import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
+import com.github.kolandroid.kol.android.util.searchlist.GroupSearchListController;
 import com.github.kolandroid.kol.android.util.searchlist.ListSelector;
-import com.github.kolandroid.kol.android.util.searchlist.SearchListController;
 import com.github.kolandroid.kol.android.util.searchlist.SerializableSelector;
 import com.github.kolandroid.kol.model.elements.ActionElement;
+import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
 import com.github.kolandroid.kol.model.models.fight.FightAction;
 import com.github.kolandroid.kol.model.models.fight.FightItem;
 import com.github.kolandroid.kol.model.models.fight.FightModel;
@@ -68,8 +70,8 @@ public class FightController extends ModelController<FightModel> {
         useSkill.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View btn) {
-                ArrayList<FightAction> skills = model.getSkills();
-                Controller skillsController = new SearchListController<FightAction>(skills, SubtextBinder.ONLY, actionSelector);
+                ArrayList<ModelGroup<FightAction>> skills = model.getSkills();
+                Controller skillsController = new GroupSearchListController<>(skills, DefaultGroupBinder.ONLY, SubtextBinder.ONLY, actionSelector);
                 DialogScreen.display(skillsController, host,
                         "Choose a skill to use:");
             }
@@ -79,13 +81,13 @@ public class FightController extends ModelController<FightModel> {
         useItem.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View btn) {
-                ArrayList<FightItem> items = model.getItems();
+                ArrayList<ModelGroup<FightItem>> items = model.getItems();
 
                 if (getModel().hasFunkslinging()) {
                     Controller itemsController = new FunkslingingController(items);
                     DialogScreen.display(itemsController, host, "Select items to use:");
                 } else {
-                    Controller itemsController = new SearchListController(items, ElementBinder.ONLY, actionSelector);
+                    Controller itemsController = new GroupSearchListController<>(items, DefaultGroupBinder.ONLY, ElementBinder.ONLY, actionSelector);
                     DialogScreen.display(itemsController, host, "Select item to use:");
                 }
             }

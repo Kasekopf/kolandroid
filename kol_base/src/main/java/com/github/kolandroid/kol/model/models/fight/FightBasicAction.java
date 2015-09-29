@@ -9,22 +9,35 @@ public class FightBasicAction extends Model implements FightAction {
     private final String image;
     private final String action;
 
+    private final String identifier;
+
+    private final FightActionHistory<? super FightBasicAction> storage;
+
     /**
      * Create a new model in the provided session.
      *
      * @param s Session to use in all future requests by this model.
      */
-    public FightBasicAction(Session s, String name, String image, String action) {
+    public FightBasicAction(Session s, String name, String image, String action, FightActionHistory<? super FightBasicAction> storage) {
         super(s);
 
         this.name = name;
         this.image = image;
         this.action = action;
+
+        this.identifier = "basic:" + name.toLowerCase();
+        this.storage = storage;
     }
 
     @Override
     public void use() {
+        storage.store(this, getSettings());
         this.makeRequest(new Request(action));
+    }
+
+    @Override
+    public String getIdentifier() {
+        return identifier;
     }
 
     @Override
