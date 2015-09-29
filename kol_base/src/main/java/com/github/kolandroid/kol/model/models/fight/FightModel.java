@@ -42,8 +42,8 @@ public class FightModel extends WebModel {
 
     private static final Regex HAS_FUNKSLINGING = new Regex(
             "<select[^>]*whichitem2[^>]*>");
-    private static FightActionHistory ITEM_HISTORY = new FightActionHistory<FightItem>("Items");
-    private static FightActionHistory SKILL_HISTORY = new FightActionHistory<FightAction>("Skills");
+    private static final FightActionHistory ITEM_HISTORY = new FightActionHistory<FightItem>("Items");
+    private static final FightActionHistory SKILL_HISTORY = new FightActionHistory<FightAction>("Skills");
     private final ActionElement attack;
     private ArrayList<FightAction> skills;
     private ArrayList<FightItem> items;

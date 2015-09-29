@@ -77,7 +77,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                       final PasswordHash hash) {
         String[] names = {"loginid", "loginname", "password",
                 "loggingin", "challenge", "response", "secure"};
-        String[] values = {loginId, username, "", "Yup.", challenge,
+        String[] values = {loginId, username.replace(" ", "%20"), "", "Yup.", challenge,
                 hash.completeChallenge(challenge), "1"};
 
         stale = true;
