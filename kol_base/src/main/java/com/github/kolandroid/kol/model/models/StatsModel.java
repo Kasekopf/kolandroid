@@ -96,14 +96,12 @@ public class StatsModel extends LiveModel {
             new Regex("Horde: (\\d+)", 1)};
 
     private static final Regex[] NAME = {new Regex(
-            "<a[^<>]*?charsheet\\.php[^<>]>(?:<b>)?([\\w ]+)(?:</b>)?", 1)};
+            "<a[^<>]*?charsheet\\.php[^<>]*>(?:<b>)?([\\w ]+)(?:</b>)?", 1)};
 
-    private static final Regex[] LEVEL = {
-            new Regex("<br>Level (\\d+)<br>", 1),
-            new Regex("<br>Lvl. (\\d+)<", 1)};
-
-    private static final Regex[] LEVEL_TEXT = {new Regex(
-            "<br>Level \\d+<br>([\\w ]+)<", 1)};
+    private static final Regex[] CUSTOM_TITLE = {new Regex(
+            "<a[^<>]*?charsheet\\.php[^<>]*><b>.*?</b></a>(.*?)</td>", 1),
+            new Regex(
+                    "<b><a[^<>]*?charsheet\\.php[^<>]*>.*?</a></b>(.*?)<hr", 1)};
 
     private static final Regex PAGE_BODY = new Regex(
             "(<body[^>]*>)(.*?)(</body>)");
@@ -165,12 +163,7 @@ public class StatsModel extends LiveModel {
             return "Level Infinity Astral Spirit";
         }
 
-        String level = "Level " + extractInt(lastUpdate.html, 0, LEVEL);
-        String text = extractString(lastUpdate.html, null, LEVEL_TEXT);
-        if (text == null)
-            return level;
-        else
-            return level + " " + text;
+        return extractString(lastUpdate.html, "", CUSTOM_TITLE).replace("<br>", " ").replace("Lvl.", "Level");
     }
 
     public int getMuscle() {
