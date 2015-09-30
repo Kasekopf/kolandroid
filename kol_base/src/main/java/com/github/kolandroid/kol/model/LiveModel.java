@@ -3,8 +3,10 @@ package com.github.kolandroid.kol.model;
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.LiveModel.LiveMessage;
+import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
+import com.github.kolandroid.kol.util.Logger;
 
 /**
  * A model which can update its contents with a single base url.
@@ -62,14 +64,19 @@ public abstract class LiveModel extends LinkedModel<LiveMessage> {
         ResponseHandler listener = new ResponseHandler() {
             @Override
             public void handle(Session session, ServerReply response) {
-                if (canHandle(response.url)) {
+                if (response == null) {
+                    Logger.log("LiveModel", "Unable to connect to KoL.");
+                    if (foreground) {
+                        getGameHandler().handle(session, MessageModel.generateErrorMessage("Unable to connect to KoL", MessageModel.ErrorType.ERROR));
+                    }
+                } else if (canHandle(response.url)) {
                     process(response);
                 } else {
-                    if (foreground)
+                    Logger.log("LiveModel", "LiveModel expected " + updateUrl
+                            + " but was redirected to " + response.url);
+                    if (foreground) {
                         getGameHandler().handle(session, response);
-                    else
-                        System.out.println("LiveModel expected " + updateUrl
-                                + " but was redirected to " + response.url);
+                    }
                 }
             }
         };

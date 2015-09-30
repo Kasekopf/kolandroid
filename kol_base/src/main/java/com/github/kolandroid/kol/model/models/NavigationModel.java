@@ -256,6 +256,7 @@ public class NavigationModel extends LiveModel {
                 public void handle(Session session, ServerReply response) {
                     if (response == null) {
                         Logger.log("NavigationModel", "ChatMacro response: [NULL]");
+                        context.displayMessage("Unable to connect to KoL.");
                         return;
                     }
 

@@ -116,11 +116,10 @@ public class SkillModel extends Model implements SubtextElement {
             this.makeRequest(new Request(descriptionUrl), new ResponseHandler() {
                 @Override
                 public void handle(Session session, ServerReply response) {
-                    if (response == null) return;
-                    if (!response.url.contains(descriptionUrl)) return;
-
-                    isBuff = (response.html.contains("<b>Type:</b> Buff<br>"));
-                    description = new WebModel(session, new ServerReply(response, response.html));
+                    if (response != null && response.url.contains(descriptionUrl)) {
+                        isBuff = (response.html.contains("<b>Type:</b> Buff<br>"));
+                        description = new WebModel(session, new ServerReply(response, response.html));
+                    }
                     onResult.execute(SkillModel.this);
                 }
             });

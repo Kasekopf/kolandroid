@@ -251,14 +251,13 @@ public class ItemModel extends Model implements SubtextElement {
                     new ResponseHandler() {
                 @Override
                 public void handle(Session session, ServerReply response) {
-                    if (response == null) return;
-                    if (!response.url.contains(descriptionId)) return;
-
-                    String html = response.html;
-                    if (quantity > 1) {
-                        html = NAME_END.replaceAll(html, " (" + quantity + ")$0");
+                    if (response != null && response.url.contains(descriptionId)) {
+                        String html = response.html;
+                        if (quantity > 1) {
+                            html = NAME_END.replaceAll(html, " (" + quantity + ")$0");
+                        }
+                        description = new WebModel(session, new ServerReply(response, html));
                     }
-                    description = new WebModel(session, new ServerReply(response, html));
                     onResult.execute(ItemModel.this);
                 }
             });
