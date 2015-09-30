@@ -13,6 +13,7 @@ import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
 import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Regex;
+import com.github.kolandroid.kol.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,7 +85,7 @@ public class ItemModel extends Model implements SubtextElement {
         this.disabled = false;
 
         image = ITEM_IMG.extractSingle(itemInfo, "");
-        subtext = ITEM_SUBTEXT.extractSingle(itemInfo, "").replace("&nbsp;", "");
+        subtext = StringUtils.htmlDecode(ITEM_SUBTEXT.extractSingle(itemInfo, ""));
 
         // Determine the name of the item
         String partialName = ITEM_NAME.extractSingle(itemInfo, "");

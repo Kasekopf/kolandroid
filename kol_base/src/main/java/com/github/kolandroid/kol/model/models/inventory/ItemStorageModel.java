@@ -5,6 +5,7 @@ import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.GroupModel;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
+import com.github.kolandroid.kol.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -68,7 +69,7 @@ public class ItemStorageModel extends GroupModel<ItemPocketModel> {
                 else if (name.equalsIgnoreCase("miscellaneous")) name = "Misc";
                 else if (name.equalsIgnoreCase("recent items")) name = "Recent";
 
-                name = name.replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"");
+                name = StringUtils.htmlDecode(name);
                 Logger.log("ItemStorageModel", "Found tab: " + name + ", " + url);
 
                 if (useEquipmentModel && name.equalsIgnoreCase("equip")) {
