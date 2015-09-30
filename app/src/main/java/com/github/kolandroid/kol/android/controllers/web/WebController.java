@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
@@ -43,9 +44,10 @@ public class WebController extends UpdatableModelController<WebModel> {
     }
 
     @Override
-    protected void doReplace(WebModel model) {
-        if (web != null) {
+    protected void doReplace(WebModel model, @Nullable View view, @Nullable Screen screen) {
+        if (view != null && screen != null && web != null) {
             loadContent(model);
+            model.attachView(screen.getViewContext());
         }
     }
 

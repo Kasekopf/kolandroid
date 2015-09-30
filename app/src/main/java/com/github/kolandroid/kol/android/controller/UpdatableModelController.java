@@ -1,6 +1,7 @@
 package com.github.kolandroid.kol.android.controller;
 
 import android.support.annotation.CallSuper;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.github.kolandroid.kol.android.screen.Screen;
@@ -41,13 +42,15 @@ public abstract class UpdatableModelController<M extends Model> extends ModelCon
         this.currentScreen = new WeakReference<>(null);
     }
 
-    protected void doReplace(M model) {
+    protected final void doReplace(M model) {
         if (currentView == null || currentScreen == null) {
-            return;
+            doReplace(model, null, null);
+        } else {
+            doReplace(model, currentView.get(), currentScreen.get());
         }
+    }
 
-        View view = currentView.get();
-        Screen screen = currentScreen.get();
+    protected void doReplace(M model, @Nullable View view, @Nullable Screen screen) {
         if (view != null && screen != null) {
             disconnect(screen);
             attach(view, screen);
