@@ -42,5 +42,12 @@
             android:id="@+id/message_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/message_submit_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Review and send Error Report"
+            android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>

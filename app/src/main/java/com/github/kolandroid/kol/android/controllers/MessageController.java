@@ -10,13 +10,13 @@ import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.model.models.MessageModel;
 
-public class MessageController extends ModelController<MessageModel> {
-    public MessageController(MessageModel model) {
+public class MessageController<E extends MessageModel> extends ModelController<E> {
+    public MessageController(E model) {
         super(model);
     }
 
     @Override
-    public void attach(View view, MessageModel model, Screen host) {
+    public void attach(View view, E model, Screen host) {
         view.setBackgroundColor(model.visitErrorType(new MessageModel.ErrorTypeVisitor<Integer>() {
             @Override
             public Integer forNone() {

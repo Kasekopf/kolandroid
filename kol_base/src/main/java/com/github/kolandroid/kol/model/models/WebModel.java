@@ -75,8 +75,6 @@ public class WebModel extends Model {
 
     private static final Regex TABLE_FIXER = new Regex("(</td>)(.*?)(</td>|</tr>|</table>|<td[^>]*>)");
 
-    private static final Regex TUTORIAL_FIXER = new Regex("(<form[^>]*><input[^>]*><input[^>]*>)(.*?)(<input[^>]*>)</td></form>");
-
     private final static Regex BODY_TAG = new Regex("<body[^>]*?>");
 
     /**
@@ -86,39 +84,92 @@ public class WebModel extends Model {
     private static final Regex HEAD_TAG = new Regex("<head>");
     private static final String jsInjectCode = "" +
             "\nfunction customParseForm(form, action, method) { " +
-            "   var inputs = form.getElementsByTagName('input');" +
+            "   if(jQuery) jQuery(form).unbind('submit');" +
+            "   var inputs = customFindAllChildren(form, 'INPUT');" +
             "   var data = action ? action : '';" +
             "   if(method.toUpperCase() == 'POST') {" +
             "       if(data.indexOf('.com/') > -1) data = data.replace('.com/', '.com/POST/');" +
             "       else data = 'POST/' + data;" +
             "   }" +
+            "   var error = false;" +
+            "   var duplicate = '';" +
+            "   var name;" +
             "   var tobegin = (data.indexOf('?') == -1);" +
+            "   console.log('Detected ' + inputs.length + ' input tags');" +
             "   for (var i = 0; i < inputs.length; i++) {" +
             "       var field = inputs[i];" +
             "       if(field.name && field.name==='totallyrealaction') continue; " +
             "       if(field.type == 'radio' && !field.checked) continue; " +
             "       if(field.type == 'checkbox' && !field.checked) continue; " +
             "       if (field.type != 'reset' && field.name) {" +
+            "           name = encodeURIComponent(field.name);" +
+            "           if(data.indexOf('?' + name + '=') > -1 || data.indexOf('&' + name + '=') > -1) {" +
+            "               error = true;" +
+            "               duplicate = field.name;" +
+            "               continue;" +
+            "           }" +
             "           data += (tobegin ? '?' : '&');" +
             "           tobegin = false;" +
-            "           data += encodeURIComponent(field.name) + '=' + encodeURIComponent(field.value);" +
+            "           data += name + '=' + encodeURIComponent(field.value);" +
             "       }" +
             "   }" +
-            "   var select = form.getElementsByTagName('select');" +
+            "   var select = customFindAllChildren(form, 'SELECT');" +
             "   for (var i = 0; i < select.length; i++) {" +
             "       var field = select[i];" +
+            "       name = encodeURIComponent(field.name);" +
+            "       if(data.indexOf('?' + name + '=') > -1 || data.indexOf('&' + name + '=') > -1) {" +
+            "           error = true;" +
+            "           duplicate = field.name;" +
+            "           continue;" +
+            "       }" +
             "       data += (tobegin ? '?' : '&');" +
             "       tobegin = false;" +
-            "       data += encodeURIComponent(field.name) + '=' + encodeURIComponent(field.options[field.selectedIndex].value);" +
+            "       data += name + '=' + encodeURIComponent(field.options[field.selectedIndex].value);" +
             "   }" +
-            "   var texts = form.getElementsByTagName('textarea');" +
+            "   var texts = customFindAllChildren(form, 'TEXTAREA');" +
             "   for (var i = 0; i < texts.length; i++) {" +
             "       var field = texts[i];" +
+            "       name = encodeURIComponent(field.name);" +
+            "       if(data.indexOf('?' + name + '=') > -1 || data.indexOf('&' + name + '=') > -1) {" +
+            "           error = true;" +
+            "           duplicate = field.name;" +
+            "           continue;" +
+            "       }" +
             "       data += (tobegin ? '?' : '&');" +
             "       tobegin = false;" +
-            "       data += encodeURIComponent(field.name) + '=' + encodeURIComponent(field.value);" +
+            "       data += name + '=' + encodeURIComponent(field.value);" +
             "   }" +
-            "   window.ANDROIDAPP.processFormData(data);" +
+            "   if(error) {" +
+            "       window.ANDROIDAPP.reportFormError(data, duplicate);" +
+            "   } else {" +
+            "       window.ANDROIDAPP.processFormData(data);" +
+            "   }" +
+            "   return false;" +
+            "}\n" +
+            "function customFindAllChildren(form, tag) {" +
+            "   var children = Array.prototype.slice.call(form.getElementsByTagName(tag));" +
+            "   while(form.nextSibling) {" +
+            "       form = form.nextSibling;" +
+            "       if(customFindFormTags(form, tag, children)) {" +
+            "           return children;" +
+            "       }" +
+            "   }" +
+            "   return children;" +
+            "}\n" +
+            "function customFindFormTags(child, tag, result) {" +
+            "   if(child.tagName == tag) {" +
+            "       result.push(child);" +
+            "   } else if(child.tagName == 'FORM') {" +
+            "       return true;" +
+            "   }" +
+            "   var children = child.children;" +
+            "   if(children) {" +
+            "       for(var i = 0; i < children.length; i++) {" +
+            "           if(customFindFormTags(children[i], tag, result)) {" +
+            "               return true;" +
+            "           }" +
+            "       }" +
+            "   }" +
             "   return false;" +
             "}\n" +
             "function pop_query(caller, title, button, callback, def) { " +
@@ -293,12 +344,6 @@ public class WebModel extends Model {
 
         // Manually fix the width of the body, to fix top-level center tags
         html = html.replace("<body", "<body style=\"display: inline-block;\"");
-
-        // Fixes the strange form tags in tutorial.php
-        if (html.contains("tutorial.php")) {
-            Logger.log("WebModel", "Fixing tutorial " + TUTORIAL_FIXER.matches(html));
-            html = TUTORIAL_FIXER.replaceAll(html, "$2$1$3</form></td>");
-        }
 
         // ?
         html = TABLE_FIXER.replaceAll(html, "$1$3$2");

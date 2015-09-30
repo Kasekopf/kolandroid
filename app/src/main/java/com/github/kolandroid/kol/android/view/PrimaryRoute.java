@@ -45,7 +45,7 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
 
         if (response.url.contains("androiderror.php")) {
             MessageModel model = new MessageModel(session, response);
-            return new MessageController(model);
+            return new MessageController<MessageModel>(model);
         }
 
         if (!response.hasBody()) {
@@ -69,7 +69,7 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
 
         if (response.url.contains("donatepopup.php")) {
             MessageModel model = new MessageModel("Thanks for donating to KoL! Unfortunately, this unofficial mobile app does not yet support donations. Please use the mobile web browser.", MessageModel.ErrorType.NONE);
-            return new MessageController(model);
+            return new MessageController<MessageModel>(model);
         }
 
         if (response.url.contains("login.php")) {

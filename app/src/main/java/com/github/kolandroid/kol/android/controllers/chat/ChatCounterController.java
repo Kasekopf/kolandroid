@@ -129,7 +129,7 @@ public class ChatCounterController extends ChatStubController<ChatStubModel> {
 
     private void openChatFailure(Screen host, MessageModel message) {
         Logger.log("ChatCounterController", "Unable to open Chat: " + message.getMessage());
-        MessageController error = new MessageController(message);
+        MessageController<MessageModel> error = new MessageController<MessageModel>(message);
         host.getViewContext().getPrimaryRoute().execute(error);
     }
 

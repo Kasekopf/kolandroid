@@ -88,7 +88,7 @@
                 android:id="@+id/error_reporting_submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Review and Send Error Report" />
+                android:text="Review and send Error Report" />
 
             <Button
                 android:id="@+id/error_reporting_cancel"

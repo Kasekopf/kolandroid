@@ -47,7 +47,7 @@ public abstract class ActivityScreen extends ActionBarActivity implements Screen
         controller = this.setup(savedInstanceState, controller);
         if (controller == null) {
             MessageModel error = new MessageModel("0x534fa: Unable to determine controller to display", MessageModel.ErrorType.ERROR);
-            controller = new MessageController(error);
+            controller = new MessageController<MessageModel>(error);
         }
 
         this.currentController = controller;

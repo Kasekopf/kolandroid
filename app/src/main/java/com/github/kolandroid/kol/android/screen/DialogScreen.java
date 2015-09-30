@@ -75,7 +75,7 @@ public class DialogScreen extends DialogFragment implements Screen {
         if (controller == null) {
 
             MessageModel error = new MessageModel("0x35ad2: Unable to display page", MessageModel.ErrorType.ERROR);
-            controller = new MessageController(error);
+            controller = new MessageController<MessageModel>(error);
             Logger.log("DialogScreen", "Unable to load controller from bundle");
         }
 

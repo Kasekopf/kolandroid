@@ -35,7 +35,7 @@ public class FragmentScreen extends Fragment implements Screen {
         if (controller == null) {
             Logger.log("FragmentScreen", "Unable to load controller from bundle");
             MessageModel error = new MessageModel("0x35ad1: Unable to display page", MessageModel.ErrorType.ERROR);
-            controller = new MessageController(error);
+            controller = new MessageController<MessageModel>(error);
         }
 
         int layoutId = controller.getView();
