@@ -147,6 +147,10 @@ public class StatsModel extends LiveModel {
         return default_value;
     }
 
+    public boolean inAstralPlane() {
+        return lastUpdate.html.contains("otherimages/spirit.gif") || lastUpdate.html.contains("<br>Lvl. <img");
+    }
+
     private int extractInt(String text, int default_value, Regex... toTry) {
         String res = extractString(text, default_value + "", toTry);
         return Integer.parseInt(res);
@@ -157,6 +161,10 @@ public class StatsModel extends LiveModel {
     }
 
     public String getCharInfo() {
+        if (inAstralPlane()) {
+            return "Level Infinity Astral Spirit";
+        }
+
         String level = "Level " + extractInt(lastUpdate.html, 0, LEVEL);
         String text = extractString(lastUpdate.html, null, LEVEL_TEXT);
         if (text == null)

@@ -184,21 +184,21 @@ public class WebModel extends Model {
             "      count += 1;" +
             "      inputs[i].androidInitialValue = inputs[i].value;" +
             "      inputs[i].androidInitialChecked = inputs[i].checked;" +
-            "      inputs[i].onchange = checkInputChanges;" +
+            "      inputs[i].addEventListener('change', checkInputChanges, false);" +
             "   }" +
             "   var selects = document.getElementsByTagName('select');" +
             "   for (var i = 0; i < selects.length; i++) {" +
             "       selects[i].androidUniqueId = count;" +
             "       count += 1;" +
             "       selects[i].androidInitialValue = selects[i].selectedIndex;" +
-            "       selects[i].onchange = checkInputChanges;" +
+            "       selects[i].addEventListener('change', checkInputChanges, false);" +
             "   }" +
             "   var texts = document.getElementsByTagName('textarea');" +
             "   for (var i = 0; i < texts.length; i++) {" +
             "       texts[i].androidUniqueId = count;" +
             "       count += 1;" +
             "       texts[i].androidInitialValue = texts[i].value;" +
-            "       texts[i].onchange = checkInputChanges;" +
+            "       texts[i].addEventListener('change', checkInputChanges, false);" +
             "   }" +
             "   if(inputs.length + selects.length + texts.length > 0) {" +
             "       console.log('Adding unique input ids: (' + inputs.length + ' + ' + selects.length + ' + ' + texts.length + ')');" +
