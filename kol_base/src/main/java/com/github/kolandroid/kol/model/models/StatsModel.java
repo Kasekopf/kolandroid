@@ -99,9 +99,9 @@ public class StatsModel extends LiveModel {
             "<a[^<>]*?charsheet\\.php[^<>]*>(?:<b>)?([\\w ]+)(?:</b>)?", 1)};
 
     private static final Regex[] CUSTOM_TITLE = {new Regex(
-            "<a[^<>]*?charsheet\\.php[^<>]*><b>.*?</b></a>(.*?)</td>", 1),
+            "<a[^<>]*?charsheet\\.php[^<>]*><b>.*?</b></a>(.*?)(</td>|<table)", 1),
             new Regex(
-                    "<b><a[^<>]*?charsheet\\.php[^<>]*>.*?</a></b>(.*?)<hr", 1)};
+                    "<b><a[^<>]*?charsheet\\.php[^<>]*>.*?</a></b>(.*?)(<hr|<table)", 1)};
 
     private static final Regex PAGE_BODY = new Regex(
             "(<body[^>]*>)(.*?)(</body>)");
