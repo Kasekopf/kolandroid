@@ -148,15 +148,22 @@ public class WebModel extends Model {
             "}\n" +
             "function customFindAllChildren(form, tag) {" +
             "   var children = Array.prototype.slice.call(form.getElementsByTagName(tag));" +
-            "   while(form.nextSibling) {" +
-            "       form = form.nextSibling;" +
-            "       if(customFindFormTags(form, tag, children)) {" +
-            "           return children;" +
-            "       }" +
-            "   }" +
+            "   customFindAbandonedChildren(form, tag, children);" +
             "   return children;" +
             "}\n" +
-            "function customFindFormTags(child, tag, result) {" +
+            "function customFindAbandonedChildren(form, tag, result) {" +
+            "   while(form.nextSibling) {" +
+            "       form = form.nextSibling;" +
+            "       if(customFindUntilNextForm(form, tag, result)) {" +
+            "           return true;" +
+            "       }" +
+            "   }" +
+            "   if(form.parentNode) {" +
+            "       return customFindAbandonedChildren(form.parentNode, tag, result);" +
+            "   }" +
+            "   return false;" +
+            "}\n" +
+            "function customFindUntilNextForm(child, tag, result) {" +
             "   if(child.tagName == tag) {" +
             "       result.push(child);" +
             "   } else if(child.tagName == 'FORM') {" +
@@ -165,7 +172,7 @@ public class WebModel extends Model {
             "   var children = child.children;" +
             "   if(children) {" +
             "       for(var i = 0; i < children.length; i++) {" +
-            "           if(customFindFormTags(children[i], tag, result)) {" +
+            "           if(customFindUntilNextForm(children[i], tag, result)) {" +
             "               return true;" +
             "           }" +
             "       }" +
