@@ -114,7 +114,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                 notifyView(LoginStatus.SUCCESS);
 
                 Request game = new Request("main.php");
-                makeRequest(game, session);
+                makeRequest(game);
             }
         });
     }
@@ -182,7 +182,7 @@ public class LoginModel extends LinkedModel<LoginStatus> {
                     notifyView(LoginStatus.SUCCESS);
 
                     Request game = new Request("main.php");
-                    makeRequest(game, session);
+                    makeRequest(game);
                 }
             });
         }

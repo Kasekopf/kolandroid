@@ -2,10 +2,8 @@ package com.github.kolandroid.kol.model.models;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
-import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.request.Request;
-import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
 public class MessageModel extends Model {
@@ -52,11 +50,6 @@ public class MessageModel extends Model {
     public static ServerReply generateErrorMessage(String message, ErrorType type) {
         String url = "androiderror.php&severe=" + type;
         return new ServerReply(200, "", "", message, url, "");
-    }
-
-    public static void trigger(ViewContext context, String message, ErrorType type) {
-        Logger.log("ErrorModel", "ERROR: " + message);
-        context.getPrimaryRoute().handle(new Session(), generateErrorMessage(message, type));
     }
 
     private static ErrorType determineType(ServerReply text) {

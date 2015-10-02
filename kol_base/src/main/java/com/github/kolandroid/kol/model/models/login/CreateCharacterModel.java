@@ -44,7 +44,7 @@ public class CreateCharacterModel extends WebModel {
                     settings.set("magicSessions", session.getCookie("magic", ""));
 
                     Request r = new SingleRequest(response.redirectLocation);
-                    makeRequest(r, session, new ResponseHandler() {
+                    makeRequest(r, new ResponseHandler() {
                         @Override
                         public void handle(Session session, ServerReply response) {
                             if (response == null || response.redirectLocation == null || response.redirectLocation.equals("")) {
@@ -63,7 +63,7 @@ public class CreateCharacterModel extends WebModel {
                             }
 
                             Request game = new Request("main.php");
-                            makeRequest(game, session);
+                            makeRequest(game);
                         }
                     });
                 }
