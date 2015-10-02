@@ -9,16 +9,13 @@ import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.util.Callback;
-import com.github.kolandroid.kol.util.Logger;
-
-import java.lang.ref.WeakReference;
 
 public class TextInputController implements Controller {
     private final String buttonText;
-    private transient final WeakReference<Callback<String>> onSubmit;
+    private transient final Callback<String> onSubmit;
 
     public TextInputController(String buttonText, Callback<String> onSubmit) {
-        this.onSubmit = new WeakReference<>(onSubmit);
+        this.onSubmit = onSubmit;
         this.buttonText = buttonText;
     }
 
@@ -36,11 +33,7 @@ public class TextInputController implements Controller {
                 EditText input = (EditText) view
                         .findViewById(R.id.text_input_input);
                 String result = input.getText().toString();
-                Callback<String> callback = onSubmit.get();
-                if (callback == null)
-                    Logger.log("TextInputController", "Computed result [" + result + "] but callback was closed");
-                else
-                    callback.execute(result);
+                onSubmit.execute(result);
                 host.close();
             }
         });

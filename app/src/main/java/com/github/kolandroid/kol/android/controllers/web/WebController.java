@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -146,6 +147,8 @@ public class WebController extends UpdatableModelController<WebModel> {
             }
         };
 
+        WebChromeClient chromeClient = new WebChromeClient();
+
         web = (WebView) view.findViewById(R.id.web_view);
 
         web.getSettings().setJavaScriptEnabled(true);
@@ -153,6 +156,7 @@ public class WebController extends UpdatableModelController<WebModel> {
         Logger.log("WebController", "Adding html with input cache: " + inputChanges);
         web.addJavascriptInterface(new JavaScriptInterface(host), "ANDROIDAPP");
         web.setWebViewClient(client);
+        web.setWebChromeClient(chromeClient);
 
         loadContent(model);
     }
@@ -237,7 +241,9 @@ public class WebController extends UpdatableModelController<WebModel> {
                     result = result.replace("\"", ""); //attempt to stop OTHER javascript injection
                     result = onResult.replace("#VAL", "\"" + result + "\"");
                     Logger.log("WebController", "Result: [" + result + "]");
-                    web.loadUrl(result);
+                    if (web != null) {
+                        web.loadUrl(result);
+                    }
                 }
             });
             Screen host = this.host.get();
