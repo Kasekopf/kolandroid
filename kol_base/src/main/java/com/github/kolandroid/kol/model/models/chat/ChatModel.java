@@ -30,7 +30,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
     private static final Regex MACRO_RESPONSE = new Regex("<font.*?</font>", 0);
     private static final Regex MACRO_RESPONSE_TEXT = new Regex("<font[^>]*>(.*?)(<!--.*?)?</font>", 1);
     private static final Regex MACRO_RESPONSE_ACTION = new Regex("<!--js\\((.*?)\\)-->", 1);
-    private static final Regex MACRO_ACTION_REDIRECT = new Regex("top.mainpane.location.href='(.*?)'", 1);
+    private static final Regex MACRO_ACTION_REDIRECT = new Regex("top.mainpane.location(.href)?='(.*?)'", 2);
     private static final Regex MACRO_ACTION_GET_RESULTS = new Regex("dojax\\('(.*?)'\\);", 1);
     private static final Regex MACRO_ACTION_EXAMINE = new Regex("descitem\\((\\d+)\\)", 1);
     private final transient Gson parser;
