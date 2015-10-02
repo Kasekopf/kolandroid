@@ -10,7 +10,7 @@ public class ChatLink extends ChatAction {
     protected ChatLink(Session s, String url) {
         super(s, "Go to " + (url.contains("http://") ? url : "http://www.kingdomofloathing.com/" + url));
 
-        this.url = (url.contains("http://") ? url : "http://www.kingdomofloathing.com/" + url);
+        this.url = ((url.contains("http://") || url.contains("https://")) ? url : "http://www.kingdomofloathing.com/" + url);
     }
 
     @Override
