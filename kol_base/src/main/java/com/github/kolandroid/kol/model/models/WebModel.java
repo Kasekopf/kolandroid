@@ -303,7 +303,9 @@ public class WebModel extends Model {
 
         if (text.url.contains("desc_item.php")
                 || text.url.contains("desc_effect.php")
-                || text.url.contains("desc_skill.php"))
+                || text.url.contains("desc_skill.php")
+                || text.url.contains("desc_familiar.php")
+                || text.url.contains("doc.php"))
             return WebModelType.SMALL;
 
         if (text.url.contains("create.php"))

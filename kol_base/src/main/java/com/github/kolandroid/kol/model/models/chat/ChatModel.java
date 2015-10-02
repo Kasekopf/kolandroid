@@ -30,7 +30,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
     private static final Regex MACRO_RESPONSE = new Regex("<font.*?</font>", 0);
     private static final Regex MACRO_RESPONSE_TEXT = new Regex("<font[^>]*>(.*?)(<!--.*?)?</font>", 1);
     private static final Regex MACRO_RESPONSE_ACTION = new Regex("<!--js\\((.*?)\\)-->", 1);
-    private static final Regex MACRO_ACTION_REDIRECT = new Regex("top.mainpane.location(.href)?='(.*?)'", 2);
+    private static final Regex MACRO_ACTION_REDIRECT = new Regex("top(.mainpane)?.location(.href)?='(.*?)'", 3);
     private static final Regex MACRO_ACTION_GET_RESULTS = new Regex("dojax\\('(.*?)'\\);", 1);
     private static final Regex MACRO_ACTION_EXAMINE = new Regex("descitem\\((\\d+)\\)", 1);
     private final transient Gson parser;
@@ -413,6 +413,17 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
 
             @Override
             public ChatModelSegment complete(final ChatModel base) {
+                if (message.equals("/?") || message.startsWith("/? ") || message.equals("/help") || message.startsWith("/help ")) {
+                    // Process a help command
+                    base.makeRequest(new Request("doc.php?topic=modern_chat"), base.macroResponseHandler);
+                    return null;
+                }
+
+                if (message.equals("/exit") || message.startsWith("/exit ")) {
+                    // Process an exit command
+                    return StopChat.ONLY.complete(base);
+                }
+
                 String url = encodeChatMessage("submitnewchat.php?playerid=%s&pwd=%s&graf=%s&j=1", base.playerid, base.pwd, message);
                 Logger.log("ChatModel", "Submitting chat for " + url);
 
