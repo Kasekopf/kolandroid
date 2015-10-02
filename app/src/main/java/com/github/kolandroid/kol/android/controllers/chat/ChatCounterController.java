@@ -7,6 +7,7 @@ import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controllers.MessageController;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
+import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.model.models.MessageModel;
@@ -113,6 +114,11 @@ public class ChatCounterController extends ChatStubController<ChatStubModel> {
 
             @Override
             public void duplicateChannel(ChannelModel channel) {
+                // Do nothing
+            }
+
+            @Override
+            public void macroResponse(Session session, ServerReply response) {
                 // Do nothing
             }
         };

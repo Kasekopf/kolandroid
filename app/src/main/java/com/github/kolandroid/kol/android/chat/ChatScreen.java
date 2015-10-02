@@ -10,6 +10,7 @@ import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.UpdateController;
 import com.github.kolandroid.kol.android.controllers.chat.ChatChannelsController;
+import com.github.kolandroid.kol.android.controllers.chat.ChatCommandSpawnerController;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
@@ -20,6 +21,8 @@ import com.github.kolandroid.kol.model.models.chat.stubs.ChatStubModel;
 import com.github.kolandroid.kol.util.Logger;
 
 public class ChatScreen extends ActivityScreen {
+    private Controller chatCommandSpawner;
+
     @Override
     public Controller setup(Bundle savedInstanceState, Controller initial) {
         overridePendingTransition(R.anim.inleftanim, R.anim.outleftanim);
@@ -29,7 +32,30 @@ public class ChatScreen extends ActivityScreen {
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
+        if (chatCommandSpawner == null) {
+            chatCommandSpawner = new ChatCommandSpawnerController(new ChatStubModel(new Session()));
+        }
+        chatCommandSpawner.attach(null, this);
+
         return initial;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (chatCommandSpawner != null) {
+            chatCommandSpawner.connect(null, this);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (chatCommandSpawner != null) {
+            chatCommandSpawner.disconnect(this);
+        }
     }
 
     @Override

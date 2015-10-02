@@ -12,6 +12,7 @@ import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NavigationModel extends LiveModel {
     /**
@@ -25,12 +26,6 @@ public class NavigationModel extends LiveModel {
     private final static Regex AWESOME_MENU_ITEM_IMAGE = new Regex("<img[^>]*src=[\"'](.*?)[\"'][^>]*>", 1);
     private final static Regex PLAYERID = new Regex("playerid=(\\d+)", 1);
     private final static Regex PWDHASH = new Regex("pwd=([0-9a-fA-F]+)", 1);
-    private static final Regex MACRO_RESPONSE = new Regex("<font.*?</font>", 0);
-    private static final Regex MACRO_RESPONSE_TEXT = new Regex("<font[^>]*>(.*?)(<!--.*?)?</font>", 1);
-    private static final Regex MACRO_RESPONSE_ACTION = new Regex("<!--js\\((.*?)\\)-->", 1);
-    private static final Regex MACRO_ACTION_REDIRECT = new Regex("top.mainpane.location.href='(.*?)'", 1);
-    private static final Regex MACRO_ACTION_GET_RESULTS = new Regex("dojax\\('(.*?)'\\);", 1);
-    private static final Regex MACRO_ACTION_EXAMINE = new Regex("descitem\\((\\d+)\\)", 1);
     private final ArrayList<ActionElement> locations;
 
     public NavigationModel(Session session) {
@@ -261,31 +256,9 @@ public class NavigationModel extends LiveModel {
                     }
 
                     Logger.log("NavigationModel", "ChatMacro response: " + response.html);
-                    for (String macroResponse : MACRO_RESPONSE.extractAllSingle(response.html)) {
-                        String message = MACRO_RESPONSE_TEXT.extractSingle(macroResponse, "");
-                        String action = MACRO_RESPONSE_ACTION.extractSingle(macroResponse, "");
-                        Logger.log("NavigationModel", "ChatMacro message parsed [" + message + ", " + action + "]");
-
+                    List<String> messages = ChatModel.chatCommandEval(session, context.createLoadingContext(), context.getPrimaryRoute(), response.html);
+                    for (String message : messages) {
                         context.displayMessage(message);
-
-                        action = action.replace("skills.php?", "runskillz.php?"); //avoid the redirect
-
-                        if (MACRO_ACTION_REDIRECT.matches(action)) {
-                            action = MACRO_ACTION_REDIRECT.extractSingle(action, "");
-                        } else if (MACRO_ACTION_GET_RESULTS.matches(action)) {
-                            action = MACRO_ACTION_GET_RESULTS.extractSingle(action, "");
-                            action += (action.contains("?")) ? "&androiddisplay=results" : "?androiddisplay=results";
-                        } else if (MACRO_ACTION_EXAMINE.matches(action)) {
-                            action = "desc_item.php?whichitem=" + MACRO_ACTION_EXAMINE.extractSingle(action, "0");
-                        } else {
-                            if (!action.equals("")) {
-                                Logger.log("NavigationModel", "Unknown macro action: " + action);
-                            }
-                            continue;
-                        }
-
-                        Request r = new Request(action);
-                        r.makeAsync(session, context.createLoadingContext(), context.getPrimaryRoute());
                     }
                 }
             });

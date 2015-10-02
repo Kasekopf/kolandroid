@@ -49,6 +49,9 @@ public class Request {
      * @return the results of the request, or null if the request fails.
      */
     public ServerReply makeBlocking(Session session, LoadingContext loading) {
+        if (loading == null)
+            loading = LoadingContext.NONE;
+
         Connection con = getConnection(session.getServer());
         String url = con.getUrl();
         loading.start(url);

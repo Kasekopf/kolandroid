@@ -144,13 +144,11 @@ public abstract class ChatModelSegment implements Serializable {
     }
 
     private static ChatModelSegment disassembleCommand(String output, boolean hidden) {
-        output = output.replace("</font>", "");
-
         if (output.contains("<font color=green>Available channels:")) {
-            return new AssertAvailableChannels(CHANNEL.extractAllSingle(output));
+            return new AssertAvailableChannels(CHANNEL.extractAllSingle(output.replace("</font>", "")));
         } else if (output
                 .contains("<font color=green>Currently listening to channels:")) {
-            ArrayList<String> channels = CHANNEL.extractAllSingle(output);
+            ArrayList<String> channels = CHANNEL.extractAllSingle(output.replace("</font>", ""));
             for (int i = 0; i < channels.size(); i++) {
                 if (channels.get(i).contains("<b>")) {
                     channels.set(i, channels.get(i).replace("<b>", "").replace("</b>", ""));
@@ -188,6 +186,8 @@ public abstract class ChatModelSegment implements Serializable {
         void duplicateModel(ChatModel model);
 
         void duplicateChannel(ChannelModel channel);
+
+        void macroResponse(Session session, ServerReply response);
     }
 
     protected static final class AssertChatClosed extends ChatModelSegment {
@@ -421,6 +421,25 @@ public abstract class ChatModelSegment implements Serializable {
         }
     }
 
+    protected static final class ChatMacroResponse extends ChatModelSegment {
+        private final Session session;
+        private final ServerReply response;
+
+        public ChatMacroResponse(Session session, ServerReply response) {
+            this.session = session;
+            this.response = response;
+        }
+
+        @Override
+        public void visit(ChatModelSegmentProcessor processor) {
+            processor.macroResponse(session, response);
+        }
+
+        @Override
+        protected boolean applyToStubs() {
+            return true;
+        }
+    }
     public static class RawMessageList {
         @SerializedName("msgs")
         public ChatText[] messages;

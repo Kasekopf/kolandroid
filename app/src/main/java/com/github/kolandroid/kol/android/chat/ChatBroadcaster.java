@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.github.kolandroid.kol.android.game.GameScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
+import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.models.MessageModel;
@@ -93,6 +94,11 @@ public class ChatBroadcaster {
         @Override
         public void duplicateChannel(ChannelModel channel) {
             // Do nothing
+        }
+
+        @Override
+        public void macroResponse(Session session, ServerReply response) {
+
         }
     };
 

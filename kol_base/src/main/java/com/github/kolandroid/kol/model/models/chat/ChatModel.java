@@ -9,8 +9,10 @@ import com.github.kolandroid.kol.model.models.chat.raw.RawActionList;
 import com.github.kolandroid.kol.model.models.chat.raw.RawActionListDeserializer;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
+import com.github.kolandroid.kol.request.SerializableResponseHandler;
 import com.github.kolandroid.kol.request.TentativeRequest;
 import com.github.kolandroid.kol.util.Logger;
+import com.github.kolandroid.kol.util.Regex;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,21 +23,33 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
+    private static final Regex MACRO_RESPONSE = new Regex("<font.*?</font>", 0);
+    private static final Regex MACRO_RESPONSE_TEXT = new Regex("<font[^>]*>(.*?)(<!--.*?)?</font>", 1);
+    private static final Regex MACRO_RESPONSE_ACTION = new Regex("<!--js\\((.*?)\\)-->", 1);
+    private static final Regex MACRO_ACTION_REDIRECT = new Regex("top.mainpane.location.href='(.*?)'", 1);
+    private static final Regex MACRO_ACTION_GET_RESULTS = new Regex("dojax\\('(.*?)'\\);", 1);
+    private static final Regex MACRO_ACTION_EXAMINE = new Regex("descitem\\((\\d+)\\)", 1);
     private final transient Gson parser;
     private final HashSet<Integer> seenMessages;
     private final ArrayList<ChatText> messages;
     private final Map<String, ChannelModel> channelsByName;
     private final ArrayList<ChannelModel> channels;
     private final ArrayList<ChatAction> baseActions;
-
+    private final SerializableResponseHandler macroResponseHandler = new SerializableResponseHandler() {
+        @Override
+        public void handle(Session session, ServerReply response) {
+            ArrayList<ChatModelSegment> segments = new ArrayList<>();
+            segments.add(new ChatModelSegment.ChatMacroResponse(session, response));
+            notifyView(segments);
+        }
+    };
     private boolean started;
-
     private String playerid;
     private String pwd;
-
     private String visibleChannel;
     private String lasttime;
 
@@ -75,6 +89,57 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
         }
 
         return String.format(baseUrl, playerId, pwd, encodedMsg);
+    }
+
+    public static List<String> chatCommandEval(Session session, final LoadingContext loading, final ResponseHandler macroResponseHandler, String commandResponse) {
+        ArrayList<String> messages = new ArrayList<>();
+
+        final ArrayList<Request> toProcess = new ArrayList<>();
+        final ResponseHandler[] looper = new ResponseHandler[1];
+        looper[0] = new ResponseHandler() {
+            @Override
+            public void handle(Session session, ServerReply response) {
+                if (response != null) {
+                    macroResponseHandler.handle(session, response);
+                }
+
+                synchronized (toProcess) {
+                    if (toProcess.size() > 0) {
+                        Request next = toProcess.remove(0);
+                        next.makeAsync(session, loading, looper[0]);
+                    }
+                }
+            }
+        };
+
+        for (String macroResponse : MACRO_RESPONSE.extractAllSingle(commandResponse)) {
+            String message = MACRO_RESPONSE_TEXT.extractSingle(macroResponse, "");
+            String action = MACRO_RESPONSE_ACTION.extractSingle(macroResponse, "");
+            Logger.log("NavigationModel", "ChatMacro message parsed [" + message + ", " + action + "]");
+
+            messages.add(message);
+
+            action = action.replace("skills.php?", "runskillz.php?"); //avoid the redirect
+
+            if (MACRO_ACTION_REDIRECT.matches(action)) {
+                action = MACRO_ACTION_REDIRECT.extractSingle(action, "");
+            } else if (MACRO_ACTION_GET_RESULTS.matches(action)) {
+                action = MACRO_ACTION_GET_RESULTS.extractSingle(action, "");
+                action += (action.contains("?")) ? "&androiddisplay=results" : "?androiddisplay=results";
+            } else if (MACRO_ACTION_EXAMINE.matches(action)) {
+                action = "desc_item.php?whichitem=" + MACRO_ACTION_EXAMINE.extractSingle(action, "0");
+            } else {
+                if (!action.equals("")) {
+                    Logger.log("ChatModel", "Unknown macro action: " + action);
+                }
+                continue;
+            }
+
+            toProcess.add(new Request(action));
+        }
+
+        looper[0].handle(session, null); //trigger the first request
+        return messages;
     }
 
     protected void duplicate(ChatModel cloneFrom) {
@@ -146,6 +211,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                 ChannelModel channel = getOrCreateChannel(channelName);
                 messages.add(message);
                 channel.addMessage(message);
+
+                if (!stubbed() && message.getText().contains("<!--js")) {
+                    ChatModel.chatCommandEval(getSession(), LoadingContext.NONE, macroResponseHandler, message.getText());
+                }
             }
 
             @Override
@@ -197,6 +266,11 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                 ChannelModel current = getOrCreateChannel(channel.getName());
                 current.duplicate(channel);
             }
+
+            @Override
+            public void macroResponse(Session session, ServerReply response) {
+                finishChatCommand(session, response);
+            }
         });
     }
 
@@ -210,6 +284,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
     }
 
     protected void fillPartialChatPrompt(String message) {
+        // do nothing
+    }
+
+    protected void finishChatCommand(Session session, ServerReply reply) {
         // do nothing
     }
 

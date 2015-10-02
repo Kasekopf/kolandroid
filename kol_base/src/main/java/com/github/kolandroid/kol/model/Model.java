@@ -53,7 +53,17 @@ public abstract class Model implements Serializable {
      * @param req The request to make.
      */
     protected void makeRequest(Request req) {
-        this.makeRequest(req, context.getPrimaryRoute());
+        this.makeRequest(req, session, getGameHandler());
+    }
+
+    /**
+     * Make a new request in the context of this model.
+     *
+     * @param req The request to make.
+     * @param override The session to use.
+     */
+    protected void makeRequest(Request req, Session override) {
+        this.makeRequest(req, override, getGameHandler());
     }
 
     /**
@@ -63,7 +73,19 @@ public abstract class Model implements Serializable {
      * @param listener Response handler to use for the result.
      */
     protected void makeRequest(Request req, ResponseHandler listener) {
-        req.makeAsync(session, context.createLoadingContext(), listener);
+        this.makeRequest(req, session, listener);
+    }
+
+
+    /**
+     * Make a new request in the context of this model.
+     *
+     * @param req      The request to make.
+     * @param override The session to use.
+     * @param listener Response handler to use for the result.
+     */
+    protected void makeRequest(Request req, Session override, ResponseHandler listener) {
+        req.makeAsync(override, context.createLoadingContext(), listener);
     }
 
     /**
@@ -93,6 +115,7 @@ public abstract class Model implements Serializable {
      * @return A handler
      */
     protected ResponseHandler getGameHandler() {
+        if (context == null) context = EmptyViewContext.ONLY;
         return context.getPrimaryRoute();
     }
 
@@ -111,6 +134,7 @@ public abstract class Model implements Serializable {
      * @return A context for changing app global settings.
      */
     protected SettingsContext getSettings() {
+        if (context == null) context = EmptyViewContext.ONLY;
         return context.getSettingsContext();
     }
 
@@ -120,6 +144,7 @@ public abstract class Model implements Serializable {
      * @return A context for accessing the app data cache.
      */
     protected DataContext getData() {
+        if (context == null) context = EmptyViewContext.ONLY;
         return context.getDataContext();
     }
 }
