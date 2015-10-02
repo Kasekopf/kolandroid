@@ -275,8 +275,8 @@ public class WebModel extends Model {
         Logger.log("WebModel", "Created for " + text.url);
 
         this.url = text.url;
-        this.setHTML(text.html.replace("window.devicePixelRatio >= 2", "window.devicePixelRatio < 2"));
         this.type = type;
+        this.setHTML(text.html.replace("window.devicePixelRatio >= 2", "window.devicePixelRatio < 2"));
 
         /*
         for(String x : this.getHTML().split("\n")) {
@@ -317,11 +317,11 @@ public class WebModel extends Model {
     }
 
 
-    private static String prepareHtml(String html, String url) {
+    private static String prepareHtml(String html, String url, WebModelType type) {
         html = fixItemsAndEffects(html);
         html = injectJavascript(html, url);
         html = doMiscFixes(html);
-        html = fixPaneReferences(html);
+        html = fixPaneReferences(html, type);
         return html;
     }
 
@@ -337,11 +337,16 @@ public class WebModel extends Model {
         return html;
     }
 
-    private static String fixPaneReferences(String html) {
+    private static String fixPaneReferences(String html, WebModelType type) {
         html = FRAME_REDIRECT.replaceAll(html, "");
         html = TOP_PANE_REFRESH.replaceAll(html, "window.ANDROIDAPP.refreshStatsPane();");
         html = html.replace("top.mainpane.document", "document");
         html = html.replace("parent.mainpane", "window");
+
+        if(type == WebModelType.RESULTS && !html.contains("ANDROIDAPP.refreshStatsPane()")) {
+            // Force a stats pane refresh on results popups
+            html = HEAD_TAG.replaceAll(html, "$0 <script>window.ANDROIDAPP.refreshStatsPane();</script>");
+        }
         return html;
     }
 
@@ -416,7 +421,7 @@ public class WebModel extends Model {
     }
 
     private void setHTML(String html) {
-        this.html = prepareHtml(html, url);
+        this.html = prepareHtml(html, url, type);
     }
 
     public void setFixedHTML(String html) {
@@ -472,7 +477,7 @@ public class WebModel extends Model {
             Logger.log("WebModel", "[AJAX] Error loading " + url);
             html_result = "";
         } else {
-            html_result = prepareHtml(result.html, url);
+            html_result = prepareHtml(result.html, url, WebModelType.REGULAR);
             Logger.log("WebModel", "[AJAX] Loaded " + url + " : " + html_result);
         }
 
