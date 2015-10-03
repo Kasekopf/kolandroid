@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.android.controllers;
+package com.github.kolandroid.kol.android.controllers.navigation;
 
 import android.view.View;
 import android.widget.AdapterView;
@@ -7,12 +7,15 @@ import android.widget.ListView;
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.binders.ElementBinder;
 import com.github.kolandroid.kol.android.controller.LinkedModelController;
+import com.github.kolandroid.kol.android.controllers.web.TextInputController;
+import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.util.adapters.ListAdapter;
 import com.github.kolandroid.kol.model.LiveModel.LiveMessage;
-import com.github.kolandroid.kol.model.elements.ActionElement;
-import com.github.kolandroid.kol.model.models.NavigationModel;
+import com.github.kolandroid.kol.model.models.navigation.NavigationElement;
+import com.github.kolandroid.kol.model.models.navigation.NavigationModel;
+import com.github.kolandroid.kol.util.Callback;
 
 public class NavigationController extends LinkedModelController<LiveMessage, NavigationModel> {
     /**
@@ -20,7 +23,7 @@ public class NavigationController extends LinkedModelController<LiveMessage, Nav
      */
     private static final long serialVersionUID = -9139598436492012011L;
 
-    private transient ListAdapter<ActionElement> adapter;
+    private transient ListAdapter<NavigationElement> adapter;
 
     public NavigationController(NavigationModel model) {
         super(model);
@@ -50,12 +53,32 @@ public class NavigationController extends LinkedModelController<LiveMessage, Nav
         adapter = new ListAdapter<>(view.getContext(), model.getLocations(), ElementBinder.ONLY);
         mDrawerListView.setAdapter(adapter);
 
+        final Callback<NavigationElement>[] selectItem = new Callback[1]; //Need array for recursion
+        selectItem[0] = new Callback<NavigationElement>() {
+            @Override
+            public void execute(final NavigationElement choice) {
+                choice.attachView(host.getViewContext());
+                choice.submit(new Callback<String>() {
+                    @Override
+                    public void execute(final String argument) {
+                        TextInputController fillInArgument = new TextInputController("Fill " + argument, new Callback<String>() {
+                            @Override
+                            public void execute(String value) {
+                                selectItem[0].execute(choice.fillArgument(argument, value));
+                            }
+                        });
+                        DialogScreen.display(fillInArgument, host, choice.getSubtext());
+                    }
+                });
+                host.close();
+            }
+        };
+
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ActionElement choice = (ActionElement) parent.getItemAtPosition(position);
-                choice.submit(host.getViewContext());
-                host.close();
+                NavigationElement choice = (NavigationElement) parent.getItemAtPosition(position);
+                selectItem[0].execute(choice);
             }
         });
     }

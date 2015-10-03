@@ -1,18 +1,12 @@
-package com.github.kolandroid.kol.model.models;
+package com.github.kolandroid.kol.model.models.navigation;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
-import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.LiveModel;
-import com.github.kolandroid.kol.model.elements.ActionElement;
-import com.github.kolandroid.kol.model.models.chat.ChatModel;
-import com.github.kolandroid.kol.request.Request;
-import com.github.kolandroid.kol.request.ResponseHandler;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class NavigationModel extends LiveModel {
     /**
@@ -26,7 +20,7 @@ public class NavigationModel extends LiveModel {
     private final static Regex AWESOME_MENU_ITEM_IMAGE = new Regex("<img[^>]*src=[\"'](.*?)[\"'][^>]*>", 1);
     private final static Regex PLAYERID = new Regex("playerid=(\\d+)", 1);
     private final static Regex PWDHASH = new Regex("pwd=([0-9a-fA-F]+)", 1);
-    private final ArrayList<ActionElement> locations;
+    private final ArrayList<NavigationElement> locations;
 
     public NavigationModel(Session session) {
         super(session, "topmenu.php", false);
@@ -35,7 +29,7 @@ public class NavigationModel extends LiveModel {
         loadContent(null);
     }
 
-    public ArrayList<ActionElement> getLocations() {
+    public ArrayList<NavigationElement> getLocations() {
         this.access();
         return new ArrayList<>(this.locations);
     }
@@ -72,9 +66,9 @@ public class NavigationModel extends LiveModel {
         fillRequired();
     }
 
-    private void includeRequired(ActionElement required, boolean addToTop) {
+    private void includeRequired(NavigationElement required, boolean addToTop) {
         //Attempt to find an equivalent element in the list of current items
-        for (ActionElement added : locations) {
+        for (NavigationElement added : locations) {
             if (added.urlMatches(required))
                 return;
         }
@@ -88,30 +82,30 @@ public class NavigationModel extends LiveModel {
 
     private void fillRequired() {
         //Items to be added to the top of the list
-        includeRequired(new ActionElement(getSession(), "Main Map",
+        includeRequired(new NavigationElement(getSession(), "Main Map",
                 "http://images.kingdomofloathing.com/itemimages/map.gif",
                 "main.php"), true);
-        includeRequired(new ActionElement(getSession(), "Inventory",
+        includeRequired(new NavigationElement(getSession(), "Inventory",
                 "http://images.kingdomofloathing.com/itemimages/backpack.gif",
                 "inventory.php"), true);
-        includeRequired(new ActionElement(getSession(), "Skills",
+        includeRequired(new NavigationElement(getSession(), "Skills",
                 "http://images.kingdomofloathing.com/itemimages/book3.gif",
                 "skillz.php"), true);
-        includeRequired(new ActionElement(getSession(), "Crafting",
+        includeRequired(new NavigationElement(getSession(), "Crafting",
                 "http://images.kingdomofloathing.com/itemimages/pliers.gif",
                 "craft.php"), true);
 
         //Items to be added to the bottom of the list
-        includeRequired(new ActionElement(getSession(), "Help",
+        includeRequired(new NavigationElement(getSession(), "Help",
                 "http://images.kingdomofloathing.com/itemimages/help.gif",
                 "doc.php?topic=home"), false);
-        includeRequired(new ActionElement(getSession(), "Report Bug",
+        includeRequired(new NavigationElement(getSession(), "Report Bug",
                 "http://images.kingdomofloathing.com/itemimages/beetle.gif",
                 "adminmail.php"), false);
-        includeRequired(new ActionElement(getSession(), "Logout",
+        includeRequired(new NavigationElement(getSession(), "Logout",
                 "http://images.kingdomofloathing.com/itemimages/sleepy.gif",
                 "logout.php"), false);
-        includeRequired(new ActionElement(getSession(), "Options",
+        includeRequired(new NavigationElement(getSession(), "Options",
                 "http://images.kingdomofloathing.com/itemimages/blackwrench.gif",
                 "account.php"), false);
     }
@@ -119,7 +113,7 @@ public class NavigationModel extends LiveModel {
     private void loadAwesomeMenuContent(ServerReply response) {
         String playerid = PLAYERID.extractSingle(response.html, "0");
         String pwd = PWDHASH.extractSingle(response.html, "0");
-        String chatBase = "submitnewchat.php?playerid=%s&pwd=%s&graf=%s&cli=1";
+        String chatBase = String.format("submitnewchat.php?playerid=%s&pwd=%s&cli=1&graf=", playerid, pwd);
 
         for (String menuItem : AWESOME_MENU_ITEM.extractAllSingle(response.html)) {
             String link = AWESOME_MENU_ITEM_LINK.extractSingle(menuItem, "");
@@ -131,11 +125,10 @@ public class NavigationModel extends LiveModel {
                 String chatAction = AWESOME_MENU_ITEM_CHATACTION.extractSingle(menuItem, "");
 
                 chatAction = chatAction.replace("&amp;", "&");
-                String url = ChatModel.encodeChatMessage(chatBase, playerid, pwd, chatAction);
 
-                locations.add(new ChatMacroActionElement(getSession(), name, image, url));
+                locations.add(new ChatMacroElement(getSession(), name, image, chatBase, chatAction));
             } else {
-                locations.add(new ActionElement(getSession(), name, image, link));
+                locations.add(new NavigationElement(getSession(), name, image, link));
             }
         }
 
@@ -146,7 +139,7 @@ public class NavigationModel extends LiveModel {
                                 String... urls) {
         for (String url : urls) {
             if (html.contains(url)) {
-                locations.add(new ActionElement(getSession(), name, image, url));
+                locations.add(new NavigationElement(getSession(), name, image, url));
                 break;
             }
         }
@@ -227,41 +220,15 @@ public class NavigationModel extends LiveModel {
                 "http://images.kingdomofloathing.com/itemimages/swords.gif",
                 "peevpee.php");
 
-        locations.add(new ActionElement(getSession(), "Messages",
+        locations.add(new NavigationElement(getSession(), "Messages",
                 "http://images.kingdomofloathing.com/itemimages/envelope.gif",
                 "messages.php"));
-        locations.add(new ActionElement(getSession(), "Donate",
+        locations.add(new NavigationElement(getSession(), "Donate",
                 "http://images.kingdomofloathing.com/itemimages/donate.gif",
                 "donatepopup.php"));
-        locations.add(new ActionElement(getSession(), "Community",
+        locations.add(new NavigationElement(getSession(), "Community",
                 "http://images.kingdomofloathing.com/itemimages/chat.gif",
                 "community.php"));
     }
 
-    private static class ChatMacroActionElement extends ActionElement {
-        public ChatMacroActionElement(Session session, String text, String img, String action) {
-            super(session, text, img, action);
-        }
-
-        @Override
-        protected void submit(final ViewContext context, final Session session, String url) {
-            Request r = new Request(url);
-            r.makeAsync(session, context.createLoadingContext(), new ResponseHandler() {
-                @Override
-                public void handle(Session session, ServerReply response) {
-                    if (response == null) {
-                        Logger.log("NavigationModel", "ChatMacro response: [NULL]");
-                        context.displayMessage("Unable to connect to KoL.");
-                        return;
-                    }
-
-                    Logger.log("NavigationModel", "ChatMacro response: " + response.html);
-                    List<String> messages = ChatModel.chatCommandEval(session, context.createLoadingContext(), context.getPrimaryRoute(), response.html);
-                    for (String message : messages) {
-                        context.displayMessage(message);
-                    }
-                }
-            });
-        }
-    }
 }

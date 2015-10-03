@@ -18,10 +18,10 @@ import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.ModelController;
 import com.github.kolandroid.kol.android.controller.UpdatableController;
 import com.github.kolandroid.kol.android.controller.UpdateController;
-import com.github.kolandroid.kol.android.controllers.NavigationController;
 import com.github.kolandroid.kol.android.controllers.StatsController;
 import com.github.kolandroid.kol.android.controllers.StatsController.StatsCallbacks;
 import com.github.kolandroid.kol.android.controllers.chat.ChatCounterController;
+import com.github.kolandroid.kol.android.controllers.navigation.NavigationController;
 import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
@@ -34,8 +34,8 @@ import com.github.kolandroid.kol.android.view.ProgressLoader;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.model.Model;
-import com.github.kolandroid.kol.model.models.NavigationModel;
 import com.github.kolandroid.kol.model.models.StatsModel;
+import com.github.kolandroid.kol.model.models.navigation.NavigationModel;
 import com.github.kolandroid.kol.util.Logger;
 
 public class GameScreen extends ActivityScreen implements StatsCallbacks {

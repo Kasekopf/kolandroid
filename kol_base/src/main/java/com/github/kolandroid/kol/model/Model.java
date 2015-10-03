@@ -72,7 +72,7 @@ public abstract class Model implements Serializable {
      * @param req      The request to make.
      * @param listener Response handler to use for the result.
      */
-    protected void makeRequest(Request req, ResponseHandler listener) {
+    public void makeRequest(Request req, ResponseHandler listener) {
         this.makeRequest(req, session, listener);
     }
 
@@ -146,5 +146,13 @@ public abstract class Model implements Serializable {
     protected DataContext getData() {
         if (context == null) context = EmptyViewContext.ONLY;
         return context.getDataContext();
+    }
+
+    /**
+     * Display a small message using the attached view context
+     */
+    protected void displayMessage(String message) {
+        if (context == null) context = EmptyViewContext.ONLY;
+        context.displayMessage(message);
     }
 }

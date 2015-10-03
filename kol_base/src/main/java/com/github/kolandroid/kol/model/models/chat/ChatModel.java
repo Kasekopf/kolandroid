@@ -4,6 +4,7 @@ import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.model.LinkedModel;
+import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.model.models.chat.raw.RawActionList;
 import com.github.kolandroid.kol.model.models.chat.raw.RawActionListDeserializer;
@@ -30,7 +31,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
     private static final Regex MACRO_RESPONSE = new Regex("<font.*?</font>", 0);
     private static final Regex MACRO_RESPONSE_TEXT = new Regex("<font[^>]*>(.*?)(<!--.*?)?</font>", 1);
     private static final Regex MACRO_RESPONSE_ACTION = new Regex("<!--js\\((.*?)\\)-->", 1);
-    private static final Regex MACRO_ACTION_REDIRECT = new Regex("top(.mainpane)?.location(.href)?=['\"]/?(.*?)['\"]", 3);
+    private static final Regex MACRO_ACTION_REDIRECT = new Regex("top(.mainpane)?.location(.href)?=['\"](.*?)['\"]", 3);
     private static final Regex MACRO_ACTION_GET_RESULTS = new Regex("dojax\\('(.*?)'\\);", 1);
     private static final Regex MACRO_ACTION_EXAMINE = new Regex("descitem\\((\\d+)\\)", 1);
     private final transient Gson parser;
@@ -79,7 +80,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
     }
 
     @SuppressWarnings("deprecation")
-    public static String encodeChatMessage(String baseUrl, String playerId, String pwd, String msg) {
+    public static String encodeChatMessage(String msg) {
         String encodedMsg;
 
         try {
@@ -88,10 +89,10 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             encodedMsg = URLEncoder.encode(msg);
         }
 
-        return String.format(baseUrl, playerId, pwd, encodedMsg);
+        return encodedMsg;
     }
 
-    public static List<String> chatCommandEval(Session session, final LoadingContext loading, final ResponseHandler macroResponseHandler, String commandResponse) {
+    public static List<String> chatCommandEval(final Model base, final ResponseHandler macroResponseHandler, String commandResponse) {
         ArrayList<String> messages = new ArrayList<>();
 
         final ArrayList<Request> toProcess = new ArrayList<>();
@@ -106,7 +107,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                 synchronized (toProcess) {
                     if (toProcess.size() > 0) {
                         Request next = toProcess.remove(0);
-                        next.makeAsync(session, loading, looper[0]);
+                        base.makeRequest(next, looper[0]);
                     }
                 }
             }
@@ -138,7 +139,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
             toProcess.add(new Request(action));
         }
 
-        looper[0].handle(session, null); //trigger the first request
+        looper[0].handle(base.getSession(), null); //trigger the first request
         return messages;
     }
 
@@ -213,7 +214,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                 channel.addMessage(message);
 
                 if (!stubbed() && message.getText().contains("<!--js")) {
-                    ChatModel.chatCommandEval(getSession(), LoadingContext.NONE, macroResponseHandler, message.getText());
+                    chatCommandEval(ChatModel.this, macroResponseHandler, message.getText());
                 }
             }
 
@@ -424,7 +425,7 @@ public class ChatModel extends LinkedModel<Iterable<ChatModelSegment>> {
                     return StopChat.ONLY.complete(base);
                 }
 
-                String url = encodeChatMessage("submitnewchat.php?playerid=%s&pwd=%s&graf=%s&j=1", base.playerid, base.pwd, message);
+                String url = String.format("submitnewchat.php?playerid=%s&pwd=%s&graf=%s&j=1", base.playerid, base.pwd, encodeChatMessage(message));
                 Logger.log("ChatModel", "Submitting chat for " + url);
 
                 Request req = new Request(url);
