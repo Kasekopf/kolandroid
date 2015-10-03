@@ -27,6 +27,7 @@ public class ChatSubmissionStubModel extends ChatStubModel {
     }
 
     public void doChatSubmission(String message) {
+        if (message == null || message.isEmpty()) return; //Do not submit empty messages
         submitCommand(new ChatModel.ChatModelCommand.SubmitChatMessage(getCurrentChannel(), message));
     }
 }
