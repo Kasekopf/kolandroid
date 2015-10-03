@@ -1,7 +1,7 @@
 package com.github.kolandroid.kol.model.models.chat;
 
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.LinkedModel;
+import com.github.kolandroid.kol.session.Session;
 
 import java.util.ArrayList;
 

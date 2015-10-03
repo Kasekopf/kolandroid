@@ -1,8 +1,8 @@
 package com.github.kolandroid.kol.model.models.fight;
 
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.request.Request;
+import com.github.kolandroid.kol.session.Session;
 
 public class FightBasicAction extends Model implements FightAction {
     private final String name;

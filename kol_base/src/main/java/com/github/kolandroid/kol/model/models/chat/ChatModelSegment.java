@@ -1,10 +1,10 @@
 package com.github.kolandroid.kol.model.models.chat;
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.model.models.chat.raw.RawAction;
 import com.github.kolandroid.kol.model.models.chat.raw.RawActionList;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 import com.google.gson.Gson;

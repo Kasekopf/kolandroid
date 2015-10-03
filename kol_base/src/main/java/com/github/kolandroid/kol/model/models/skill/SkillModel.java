@@ -1,7 +1,6 @@
 package com.github.kolandroid.kol.model.models.skill;
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.data.DataCache;
 import com.github.kolandroid.kol.data.RawSkill;
 import com.github.kolandroid.kol.model.Model;
@@ -10,6 +9,7 @@ import com.github.kolandroid.kol.model.elements.interfaces.SubtextElement;
 import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Regex;
 

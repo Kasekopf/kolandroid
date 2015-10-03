@@ -1,9 +1,9 @@
 package com.github.kolandroid.kol.model.models.fight;
 
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.elements.OptionElement;
 import com.github.kolandroid.kol.model.models.inventory.ItemModel;
 import com.github.kolandroid.kol.request.Request;
+import com.github.kolandroid.kol.session.Session;
 
 public class FightItem extends ItemModel implements FightAction {
     public static final FightItem NONE = new FightItem(new Session(), new OptionElement("(select an item below)", "", "0", true), FightActionHistory.NONE) {

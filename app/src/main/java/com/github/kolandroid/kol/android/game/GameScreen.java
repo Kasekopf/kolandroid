@@ -31,11 +31,11 @@ import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
 import com.github.kolandroid.kol.android.view.ProgressLoader;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.model.models.StatsModel;
 import com.github.kolandroid.kol.model.models.navigation.NavigationModel;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Logger;
 
 public class GameScreen extends ActivityScreen implements StatsCallbacks {

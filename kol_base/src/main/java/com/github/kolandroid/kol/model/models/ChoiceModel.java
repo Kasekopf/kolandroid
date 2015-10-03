@@ -1,8 +1,8 @@
 package com.github.kolandroid.kol.model.models;
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.elements.ActionElement;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Regex;
 
 import java.util.ArrayList;

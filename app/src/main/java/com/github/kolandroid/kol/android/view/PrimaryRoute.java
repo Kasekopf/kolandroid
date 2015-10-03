@@ -16,7 +16,6 @@ import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.login.LoginController;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.models.AccountSettingsModel;
 import com.github.kolandroid.kol.model.models.CraftingModel;
 import com.github.kolandroid.kol.model.models.MessageModel;
@@ -30,6 +29,7 @@ import com.github.kolandroid.kol.model.models.login.CreateCharacterModel;
 import com.github.kolandroid.kol.model.models.login.LoginModel;
 import com.github.kolandroid.kol.model.models.skill.SkillsModel;
 import com.github.kolandroid.kol.request.ResponseHandler;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 

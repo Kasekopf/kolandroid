@@ -1,8 +1,8 @@
 package com.github.kolandroid.kol.model.models.inventory;
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.elements.MultiActionElement;
+import com.github.kolandroid.kol.session.Session;
 
 import java.util.Map;
 

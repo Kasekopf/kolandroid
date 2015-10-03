@@ -1,7 +1,7 @@
 package com.github.kolandroid.kol.model;
 
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.models.MessageModel;
+import com.github.kolandroid.kol.session.Session;
 
 public class ReportableMessageModel extends MessageModel {
     private final String errorLog;

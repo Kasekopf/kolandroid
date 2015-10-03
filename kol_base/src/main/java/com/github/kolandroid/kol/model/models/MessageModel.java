@@ -1,9 +1,9 @@
 package com.github.kolandroid.kol.model.models;
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.request.Request;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Regex;
 
 public class MessageModel extends Model {

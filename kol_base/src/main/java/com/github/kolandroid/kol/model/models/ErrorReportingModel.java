@@ -1,8 +1,8 @@
 package com.github.kolandroid.kol.model.models;
 
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.model.Model;
+import com.github.kolandroid.kol.session.Session;
 
 public class ErrorReportingModel extends Model {
     public static final String ERROR_SETTING = "AppErrorInfo";

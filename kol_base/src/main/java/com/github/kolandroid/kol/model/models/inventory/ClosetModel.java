@@ -1,11 +1,11 @@
 package com.github.kolandroid.kol.model.models.inventory;
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.elements.ActionElement;
 import com.github.kolandroid.kol.model.elements.MultiuseElement;
 import com.github.kolandroid.kol.model.elements.basic.BasicSubtextElement;
 import com.github.kolandroid.kol.model.elements.interfaces.SubtextElement;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Regex;
 
 public class ClosetModel extends ItemStorageModel {

@@ -1,13 +1,13 @@
 package com.github.kolandroid.kol.model.models.skill;
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.elements.OptionElement;
 import com.github.kolandroid.kol.model.elements.OptionElement.OptionElementParser;
 import com.github.kolandroid.kol.model.elements.basic.BasicGroup;
 import com.github.kolandroid.kol.model.models.inventory.InventoryActionFactory;
 import com.github.kolandroid.kol.model.models.inventory.ItemModel;
 import com.github.kolandroid.kol.model.models.inventory.ItemPocketModel;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Regex;
 
 import java.util.ArrayList;

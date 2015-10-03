@@ -15,9 +15,9 @@ import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.model.models.chat.stubs.ChatStubModel;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Logger;
 
 public class ChatScreen extends ActivityScreen {

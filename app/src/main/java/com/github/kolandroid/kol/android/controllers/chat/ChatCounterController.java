@@ -8,7 +8,6 @@ import com.github.kolandroid.kol.android.controllers.MessageController;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.model.models.MessageModel;
 import com.github.kolandroid.kol.model.models.chat.ChannelModel;
@@ -17,6 +16,7 @@ import com.github.kolandroid.kol.model.models.chat.ChatModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModelSegment;
 import com.github.kolandroid.kol.model.models.chat.ChatText;
 import com.github.kolandroid.kol.model.models.chat.stubs.ChatStubModel;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Logger;
 
 import java.util.ArrayList;

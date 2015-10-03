@@ -1,10 +1,10 @@
 package com.github.kolandroid.kol.model.elements;
 
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.elements.basic.BasicAction;
 import com.github.kolandroid.kol.model.elements.interfaces.DeferredGameAction;
 import com.github.kolandroid.kol.model.elements.interfaces.Multiuseable;
 import com.github.kolandroid.kol.model.elements.interfaces.SubtextElement;
+import com.github.kolandroid.kol.session.Session;
 
 public class MultiuseElement implements Multiuseable {
     /**

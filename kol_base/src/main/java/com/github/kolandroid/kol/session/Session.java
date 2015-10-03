@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.connection;
+package com.github.kolandroid.kol.session;
 
 import com.github.kolandroid.kol.util.Regex;
 

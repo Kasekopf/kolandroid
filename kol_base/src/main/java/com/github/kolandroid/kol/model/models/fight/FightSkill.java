@@ -1,9 +1,9 @@
 package com.github.kolandroid.kol.model.models.fight;
 
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.elements.OptionElement;
 import com.github.kolandroid.kol.model.models.skill.SkillModel;
 import com.github.kolandroid.kol.request.Request;
+import com.github.kolandroid.kol.session.Session;
 
 public class FightSkill extends SkillModel implements FightAction {
     /**

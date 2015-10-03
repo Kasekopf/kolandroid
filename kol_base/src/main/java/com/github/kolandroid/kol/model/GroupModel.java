@@ -1,7 +1,7 @@
 package com.github.kolandroid.kol.model;
 
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.GroupModel.ChildModel;
+import com.github.kolandroid.kol.session.Session;
 
 /**
  * A model responsible for many additional child models, with a single active child at a given time.

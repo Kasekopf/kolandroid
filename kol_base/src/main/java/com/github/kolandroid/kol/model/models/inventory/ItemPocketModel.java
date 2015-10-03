@@ -1,7 +1,6 @@
 package com.github.kolandroid.kol.model.models.inventory;
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.data.DataCache;
 import com.github.kolandroid.kol.data.RawItem;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
@@ -9,6 +8,7 @@ import com.github.kolandroid.kol.model.GroupModel.ChildModel;
 import com.github.kolandroid.kol.model.LiveModel;
 import com.github.kolandroid.kol.model.elements.basic.BasicGroup;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Regex;
 
 import java.util.ArrayList;

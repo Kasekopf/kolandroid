@@ -2,9 +2,9 @@ package com.github.kolandroid.kol.model.models;
 
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.GroupModel;
 import com.github.kolandroid.kol.model.LiveModel;
+import com.github.kolandroid.kol.session.Session;
 
 public abstract class LiveWebModel extends LiveModel implements GroupModel.ChildModel {
     /**

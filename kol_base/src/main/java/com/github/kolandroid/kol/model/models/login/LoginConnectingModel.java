@@ -1,12 +1,12 @@
 package com.github.kolandroid.kol.model.models.login;
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.LinkedModel;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Logger;
 
 public class LoginConnectingModel extends LinkedModel<ConnectionFailed> {

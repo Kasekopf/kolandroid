@@ -1,9 +1,9 @@
 package com.github.kolandroid.kol.model.models.skill;
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.GroupModel;
+import com.github.kolandroid.kol.session.Session;
 
 public class SkillsModel extends GroupModel<SkillsSubmodel> {
     /**

@@ -3,8 +3,8 @@ package com.github.kolandroid.kol.request;
 import com.github.kolandroid.kol.connection.Connection;
 import com.github.kolandroid.kol.connection.ConnectionException;
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
+import com.github.kolandroid.kol.session.Session;
 
 /**
  * A request which consults a separate handler if the request fails.

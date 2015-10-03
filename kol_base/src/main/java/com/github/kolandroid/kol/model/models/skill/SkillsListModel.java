@@ -1,7 +1,6 @@
 package com.github.kolandroid.kol.model.models.skill;
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.data.DataCache;
 import com.github.kolandroid.kol.data.RawSkill;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
@@ -10,6 +9,7 @@ import com.github.kolandroid.kol.model.elements.OptionElement;
 import com.github.kolandroid.kol.model.elements.OptionElement.OptionElementParser;
 import com.github.kolandroid.kol.model.elements.basic.BasicGroup;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 

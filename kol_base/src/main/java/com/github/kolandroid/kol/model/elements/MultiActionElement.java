@@ -1,8 +1,8 @@
 package com.github.kolandroid.kol.model.elements;
 
-import com.github.kolandroid.kol.connection.Session;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.request.Request;
+import com.github.kolandroid.kol.session.Session;
 
 public class MultiActionElement extends Model {
     private final String url;
