@@ -6,6 +6,7 @@ import com.github.kolandroid.kol.data.RawItem;
 import com.github.kolandroid.kol.data.RawSkill;
 import com.github.kolandroid.kol.request.ResponseHandler;
 import com.github.kolandroid.kol.session.Session;
+import com.github.kolandroid.kol.session.SessionCache;
 import com.github.kolandroid.kol.util.Logger;
 
 import java.io.Serializable;
@@ -46,6 +47,11 @@ public class EmptyViewContext implements ViewContext, Serializable {
             @Override
             public DataCache<String, RawItem> getItemCache() {
                 return new EmptyDataCache<>();
+            }
+
+            @Override
+            public SessionCache getSessionCache(Session session) {
+                return new SessionCache(session);
             }
         };
     }

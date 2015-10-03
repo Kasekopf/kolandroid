@@ -3,21 +3,36 @@ package com.github.kolandroid.kol.session;
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.session.cache.CombatActionBarData;
 import com.github.kolandroid.kol.util.Callback;
+import com.github.kolandroid.kol.util.Logger;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionCache {
-    private ConcurrentHashMap<Class<?>, CacheItem> cache;
+    private final Map<Class<?>, CacheItem> cache;
+
+    private final Session session;
+    private String pwd;
 
     public SessionCache(Session session) {
+        this.session = session;
+        this.cache = new ConcurrentHashMap<>();
+        this.pwd = "0";
         init(Session.class, new BasicCacheItem<>(session));
 
-        init(CombatActionBarData.class, new LiveCacheItem<CombatActionBarData>(session, "") {
-            @Override
-            protected CombatActionBarData process(ServerReply reply) {
-                return CombatActionBarData.create(reply);
-            }
-        });
+    }
+
+    public synchronized void prepare(String pwd) {
+        if (pwd != null && !pwd.isEmpty() && !pwd.equals(this.pwd)) {
+            Logger.log("SessionCache", "Detected new pwdhash: " + pwd);
+            this.pwd = pwd;
+            init(CombatActionBarData.class, new LiveCacheItem<CombatActionBarData>(session, "actionbar.php?action=fetch&d=" + System.currentTimeMillis() + "&pwd=" + pwd) {
+                @Override
+                protected CombatActionBarData process(ServerReply reply) {
+                    return CombatActionBarData.create(reply);
+                }
+            });
+        }
     }
 
     private <E> void init(Class<E> id, CacheItem<E> container) {

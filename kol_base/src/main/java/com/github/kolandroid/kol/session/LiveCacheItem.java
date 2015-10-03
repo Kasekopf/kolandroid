@@ -5,6 +5,7 @@ import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
 import com.github.kolandroid.kol.util.Callback;
+import com.github.kolandroid.kol.util.Logger;
 
 import java.util.ArrayList;
 
@@ -41,6 +42,7 @@ public abstract class LiveCacheItem<E> implements CacheItem<E> {
             }
 
             if (contents == null) {
+                Logger.log("LiveCacheItem", "Starting request for " + updateUrl);
                 loading = true;
                 Request r = new Request(updateUrl);
                 r.makeAsync(session, LoadingContext.NONE, new ResponseHandler() {

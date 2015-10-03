@@ -6,6 +6,8 @@ import com.github.kolandroid.kol.data.DataCache;
 import com.github.kolandroid.kol.data.RawItem;
 import com.github.kolandroid.kol.data.RawSkill;
 import com.github.kolandroid.kol.gamehandler.DataContext;
+import com.github.kolandroid.kol.session.Session;
+import com.github.kolandroid.kol.session.SessionCache;
 
 public class KolApplication extends Application implements DataContext {
     private final AndroidRawCache<RawSkill> skillsCache = new AndroidRawCache<RawSkill>("skillcache.txt", "skilloverridecache.txt") {
@@ -21,6 +23,8 @@ public class KolApplication extends Application implements DataContext {
             return RawItem.parse(cacheLine);
         }
     };
+
+    private SessionCache sessionCache = null;
 
     @Override
     public void onCreate() {
@@ -43,5 +47,18 @@ public class KolApplication extends Application implements DataContext {
     @Override
     public DataCache<String, RawItem> getItemCache() {
         return itemsCache;
+    }
+
+    @Override
+    public SessionCache getSessionCache(Session session) {
+        if (sessionCache == null) {
+            synchronized (this) {
+                if (sessionCache == null) {
+                    sessionCache = new SessionCache(session);
+                }
+            }
+        }
+
+        return sessionCache;
     }
 }
