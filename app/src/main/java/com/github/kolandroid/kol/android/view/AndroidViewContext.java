@@ -86,7 +86,7 @@ public class AndroidViewContext implements ViewContext {
                 Message.obtain(activityLauncher, 0, builder).sendToTarget();
             }
         };
-        this.primaryRoute = new PrimaryRoute(screens);
+        this.primaryRoute = new PrimaryRoute(this, screens);
     }
 
     @Override

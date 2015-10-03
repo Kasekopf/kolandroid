@@ -13,8 +13,8 @@ public abstract class LiveCacheItem<E> implements CacheItem<E> {
     private final Session session;
     private final String updateUrl;
 
-    private ArrayList<Callback<E>> listeners;
-    private ArrayList<Callback<Void>> failureListeners;
+    private final ArrayList<Callback<E>> listeners;
+    private final ArrayList<Callback<Void>> failureListeners;
 
     private E contents;
     private boolean loading;
@@ -29,6 +29,10 @@ public abstract class LiveCacheItem<E> implements CacheItem<E> {
         this.session = s;
         this.updateUrl = updateUrl;
 
+        this.listeners = new ArrayList<>();
+        this.failureListeners = new ArrayList<>();
+
+        this.contents = null;
         this.loading = false;
     }
 
@@ -44,6 +48,9 @@ public abstract class LiveCacheItem<E> implements CacheItem<E> {
             if (contents == null) {
                 Logger.log("LiveCacheItem", "Starting request for " + updateUrl);
                 loading = true;
+                listeners.add(callback);
+                failureListeners.add(failure);
+
                 Request r = new Request(updateUrl);
                 r.makeAsync(session, LoadingContext.NONE, new ResponseHandler() {
                     @Override

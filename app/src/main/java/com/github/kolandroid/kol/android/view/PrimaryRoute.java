@@ -16,6 +16,7 @@ import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.login.LoginController;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.connection.ServerReply;
+import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.models.AccountSettingsModel;
 import com.github.kolandroid.kol.model.models.CraftingModel;
 import com.github.kolandroid.kol.model.models.MessageModel;
@@ -34,9 +35,11 @@ import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 
 public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
+    private final ViewContext host;
     private final ScreenSelection screens;
 
-    public PrimaryRoute(ScreenSelection screens) {
+    public PrimaryRoute(ViewContext host, ScreenSelection screens) {
+        this.host = host;
         this.screens = screens;
     }
 
@@ -45,7 +48,7 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
 
         if (response.url.contains("androiderror.php")) {
             MessageModel model = new MessageModel(session, response);
-            return new MessageController<MessageModel>(model);
+            return new MessageController<>(model);
         }
 
         if (!response.hasBody()) {
@@ -69,7 +72,7 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
 
         if (response.url.contains("donatepopup.php")) {
             MessageModel model = new MessageModel("Thanks for donating to KoL! Unfortunately, this unofficial mobile app does not yet support donations. Please use the mobile web browser.", MessageModel.ErrorType.NONE);
-            return new MessageController<MessageModel>(model);
+            return new MessageController<>(model);
         }
 
         if (response.url.contains("login.php")) {
@@ -86,7 +89,7 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
         }
 
         if (response.url.contains("fight.php")) {
-            FightModel model = new FightModel(session, response);
+            FightModel model = new FightModel(session, host, response);
             return new FightController(model);
         }
 
