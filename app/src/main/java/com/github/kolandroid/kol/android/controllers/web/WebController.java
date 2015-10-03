@@ -211,12 +211,6 @@ public class WebController extends UpdatableModelController<WebModel> {
         }
 
         @android.webkit.JavascriptInterface
-        public void processFormData(String formData) {
-            Logger.log("WebController", "Form data: " + formData);
-            getModel().makeRequest(formData);
-        }
-
-        @android.webkit.JavascriptInterface
         public void refreshStatsPane() {
             Screen host = this.host.get();
             if (host == null) return;

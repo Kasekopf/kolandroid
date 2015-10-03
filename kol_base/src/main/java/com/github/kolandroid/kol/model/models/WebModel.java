@@ -83,101 +83,19 @@ public class WebModel extends Model {
     private static final Regex FRAME_REDIRECT = new Regex("if\\s*\\(parent\\.frames\\.length\\s*==\\s*0\\)\\s*location.href\\s*=\\s*[\"']?game\\.php[\"']?;", 0);
     private static final Regex HEAD_TAG = new Regex("<head>");
     private static final String jsInjectCode = "" +
-            "\nfunction customParseForm(form, action, method) { " +
-            "   if(jQuery) jQuery(form).unbind('submit');" +
-            "   var inputs = customFindAllChildren(form, 'INPUT');" +
-            "   var data = action ? action : '';" +
-            "   if(method.toUpperCase() == 'POST') {" +
-            "       if(data.indexOf('.com/') > -1) data = data.replace('.com/', '.com/POST/');" +
-            "       else data = 'POST/' + data;" +
-            "   }" +
-            "   var error = false;" +
-            "   var duplicate = '';" +
-            "   var name;" +
-            "   var tobegin = (data.indexOf('?') == -1);" +
-            "   console.log('Detected ' + inputs.length + ' input tags');" +
-            "   for (var i = 0; i < inputs.length; i++) {" +
-            "       var field = inputs[i];" +
-            "       if(field.name && field.name==='totallyrealaction') continue; " +
-            "       if(field.type == 'radio' && !field.checked) continue; " +
-            "       if(field.type == 'checkbox' && !field.checked) continue; " +
-            "       if (field.type != 'reset' && field.name) {" +
-            "           name = encodeURIComponent(field.name);" +
-            "           if(data.indexOf('?' + name + '=') > -1 || data.indexOf('&' + name + '=') > -1) {" +
-            "               error = true;" +
-            "               duplicate = field.name;" +
-            "               continue;" +
+            "function customRepairPostForms() {" +
+            "   var forms = document.getElementsByTagName('form');" +
+            "   for (var i = 0; i < forms.length; i++) {" +
+            "       if(forms[i].method && forms[i].method.toUpperCase() == 'POST') {" +
+            "           forms[i].method = 'get';" +
+            "           if(forms[i].getAttribute('action')) {" +
+            "               forms[i].setAttribute('action', 'POST/' + forms[i].getAttribute('action'));" +
+            "           } else {" +
+            "               forms[i].setAttribute('action', 'POST/' + location.pathname);" +
             "           }" +
-            "           data += (tobegin ? '?' : '&');" +
-            "           tobegin = false;" +
-            "           data += name + '=' + encodeURIComponent(field.value);" +
+            "           console.log('Repaired POST form ' + forms[i].getAttribute('action'));" +
             "       }" +
             "   }" +
-            "   var select = customFindAllChildren(form, 'SELECT');" +
-            "   for (var i = 0; i < select.length; i++) {" +
-            "       var field = select[i];" +
-            "       name = encodeURIComponent(field.name);" +
-            "       if(data.indexOf('?' + name + '=') > -1 || data.indexOf('&' + name + '=') > -1) {" +
-            "           error = true;" +
-            "           duplicate = field.name;" +
-            "           continue;" +
-            "       }" +
-            "       data += (tobegin ? '?' : '&');" +
-            "       tobegin = false;" +
-            "       data += name + '=' + encodeURIComponent(field.options[field.selectedIndex].value);" +
-            "   }" +
-            "   var texts = customFindAllChildren(form, 'TEXTAREA');" +
-            "   for (var i = 0; i < texts.length; i++) {" +
-            "       var field = texts[i];" +
-            "       name = encodeURIComponent(field.name);" +
-            "       if(data.indexOf('?' + name + '=') > -1 || data.indexOf('&' + name + '=') > -1) {" +
-            "           error = true;" +
-            "           duplicate = field.name;" +
-            "           continue;" +
-            "       }" +
-            "       data += (tobegin ? '?' : '&');" +
-            "       tobegin = false;" +
-            "       data += name + '=' + encodeURIComponent(field.value);" +
-            "   }" +
-            "   if(error) {" +
-            "       window.ANDROIDAPP.reportFormError(data, duplicate);" +
-            "   } else {" +
-            "       window.ANDROIDAPP.processFormData(data);" +
-            "   }" +
-            "   return false;" +
-            "}\n" +
-            "function customFindAllChildren(form, tag) {" +
-            "   var children = Array.prototype.slice.call(form.getElementsByTagName(tag));" +
-            "   customFindAbandonedChildren(form, tag, children);" +
-            "   return children;" +
-            "}\n" +
-            "function customFindAbandonedChildren(form, tag, result) {" +
-            "   while(form.nextSibling) {" +
-            "       form = form.nextSibling;" +
-            "       if(customFindUntilNextForm(form, tag, result)) {" +
-            "           return true;" +
-            "       }" +
-            "   }" +
-            "   if(form.parentNode) {" +
-            "       return customFindAbandonedChildren(form.parentNode, tag, result);" +
-            "   }" +
-            "   return false;" +
-            "}\n" +
-            "function customFindUntilNextForm(child, tag, result) {" +
-            "   if(child.tagName == tag) {" +
-            "       result.push(child);" +
-            "   } else if(child.tagName == 'FORM') {" +
-            "       return true;" +
-            "   }" +
-            "   var children = child.children;" +
-            "   if(children) {" +
-            "       for(var i = 0; i < children.length; i++) {" +
-            "           if(customFindUntilNextForm(children[i], tag, result)) {" +
-            "               return true;" +
-            "           }" +
-            "       }" +
-            "   }" +
-            "   return false;" +
             "}\n" +
             "function pop_query(caller, title, button, callback, def) { " +
             "   window.querycallback = callback;" +
@@ -213,6 +131,7 @@ public class WebModel extends Model {
             "   applyInputChanges(window.ANDROIDAPP.getInputChanges())" +
             "}\n" +
             "window.addEventListener('load', addInputUniqueTags);" +
+            "window.addEventListener('load', customRepairPostForms);" +
             "function checkInputChanges() {" +
             "   result = {};" +
             "   var inputs = document.getElementsByTagName('input');" +
@@ -371,37 +290,6 @@ public class WebModel extends Model {
     }
 
     private static String injectJavascript(String html, String url) {
-        String thispage = URL_BASE_FIND.extractSingle(url, "");
-
-        for (String form : FORM_FINDER.extractAllSingle(html)) {
-            String action = FORM_ACTION.extractSingle(form, thispage);
-            String method = FORM_METHOD.extractSingle(form, "");
-            String onsubmit = FORM_SUBMIT.extractSingle(form, "");
-
-            //Process the onsubmit javascript into a prependable form
-            String newsubmit = "customParseForm(this, '" + action + "', '" + method + "');";
-            if (onsubmit.startsWith("return ")) {
-                onsubmit = onsubmit.replace("return ", "");
-                while (onsubmit.length() > 0 && onsubmit.endsWith(";")) {
-                    onsubmit = onsubmit.substring(0, onsubmit.length() - 1);
-                }
-                newsubmit = "return ((" + onsubmit + ") && " + newsubmit + ")";
-            } else if (onsubmit.length() > 0) {
-                newsubmit = onsubmit + "; return " + newsubmit;
-            } else {
-                newsubmit = "return " + newsubmit;
-            }
-
-            String newform = form;
-            newform = FORM_ACTION.replaceAll(newform, "<form$1$3>");
-            newform = FORM_METHOD.replaceAll(newform, "<form$1$3>");
-            newform = FORM_SUBMIT.replaceAll(newform, "<form$1$3>");
-            newform = FORM_FINDER.replaceAll(newform, "<form$1 action=\"\" onsubmit=\"" + newsubmit + "\">");
-
-            Logger.log("WebModel", form + " => " + newform);
-            html = html.replace(form, newform);
-        }
-
         html = HEAD_TAG.replaceAll(html, "$0 <script>" + jsInjectCode + "</script>");
 
         //pop_query(...) is replaced by an injected function to interact with android
@@ -439,6 +327,7 @@ public class WebModel extends Model {
 
         String originalUrl = url;
 
+        Logger.log("WebModel", "Request first started for " + url);
         if (url.contains("totallyrealaction")) {
             System.out.println("Ignoring duplicate form request");
             return true;
