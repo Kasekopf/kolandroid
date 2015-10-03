@@ -32,23 +32,6 @@ public class WebModel extends Model {
             "^(?:.*/)?([^/?]*)(?:\\?.*)?$", 1);
 
     /**
-     * Regex for fixing item descriptions.
-     */
-    private static final Regex ITEM_DESC = new Regex(
-            "<img[^>]*descitem\\((\\d+)(, event)?\\)[^>]*>");
-    private static final Regex ITEM_WHICH_DESC = new Regex(
-            "<img[^>]*descitem\\((\\d+),(\\d+)(, event)?\\)[^>]*>");
-
-    /**
-     * Regex for fixing effect descriptions.
-     */
-    /* private static final Regex EFFECT_DESC = new Regex(
-            "(<img[^>]*)on[Cc]lick=[\"']?eff\\([\"']?(.*?)[\"']?\\);?[\"']?([^>]*>)", 0);
-    */
-    private static final Regex EFFECT_DESC = new Regex(
-            "<img[^>]*eff\\([\"']?(.*?)[\"']?\\)[^>]*>");
-
-    /**
      * Regex for replacing static buttons.
      */
     private static final Regex FIND_FORM = new Regex(
@@ -239,22 +222,9 @@ public class WebModel extends Model {
 
 
     private static String prepareHtml(String html, String url, WebModelType type) {
-        html = fixItemsAndEffects(html);
         html = injectJavascript(html, url);
         html = doMiscFixes(html);
         html = fixPaneReferences(html, type);
-        return html;
-    }
-
-    private static String fixItemsAndEffects(String html) {
-        // Replace item description javascript with working html links
-        html = ITEM_DESC.replaceAll(html,
-                "<a href=\"desc_item.php?whichitem=$1\">$0</a>");
-        html = ITEM_WHICH_DESC.replaceAll(html,
-                "<a href=\"desc_item.php?whichitem=$1&otherplayer=$2\">$0</a>");
-        html = EFFECT_DESC.replaceAll(html,
-                "<a href=\"desc_effect.php?whicheffect=$1\">$0</a>");
-
         return html;
     }
 
