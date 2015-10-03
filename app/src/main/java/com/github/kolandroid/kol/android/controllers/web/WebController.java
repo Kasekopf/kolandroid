@@ -140,7 +140,7 @@ public class WebController extends UpdatableModelController<WebModel> {
 
                     //All requests to .php must include the proper cookies
                     InputStream result = getModel().makeBlockingRequest(url);
-                    return new WebResourceResponse("text/html; charset=UTF-8", null, result);
+                    return new WebResourceResponse("text/html" /*; charset=UTF-8"*/, null, result);
                 } else {
                     return null;
                 }
