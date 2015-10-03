@@ -78,6 +78,8 @@ public class WebModel extends Model {
             "           }" +
             "           console.log('Repaired POST form ' + forms[i].getAttribute('action'));" +
             "       }" +
+            "       " +
+            "       forms[i].setAttribute('action', forms[i].getAttribute('action').replace('\\?', '~ANDROIDAPP~'));" +
             "   }" +
             "}\n" +
             "function pop_query(caller, title, button, callback, def) { " +

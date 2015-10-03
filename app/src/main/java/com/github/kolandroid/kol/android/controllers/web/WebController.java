@@ -110,6 +110,11 @@ public class WebController extends UpdatableModelController<WebModel> {
                 if (url.startsWith("data:text/html"))
                     return true;
 
+                if (url.contains("~ANDROIDAPP~")) {
+                    // Android bug: form submission strips arguments provided in form action
+                    url = url.replace("?", "&").replace("~ANDROIDAPP~", "?");
+                }
+
                 Logger.log("WebModel", "Request made to " + url);
                 if (!getModel().makeRequest(url)) {
                     Logger.log("WedModel", "External request: " + url);
