@@ -75,6 +75,8 @@ public class Request {
     protected Connection getConnection(String server) {
         if(url.contains("http://www.kingdomofloathing.com/")) {
             return new Connection(url);
+        } else if (url.startsWith("/")) {
+            return new Connection("http://www.kingdomofloathing.com" + url);
         } else {
             return new Connection("http://www.kingdomofloathing.com/" + url);
         }
