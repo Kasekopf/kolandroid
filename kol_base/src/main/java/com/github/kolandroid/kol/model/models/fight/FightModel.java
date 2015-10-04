@@ -8,9 +8,6 @@ import com.github.kolandroid.kol.model.elements.basic.BasicGroup;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
 import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.session.Session;
-import com.github.kolandroid.kol.session.SessionCache;
-import com.github.kolandroid.kol.session.cache.CombatActionBarData;
-import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
@@ -32,7 +29,6 @@ public class FightModel extends WebModel {
             "<input[^<>]*type=[\"']?hidden[\"']?[^<>]*value=[\"']?([^\"']*?)[\"']?>.*?<input[^<>]*value=[\"']?([^\"<>]*?)[\"']?>",
             1, 2);
 
-    private static final Regex PWD = new Regex("var pwd=[\"']([a-zA-Z0-9]+)[\"'];", 1);
     private static final Regex ALL_SKILLS = OptionElement
             .regexFor("whichskill");
     private static final Regex ALL_ITEMS = OptionElement.regexFor("whichitem");
@@ -62,20 +58,6 @@ public class FightModel extends WebModel {
         processSkills(text.html);
         processItems(text.html);
 
-        String pwd = PWD.extractSingle(text.html, "");
-        SessionCache cache = host.getDataContext().getSessionCache(s);
-        cache.prepare(pwd);
-        cache.access(CombatActionBarData.class, new Callback<CombatActionBarData>() {
-            @Override
-            public void execute(CombatActionBarData item) {
-                Logger.log("FightModel", "Found action bar!");
-            }
-        }, new Callback<Void>() {
-            @Override
-            public void execute(Void item) {
-                // Do nothing
-            }
-        });
 
         if (FIGHT_OVER.matches(text.html))
             fightFinished = true;
