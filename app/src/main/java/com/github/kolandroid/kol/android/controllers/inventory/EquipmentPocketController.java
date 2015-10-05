@@ -84,7 +84,7 @@ public class EquipmentPocketController extends LinkedModelController<LiveMessage
                 return false;
             }
         };
-        list = new GroupSearchListController<>(model.getItems(), new ColoredGroupBinder(groupColor), SubtextBinder.ONLY, new ListSelector<ItemModel>() {
+        list = new GroupSearchListController<>(model.getItems(), "ItemPocketController:CollapsedGroups:" + model.getTitle(), new ColoredGroupBinder(groupColor), SubtextBinder.ONLY, new ListSelector<ItemModel>() {
             @Override
             public boolean selectItem(Screen host, ItemModel item) {
                 item.attachView(host.getViewContext());

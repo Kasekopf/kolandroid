@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="GROUP_VIEW_TYPE" type="id" />
+    <item name="GROUP_VIEW_EXPANDED" type="id" />
+</resources>

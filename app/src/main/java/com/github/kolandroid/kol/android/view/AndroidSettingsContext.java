@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.util.Logger;
 
+import java.util.Set;
+
 public class AndroidSettingsContext implements SettingsContext {
     private static final String GLOBAL_STORAGE = "KoL_Global_Storage";
 
@@ -57,6 +59,16 @@ public class AndroidSettingsContext implements SettingsContext {
     }
 
     @Override
+    public Set<String> get(String name, Set<String> defaultValue) {
+        try {
+            return globalSettings.getStringSet(name, defaultValue);
+        } catch (ClassCastException e) {
+            Logger.log("AndroidSettingsContext", "[" + name + "] expected string set");
+            return defaultValue;
+        }
+    }
+
+    @Override
     public void set(String name, boolean value) {
         Logger.log("AndroidSettingsContext", "[" + name + "] set to $boolean[" + value + "]");
         SharedPreferences.Editor editor = globalSettings.edit();
@@ -78,6 +90,22 @@ public class AndroidSettingsContext implements SettingsContext {
         SharedPreferences.Editor editor = globalSettings.edit();
         editor.putString(name, value);
         editor.apply();
+    }
+
+    @Override
+    public void set(String name, Set<String> value) {
+        // Join the string values for the sake of logging
+        StringBuilder logentry = new StringBuilder("[").append(name).append("] set to $strings[");
+        for (String s : value) {
+            logentry.append(s).append(", ");
+        }
+        logentry.append("]");
+
+        Logger.log("AndroidSettingsContext", logentry.toString());
+        SharedPreferences.Editor editor = globalSettings.edit();
+        editor.putStringSet(name, value);
+        editor.apply();
+
     }
 
     /**

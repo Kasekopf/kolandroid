@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 
+import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.binders.Binder;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
 
@@ -70,13 +71,13 @@ public class ListGroupAdapter<E extends ModelGroup<F>, F>
     public View getChildView(int groupPosition, int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
         View view;
-        if (convertView != null && "isChild".equals(convertView.getTag())) {
+        if (convertView != null && "isChild".equals(convertView.getTag(R.id.GROUP_VIEW_TYPE))) {
             view = convertView;
         } else {
             view = LayoutInflater.from(context).inflate(elementBinding.getView(), parent, false);
         }
 
-        view.setTag("isChild");
+        view.setTag(R.id.GROUP_VIEW_TYPE, "isChild");
 
         @SuppressWarnings("unchecked")
         F item = (F) getChild(groupPosition, childPosition);
@@ -88,13 +89,14 @@ public class ListGroupAdapter<E extends ModelGroup<F>, F>
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
         View view;
-        if (convertView != null && "isGroup".equals(convertView.getTag())) {
+        if (convertView != null && "isGroup".equals(convertView.getTag(R.id.GROUP_VIEW_TYPE))) {
             view = convertView;
         } else {
             view = LayoutInflater.from(context).inflate(groupBinding.getView(), parent, false);
         }
 
-        view.setTag("isGroup");
+        view.setTag(R.id.GROUP_VIEW_TYPE, "isGroup");
+        view.setTag(R.id.GROUP_VIEW_EXPANDED, isExpanded);
 
         @SuppressWarnings("unchecked")
         E item = (E) getGroup(groupPosition);

@@ -66,7 +66,7 @@ public class ItemPocketController extends
     @Override
     public void attach(View view, ItemPocketModel model, final Screen host) {
         ViewScreen screen = (ViewScreen) view.findViewById(R.id.inventory_list);
-        list = new GroupSearchListController<>(model.getItems(), new ColoredGroupBinder(groupColor), SubtextBinder.ONLY, new ListSelector<ItemModel>() {
+        list = new GroupSearchListController<>(model.getItems(), "ItemPocketController:CollapsedGroups:" + model.getTitle(), new ColoredGroupBinder(groupColor), SubtextBinder.ONLY, new ListSelector<ItemModel>() {
             @Override
             public boolean selectItem(Screen host, ItemModel item) {
                 item.attachView(host.getViewContext());

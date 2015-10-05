@@ -12,10 +12,13 @@ import com.github.kolandroid.kol.android.binders.Binder;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
+import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.model.elements.ActionElement;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GroupSearchListController<F> implements Controller {
     /**
@@ -23,20 +26,29 @@ public class GroupSearchListController<F> implements Controller {
      */
     private static final long serialVersionUID = -3034860712134386719L;
 
+    private final String closedGroupsSetting;
+
     private final ListSelector<? super F> selector;
     private final Binder<? super ModelGroup<F>> groupBinder;
     private final Binder<? super F> childBinder;
 
     private ArrayList<ModelGroup<F>> base;
 
+    private transient SettingsContext settings;
     private transient HighlightableListGroupAdapter<F> adapter;
     private transient ExpandableListView list;
+    private boolean restoring;
 
     public GroupSearchListController(ArrayList<ModelGroup<F>> items, Binder<? super ModelGroup<F>> groupBinder, Binder<? super F> childBinder, ListSelector<? super F> selector) {
+        this(items, "", groupBinder, childBinder, selector);
+    }
+
+    public GroupSearchListController(ArrayList<ModelGroup<F>> items, String closedGroupsSetting, Binder<? super ModelGroup<F>> groupBinder, Binder<? super F> childBinder, ListSelector<? super F> selector) {
         this.base = items;
         this.groupBinder = groupBinder;
         this.childBinder = childBinder;
         this.selector = selector;
+        this.closedGroupsSetting = closedGroupsSetting;
     }
 
     public static <F extends ActionElement> GroupSearchListController<F> create(ArrayList<ModelGroup<F>> items, Binder<? super ModelGroup<F>> groupBinder, Binder<? super F> childBinder) {
@@ -46,6 +58,44 @@ public class GroupSearchListController<F> implements Controller {
     @Override
     public int getView() {
         return R.layout.group_search_list_view;
+    }
+
+    private void loadClosedGroups() {
+        if (settings == null || list == null) return;
+
+        restoring = true;
+        Set<String> closedGroups;
+        if (closedGroupsSetting.isEmpty()) {
+            closedGroups = new HashSet<>();
+        } else {
+            closedGroups = settings.get(closedGroupsSetting, new HashSet<String>());
+        }
+
+        for (int i = 0; i < adapter.getGroupCount(); i++) {
+            if (closedGroups.contains(adapter.getName(i))) {
+                list.collapseGroup(i);
+            } else {
+                list.expandGroup(i);
+            }
+        }
+        restoring = false;
+    }
+
+    private void saveClosedGroups() {
+        if (settings == null || list == null) return;
+        if (closedGroupsSetting.isEmpty()) return;
+        if (restoring)
+            return;  //do not bother to save the group state while we are in the middle of loading it
+
+        Set<String> closedGroups = settings.get(closedGroupsSetting, new HashSet<String>());
+        for (int i = 0; i < adapter.getGroupCount() && i < base.size(); i++) {
+            if (!list.isGroupExpanded(i)) {
+                closedGroups.add(adapter.getName(i));
+            } else {
+                closedGroups.remove(adapter.getName(i));
+            }
+        }
+        settings.set(closedGroupsSetting, closedGroups);
     }
 
     @Override
@@ -67,8 +117,23 @@ public class GroupSearchListController<F> implements Controller {
 
         });
         list.setAdapter(adapter);
-        for (int i = 0; i < adapter.getGroupCount(); i++)
-            list.expandGroup(i);
+
+        settings = host.getViewContext().getSettingsContext();
+
+        loadClosedGroups();
+
+        list.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                saveClosedGroups();
+            }
+        });
+        list.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                saveClosedGroups();
+            }
+        });
 
         final EditText text = (EditText) view
                 .findViewById(R.id.search_list_input);
@@ -76,8 +141,7 @@ public class GroupSearchListController<F> implements Controller {
             @Override
             public void afterTextChanged(Editable s) {
                 adapter.changeFilter(s.toString());
-                for (int i = 0; i < adapter.getGroupCount(); i++)
-                    list.expandGroup(i);
+                loadClosedGroups();
             }
 
             @Override
@@ -103,14 +167,13 @@ public class GroupSearchListController<F> implements Controller {
         this.base = base;
         if (adapter != null && list != null) {
             adapter.setElements(base);
-            for (int i = 0; i < adapter.getGroupCount(); i++)
-                list.expandGroup(i);
+            loadClosedGroups();
         }
     }
 
     @Override
     public void disconnect(Screen host) {
-        // do nothing
+        // Do nothing
     }
 
     @Override

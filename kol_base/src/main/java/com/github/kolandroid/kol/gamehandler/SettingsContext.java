@@ -1,5 +1,7 @@
 package com.github.kolandroid.kol.gamehandler;
 
+import java.util.Set;
+
 public interface SettingsContext {
     SettingsContext NONE = new SettingsContext() {
         @Override
@@ -28,6 +30,11 @@ public interface SettingsContext {
         }
 
         @Override
+        public Set<String> get(String name, Set<String> defaultValue) {
+            return defaultValue;
+        }
+
+        @Override
         public void set(String name, boolean value) {
 
         }
@@ -39,6 +46,11 @@ public interface SettingsContext {
 
         @Override
         public void set(String name, String value) {
+
+        }
+
+        @Override
+        public void set(String name, Set<String> value) {
 
         }
     };
@@ -53,9 +65,13 @@ public interface SettingsContext {
 
     String get(String name, String defaultValue);
 
+    Set<String> get(String name, Set<String> defaultValue);
+
     void set(String name, boolean value);
 
     void set(String name, int value);
 
     void set(String name, String value);
+
+    void set(String name, Set<String> value);
 }

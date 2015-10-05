@@ -27,6 +27,12 @@ public class DefaultGroupBinder implements Binder<ModelGroup<?>>, Serializable {
     @Override
     public void bind(View view, ModelGroup<?> model) {
         TextView text = (TextView) view.findViewById(R.id.generic_header_text);
-        text.setText(model.getName());
+
+        Object expanded = view.getTag(R.id.GROUP_VIEW_EXPANDED);
+        if (expanded != null && expanded.equals(Boolean.FALSE)) {
+            text.setText(model.getName() + " (" + model.size() + " hidden)");
+        } else {
+            text.setText(model.getName());
+        }
     }
 }

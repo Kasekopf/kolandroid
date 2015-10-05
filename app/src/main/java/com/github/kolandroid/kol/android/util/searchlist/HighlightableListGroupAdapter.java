@@ -35,6 +35,14 @@ public class HighlightableListGroupAdapter<F> extends ListGroupAdapter<ModelGrou
         this.setElements(base);
     }
 
+    public String getName(int which) {
+        if (which < displayed.size()) {
+            return displayed.get(which).getName();
+        } else {
+            return "";
+        }
+    }
+
     @Override
     public void setElements(List<ModelGroup<F>> base) {
         this.base = base;
