@@ -105,7 +105,6 @@ public class AndroidSettingsContext implements SettingsContext {
         SharedPreferences.Editor editor = globalSettings.edit();
         editor.putStringSet(name, value);
         editor.apply();
-
     }
 
     /**

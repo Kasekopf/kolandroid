@@ -15,6 +15,7 @@ import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.model.elements.ActionElement;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
+import com.github.kolandroid.kol.util.Logger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -70,6 +71,14 @@ public class GroupSearchListController<F> implements Controller {
         } else {
             closedGroups = settings.get(closedGroupsSetting, new HashSet<String>());
         }
+
+        // Join the string values for the sake of logging
+        StringBuilder logentry = new StringBuilder("[").append(closedGroupsSetting).append("] retrieved $strings[");
+        for (String s : closedGroups) {
+            logentry.append(s).append(", ");
+        }
+        logentry.append("]");
+        Logger.log("GroupSearchListController", logentry.toString());
 
         for (int i = 0; i < adapter.getGroupCount(); i++) {
             if (closedGroups.contains(adapter.getName(i))) {
