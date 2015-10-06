@@ -7,14 +7,18 @@ import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.model.models.fight.FightAction;
+import com.github.kolandroid.kol.util.Callback;
 
 import java.util.ArrayList;
 
 public class FightActionBarPageController implements Controller {
     private final ArrayList<FightAction> page;
 
-    public FightActionBarPageController(ArrayList<FightAction> page) {
+    private final Callback<FightAction> notifyActionSelection;
+
+    public FightActionBarPageController(ArrayList<FightAction> page, Callback<FightAction> notifyActionSelection) {
         this.page = page;
+        this.notifyActionSelection = notifyActionSelection;
     }
 
     @Override
