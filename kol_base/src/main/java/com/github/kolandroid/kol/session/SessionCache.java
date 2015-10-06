@@ -19,7 +19,6 @@ public class SessionCache {
         this.cache = new ConcurrentHashMap<>();
         this.pwd = "0";
         init(Session.class, new BasicCacheItem<>(session));
-
     }
 
     public synchronized void prepare(String pwd) {
