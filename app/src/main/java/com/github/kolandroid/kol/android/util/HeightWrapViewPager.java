@@ -21,18 +21,16 @@ public class HeightWrapViewPager extends ViewPager {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         if (getChildCount() == 0) {
-            Logger.log("HeightWrapViewPager", "No children found...");
+            Logger.log("HeightWrapViewPager", "No children found to measure...");
             setMeasuredDimension(getMeasuredWidth(), measureHeight(heightMeasureSpec, 0));
         } else {
-            View child = getChildAt(0);
+            View child = getChildAt(0); //just measure the first child for now
             if (child.getVisibility() != GONE) {
                 heightMeasureSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec),
                         MeasureSpec.UNSPECIFIED);
                 child.measure(widthMeasureSpec, heightMeasureSpec);
-                Logger.log("HeightWrapViewPager", "Detected child height: " + child.getMeasuredHeight());
                 setMeasuredDimension(getMeasuredWidth(), measureHeight(heightMeasureSpec, child.getMeasuredHeight()));
             } else {
-                Logger.log("HeightWrapViewPager", "Current child is GONE");
                 setMeasuredDimension(getMeasuredWidth(), measureHeight(heightMeasureSpec, 0));
             }
         }
