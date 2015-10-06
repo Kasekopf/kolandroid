@@ -8,6 +8,10 @@ import com.github.kolandroid.kol.data.RawSkill;
 import com.github.kolandroid.kol.gamehandler.DataContext;
 import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.session.SessionCache;
+import com.github.kolandroid.kol.util.Logger;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class KolApplication extends Application implements DataContext {
     private final AndroidRawCache<RawSkill> skillsCache = new AndroidRawCache<RawSkill>("skillcache.txt", "skilloverridecache.txt") {
@@ -24,7 +28,7 @@ public class KolApplication extends Application implements DataContext {
         }
     };
 
-    private SessionCache sessionCache = null;
+    private final Map<String, SessionCache> sessionCache = new ConcurrentHashMap<>();
 
     @Override
     public void onCreate() {
@@ -51,14 +55,16 @@ public class KolApplication extends Application implements DataContext {
 
     @Override
     public SessionCache getSessionCache(Session session) {
-        if (sessionCache == null) {
+        String key = session.getCookie("PHPSESSID", "");
+        if (!sessionCache.containsKey(key)) {
             synchronized (this) {
-                if (sessionCache == null) {
-                    sessionCache = new SessionCache(session);
+                if (!sessionCache.containsKey(key)) {
+                    Logger.log("KolApplication", "Creating new SessionCache for session: " + session);
+                    sessionCache.put(key, new SessionCache(session));
                 }
             }
         }
 
-        return sessionCache;
+        return sessionCache.get(key);
     }
 }

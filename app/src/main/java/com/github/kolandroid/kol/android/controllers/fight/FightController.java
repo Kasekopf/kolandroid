@@ -1,5 +1,6 @@
 package com.github.kolandroid.kol.android.controllers.fight;
 
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -39,9 +40,14 @@ public class FightController extends ModelController<FightModel> {
             return true;
         }
     };
+    private final Controller actionBar;
+    private final Controller mainPane;
 
     public FightController(FightModel model) {
         super(model);
+
+        this.actionBar = new FightActionBarController(model.getActionBar());
+        this.mainPane = new WebController(model);
     }
 
     @Override
@@ -52,6 +58,17 @@ public class FightController extends ModelController<FightModel> {
     @Override
     public void chooseScreen(ScreenSelection choice) {
         choice.displayPrimary(this);
+    }
+
+    @Override
+    public void connect(View view, Screen host) {
+        ViewPager actionBarView = (ViewPager) view.findViewById(R.id.fight_actionbar);
+        actionBar.connect(actionBarView, host);
+    }
+
+    @Override
+    public void disconnect(Screen host) {
+        actionBar.disconnect(host);
     }
 
     @Override
@@ -101,8 +118,10 @@ public class FightController extends ModelController<FightModel> {
 
         ViewScreen webScreen = (ViewScreen) view
                 .findViewById(R.id.fight_web_screen);
-        WebController web = new WebController(model);
-        webScreen.display(web, host);
+        webScreen.display(mainPane, host);
+
+        ViewPager actionBarView = (ViewPager) view.findViewById(R.id.fight_actionbar);
+        actionBar.attach(actionBarView, host);
     }
 
 }

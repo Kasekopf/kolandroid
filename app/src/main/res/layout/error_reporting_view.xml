@@ -18,6 +18,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#00f"
             android:gravity="center"
             android:text="@string/error_reporting_dialog_title"
             android:textColor="#fff"

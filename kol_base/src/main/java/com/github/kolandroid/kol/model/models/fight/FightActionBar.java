@@ -118,6 +118,15 @@ public class FightActionBar extends LinkedModel<Void> {
             pages.add(newPage);
         }
 
+        /*
+        for(ArrayList<FightAction> page : pages) {
+            String res = "";
+            for(FightAction action : page) {
+                res += action.getIdentifier() + " ~ ";
+            }
+            Logger.log("FightActionBar", res);
+        }
+        */
         this.pages = pages;
         notifyView(null);
     }

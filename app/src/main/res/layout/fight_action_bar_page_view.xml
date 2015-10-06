@@ -1,0 +1,15 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff"
+    android:orientation="vertical"
+    android:padding="1dp"
+    tools:context="com.github.kolandroid.kol.android.controllers.fight.FightActionBarPageController">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#F00" />
+
+</LinearLayout>

@@ -46,21 +46,26 @@ public class FightModel extends WebModel {
     private static final FightActionHistory ITEM_HISTORY = new FightActionHistory<FightItem>("Items");
     private static final FightActionHistory SKILL_HISTORY = new FightActionHistory<FightAction>("Skills");
     private final ActionElement attack;
-    private ArrayList<FightAction> skills;
-    private ArrayList<FightItem> items;
-    private boolean fightFinished = false;
-    private boolean funkslinging;
+    private final boolean fightFinished;
+    private final ArrayList<FightAction> skills;
+    private final ArrayList<FightItem> items;
+    private final boolean funkslinging;
+
+    private final FightActionBar barModel;
 
     public FightModel(Session s, ViewContext host, ServerReply text) {
         super(s, new ServerReply(text, filterHtml(text.html)));
 
         attack = new ActionElement(s, "Attack", "fight.php?action=attack");
+        this.fightFinished = FIGHT_OVER.matches(text.html);
+        this.funkslinging = HAS_FUNKSLINGING.matches(text.html);
+        this.skills = new ArrayList<>();
+        this.items = new ArrayList<>();
+
         processSkills(text.html);
         processItems(text.html);
 
-
-        if (FIGHT_OVER.matches(text.html))
-            fightFinished = true;
+        this.barModel = new FightActionBar(s, host, this, text);
     }
 
     private static String filterHtml(String html) {
@@ -83,8 +88,6 @@ public class FightModel extends WebModel {
     }
 
     private void processSkills(String html) {
-        this.skills = new ArrayList<>();
-
         ArrayList<String[]> buttons = ACTION_BTN.extractAll(html);
         for (String[] button : buttons) {
             if (button == null)
@@ -125,8 +128,6 @@ public class FightModel extends WebModel {
     }
 
     private void processItems(String html) {
-        this.items = new ArrayList<>();
-
         String dropdown = ALL_ITEMS.extractSingle(html, "");
 
         ArrayList<OptionElement> dropdown_items = OptionElement
@@ -137,8 +138,6 @@ public class FightModel extends WebModel {
 
             items.add(new FightItem(getSession(), option, ITEM_HISTORY));
         }
-
-        this.funkslinging = HAS_FUNKSLINGING.matches(html);
     }
 
     public ArrayList<ModelGroup<FightAction>> getSkills() {
@@ -165,6 +164,10 @@ public class FightModel extends WebModel {
             result.add(new BasicGroup<>("All Items:", items));
         }
         return result;
+    }
+
+    public FightActionBar getActionBar() {
+        return barModel;
     }
 
     public boolean isFightOver() {

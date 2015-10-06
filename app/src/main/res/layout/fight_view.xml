@@ -48,4 +48,9 @@
             android:text="Items" />
 
     </LinearLayout>
+
+    <com.github.kolandroid.kol.android.util.HeightWrapViewPager
+        android:id="@+id/fight_actionbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>
