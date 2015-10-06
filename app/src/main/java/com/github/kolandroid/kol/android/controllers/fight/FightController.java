@@ -25,6 +25,7 @@ import com.github.kolandroid.kol.model.models.fight.FightAction;
 import com.github.kolandroid.kol.model.models.fight.FightItem;
 import com.github.kolandroid.kol.model.models.fight.FightModel;
 import com.github.kolandroid.kol.util.Callback;
+import com.github.kolandroid.kol.util.SerializableCallback;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -46,15 +47,15 @@ public class FightController extends ModelController<FightModel> {
     private final Controller mainPane;
     private transient WeakReference<Screen> host;
     // Callback for an item selected in the Combat Action Bar
-    private final Callback<FightAction> notifyActionSelection = new Callback<FightAction>() {
+    private final Callback<FightAction> notifyActionSelection = new SerializableCallback<FightAction>() {
         @Override
-        public void execute(FightAction item) {
+        public void execute(FightAction action) {
             if (host == null) return;
             Screen fullHost = host.get();
             if (fullHost == null) return;
 
-            item.attachView(fullHost.getViewContext());
-            item.use();
+            action.attachView(fullHost.getViewContext());
+            action.use();
         }
     };
 

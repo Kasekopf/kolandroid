@@ -1,15 +1,99 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#fff"
-    android:orientation="vertical"
-    android:padding="1dp"
-    tools:context="com.github.kolandroid.kol.android.controllers.fight.FightActionBarPageController">
+    android:layout_height="wrap_content">
 
-    <View
+    <TableRow
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="#F00" />
+        android:layout_height="wrap_content"
+        android:background="#0f0">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/fight_actionbar_1"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_2"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_3"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_4"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_5"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_6"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/fight_actionbar_7"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_8"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_9"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_10"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_11"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_12"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true" />
+    </TableRow>
+</TableLayout>
