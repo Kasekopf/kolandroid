@@ -29,4 +29,9 @@ public class FightSkill extends SkillModel implements FightAction {
     public String getIdentifier() {
         return this.identifier;
     }
+
+    @Override
+    public boolean matchesActionBarItem(String type, String id) {
+        return (type != null) && (type.equals("skill")) && (id != null) && (id.equals(this.id));
+    }
 }

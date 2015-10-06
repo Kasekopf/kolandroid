@@ -113,7 +113,7 @@ public class FightModel extends WebModel {
             }
 
             this.skills.add(new FightBasicAction(getSession(), text, img,
-                    "fight.php?action=" + action, SKILL_HISTORY));
+                    action, SKILL_HISTORY));
         }
 
         String dropdown = ALL_SKILLS.extractSingle(html, "");

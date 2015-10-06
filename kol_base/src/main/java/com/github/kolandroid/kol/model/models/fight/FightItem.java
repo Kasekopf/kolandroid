@@ -54,6 +54,11 @@ public class FightItem extends ItemModel implements FightAction {
     }
 
     @Override
+    public boolean matchesActionBarItem(String type, String id) {
+        return (type != null) && (type.equals("item")) && (id != null) && (id.equals(this.id));
+    }
+
+    @Override
     public String getIdentifier() {
         return identifier;
     }

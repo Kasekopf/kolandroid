@@ -32,7 +32,7 @@ public class FightBasicAction extends Model implements FightAction {
     @Override
     public void use() {
         storage.store(this, getSettings());
-        this.makeRequest(new Request(action));
+        this.makeRequest(new Request("fight.php?action=" + action));
     }
 
     @Override
@@ -53,5 +53,10 @@ public class FightBasicAction extends Model implements FightAction {
     @Override
     public String getImage() {
         return image;
+    }
+
+    @Override
+    public boolean matchesActionBarItem(String type, String id) {
+        return (type != null) && (type.equals("action")) && (id != null) && (id.equals(this.action));
     }
 }
