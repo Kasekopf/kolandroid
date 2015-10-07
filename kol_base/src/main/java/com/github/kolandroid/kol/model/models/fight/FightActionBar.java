@@ -7,7 +7,7 @@ import com.github.kolandroid.kol.model.LinkedModel;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
 import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.session.SessionCache;
-import com.github.kolandroid.kol.session.cache.CombatActionBarData;
+import com.github.kolandroid.kol.session.cache.FightActionBarData;
 import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
@@ -35,9 +35,9 @@ public class FightActionBar extends LinkedModel<Void> {
         String pwd = PWD.extractSingle(text.html, "");
         SessionCache cache = host.getDataContext().getSessionCache(s);
         cache.prepare(pwd);
-        cache.access(CombatActionBarData.class, new Callback<CombatActionBarData>() {
+        cache.access(FightActionBarData.class, new Callback<FightActionBarData>() {
             @Override
-            public void execute(CombatActionBarData item) {
+            public void execute(FightActionBarData item) {
                 process(item, settings);
                 notifyView(null);
             }
@@ -57,16 +57,16 @@ public class FightActionBar extends LinkedModel<Void> {
         return pages;
     }
 
-    private void process(CombatActionBarData data, SettingsContext settings) {
+    private void process(FightActionBarData data, SettingsContext settings) {
         ArrayList<ArrayList<FightAction>> pages = new ArrayList<>();
 
         ArrayList<ModelGroup<FightItem>> items = parent.getItems();
         ArrayList<ModelGroup<FightAction>> skills = parent.getSkills();
 
         this.startingPage = settings.get("fight_actionbarpage", data.getCurrentPage());
-        for (CombatActionBarData.CombatActionBarRawElementData[] page : data.getPages()) {
+        for (FightActionBarData.FightActionBarRawElementData[] page : data.getPages()) {
             ArrayList<FightAction> newPage = new ArrayList<>();
-            for (CombatActionBarData.CombatActionBarRawElementData element : page) {
+            for (FightActionBarData.FightActionBarRawElementData element : page) {
                 if (element == null || element.id == null || element.type == null) {
                     newPage.add(FightAction.NONE);
                 } else {

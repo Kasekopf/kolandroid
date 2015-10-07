@@ -1,7 +1,7 @@
 package com.github.kolandroid.kol.session;
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.session.cache.CombatActionBarData;
+import com.github.kolandroid.kol.session.cache.FightActionBarData;
 import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 
@@ -25,10 +25,10 @@ public class SessionCache {
         if (pwd != null && !pwd.isEmpty() && !pwd.equals(this.pwd)) {
             Logger.log("SessionCache", "Detected new pwdhash: " + pwd);
             this.pwd = pwd;
-            init(CombatActionBarData.class, new LiveCacheItem<CombatActionBarData>(session, "actionbar.php?action=fetch&d=" + System.currentTimeMillis() + "&pwd=" + pwd) {
+            init(FightActionBarData.class, new LiveCacheItem<FightActionBarData>(session, "actionbar.php?action=fetch&d=" + System.currentTimeMillis() + "&pwd=" + pwd) {
                 @Override
-                protected CombatActionBarData process(ServerReply reply) {
-                    return CombatActionBarData.create(reply);
+                protected FightActionBarData process(ServerReply reply) {
+                    return FightActionBarData.create(reply);
                 }
             });
         }
