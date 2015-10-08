@@ -16,7 +16,7 @@
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@drawable/black_thick_border"
+            android:background="@drawable/black_to_blue_onpress_border"
             android:padding="10dp" />
 
         <ImageView
@@ -26,7 +26,7 @@
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@drawable/black_thick_border"
+            android:background="@drawable/black_to_blue_onpress_border"
             android:padding="10dp" />
 
         <ImageView
@@ -36,7 +36,7 @@
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@drawable/black_thick_border"
+            android:background="@drawable/black_to_blue_onpress_border"
             android:padding="10dp" />
 
         <ImageView
@@ -46,7 +46,7 @@
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@drawable/black_thick_border"
+            android:background="@drawable/black_to_blue_onpress_border"
             android:padding="10dp" />
 
         <ImageView
@@ -56,7 +56,7 @@
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@drawable/black_thick_border"
+            android:background="@drawable/black_to_blue_onpress_border"
             android:padding="10dp" />
 
         <ImageView
@@ -67,7 +67,7 @@
             android:layout_marginRight="2dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@drawable/black_thick_border"
+            android:background="@drawable/black_to_blue_onpress_border"
             android:padding="10dp" />
     </TableRow>
 
@@ -83,7 +83,7 @@
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@drawable/black_thick_border"
+            android:background="@drawable/black_to_blue_onpress_border"
             android:padding="10dp" />
 
         <ImageView
@@ -93,7 +93,7 @@
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@drawable/black_thick_border"
+            android:background="@drawable/black_to_blue_onpress_border"
             android:padding="10dp" />
 
         <ImageView
@@ -103,7 +103,7 @@
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@drawable/black_thick_border"
+            android:background="@drawable/black_to_blue_onpress_border"
             android:padding="10dp" />
 
         <ImageView
@@ -113,7 +113,7 @@
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@drawable/black_thick_border"
+            android:background="@drawable/black_to_blue_onpress_border"
             android:padding="10dp" />
 
         <ImageView
@@ -123,7 +123,7 @@
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@drawable/black_thick_border"
+            android:background="@drawable/black_to_blue_onpress_border"
             android:padding="10dp" />
 
         <ImageView
@@ -134,7 +134,7 @@
             android:layout_marginRight="2dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:background="@drawable/black_thick_border"
+            android:background="@drawable/black_to_blue_onpress_border"
             android:padding="10dp" />
     </TableRow>
 </TableLayout>

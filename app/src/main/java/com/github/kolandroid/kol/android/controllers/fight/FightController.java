@@ -25,6 +25,7 @@ import com.github.kolandroid.kol.model.models.fight.FightAction;
 import com.github.kolandroid.kol.model.models.fight.FightItem;
 import com.github.kolandroid.kol.model.models.fight.FightModel;
 import com.github.kolandroid.kol.util.Callback;
+import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.SerializableCallback;
 
 import java.lang.ref.WeakReference;
@@ -45,17 +46,34 @@ public class FightController extends ModelController<FightModel> {
     };
     private final Controller actionBar;
     private final Controller mainPane;
+
     private transient WeakReference<Screen> host;
+    private transient FightItem funkslingingFirstSelectedItem;
+
     // Callback for an item selected in the Combat Action Bar
     private final Callback<FightAction> notifyActionSelection = new SerializableCallback<FightAction>() {
         @Override
         public void execute(FightAction action) {
+            Logger.log("FightController", "Executing " + action + " from action bar");
+
             if (host == null) return;
             Screen fullHost = host.get();
             if (fullHost == null) return;
 
-            action.attachView(fullHost.getViewContext());
-            action.use();
+            if (getModel().hasFunkslinging() && action instanceof FightItem) {
+                if (funkslingingFirstSelectedItem == null) {
+                    // Select the first item to funksling
+                    funkslingingFirstSelectedItem = (FightItem) action;
+                } else {
+                    // Two items have been selected to funksling; use them
+                    Controller itemsController = new FunkslingingController(getModel().getItems(), funkslingingFirstSelectedItem);
+                    DialogScreen.display(itemsController, fullHost, "Select items to use:");
+                }
+            } else {
+                // No funkslinging or not an item; just use it as normal
+                action.attachView(fullHost.getViewContext());
+                action.use();
+            }
         }
     };
 
@@ -89,6 +107,8 @@ public class FightController extends ModelController<FightModel> {
 
     @Override
     public void attach(View view, final FightModel model, final Screen host) {
+        this.host = new WeakReference<Screen>(host);
+
         final Button attack = (Button) view.findViewById(R.id.fight_attack);
         attack.setOnClickListener(new OnClickListener() {
             @Override

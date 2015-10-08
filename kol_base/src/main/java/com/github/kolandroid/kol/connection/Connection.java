@@ -112,6 +112,13 @@ public class Connection {
         } else {
             connection.setUseCaches(true);
             connection.setDoOutput(false);
+            /*
+            for(Map.Entry<String, List<String>> e : connection.getRequestProperties().entrySet()) {
+                for(String res : e.getValue()) {
+                    Logger.log("Connection", e.getKey() + ":" + res);
+                }
+            }
+            */
             connection.setRequestMethod("GET");
             connection.connect();
         }

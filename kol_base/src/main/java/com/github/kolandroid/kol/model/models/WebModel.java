@@ -168,7 +168,7 @@ public class WebModel extends Model {
     private static final Regex POPQUERY_SCRIPT = new Regex("<script[^>]*pop_query[^>]*></script>");
 
     private static final Regex TYPE_EXTRACTION = new Regex("[&?]androiddisplay=([^&]*)", 1);
-    private static final Regex TOP_PANE_REFRESH = new Regex("top.charpane.location(.href)?=[\"']?charpane.php[\"']?;");
+    private static final Regex TOP_PANE_REFRESH = new Regex("(top|parent).charpane.location(.href)?=[\"']?charpane.php[\"']?;");
     private String url;
     private WebModelType type;
     private String html;
@@ -176,6 +176,7 @@ public class WebModel extends Model {
     public WebModel(Session s, ServerReply text, WebModelType type) {
         super(s);
 
+        Logger.log("WebModel", "Redirect url:" + text.redirectLocation);
         Logger.log("WebModel", "Created for " + text.url);
 
         this.url = text.url;
@@ -323,9 +324,20 @@ public class WebModel extends Model {
         return true;
     }
 
-    protected void followUrl(String url) {
+    protected void followUrl(String url) {/*
+        if(url.contains("adventure.php")) {
+            Request req = new SingleRequest(url);
+            this.makeRequest(req, new ResponseHandler() {
+                @Override
+                public void handle(Session session, ServerReply response) {
+                    Logger.log("WebModel(Adventure)", response.url + ":" + response.redirectLocation + ":" + response.cookie);
+                    makeRequest(new Request(response.redirectLocation));
+                }
+            });
+        } else {*/
         Request req = new Request(url);
         this.makeRequest(req);
+        //}
     }
 
     public InputStream makeBlockingRequest(String url) {

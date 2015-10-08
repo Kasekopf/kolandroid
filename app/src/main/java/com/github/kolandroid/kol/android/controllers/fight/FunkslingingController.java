@@ -30,16 +30,24 @@ public class FunkslingingController implements Controller {
     private final ArrayList<ModelGroup<FightItem>> base;
 
     private final BinderController<FightItem> itemSlot1, itemSlot2;
+    private final FightItem defaultItem1;
     private BinderController<FightItem> selected;
     private transient View selectedView;
 
+
     public FunkslingingController(ArrayList<ModelGroup<FightItem>> base) {
+        this(base, null);
+    }
+
+    public FunkslingingController(ArrayList<ModelGroup<FightItem>> base, FightItem firstSelectedItem) {
         this.base = base;
 
         this.itemSlot1 = new BinderController<>(
                 ElementBinder.ONLY, FightItem.NONE);
         this.itemSlot2 = new BinderController<>(
                 ElementBinder.ONLY, FightItem.NONE);
+
+        this.defaultItem1 = firstSelectedItem;
     }
 
     @Override
@@ -93,7 +101,13 @@ public class FunkslingingController implements Controller {
             }
         });
 
-        this.setSelected(itemSlot1, itemScreen1);
+        if (defaultItem1 == null) {
+            this.setSelected(itemSlot1, itemScreen1);
+        } else {
+            // An item was already selected for slot 1, so select it
+            this.setSelected(itemSlot2, itemScreen2);
+            itemSlot1.updateModel(defaultItem1);
+        }
 
         ListSelector<FightItem> selector = new ListSelector<FightItem>() {
             @Override
