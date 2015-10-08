@@ -24,7 +24,7 @@ public class FightModel extends WebModel {
      * Regex("var onturn = (\\d+);", 1);
      */
     private static final Regex FIGHT_OVER = new Regex("<!--WINWINWIN-->");
-    private static final Regex FIGHT_OVER2 = new Regex("window.fightover ?= ?true;");
+    private static final Regex FIGHT_OVER2 = new Regex("window.fightover ?= ?true;"); //WINWINWIN doesn't appear when you run away or lose
     private static final Regex ACTION_BTN = new Regex(
             "<input[^<>]*type=[\"']?hidden[\"']?[^<>]*value=[\"']?([^\"']*?)[\"']?>.*?<input[^<>]*value=[\"']?([^\"<>]*?)[\"']?>",
             1, 2);
@@ -43,8 +43,8 @@ public class FightModel extends WebModel {
 
     private static final Regex HAS_FUNKSLINGING = new Regex(
             "<select[^>]*whichitem2[^>]*>");
-    private static final FightActionHistory ITEM_HISTORY = new FightActionHistory<FightItem>("Items");
-    private static final FightActionHistory SKILL_HISTORY = new FightActionHistory<FightAction>("Skills");
+    private static final FightActionHistory<FightItem> ITEM_HISTORY = new FightActionHistory<>("Items");
+    private static final FightActionHistory<FightAction> SKILL_HISTORY = new FightActionHistory<>("Skills");
     private final ActionElement attack;
     private final boolean fightFinished;
     private final ArrayList<FightAction> skills;

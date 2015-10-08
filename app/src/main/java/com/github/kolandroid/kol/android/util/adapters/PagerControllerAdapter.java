@@ -49,6 +49,7 @@ public class PagerControllerAdapter<E extends Controller> extends PagerAdapter {
         }
 
         Controller controller = base.get(position);
+        Logger.log("PageControllerAdapter", "Creating " + position + " with tag " + controller);
         LayoutInflater inflater = LayoutInflater.from(host.getActivity());
         View view = inflater.inflate(controller.getView(), container, false);
         controller.attach(view, host);
@@ -62,10 +63,7 @@ public class PagerControllerAdapter<E extends Controller> extends PagerAdapter {
     public void destroyItem(ViewGroup container, int position, Object object) {
         if (object instanceof Controller) ((Controller) object).disconnect(host);
 
-        View toRemove = container.findViewWithTag(object);
-        if (toRemove != null) {
-            container.removeView(toRemove);
-        }
+        Logger.log("PageControllerAdapter", "Removing " + position + " with tag " + object);
     }
 
     @Override
