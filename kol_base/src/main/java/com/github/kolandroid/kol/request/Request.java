@@ -20,6 +20,9 @@ public class Request {
      * @param url The url to request.
      */
     public Request(String url) {
+        if (url == null) {
+            throw new IllegalArgumentException("Request url cannot be null");
+        }
         this.url = url;
     }
 
