@@ -23,10 +23,10 @@ import java.util.ArrayList;
 
 public class ChatCounterController extends ChatStubController<ChatStubModel> {
     private transient TextView popup;
+    private transient ChatModelSegment.ChatModelSegmentProcessor chatMonitor;
 
     private boolean triedInitialStart = false;
     private boolean popupChatIfStarted = false;
-    private ChatModelSegment.ChatModelSegmentProcessor chatMonitor;
 
 
     public ChatCounterController(Session session) {
