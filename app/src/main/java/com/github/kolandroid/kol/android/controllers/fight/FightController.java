@@ -146,18 +146,18 @@ public class FightController extends ModelController<FightModel> {
             }
         });
 
-        if (model.isFightOver()) {
-            attack.setEnabled(false);
-            useSkill.setEnabled(false);
-            useItem.setEnabled(false);
-        }
-
         ViewScreen webScreen = (ViewScreen) view
                 .findViewById(R.id.fight_web_screen);
         webScreen.display(mainPane, host);
 
-        ViewPager actionBarView = (ViewPager) view.findViewById(R.id.fight_actionbar);
-        actionBar.attach(actionBarView, host);
+        if (model.isFightOver()) {
+            //Hide the two views
+            view.findViewById(R.id.fight_button_bar).setVisibility(View.GONE);
+            view.findViewById(R.id.fight_actionbar).setVisibility(View.GONE);
+        } else {
+            ViewPager actionBarView = (ViewPager) view.findViewById(R.id.fight_actionbar);
+            actionBar.attach(actionBarView, host);
+        }
     }
 
 }

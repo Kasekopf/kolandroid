@@ -18,6 +18,7 @@
         android:background="#000" />
 
     <LinearLayout
+        android:id="@+id/fight_button_bar"
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

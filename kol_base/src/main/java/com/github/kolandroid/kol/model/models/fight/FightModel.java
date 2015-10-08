@@ -24,7 +24,7 @@ public class FightModel extends WebModel {
      * Regex("var onturn = (\\d+);", 1);
      */
     private static final Regex FIGHT_OVER = new Regex("<!--WINWINWIN-->");
-
+    private static final Regex FIGHT_OVER2 = new Regex("window.fightover ?= ?true;");
     private static final Regex ACTION_BTN = new Regex(
             "<input[^<>]*type=[\"']?hidden[\"']?[^<>]*value=[\"']?([^\"']*?)[\"']?>.*?<input[^<>]*value=[\"']?([^\"<>]*?)[\"']?>",
             1, 2);
@@ -57,7 +57,7 @@ public class FightModel extends WebModel {
         super(s, new ServerReply(text, filterHtml(text.html)));
 
         attack = new ActionElement(s, "Attack", "fight.php?action=attack");
-        this.fightFinished = FIGHT_OVER.matches(text.html);
+        this.fightFinished = (FIGHT_OVER.matches(text.html) || FIGHT_OVER2.matches(text.html));
         this.funkslinging = HAS_FUNKSLINGING.matches(text.html);
         this.skills = new ArrayList<>();
         this.items = new ArrayList<>();
