@@ -61,37 +61,54 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
 
     @Override
     public Controller setup(Bundle savedInstanceState, Controller controller) {
+        Session session = null;
         if (controller != null && controller instanceof ModelController) {
             // Load the session for the provided model
             @SuppressWarnings("unchecked")
             ModelController<? extends Model> c = (ModelController<? extends Model>) controller;
             Model model = c.getModel();
-            Session session = model.getSession();
+            session = model.getSession();
+        }
 
+        // Set up the chat icon.
+        if (savedInstanceState != null && savedInstanceState.containsKey("chat_controller")) {
+            chatIconController = (ChatCounterController) savedInstanceState.getSerializable("chat_controller");
+        } else if (session != null) {
             chatIconController = new ChatCounterController(session);
+        } else {
+            Logger.log("GameScreen", "Controller " + controller + " has no session; cannot be used to start GameScreen");
+        }
 
-            // Set up the drawer.
-            if (savedInstanceState != null && savedInstanceState.containsKey("navigation_controller")) {
-                navigation = (NavigationController) savedInstanceState.getSerializable("navigation_controller");
-            } else {
-                navigation = new NavigationController(new NavigationModel(session));
-            }
+        // Set up the drawer.
+        if (savedInstanceState != null && savedInstanceState.containsKey("navigation_controller")) {
+            navigation = (NavigationController) savedInstanceState.getSerializable("navigation_controller");
+        } else if (session != null) {
+            navigation = new NavigationController(new NavigationModel(session));
+        } else {
+            Logger.log("GameScreen", "Controller " + controller + " has no session; cannot be used to start GameScreen");
+        }
+
+        if (navigation != null) {
             navigationScreen = DrawerScreen.create(navigation);
             getFragmentManager().beginTransaction()
                     .replace(R.id.navigation_drawer, navigationScreen).commit();
             navigationScreen.setUp(this, R.id.navigation_drawer,
                     (DrawerLayout) findViewById(R.id.drawer_layout), R.drawable.ic_map_black_24dp);
+        }
 
-            // Set up the stats pane.
-            if (savedInstanceState != null && savedInstanceState.containsKey("stats_controller")) {
-                stats = (StatsController) savedInstanceState.get("stats_controller");
-            } else {
-                stats = new StatsController(new StatsModel(session));
-            }
-            ViewScreen statsScreen = (ViewScreen) findViewById(R.id.game_stats_screen);
-            statsScreen.display(stats, this);
+
+        // Set up the stats pane.
+        if (savedInstanceState != null && savedInstanceState.containsKey("stats_controller")) {
+            stats = (StatsController) savedInstanceState.get("stats_controller");
+        } else if (session != null) {
+            stats = new StatsController(new StatsModel(session));
         } else {
             Logger.log("GameScreen", "Controller " + controller + " has no session; cannot be used to start GameScreen");
+        }
+
+        if (stats != null) {
+            ViewScreen statsScreen = (ViewScreen) findViewById(R.id.game_stats_screen);
+            statsScreen.display(stats, this);
         }
 
         return controller;
@@ -193,14 +210,18 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
 
         savedInstanceState.putSerializable("stats_controller", stats);
         savedInstanceState.putSerializable("navigation_controller", navigation);
+        savedInstanceState.putSerializable("chat_controller", chatIconController);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.game_screen, menu);
         View chatIconView = menu.findItem(R.id.action_chat).getActionView();
-        chatIconController.attach(chatIconView, this);
-        chatIconController.connect(chatIconView, this);
+
+        if (chatIconController != null) {
+            chatIconController.attach(chatIconView, this);
+            chatIconController.connect(chatIconView, this);
+        }
 
         return true;
     }
@@ -208,7 +229,9 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        chatIconController.disconnect(this);
+        if (chatIconController != null) {
+            chatIconController.disconnect(this);
+        }
     }
 
     @Override
