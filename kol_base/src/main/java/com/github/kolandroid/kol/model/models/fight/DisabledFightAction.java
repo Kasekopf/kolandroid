@@ -14,7 +14,7 @@ public class DisabledFightAction implements FightAction {
         if (image == null || image.isEmpty()) {
             this.image = "http://images.kingdomofloathing.com/itemimages/blank.gif";
         } else {
-            this.image = "http://images.kingdomofloathing.com/itemimages/" + image;
+            this.image = "http://images.kingdomofloathing.com/itemimages/" + image + ".gif";
         }
     }
 

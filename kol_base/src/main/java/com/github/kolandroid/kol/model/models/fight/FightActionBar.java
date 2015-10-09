@@ -73,6 +73,7 @@ public class FightActionBar extends LinkedModel<Void> {
                     boolean found = false;
                     switch (element.type) {
                         case "item":
+                            // Look through all current items to find a match
                             for (ModelGroup<FightItem> itemGroup : items) {
                                 for (FightAction item : itemGroup) {
                                     if (item.matchesActionBarItem(element.type, element.id)) {
@@ -92,6 +93,7 @@ public class FightActionBar extends LinkedModel<Void> {
                             break;
                         case "skill":
                         case "action":
+                            // Look through all current skills to find a match
                             for (ModelGroup<FightAction> skillGroup : skills) {
                                 for (FightAction skill : skillGroup) {
                                     if (skill.matchesActionBarItem(element.type, element.id)) {
@@ -103,6 +105,13 @@ public class FightActionBar extends LinkedModel<Void> {
 
                                 if (found) break;
                             }
+
+                            // Compare against the default attack action as well
+                            if (element.id != null && element.id.equals("attack")) {
+                                newPage.add(new FightBasicAction(getSession(), "Attack", "http://images.kingdomofloathing.com/itemimages/" + element.pic + ".gif", "attack", FightActionHistory.NONE));
+                                found = true;
+                            }
+
                             if (!found) {
                                 // No match was found
                                 newPage.add(new DisabledFightAction(element.type, element.id, element.pic));
