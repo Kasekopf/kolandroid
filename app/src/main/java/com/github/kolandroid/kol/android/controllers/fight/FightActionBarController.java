@@ -35,7 +35,9 @@ public class FightActionBarController extends LinkedModelController<Void, FightA
 
     @Override
     public void receiveProgress(View view, FightActionBar model, Void message, Screen host) {
-        adapter.setElements(constructControllers());
+        if (adapter != null) {
+            adapter.setElements(constructControllers());
+        }
 
         //Recall the last selected page
         SettingsContext settings = host.getViewContext().getSettingsContext();

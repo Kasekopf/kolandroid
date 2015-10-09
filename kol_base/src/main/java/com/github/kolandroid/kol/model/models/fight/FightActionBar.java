@@ -7,7 +7,8 @@ import com.github.kolandroid.kol.model.LinkedModel;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
 import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.session.SessionCache;
-import com.github.kolandroid.kol.session.cache.FightActionBarData;
+import com.github.kolandroid.kol.session.data.FightActionBarData;
+import com.github.kolandroid.kol.session.data.PwdData;
 import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
@@ -34,7 +35,7 @@ public class FightActionBar extends LinkedModel<Void> {
         final SettingsContext settings = host.getSettingsContext();
         String pwd = PWD.extractSingle(text.html, "");
         SessionCache cache = host.getDataContext().getSessionCache(s);
-        cache.prepare(pwd);
+        cache.put(PwdData.class, new PwdData(pwd));
         cache.access(FightActionBarData.class, new Callback<FightActionBarData>() {
             @Override
             public void execute(FightActionBarData item) {

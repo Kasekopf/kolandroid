@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.session.cache;
+package com.github.kolandroid.kol.session.data;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.util.Logger;
