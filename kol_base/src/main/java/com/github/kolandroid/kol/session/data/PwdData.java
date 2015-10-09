@@ -2,7 +2,11 @@ package com.github.kolandroid.kol.session.data;
 
 import java.io.Serializable;
 
+/**
+ * A wrapper class to store the current password hash.
+ */
 public class PwdData implements Serializable {
+    // The current password hash
     private final String pwd;
 
     public PwdData(String pwd) {
