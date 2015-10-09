@@ -7,6 +7,7 @@ import com.github.kolandroid.kol.android.controller.LinkedModelController;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.util.adapters.PagerControllerAdapter;
+import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.model.models.fight.FightAction;
 import com.github.kolandroid.kol.model.models.fight.FightActionBar;
 import com.github.kolandroid.kol.util.Callback;
@@ -35,15 +36,43 @@ public class FightActionBarController extends LinkedModelController<Void, FightA
     @Override
     public void receiveProgress(View view, FightActionBar model, Void message, Screen host) {
         adapter.setElements(constructControllers());
+
+        //Recall the last selected page
+        SettingsContext settings = host.getViewContext().getSettingsContext();
+        ((ViewPager) view).setCurrentItem(settings.get("FightActionBarController:SelectedPage", model.getStartingPage()));
         view.requestLayout();
     }
 
     @Override
-    public void attach(View view, FightActionBar model, Screen host) {
+    public void attach(View view, FightActionBar model, final Screen host) {
         adapter = new PagerControllerAdapter<>(host, constructControllers());
         ((ViewPager) view).setAdapter(adapter);
         view.requestLayout();
         view.invalidate();
+
+        //Recall the last selected page
+        SettingsContext settings = host.getViewContext().getSettingsContext();
+        ((ViewPager) view).setCurrentItem(settings.get("FightActionBarController:SelectedPage", model.getStartingPage()));
+
+        //Remember the most recent selected page
+        ((ViewPager) view).addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // Do nothing
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                // Remember the most recent page selected
+                SettingsContext settings = host.getViewContext().getSettingsContext();
+                settings.set("FightActionBarController:SelectedPage", position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                // Do nothing
+            }
+        });
     }
 
     @Override
