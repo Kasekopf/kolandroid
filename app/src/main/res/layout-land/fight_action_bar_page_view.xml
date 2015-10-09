@@ -1,0 +1,133 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp">
+
+        <ImageView
+            android:id="@+id/fight_actionbar_1"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/black_to_blue_onpress_border"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_2"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/black_to_blue_onpress_border"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_3"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/black_to_blue_onpress_border"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_4"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/black_to_blue_onpress_border"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_5"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/black_to_blue_onpress_border"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_6"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/black_to_blue_onpress_border"
+            android:padding="10dp" />
+
+
+        <ImageView
+            android:id="@+id/fight_actionbar_7"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/black_to_blue_onpress_border"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_8"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/black_to_blue_onpress_border"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_9"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/black_to_blue_onpress_border"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_10"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/black_to_blue_onpress_border"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_11"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/black_to_blue_onpress_border"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/fight_actionbar_12"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/black_to_blue_onpress_border"
+            android:padding="10dp" />
+    </TableRow>
+</TableLayout>
