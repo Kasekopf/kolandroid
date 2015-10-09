@@ -65,7 +65,11 @@ public class FightModel extends WebModel {
         processSkills(text.html);
         processItems(text.html);
 
-        this.barModel = new FightActionBar(s, host, this, text);
+        if (ACTION_BAR.matches(text.html)) {
+            this.barModel = new FightActionBar(s, host, this, text);
+        } else {
+            this.barModel = null;
+        }
     }
 
     private static String filterHtml(String html) {

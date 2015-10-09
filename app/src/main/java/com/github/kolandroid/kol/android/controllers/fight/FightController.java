@@ -80,7 +80,11 @@ public class FightController extends ModelController<FightModel> {
     public FightController(FightModel model) {
         super(model);
 
-        this.actionBar = new FightActionBarController(model.getActionBar(), notifyActionSelection);
+        if (model.getActionBar() != null) {
+            this.actionBar = new FightActionBarController(model.getActionBar(), notifyActionSelection);
+        } else {
+            this.actionBar = null;
+        }
         this.mainPane = new WebController(model);
     }
 
@@ -96,13 +100,17 @@ public class FightController extends ModelController<FightModel> {
 
     @Override
     public void connect(View view, Screen host) {
-        ViewPager actionBarView = (ViewPager) view.findViewById(R.id.fight_actionbar);
-        actionBar.connect(actionBarView, host);
+        if (actionBar != null) {
+            ViewPager actionBarView = (ViewPager) view.findViewById(R.id.fight_actionbar);
+            actionBar.connect(actionBarView, host);
+        }
     }
 
     @Override
     public void disconnect(Screen host) {
-        actionBar.disconnect(host);
+        if (actionBar != null) {
+            actionBar.disconnect(host);
+        }
     }
 
     @Override
@@ -153,6 +161,9 @@ public class FightController extends ModelController<FightModel> {
         if (model.isFightOver()) {
             //Hide the two views
             view.findViewById(R.id.fight_button_bar).setVisibility(View.GONE);
+            view.findViewById(R.id.fight_actionbar).setVisibility(View.GONE);
+        } else if (actionBar == null) {
+            //Hide only the action bar
             view.findViewById(R.id.fight_actionbar).setVisibility(View.GONE);
         } else {
             ViewPager actionBarView = (ViewPager) view.findViewById(R.id.fight_actionbar);
