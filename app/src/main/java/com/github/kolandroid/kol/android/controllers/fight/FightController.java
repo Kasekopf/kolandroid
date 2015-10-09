@@ -168,6 +168,18 @@ public class FightController extends ModelController<FightModel> {
             //Hide the two views
             view.findViewById(R.id.fight_button_bar).setVisibility(View.GONE);
             view.findViewById(R.id.fight_actionbar).setVisibility(View.GONE);
+
+            if (model.getNextAdventure() != null) {
+                Button repeat = (Button) view.findViewById(R.id.fight_adventure_again);
+                repeat.setText(model.getNextAdventure().getText());
+                repeat.setVisibility(View.VISIBLE);
+                repeat.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getModel().getNextAdventure().submit(host.getViewContext());
+                    }
+                });
+            }
         } else if (actionBar == null) {
             //Hide only the action bar
             view.findViewById(R.id.fight_actionbar).setVisibility(View.GONE);

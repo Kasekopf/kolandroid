@@ -43,6 +43,9 @@ public class FightModel extends WebModel {
 
     private static final Regex HAS_FUNKSLINGING = new Regex(
             "<select[^>]*whichitem2[^>]*>");
+
+    private static final Regex ADVENTURE_AGAIN = new Regex("<[aA][^>]*href=[\"']?([^\"'>]*)[^>]*>(Adventure Again.*?)</[aA]>", 1, 2);
+
     private static final FightActionHistory<FightItem> ITEM_HISTORY = new FightActionHistory<>("Items");
     private static final FightActionHistory<FightAction> SKILL_HISTORY = new FightActionHistory<>("Skills");
     private final ActionElement attack;
@@ -52,6 +55,7 @@ public class FightModel extends WebModel {
     private final ArrayList<FightItem> items;
     private final boolean funkslinging;
 
+    private final ActionElement nextAdventure;
     private final FightActionBar barModel;
 
     public FightModel(Session s, ViewContext host, ServerReply text) {
@@ -62,6 +66,21 @@ public class FightModel extends WebModel {
         this.funkslinging = HAS_FUNKSLINGING.matches(text.html);
         this.skills = new ArrayList<>();
         this.items = new ArrayList<>();
+
+        if (fightFinished) {
+            String[] matches = ADVENTURE_AGAIN.extract(text.html);
+            if (matches == null) {
+                Logger.log("FightModel", "Unable to location adventure repeat text");
+                Logger.logBig("FightModel", text.html);
+                this.nextAdventure = null;
+            } else {
+                Logger.log("FightModel", "Found adventure again link: " + matches[0]);
+                this.nextAdventure = new ActionElement(s, matches[1], matches[0]);
+            }
+        } else {
+            this.nextAdventure = null;
+        }
+
 
         processSkills(text.html);
         processItems(text.html);
@@ -181,6 +200,10 @@ public class FightModel extends WebModel {
 
     public ActionElement getAttack() {
         return attack;
+    }
+
+    public ActionElement getNextAdventure() {
+        return nextAdventure;
     }
 
     public boolean hasFunkslinging() {

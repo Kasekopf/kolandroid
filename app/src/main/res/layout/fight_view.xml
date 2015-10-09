@@ -17,6 +17,14 @@
         android:layout_height="1dp"
         android:background="#000" />
 
+    <Button
+        android:id="@+id/fight_adventure_again"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/fight_button_bar"
         style="?android:attr/buttonBarStyle"
