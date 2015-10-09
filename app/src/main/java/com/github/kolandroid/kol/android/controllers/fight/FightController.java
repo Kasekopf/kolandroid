@@ -65,9 +65,10 @@ public class FightController extends ModelController<FightModel> {
                     // Select the first item to funksling
                     funkslingingFirstSelectedItem = (FightItem) action;
                 } else {
+                    funkslingingFirstSelectedItem.attachView(fullHost.getViewContext());
+                    action.attachView(fullHost.getViewContext());
                     // Two items have been selected to funksling; use them
-                    Controller itemsController = new FunkslingingController(getModel().getItems(), funkslingingFirstSelectedItem);
-                    DialogScreen.display(itemsController, fullHost, "Select items to use:");
+                    FightItem.funksling(funkslingingFirstSelectedItem, (FightItem) action);
                 }
             } else {
                 // No funkslinging or not an item; just use it as normal
@@ -145,7 +146,12 @@ public class FightController extends ModelController<FightModel> {
                 ArrayList<ModelGroup<FightItem>> items = model.getItems();
 
                 if (getModel().hasFunkslinging()) {
-                    Controller itemsController = new FunkslingingController(items);
+                    Controller itemsController;
+                    if (funkslingingFirstSelectedItem == null) {
+                        itemsController = new FunkslingingController(items);
+                    } else {
+                        itemsController = new FunkslingingController(items, funkslingingFirstSelectedItem);
+                    }
                     DialogScreen.display(itemsController, host, "Select items to use:");
                 } else {
                     Controller itemsController = new GroupSearchListController<>(items, DefaultGroupBinder.ONLY, ElementBinder.ONLY, actionSelector);
