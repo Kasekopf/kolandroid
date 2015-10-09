@@ -46,6 +46,7 @@ public class FightModel extends WebModel {
     private static final FightActionHistory<FightItem> ITEM_HISTORY = new FightActionHistory<>("Items");
     private static final FightActionHistory<FightAction> SKILL_HISTORY = new FightActionHistory<>("Skills");
     private final ActionElement attack;
+
     private final boolean fightFinished;
     private final ArrayList<FightAction> skills;
     private final ArrayList<FightItem> items;
@@ -56,7 +57,7 @@ public class FightModel extends WebModel {
     public FightModel(Session s, ViewContext host, ServerReply text) {
         super(s, new ServerReply(text, filterHtml(text.html)));
 
-        attack = new ActionElement(s, "Attack", "fight.php?action=attack");
+        attack = new ActionElement(s, "Attack", "POST/fight.php?action=attack");
         this.fightFinished = (FIGHT_OVER.matches(text.html) || FIGHT_OVER2.matches(text.html));
         this.funkslinging = HAS_FUNKSLINGING.matches(text.html);
         this.skills = new ArrayList<>();

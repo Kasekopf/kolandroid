@@ -22,7 +22,7 @@ public class FightSkill extends SkillModel implements FightAction {
 
     public void use() {
         storage.store(this, getSettings());
-        this.makeRequest(new Request("fight.php?action=skill&whichskill=" + this.id));
+        this.makeRequest(new Request("POST/fight.php?action=skill&whichskill=" + this.id));
     }
 
     @Override

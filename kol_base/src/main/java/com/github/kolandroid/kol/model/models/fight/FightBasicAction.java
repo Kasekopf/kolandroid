@@ -32,7 +32,7 @@ public class FightBasicAction extends Model implements FightAction {
     @Override
     public void use() {
         storage.store(this, getSettings());
-        this.makeRequest(new Request("fight.php?action=" + action));
+        this.makeRequest(new Request("POST/fight.php?action=" + action));
     }
 
     @Override

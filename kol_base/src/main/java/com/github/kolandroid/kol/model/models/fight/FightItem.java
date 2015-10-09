@@ -44,13 +44,13 @@ public class FightItem extends ItemModel implements FightAction {
 
         item1.storage.store(item1, item1.getSettings());
         item2.storage.store(item2, item2.getSettings());
-        item1.makeRequest(new Request("fight.php?action=useitem&whichitem=" + item1.id + "&whichitem2=" + item2.id));
+        item1.makeRequest(new Request("POST/fight.php?action=useitem&whichitem=" + item1.id + "&whichitem2=" + item2.id));
         return true;
     }
 
     public void use() {
         storage.store(this, getSettings());
-        this.makeRequest(new Request("fight.php?action=useitem&whichitem=" + this.id));
+        this.makeRequest(new Request("POST/fight.php?action=useitem&whichitem=" + this.id));
     }
 
     @Override
