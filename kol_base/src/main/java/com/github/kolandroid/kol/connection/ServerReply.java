@@ -3,13 +3,13 @@ package com.github.kolandroid.kol.connection;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
 
-import java.io.BufferedReader;
+import org.apache.commons.io.IOUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
 
 public class ServerReply implements Serializable {
     /**
@@ -71,19 +71,7 @@ public class ServerReply implements Serializable {
         InputStream is = base.getInputStream();
         if (is == null)
             return "";
-
-        StringWriter sw = new StringWriter();
-
-        BufferedReader r = new BufferedReader(new InputStreamReader(is));
-        String s;
-
-        while ((s = r.readLine()) != null) {
-            sw.append(s);
-            sw.append('\n');
-        }
-
-        r.close();
-        return sw.toString();
+        return IOUtils.toString(is, Charset.forName("UTF-8"));
     }
 
     private static String getCookie(HttpURLConnection base) {
