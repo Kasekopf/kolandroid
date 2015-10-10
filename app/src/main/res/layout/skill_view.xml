@@ -59,58 +59,55 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <android.support.v7.widget.GridLayout xmlns:grid="http://schemas.android.com/apk/res-auto"
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        grid:columnCount="2"
-        grid:orientation="vertical"
-        grid:rowCount="2">
-
-        <TextView
-            android:id="@+id/skill_player_input_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Use On:"
-            android:textColor="#000"
-            android:textSize="20sp"
-            grid:layout_gravity="right|center" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="# Times:"
-            android:textColor="#000"
-            android:textSize="20sp"
-            grid:layout_gravity="right|center" />
+        android:animateLayoutChanges="true"
+        android:orientation="horizontal"
+        tools:context="com.github.kolandroid.kol.android.controllers.MultiuseController">
 
         <EditText
-            android:id="@+id/skill_player_input"
-            android:layout_width="match_parent"
+            android:id="@+id/skill_amount"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="(Yourself)"
-            android:imeOptions="actionNext"
-            android:inputType="textNoSuggestions"
-            android:maxLines="@integer/SingleLine" />
-
-        <EditText
-            android:id="@+id/skill_number_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:imeOptions="actionNext"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:imeOptions="actionGo"
             android:inputType="number"
-            android:maxLines="@integer/SingleLine"
-            android:text="1" />
-    </android.support.v7.widget.GridLayout>
+            android:minEms="2"
+            android:nextFocusRight="@+id/skill_target"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/skill_submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cast" />
+        <TextView
+            android:id="@+id/skill_target_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="on"
+            android:visibility="gone" />
 
+        <EditText
+            android:id="@+id/skill_target"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:hint="(yourself)"
+            android:imeOptions="actionGo"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/skill_one_submit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cast" />
+
+        <Button
+            android:id="@+id/skill_more_load"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="..." />
+
+    </LinearLayout>
 </LinearLayout>
