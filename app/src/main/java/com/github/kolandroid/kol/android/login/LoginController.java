@@ -38,7 +38,6 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
      */
     private static final long serialVersionUID = -1263867061071715065L;
     private String savedUser = null;
-    private PasswordHash savedPass = null;
     private boolean enterChatImmediately = true;
 
     public LoginController(LoginModel model) {
@@ -57,9 +56,9 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
 
     @Override
     public void attach(View view, LoginModel model, final Screen host) {
-        final EditText user = (EditText) view
+        final EditText userField = (EditText) view
                 .findViewById(R.id.login_username);
-        final EditText pass = (EditText) view
+        final EditText passField = (EditText) view
                 .findViewById(R.id.login_password);
         final Button login = (Button) view
                 .findViewById(R.id.login_submit);
@@ -67,7 +66,7 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
         final CheckBox configChat = (CheckBox) view.findViewById(R.id.login_config_enter_chat);
 
         final SettingsContext settings = host.getViewContext().getSettingsContext();
-        user.addTextChangedListener(new TextWatcher() {
+        userField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -81,30 +80,28 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
             @Override
             public void afterTextChanged(Editable s) {
                 String[] passwordHash = settings.get("login_defaultPassword", ":").split(":");
-                if (passwordHash.length == 2 && user.getText().toString().equalsIgnoreCase(passwordHash[0])) {
-                    pass.setHint("\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"); //unicode dot x10
+                if (passwordHash.length == 2 && userField.getText().toString().equalsIgnoreCase(passwordHash[0])) {
+                    passField.setHint("\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"); //unicode dot x10
                 } else {
-                    pass.setHint("Password");
+                    passField.setHint("Password");
                 }
             }
         });
 
-        user.setText(settings.get("login_defaultUsername", ""));
+        userField.setText(settings.get("login_defaultUsername", ""));
 
         String[] passwordHash = settings.get("login_defaultPassword", ":").split(":");
         if(passwordHash.length == 2) {
             savedUser = passwordHash[0];
-            savedPass = new PasswordHash(passwordHash[1], true);
         } else {
             savedUser = null;
-            savedPass = null;
         }
 
         configPass.setChecked(settings.get("login_savePassword", true));
         configChat.setChecked(settings.get("login_enterChat", true));
 
 
-        pass.setOnEditorActionListener(new OnEditorActionListener() {
+        passField.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView view, int actionId,
                                           KeyEvent event) {
@@ -120,22 +117,29 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
         login.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                String username = user.getText().toString();
-                String password = pass.getText().toString();
+                String username = userField.getText().toString();
+
+                char[] password = new char[passField.getText().length()];
+                passField.getText().getChars(0, password.length, password, 0);
 
                 PasswordHash pass;
 
                 if (username.equals(""))
                     return;
 
-                if (savedUser != null && username.equalsIgnoreCase(savedUser) && (password.equals("")) && savedPass != null) {
-                    pass = savedPass;
+                if (savedUser != null && username.equalsIgnoreCase(savedUser) && (password.length == 0)) {
+                    String[] passwordHash = settings.get("login_defaultPassword", ":").split(":");
+                    if (passwordHash.length != 2)
+                        return;
+
+                    char[] hashChars = new char[passwordHash[1].length()];
+                    passwordHash[1].getChars(0, hashChars.length, hashChars, 0);
+                    pass = new PasswordHash(hashChars, true);
                 } else {
-                    if (password.equals(""))
+                    if (password.length == 0)
                         return;
                     pass = new PasswordHash(password, false);
                 }
-
 
                 View focus = host.getActivity().getCurrentFocus();
                 if (focus != null) {
@@ -152,11 +156,13 @@ public class LoginController extends LinkedModelController<LoginStatus, LoginMod
 
                 if (configPass.isChecked()) {
                     settings.set("login_defaultUsername", username);
-                    settings.set("login_defaultPassword", username + ":" + pass.getBaseHash());
+                    settings.set("login_defaultPassword", username + ":" + new String(pass.getBaseHash()));
                 } else {
                     settings.remove("login_defaultUsername");
                     settings.remove("login_defaultPassword");
                 }
+
+                pass.clear();
             }
         });
 
