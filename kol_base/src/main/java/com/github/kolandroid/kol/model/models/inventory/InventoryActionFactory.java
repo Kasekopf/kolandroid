@@ -20,6 +20,11 @@ public enum InventoryActionFactory {
     },
     AUTOSELL("Autosell", "", "sellstuff.php?action=sell&ajax=1&type=quant&whichitem%5B%5D=IID&howmany=#&pwd=PWD") {
         @Override
+        public boolean findOnPage(ServerReply page) {
+            return page.url != null && page.url.contains("inventory.php");
+        }
+
+        @Override
         public boolean appliesTo(Map<String, String> rel) {
             if (!rel.containsKey("d") || !rel.containsKey("s")) return false;
 
