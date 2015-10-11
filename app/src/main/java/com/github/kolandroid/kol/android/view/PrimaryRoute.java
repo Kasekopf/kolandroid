@@ -11,6 +11,7 @@ import com.github.kolandroid.kol.android.controllers.fight.FightController;
 import com.github.kolandroid.kol.android.controllers.inventory.ClosetController;
 import com.github.kolandroid.kol.android.controllers.inventory.InventoryController;
 import com.github.kolandroid.kol.android.controllers.inventory.InventoryUpdateController;
+import com.github.kolandroid.kol.android.controllers.inventory.ItemController;
 import com.github.kolandroid.kol.android.controllers.skills.SkillsController;
 import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.login.LoginController;
@@ -26,6 +27,7 @@ import com.github.kolandroid.kol.model.models.fight.FightModel;
 import com.github.kolandroid.kol.model.models.inventory.ClosetModel;
 import com.github.kolandroid.kol.model.models.inventory.InventoryModel;
 import com.github.kolandroid.kol.model.models.inventory.InventoryUpdateModel;
+import com.github.kolandroid.kol.model.models.inventory.ItemModel;
 import com.github.kolandroid.kol.model.models.login.CreateCharacterModel;
 import com.github.kolandroid.kol.model.models.login.LoginModel;
 import com.github.kolandroid.kol.model.models.skill.SkillsModel;
@@ -133,6 +135,10 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
         if (response.url.contains("chat.php")) {
             // Ignore the server reply; we'll just connect to the ChatService for an update
             return new ChatController(new ChatStubModel(session));
+        }
+
+        if (response.url.contains("desc_item.php")) {
+            return new ItemController(new ItemModel(session, host, response));
         }
 
         WebModel model = new WebModel(session, response);

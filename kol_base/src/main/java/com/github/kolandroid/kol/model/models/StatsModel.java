@@ -5,6 +5,7 @@ import com.github.kolandroid.kol.model.LiveModel;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.SimulatedRequest;
 import com.github.kolandroid.kol.session.Session;
+import com.github.kolandroid.kol.session.data.PwdData;
 import com.github.kolandroid.kol.util.Regex;
 
 public class StatsModel extends LiveModel {
@@ -108,6 +109,8 @@ public class StatsModel extends LiveModel {
     private static final Regex QUEST_LOG = new Regex(
             "<center id=[\"']?nudgeblock[\"']?>(.*?)<p></center>", 1);
 
+    private static final Regex PWD_HASH = new Regex("var pwdhash ?= ?[\"']([a-fA-F0-9]*)[\"'];", 1);
+
     private ServerReply lastUpdate;
     private String[] currentStats = null;
 
@@ -121,6 +124,12 @@ public class StatsModel extends LiveModel {
     protected void loadContent(ServerReply reply) {
         currentStats = extractAll(reply.html,
                 new String[]{"-2", "-2", "-2"}, STATS_PREPROCESSING);
+
+        // Load the current password hash
+        String pwd = PWD_HASH.extractSingle(reply.html, "");
+        if (!pwd.isEmpty()) {
+            this.getData().getSessionCache(getSession()).put(PwdData.class, new PwdData(pwd));
+        }
 
         this.lastUpdate = reply;
     }

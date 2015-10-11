@@ -74,7 +74,7 @@ public abstract class LiveCacheItem<E extends Serializable> extends CacheItem<E>
                             E result = process(response);
                             if (result != null) {
                                 ArrayList<Callback<E>> toNotify;
-                                synchronized (this) {
+                                synchronized (LiveCacheItem.this) {
                                     loading = false;
                                     toNotify = new ArrayList<>(listeners);
                                     listeners.clear();
@@ -89,7 +89,7 @@ public abstract class LiveCacheItem<E extends Serializable> extends CacheItem<E>
                         }
 
                         ArrayList<Callback<Void>> toNotify;
-                        synchronized (this) {
+                        synchronized (LiveCacheItem.this) {
                             loading = false;
                             toNotify = new ArrayList<>(failureListeners);
                             listeners.clear();
