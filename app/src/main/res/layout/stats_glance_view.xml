@@ -1,0 +1,134 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/black_sides"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:paddingBottom="1dp"
+    android:paddingLeft="2dp"
+    android:paddingRight="3dp"
+    android:paddingTop="1dp"
+    tools:context="com.github.kolandroid.kol.android.controllers.StatsController">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingBottom="1dp"
+        android:paddingLeft="2dp"
+        android:paddingTop="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingBottom="1dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:contentDescription="HP"
+                android:paddingRight="2dp"
+                android:src="@drawable/hp" />
+
+            <com.github.kolandroid.kol.android.util.ProgressBar
+                android:id="@+id/stats_hp"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:background="#ccc"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:textColor="#000"
+                app:emptyColor="#fff"
+                app:fullColor="#f77" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:contentDescription="Meat"
+                android:paddingRight="2dp"
+                android:src="@drawable/meat" />
+
+            <TextView
+                android:id="@+id/stats_meat"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:gravity="center_vertical"
+                android:text="-"
+                android:textColor="#000" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingBottom="1dp"
+        android:paddingLeft="2dp"
+        android:paddingTop="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:contentDescription="MP"
+                android:paddingRight="2dp"
+                android:src="@drawable/mp" />
+
+            <com.github.kolandroid.kol.android.util.ProgressBar
+                android:id="@+id/stats_mp"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:background="#ccc"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:textColor="#000"
+                app:emptyColor="#fff"
+                app:fullColor="#99f" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="1dp"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:contentDescription="Adventures"
+                android:paddingRight="2dp"
+                android:src="@drawable/hourglass" />
+
+            <TextView
+                android:id="@+id/stats_adventures"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:gravity="center_vertical"
+                android:text="-"
+                android:textColor="#000" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -40,7 +40,7 @@ public class FightActionBarData implements Serializable {
     /**
      * Raw JSON data for action bar.
      */
-    public static class FightActionBarRawData {
+    public static class FightActionBarRawData implements Serializable {
         public int whichpage;
         public FightActionBarRawElementData[][] pages;
     }
@@ -48,7 +48,7 @@ public class FightActionBarData implements Serializable {
     /**
      * Raw JSON data for a single action bar element.
      */
-    public static class FightActionBarRawElementData {
+    public static class FightActionBarRawElementData implements Serializable {
         public String type;
         public String id;
         public String pic;

@@ -63,13 +63,15 @@ public class ProgressBar extends TextView {
     }
 
     public void setProgress(int val, int max) {
+        if (max == 0) max = 1;
+
         String text = val + " / " + max;
         progress = val / (float) max;
 
         if (progress < 0) progress = 0;
         if (progress > 1) progress = 1;
 
-        this.setText("   " + text + "   ");
+        this.setText("  " + text + "  ");
     }
 
     @SuppressLint("DrawAllocation")

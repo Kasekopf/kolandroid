@@ -7,8 +7,8 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBar.LayoutParams;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,10 +18,9 @@ import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.ModelController;
 import com.github.kolandroid.kol.android.controller.UpdatableController;
 import com.github.kolandroid.kol.android.controller.UpdateController;
-import com.github.kolandroid.kol.android.controllers.StatsController;
-import com.github.kolandroid.kol.android.controllers.StatsController.StatsCallbacks;
 import com.github.kolandroid.kol.android.controllers.chat.ChatCounterController;
 import com.github.kolandroid.kol.android.controllers.navigation.NavigationController;
+import com.github.kolandroid.kol.android.controllers.stats.StatsGlanceController;
 import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
@@ -33,13 +32,13 @@ import com.github.kolandroid.kol.android.view.AndroidViewContext;
 import com.github.kolandroid.kol.android.view.ProgressLoader;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.model.Model;
-import com.github.kolandroid.kol.model.models.StatsModel;
 import com.github.kolandroid.kol.model.models.navigation.NavigationModel;
+import com.github.kolandroid.kol.model.models.stats.StatsGlanceModel;
 import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Logger;
 
-public class GameScreen extends ActivityScreen implements StatsCallbacks {
-    private StatsController stats;
+public class GameScreen extends ActivityScreen {
+    private StatsGlanceController stats;
     private NavigationController navigation;
     private DrawerScreen navigationScreen;
 
@@ -88,6 +87,15 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
             Logger.log("GameScreen", "Controller " + controller + " has no session; cannot be used to start GameScreen");
         }
 
+        // Set up the stats pane.
+        if (savedInstanceState != null && savedInstanceState.containsKey("stats_controller")) {
+            stats = (StatsGlanceController) savedInstanceState.get("stats_controller");
+        } else if (session != null) {
+            stats = new StatsGlanceController(new StatsGlanceModel(session));
+        } else {
+            Logger.log("GameScreen", "Controller " + controller + " has no session; cannot be used to start GameScreen");
+        }
+
         if (navigation != null) {
             navigationScreen = DrawerScreen.create(navigation);
             getFragmentManager().beginTransaction()
@@ -96,19 +104,17 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
                     (DrawerLayout) findViewById(R.id.drawer_layout), R.drawable.ic_map_black_24dp);
         }
 
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null && stats != null) {
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
 
-        // Set up the stats pane.
-        if (savedInstanceState != null && savedInstanceState.containsKey("stats_controller")) {
-            stats = (StatsController) savedInstanceState.get("stats_controller");
-        } else if (session != null) {
-            stats = new StatsController(new StatsModel(session));
-        } else {
-            Logger.log("GameScreen", "Controller " + controller + " has no session; cannot be used to start GameScreen");
-        }
-
-        if (stats != null) {
-            ViewScreen statsScreen = (ViewScreen) findViewById(R.id.game_stats_screen);
+            ViewScreen statsScreen = new ViewScreen(this);
             statsScreen.display(stats, this);
+
+            //Set the custom view to fill the action bar
+            LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+            actionBar.setCustomView(statsScreen, params);
         }
 
         return controller;
@@ -235,20 +241,6 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here.
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.action_quests:
-                if (stats != null)
-                    stats.showQuests();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onBackPressed() {
         //This appears to be necessary to make fragment backtracking actually work without the v4 support library...
 
@@ -263,19 +255,5 @@ public class GameScreen extends ActivityScreen implements StatsCallbacks {
             //TODO: replace with Logout? message
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public void update(String username, String subtext) {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(username);
-            actionBar.setSubtitle(subtext);
-        }
-    }
-
-    @Override
-    public void register(StatsController statController) {
-        this.stats = statController;
     }
 }

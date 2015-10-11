@@ -15,28 +15,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/game_main_screen"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <com.github.kolandroid.kol.android.screen.ViewScreen
-                android:id="@+id/game_stats_screen"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#000" />
-
-
-            <FrameLayout
-                android:id="@+id/game_main_screen"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-        </LinearLayout>
+            android:layout_height="match_parent" />
 
         <LinearLayout
             android:id="@+id/game_progress_popup"

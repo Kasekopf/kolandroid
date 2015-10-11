@@ -19,20 +19,45 @@ public class CharacterStatusData implements Serializable {
         this.base = base;
     }
 
-    /**
-     * Get the password hash of the current session.
-     *
-     * @return The password hash of the current session.
-     */
     public String getPwdHash() {
         return base.pwd;
+    }
+
+    public int getCurrentHP() {
+        return base.hp;
+    }
+
+    public int getCurrentMP() {
+        return base.mp;
+    }
+
+    public int getMaxHP() {
+        return base.maxhp;
+    }
+
+    public int getMaxMP() {
+        return base.maxmp;
+    }
+
+    public int getMeat() {
+        return base.meat;
+    }
+
+    public int getAdventures() {
+        return base.adventures;
     }
 
     /**
      * Raw JSON data for character status.
      */
-    public static class Raw {
+    public static class Raw implements Serializable {
         public String pwd;
+        public int hp;
+        public int mp;
+        public int maxhp;
+        public int maxmp;
+        public int meat;
+        public int adventures;
     }
 
     /**
