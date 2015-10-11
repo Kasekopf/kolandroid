@@ -1,6 +1,10 @@
 package com.github.kolandroid.kol.session.data;
 
 import com.github.kolandroid.kol.connection.ServerReply;
+import com.github.kolandroid.kol.session.LiveCacheLine;
+import com.github.kolandroid.kol.session.Session;
+import com.github.kolandroid.kol.session.SessionCache;
+import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 import com.google.gson.Gson;
 
@@ -16,27 +20,13 @@ public class FightActionBarData implements Serializable {
     private final FightActionBarRawElementData[][] pages;
 
     /**
-     * Parse the ActionBar from the provided page.
+     * Parse the ActionBar from the provided JSON.
      *
-     * @param response Page data to parse the action bar from.
+     * @param data Parsed JSON object for the action bar
      */
-    public FightActionBarData(ServerReply response) {
-        Logger.log("FightActionBarData", "Loaded: " + response.html);
-
-        Gson parser = new Gson();
-
-        FightActionBarRawData update = parser.fromJson(response.html, FightActionBarRawData.class);
-        this.currentPage = update.whichpage;
-        this.pages = update.pages;
-    }
-
-    /**
-     * Parse the ActionBar from the provided page.
-     * @param data  Page data to parse the action bar from.
-     * @return Data for the ActionBar contained on the provided page.
-     */
-    public static FightActionBarData create(ServerReply data) {
-        return new FightActionBarData(data);
+    private FightActionBarData(FightActionBarRawData data) {
+        this.currentPage = data.whichpage;
+        this.pages = data.pages;
     }
 
     public int getCurrentPage() {
@@ -62,5 +52,43 @@ public class FightActionBarData implements Serializable {
         public String type;
         public String id;
         public String pic;
+    }
+
+    /**
+     * The cache line for a single FightActionBarData
+     */
+    public static class Cache extends LiveCacheLine<FightActionBarData> {
+        private final Gson parser = new Gson();
+
+        /**
+         * Create a new FightActionBarData cache in the provided session.
+         *
+         * @param s The session to use for any requests.
+         */
+        public Cache(Session s) {
+            super(s);
+        }
+
+        @Override
+        protected FightActionBarData process(ServerReply reply) {
+            Logger.log("FightActionBarData", "Loaded: " + reply.html);
+            FightActionBarRawData data = parser.fromJson(reply.html, FightActionBarRawData.class);
+            return new FightActionBarData(data);
+        }
+
+        @Override
+        protected void computeUrl(SessionCache cache, final Callback<String> callback, Callback<Void> failure) {
+            cache.access(PwdData.class, new Callback<PwdData>() {
+                @Override
+                public void execute(PwdData item) {
+                    callback.execute("actionbar.php?action=fetch&d=" + System.currentTimeMillis() + "&pwd=" + item.getPwd());
+                }
+            }, failure);
+        }
+
+        @Override
+        protected Class[] dependencies() {
+            return new Class[]{PwdData.class};
+        }
     }
 }

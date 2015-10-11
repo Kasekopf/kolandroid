@@ -13,12 +13,12 @@ import java.util.List;
  *
  * @param <E> The type of the item inside the cache.
  */
-public abstract class CacheItem<E extends Serializable> implements Serializable {
+public abstract class CacheLine<E extends Serializable> implements Serializable {
     // Cached version of the item, or null if nothing is stored.
     private E storage;
 
     // List of all cache items which depend on this item
-    private List<CacheItem> dependents = new ArrayList<>();
+    private List<CacheLine> dependents = new ArrayList<>();
 
     // Check if the stored item should be recomputed on next access
     private boolean dirty = true;
@@ -32,6 +32,7 @@ public abstract class CacheItem<E extends Serializable> implements Serializable 
     void access(SessionCache cache, final Callback<E> callback, final Callback<Void> failure) {
         if (storage != null && !dirty) {
             callback.execute(storage);
+            return;
         }
 
         recompute(cache, new Callback<E>() {
@@ -58,11 +59,11 @@ public abstract class CacheItem<E extends Serializable> implements Serializable 
         // If the new item is genuinely different, all dependents should be recomputed on next access
         if (storage == null || !storage.equals(item)) {
             if (item != null) {
-                Logger.log("CacheItem", item.getClass().getSimpleName() + " computed in cache as " + item);
+                Logger.log("CacheLine", item.getClass().getSimpleName() + " computed in cache as " + item);
             }
 
             this.storage = item;
-            for (CacheItem dependent : dependents) {
+            for (CacheLine dependent : dependents) {
                 dependent.markDirty();
             }
         }
@@ -75,7 +76,7 @@ public abstract class CacheItem<E extends Serializable> implements Serializable 
         if (this.dirty) return;
 
         this.dirty = true;
-        for (CacheItem item : dependents) {
+        for (CacheLine item : dependents) {
             item.markDirty();
         }
     }
@@ -86,14 +87,14 @@ public abstract class CacheItem<E extends Serializable> implements Serializable 
      * @param complete  Callback to call when the stored item is recomputed
      * @param failure   Callback to call when we are unable to compute this item
      */
-    abstract void recompute(SessionCache cache, Callback<E> complete, Callback<Void> failure);
+    protected abstract void recompute(SessionCache cache, Callback<E> complete, Callback<Void> failure);
 
     /**
      * A list of dependencies for this cached item. If any of these are recomputed, this item
      * should be recomputed on next access.
      * @return
      */
-    abstract Class[] dependencies();
+    protected abstract Class[] dependencies();
 
     /**
      * Add a dependent to this cache item, to be dirtied whenever this item is recomputed.
@@ -101,7 +102,7 @@ public abstract class CacheItem<E extends Serializable> implements Serializable 
      * @param dependent The new dependent cache item
      * @param <F>       The type of the new dependent cache item
      */
-    <F extends Serializable> void addDependent(CacheItem<F> dependent) {
+    <F extends Serializable> void addDependent(CacheLine<F> dependent) {
         dependents.add(dependent);
     }
 }

@@ -1,6 +1,6 @@
 package com.github.kolandroid.kol.session;
 
-import com.github.kolandroid.kol.connection.ServerReply;
+import com.github.kolandroid.kol.session.data.CharacterStatusData;
 import com.github.kolandroid.kol.session.data.FightActionBarData;
 import com.github.kolandroid.kol.session.data.PwdData;
 import com.github.kolandroid.kol.util.Callback;
@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionCache {
     // All cache items
-    private final Map<Class<?>, CacheItem> cache;
+    private final Map<Class<?>, CacheLine> cache;
 
     // Current session for the cache
     private final Session session;
@@ -26,29 +26,10 @@ public class SessionCache {
         this.session = session;
         this.cache = new ConcurrentHashMap<>();
 
-        init(Session.class, new BasicCacheItem<>(session));
-        init(PwdData.class, new BasicCacheItem<PwdData>(null));
-        init(FightActionBarData.class, new LiveCacheItem<FightActionBarData>(session) {
-            @Override
-            protected FightActionBarData process(ServerReply reply) {
-                return FightActionBarData.create(reply);
-            }
-
-            @Override
-            protected void computeUrl(SessionCache cache, final Callback<String> callback, Callback<Void> failure) {
-                cache.access(PwdData.class, new Callback<PwdData>() {
-                    @Override
-                    public void execute(PwdData item) {
-                        callback.execute("actionbar.php?action=fetch&d=" + System.currentTimeMillis() + "&pwd=" + item.getPwd());
-                    }
-                }, failure);
-            }
-
-            @Override
-            Class[] dependencies() {
-                return new Class[]{PwdData.class};
-            }
-        });
+        init(Session.class, new BasicCacheLine<>(session));
+        init(CharacterStatusData.class, new CharacterStatusData.Cache(session));
+        init(PwdData.class, new PwdData.Cache());
+        init(FightActionBarData.class, new FightActionBarData.Cache(session));
     }
 
     /**
@@ -58,7 +39,7 @@ public class SessionCache {
      * @param container The container backing the cache line.
      * @param <E>       The type of item to store in the new cache line.
      */
-    private <E extends Serializable> void init(Class<E> id, CacheItem<E> container) {
+    private <E extends Serializable> void init(Class<E> id, CacheLine<E> container) {
         cache.put(id, container);
         for (Class dependency : container.dependencies()) {
             if (cache.containsKey(dependency)) {
@@ -78,7 +59,7 @@ public class SessionCache {
      */
     public <E extends Serializable> void access(Class<E> id, Callback<E> callback, Callback<Void> failure) {
         if (cache.containsKey(id)) {
-            CacheItem<E> cached = (CacheItem<E>) cache.get(id);
+            CacheLine<E> cached = (CacheLine<E>) cache.get(id);
             cached.access(this, callback, failure);
         } else {
             failure.execute(null);
@@ -93,7 +74,7 @@ public class SessionCache {
      */
     public <E extends Serializable> void put(Class<E> id, E value) {
         if (cache.containsKey(id)) {
-            CacheItem<E> cached = (CacheItem<E>) cache.get(id);
+            CacheLine<E> cached = (CacheLine<E>) cache.get(id);
             cached.fill(value);
         }
     }
@@ -106,7 +87,7 @@ public class SessionCache {
      */
     public <E extends Serializable> void clear(Class<E> id) {
         if (cache.containsKey(id)) {
-            CacheItem<E> cached = (CacheItem<E>) cache.get(id);
+            CacheLine<E> cached = (CacheLine<E>) cache.get(id);
             cached.markDirty();
         }
     }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
  *
  * @param <E> The type of the item inside the cache.
  */
-public abstract class LiveCacheItem<E extends Serializable> extends CacheItem<E> {
+public abstract class LiveCacheLine<E extends Serializable> extends CacheLine<E> {
     // Session to make all requests in
     private final Session session;
 
@@ -29,11 +29,11 @@ public abstract class LiveCacheItem<E extends Serializable> extends CacheItem<E>
     private boolean loading;
 
     /**
-     * Create a new LiveCacheItem in the provided session.
+     * Create a new LiveCacheLine in the provided session.
      *
      * @param s         The session to use for any requests.
      */
-    public LiveCacheItem(Session s) {
+    public LiveCacheLine(Session s) {
         this.session = s;
 
         this.listeners = new ArrayList<>();
@@ -65,7 +65,7 @@ public abstract class LiveCacheItem<E extends Serializable> extends CacheItem<E>
         this.computeUrl(cache, new Callback<String>() {
             @Override
             public void execute(final String updateUrl) {
-                Logger.log("LiveCacheItem", "Starting request for " + updateUrl);
+                Logger.log("LiveCacheLine", "Starting request for " + updateUrl);
                 Request r = new Request(updateUrl);
                 r.makeAsync(session, LoadingContext.NONE, new ResponseHandler() {
                     @Override
@@ -74,7 +74,7 @@ public abstract class LiveCacheItem<E extends Serializable> extends CacheItem<E>
                             E result = process(response);
                             if (result != null) {
                                 ArrayList<Callback<E>> toNotify;
-                                synchronized (LiveCacheItem.this) {
+                                synchronized (LiveCacheLine.this) {
                                     loading = false;
                                     toNotify = new ArrayList<>(listeners);
                                     listeners.clear();
@@ -89,7 +89,7 @@ public abstract class LiveCacheItem<E extends Serializable> extends CacheItem<E>
                         }
 
                         ArrayList<Callback<Void>> toNotify;
-                        synchronized (LiveCacheItem.this) {
+                        synchronized (LiveCacheLine.this) {
                             loading = false;
                             toNotify = new ArrayList<>(failureListeners);
                             listeners.clear();
@@ -110,7 +110,7 @@ public abstract class LiveCacheItem<E extends Serializable> extends CacheItem<E>
      * @param reply A new ServerReply from consulting the provided URL
      * @return A newly computed cache item, or null if the ServerReply was inappropriate
      */
-    abstract E process(ServerReply reply);
+    protected abstract E process(ServerReply reply);
 
     /**
      * Determine the URL used to recompute this item, possibly consulting the cache.
@@ -118,14 +118,14 @@ public abstract class LiveCacheItem<E extends Serializable> extends CacheItem<E>
      * @param callback  Callback to call when the URL is determined
      * @param failure   Callback to call when we are unable to determine the URL
      */
-    abstract void computeUrl(SessionCache cache, Callback<String> callback, Callback<Void> failure);
+    protected abstract void computeUrl(SessionCache cache, Callback<String> callback, Callback<Void> failure);
 
     /**
      * Default to no dependencies.
      * @return []
      */
     @Override
-    Class[] dependencies() {
+    protected Class[] dependencies() {
         return new Class[0];
     }
 }

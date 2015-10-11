@@ -10,13 +10,13 @@ import java.io.Serializable;
  *
  * @param <E> The type of the item inside the cache.
  */
-public class BasicCacheItem<E extends Serializable> extends CacheItem<E> {
+public class BasicCacheLine<E extends Serializable> extends CacheLine<E> {
     /**
      * Create a new cache line, preloaded with the provided item.
      *
      * @param def The initial item inside the cache
      */
-    public BasicCacheItem(E def) {
+    public BasicCacheLine(E def) {
         this.fill(def);
     }
 
@@ -27,7 +27,7 @@ public class BasicCacheItem<E extends Serializable> extends CacheItem<E> {
      * @param failure   Callback to call when we are unable to compute this item
      */
     @Override
-    void recompute(SessionCache cache, Callback<E> complete, Callback<Void> failure) {
+    protected void recompute(SessionCache cache, Callback<E> complete, Callback<Void> failure) {
         failure.execute(null);
     }
 
@@ -36,7 +36,7 @@ public class BasicCacheItem<E extends Serializable> extends CacheItem<E> {
      * @return []
      */
     @Override
-    Class[] dependencies() {
+    protected Class[] dependencies() {
         return new Class[0];
     }
 }
