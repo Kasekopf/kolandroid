@@ -7,7 +7,7 @@ import com.github.kolandroid.kol.data.RawItem;
 import com.github.kolandroid.kol.data.RawSkill;
 import com.github.kolandroid.kol.gamehandler.DataContext;
 import com.github.kolandroid.kol.session.Session;
-import com.github.kolandroid.kol.session.SessionCache;
+import com.github.kolandroid.kol.session.cache.SessionCache;
 import com.github.kolandroid.kol.util.Logger;
 
 import java.util.Map;

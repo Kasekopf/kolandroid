@@ -4,7 +4,7 @@ import com.github.kolandroid.kol.data.DataCache;
 import com.github.kolandroid.kol.data.RawItem;
 import com.github.kolandroid.kol.data.RawSkill;
 import com.github.kolandroid.kol.session.Session;
-import com.github.kolandroid.kol.session.SessionCache;
+import com.github.kolandroid.kol.session.cache.SessionCache;
 
 public interface DataContext {
     /**

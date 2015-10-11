@@ -1,7 +1,7 @@
 package com.github.kolandroid.kol.session.data;
 
-import com.github.kolandroid.kol.session.FixedCacheLine;
-import com.github.kolandroid.kol.session.SessionCache;
+import com.github.kolandroid.kol.session.cache.FixedCacheLine;
+import com.github.kolandroid.kol.session.cache.SessionCache;
 import com.github.kolandroid.kol.util.Callback;
 
 import java.io.Serializable;

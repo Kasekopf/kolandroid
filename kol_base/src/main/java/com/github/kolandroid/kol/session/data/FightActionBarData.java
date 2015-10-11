@@ -1,9 +1,9 @@
 package com.github.kolandroid.kol.session.data;
 
 import com.github.kolandroid.kol.connection.ServerReply;
-import com.github.kolandroid.kol.session.LiveCacheLine;
 import com.github.kolandroid.kol.session.Session;
-import com.github.kolandroid.kol.session.SessionCache;
+import com.github.kolandroid.kol.session.cache.LiveCacheLine;
+import com.github.kolandroid.kol.session.cache.SessionCache;
 import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 import com.google.gson.Gson;

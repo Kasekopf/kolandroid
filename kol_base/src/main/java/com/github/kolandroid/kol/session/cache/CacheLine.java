@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.session;
+package com.github.kolandroid.kol.session.cache;
 
 import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;

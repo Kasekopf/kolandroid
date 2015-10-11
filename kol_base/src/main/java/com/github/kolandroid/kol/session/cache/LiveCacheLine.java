@@ -1,9 +1,10 @@
-package com.github.kolandroid.kol.session;
+package com.github.kolandroid.kol.session.cache;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.request.Request;
 import com.github.kolandroid.kol.request.ResponseHandler;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
 

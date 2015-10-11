@@ -6,7 +6,7 @@ import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.LinkedModel;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
 import com.github.kolandroid.kol.session.Session;
-import com.github.kolandroid.kol.session.SessionCache;
+import com.github.kolandroid.kol.session.cache.SessionCache;
 import com.github.kolandroid.kol.session.data.FightActionBarData;
 import com.github.kolandroid.kol.session.data.PwdData;
 import com.github.kolandroid.kol.util.Callback;

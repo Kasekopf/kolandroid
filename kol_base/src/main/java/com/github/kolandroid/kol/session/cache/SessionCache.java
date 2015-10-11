@@ -1,5 +1,6 @@
-package com.github.kolandroid.kol.session;
+package com.github.kolandroid.kol.session.cache;
 
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.session.data.CharacterStatusData;
 import com.github.kolandroid.kol.session.data.FightActionBarData;
 import com.github.kolandroid.kol.session.data.PwdData;
