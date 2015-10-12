@@ -9,16 +9,27 @@ import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.util.ProgressBar;
 import com.github.kolandroid.kol.model.models.stats.StatsGlanceModel;
+import com.github.kolandroid.kol.util.Callback;
 
 import java.text.NumberFormat;
 
 public class StatsGlanceController extends LinkedModelController<Void, StatsGlanceModel> {
+    private transient Callback<Void> onUpdate;
+
     public StatsGlanceController(StatsGlanceModel model) {
         super(model);
     }
 
+    public void attachNotificationCallback(Callback<Void> onUpdate) {
+        this.onUpdate = onUpdate;
+    }
+
     @Override
     public void receiveProgress(View view, StatsGlanceModel model, Void message, Screen host) {
+        if (onUpdate != null) {
+            onUpdate.execute(null);
+        }
+
         ProgressBar barHP = (ProgressBar) view.findViewById(R.id.stats_hp);
         barHP.setProgress(model.getCurrentHP(), model.getMaxHP());
 

@@ -47,6 +47,38 @@ public class CharacterStatusData implements Serializable {
         return base.adventures;
     }
 
+    public int getBaseMuscle() {
+        return base.basemuscle;
+    }
+
+    public int getBuffedMuscle() {
+        return base.muscle;
+    }
+
+    public int getBaseMyst() {
+        return base.basemysticality;
+    }
+
+    public int getBuffedMyst() {
+        return base.mysticality;
+    }
+
+    public int getBaseMoxie() {
+        return base.basemoxie;
+    }
+
+    public int getBuffedMoxie() {
+        return base.moxie;
+    }
+
+    public String getName() {
+        return base.name;
+    }
+
+    public int getLevel() {
+        return base.level;
+    }
+
     /**
      * Raw JSON data for character status.
      */
@@ -58,6 +90,18 @@ public class CharacterStatusData implements Serializable {
         public int maxmp;
         public int meat;
         public int adventures;
+
+        public String name;
+        public int level;
+
+        public int basemuscle;
+        public int muscle;
+
+        public int basemysticality;
+        public int mysticality;
+
+        public int basemoxie;
+        public int moxie;
     }
 
     /**

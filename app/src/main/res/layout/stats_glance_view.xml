@@ -10,7 +10,7 @@
     android:paddingLeft="2dp"
     android:paddingRight="3dp"
     android:paddingTop="1dp"
-    tools:context="com.github.kolandroid.kol.android.controllers.StatsController">
+    tools:context="com.github.kolandroid.kol.android.controllers.stats.StatsGlanceController">
 
     <LinearLayout
         android:layout_width="0dp"

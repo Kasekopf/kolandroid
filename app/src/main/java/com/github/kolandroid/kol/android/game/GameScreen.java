@@ -19,7 +19,6 @@ import com.github.kolandroid.kol.android.controller.ModelController;
 import com.github.kolandroid.kol.android.controller.UpdatableController;
 import com.github.kolandroid.kol.android.controller.UpdateController;
 import com.github.kolandroid.kol.android.controllers.chat.ChatCounterController;
-import com.github.kolandroid.kol.android.controllers.navigation.NavigationController;
 import com.github.kolandroid.kol.android.controllers.stats.StatsGlanceController;
 import com.github.kolandroid.kol.android.controllers.web.WebController;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
@@ -28,19 +27,21 @@ import com.github.kolandroid.kol.android.screen.DrawerScreen;
 import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
+import com.github.kolandroid.kol.android.util.HandlerCallback;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
 import com.github.kolandroid.kol.android.view.ProgressLoader;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.model.Model;
-import com.github.kolandroid.kol.model.models.navigation.NavigationModel;
 import com.github.kolandroid.kol.model.models.stats.StatsGlanceModel;
 import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Logger;
 
 public class GameScreen extends ActivityScreen {
     private StatsGlanceController stats;
-    private NavigationController navigation;
+    private SidebarController sidebar;
     private DrawerScreen navigationScreen;
+
+    private HandlerCallback<Void> sidebarUpdater;
 
     private LoadingContext loader;
 
@@ -79,10 +80,10 @@ public class GameScreen extends ActivityScreen {
         }
 
         // Set up the drawer.
-        if (savedInstanceState != null && savedInstanceState.containsKey("navigation_controller")) {
-            navigation = (NavigationController) savedInstanceState.getSerializable("navigation_controller");
+        if (savedInstanceState != null && savedInstanceState.containsKey("sidebar_controller")) {
+            sidebar = (SidebarController) savedInstanceState.getSerializable("sidebar_controller");
         } else if (session != null) {
-            navigation = new NavigationController(new NavigationModel(session));
+            sidebar = new SidebarController(session);
         } else {
             Logger.log("GameScreen", "Controller " + controller + " has no session; cannot be used to start GameScreen");
         }
@@ -96,8 +97,13 @@ public class GameScreen extends ActivityScreen {
             Logger.log("GameScreen", "Controller " + controller + " has no session; cannot be used to start GameScreen");
         }
 
-        if (navigation != null) {
-            navigationScreen = DrawerScreen.create(navigation);
+        if (stats != null && sidebar != null) {
+            sidebarUpdater = new UpdateSidebarHandler(sidebar);
+            stats.attachNotificationCallback(sidebarUpdater.weak());
+        }
+
+        if (sidebar != null) {
+            navigationScreen = DrawerScreen.create(sidebar);
             getFragmentManager().beginTransaction()
                     .replace(R.id.navigation_drawer, navigationScreen).commit();
             navigationScreen.setUp(this, R.id.navigation_drawer,
@@ -215,7 +221,7 @@ public class GameScreen extends ActivityScreen {
         super.onSaveInstanceState(savedInstanceState);
 
         savedInstanceState.putSerializable("stats_controller", stats);
-        savedInstanceState.putSerializable("navigation_controller", navigation);
+        savedInstanceState.putSerializable("sidebar_controller", sidebar);
         savedInstanceState.putSerializable("chat_controller", chatIconController);
     }
 
@@ -237,6 +243,11 @@ public class GameScreen extends ActivityScreen {
         super.onDestroy();
         if (chatIconController != null) {
             chatIconController.disconnect(this);
+        }
+
+        if (sidebarUpdater != null) {
+            sidebarUpdater.close();
+            sidebarUpdater = null;
         }
     }
 
