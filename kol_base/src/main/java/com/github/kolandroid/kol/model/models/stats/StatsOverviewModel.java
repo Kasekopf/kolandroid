@@ -66,8 +66,73 @@ public class StatsOverviewModel extends LinkedModel<Void> {
         return base.getName();
     }
 
+    private String getClassName() {
+        switch (base.getClassId()) {
+            case 1:
+                return "Seal Clubber";
+            case 2:
+                return "Turtle Tamer";
+            case 3:
+                return "Pastamancer";
+            case 4:
+                return "Sauceror";
+            case 5:
+                return "Disco Bandit";
+            case 6:
+                return "Accordion Thief";
+            case 11:
+                return "Avatar of Boris";
+            case 12:
+                return "Zombie Master";
+            case 14:
+                return "Avatar of Jarlsberg";
+            case 15:
+                return "Avatar of Sneaky Pete";
+            case 17:
+                return "Ed";
+            default:
+                //Unknown class
+                return "";
+        }
+    }
+
+    public String getAvatar() {
+        switch (base.getClassId()) {
+            case 1:
+                return "images.kingdomofloathing.com/otherimages/sealclubber.gif";
+            case 2:
+                return "images.kingdomofloathing.com/otherimages/turtletamer.gif";
+            case 3:
+                return "images.kingdomofloathing.com/otherimages/pastamancer.gif";
+            case 4:
+                return "images.kingdomofloathing.com/otherimages/sauceror.gif";
+            case 5:
+                return "images.kingdomofloathing.com/otherimages/discobandit.gif";
+            case 6:
+                return "images.kingdomofloathing.com/otherimages/accordionthief.gif";
+            case 11:
+                return "images.kingdomofloathing.com/otherimages/boris_avatar.gif";
+            case 12:
+                return "images.kingdomofloathing.com/otherimages/zombavatar.gif";
+            case 14:
+                return "images.kingdomofloathing.com/otherimages/jarlsberg_avatar.gif";
+            case 15:
+                return "images.kingdomofloathing.com/otherimages/peteavatar.gif";
+            case 17:
+                return "images.kingdomofloathing.com/otherimages/ed_av1.gif";
+            default:
+                //Unknown class
+                return "";
+        }
+    }
+
     public String getTitle() {
-        return "" + base.getLevel();
+        String className = getClassName();
+        if (className.isEmpty()) {
+            return "Level " + base.getLevel();
+        } else {
+            return "Level " + base.getLevel() + " " + className;
+        }
     }
 
     /**

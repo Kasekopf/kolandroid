@@ -6,6 +6,7 @@ import com.github.kolandroid.kol.session.cache.LiveCacheLine;
 import com.github.kolandroid.kol.session.cache.SessionCache;
 import com.github.kolandroid.kol.util.Callback;
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
@@ -79,6 +80,10 @@ public class CharacterStatusData implements Serializable {
         return base.level;
     }
 
+    public int getClassId() {
+        return base.classId;
+    }
+
     /**
      * Raw JSON data for character status.
      */
@@ -93,6 +98,9 @@ public class CharacterStatusData implements Serializable {
 
         public String name;
         public int level;
+
+        @SerializedName("class")
+        public int classId;
 
         public int basemuscle;
         public int muscle;

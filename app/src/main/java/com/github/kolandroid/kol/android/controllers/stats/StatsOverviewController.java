@@ -26,7 +26,7 @@ public class StatsOverviewController extends LinkedModelController<Void, StatsOv
         title.setText(model.getTitle());
 
         ImageView avatar = (ImageView) view.findViewById(R.id.stats_overview_avatar);
-        ImageDownloader.loadFromUrl(avatar, "images.kingdomofloathing.com/otherimages/hippycostume.gif");
+        ImageDownloader.loadFromUrl(avatar, model.getAvatar());
 
         TextView musc = (TextView) view.findViewById(R.id.stats_overview_musc);
         musc.setText(Html.fromHtml(model.getMuscle()));
