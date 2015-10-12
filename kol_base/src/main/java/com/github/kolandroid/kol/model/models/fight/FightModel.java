@@ -86,7 +86,7 @@ public class FightModel extends WebModel {
         processItems(text.html);
 
         if (ACTION_BAR.matches(text.html)) {
-            this.barModel = new FightActionBar(s, host, this, text);
+            this.barModel = new FightActionBar(s, host, this);
         } else {
             this.barModel = null;
         }

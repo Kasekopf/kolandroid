@@ -1,6 +1,5 @@
 package com.github.kolandroid.kol.model.models.fight;
 
-import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.gamehandler.ViewContext;
 import com.github.kolandroid.kol.model.LinkedModel;
@@ -8,16 +7,12 @@ import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
 import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.session.cache.SessionCache;
 import com.github.kolandroid.kol.session.data.FightActionBarData;
-import com.github.kolandroid.kol.session.data.PwdData;
 import com.github.kolandroid.kol.util.Callback;
 import com.github.kolandroid.kol.util.Logger;
-import com.github.kolandroid.kol.util.Regex;
 
 import java.util.ArrayList;
 
 public class FightActionBar extends LinkedModel<Void> {
-    private static final Regex PWD = new Regex("var pwd=[\"']([a-zA-Z0-9]+)[\"'];", 1);
-
     private final FightModel parent;
     private int startingPage = 0;
     private ArrayList<ArrayList<FightAction>> pages;
@@ -27,15 +22,13 @@ public class FightActionBar extends LinkedModel<Void> {
      *
      * @param s Session to use in all future requests by this model.
      */
-    public FightActionBar(Session s, ViewContext host, FightModel parent, ServerReply text) {
+    public FightActionBar(Session s, ViewContext host, FightModel parent) {
         super(s);
 
         this.pages = new ArrayList<>();
         this.parent = parent;
         final SettingsContext settings = host.getSettingsContext();
-        String pwd = PWD.extractSingle(text.html, "");
         SessionCache cache = host.getDataContext().getSessionCache(s);
-        cache.put(PwdData.class, new PwdData(pwd));
         cache.access(FightActionBarData.class, new Callback<FightActionBarData>() {
             @Override
             public void execute(FightActionBarData item) {
@@ -128,15 +121,6 @@ public class FightActionBar extends LinkedModel<Void> {
             pages.add(newPage);
         }
 
-        /*
-        for(ArrayList<FightAction> page : pages) {
-            String res = "";
-            for(FightAction action : page) {
-                res += action.getIdentifier() + " ~ ";
-            }
-            Logger.log("FightActionBar", res);
-        }
-        */
         this.pages = pages;
         notifyView(null);
     }

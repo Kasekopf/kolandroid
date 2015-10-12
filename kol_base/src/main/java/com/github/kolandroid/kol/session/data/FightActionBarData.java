@@ -78,17 +78,7 @@ public class FightActionBarData implements Serializable {
 
         @Override
         protected void computeUrl(SessionCache cache, final Callback<String> callback, Callback<Void> failure) {
-            cache.access(PwdData.class, new Callback<PwdData>() {
-                @Override
-                public void execute(PwdData item) {
-                    callback.execute("actionbar.php?action=fetch&d=" + System.currentTimeMillis() + "&pwd=" + item.getPwd());
-                }
-            }, failure);
-        }
-
-        @Override
-        protected Class[] dependencies() {
-            return new Class[]{PwdData.class};
+            callback.execute("actionbar.php?action=fetch&d=" + System.currentTimeMillis());
         }
     }
 }
