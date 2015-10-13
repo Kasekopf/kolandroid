@@ -12,7 +12,7 @@ import com.github.kolandroid.kol.session.Session;
  */
 public class Request {
     // The url to access
-    private final String url;
+    protected final String url;
 
     /**
      * Create a new request for the specified url.
