@@ -16,15 +16,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class KolApplication extends Application implements DataContext {
     private final AndroidRawCache<RawSkill> skillsCache = new AndroidRawCache<RawSkill>("skillcache.txt", "skilloverridecache.txt") {
         @Override
-        public RawSkill parse(String cacheLine) {
-            return RawSkill.parse(cacheLine);
+        public RawSkill parse(Map<String, Integer> headers, String cacheLine) {
+            return RawSkill.parse(headers, cacheLine);
         }
     };
 
     private final AndroidRawCache<RawItem> itemsCache = new AndroidRawCache<RawItem>("itemcache.txt", "itemoverridecache.txt") {
         @Override
-        public RawItem parse(String cacheLine) {
-            return RawItem.parse(cacheLine);
+        public RawItem parse(Map<String, Integer> headers, String cacheLine) {
+            return RawItem.parse(headers, cacheLine);
         }
     };
 

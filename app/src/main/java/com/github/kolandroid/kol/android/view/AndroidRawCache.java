@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -50,8 +51,19 @@ public abstract class AndroidRawCache<E extends RawData> implements DataCache<St
     private void load(Map<String, E> loadInto, InputStream cache) throws IOException {
         String cacheLine;
         BufferedReader cacheReader = new BufferedReader(new InputStreamReader(cache));
+        Map<String, Integer> headers = null;
+
         while ((cacheLine = cacheReader.readLine()) != null) {
-            E cacheItem = parse(cacheLine);
+            if (cacheLine.startsWith("-1")) {
+                headers = new HashMap<>();
+                String[] rawHeaders = cacheLine.split("\t");
+                for (int i = 0; i < rawHeaders.length; i++) {
+                    headers.put(rawHeaders[i], i);
+                    Logger.log(cacheFile, i + ": " + rawHeaders[i]);
+                }
+            }
+
+            E cacheItem = parse(headers, cacheLine);
             if (cacheItem != null) {
                 loadInto.put(cacheItem.getId(), cacheItem);
             }
@@ -83,5 +95,5 @@ public abstract class AndroidRawCache<E extends RawData> implements DataCache<St
         }
     }
 
-    public abstract E parse(String cacheLine);
+    public abstract E parse(Map<String, Integer> headers, String cacheLine);
 }

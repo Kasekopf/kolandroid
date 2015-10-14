@@ -1,5 +1,7 @@
 package com.github.kolandroid.kol.data;
 
+import java.util.Map;
+
 public class RawSkill implements RawData {
     public final String id;
     public final String image;
@@ -26,12 +28,16 @@ public class RawSkill implements RawData {
         return new RawSkill(id, image, isBuff, name);
     }
 
-    public static RawSkill parse(String cacheLine) {
+    public static RawSkill parse(Map<String, Integer> headers, String cacheLine) {
         String[] sections = cacheLine.split("\t");
-        if (sections.length != 4) return null;
+        if (headers == null) return null;
+        if (sections.length != headers.size()) return null;
 
-        boolean isBuff = sections[2].equals("true");
-        return new RawSkill(sections[0], sections[1], isBuff, sections[3]);
+        String image = headers.containsKey("IMAGE") ? sections[headers.get("IMAGE")] : "";
+        boolean isBuff = headers.containsKey("ISBUFF") ? sections[headers.get("ISBUFF")].equals("true") : true;
+        String name = headers.containsKey("NAME") ? sections[headers.get("NAME")] : "";
+
+        return new RawSkill(sections[0], image, isBuff, name);
     }
 
     public String toString() {

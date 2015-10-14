@@ -1,5 +1,7 @@
 package com.github.kolandroid.kol.data;
 
+import java.util.Map;
+
 public class RawItem implements RawData {
     public final String id;
     public final String image;
@@ -32,11 +34,16 @@ public class RawItem implements RawData {
         return new RawItem(id, image, descriptionId, name);
     }
 
-    public static RawItem parse(String cacheLine) {
+    public static RawItem parse(Map<String, Integer> headers, String cacheLine) {
         String[] sections = cacheLine.split("\t");
-        if (sections.length != 4) return null;
+        if (headers == null) return null;
+        if (sections.length != headers.size()) return null;
 
-        return new RawItem(sections[0], sections[1], sections[2], sections[3]);
+        String image = headers.containsKey("IMAGE") ? sections[headers.get("IMAGE")] : "";
+        String description = headers.containsKey("DESCID") ? sections[headers.get("DESCID")] : "";
+        String name = headers.containsKey("NAME") ? sections[headers.get("NAME")] : "";
+
+        return new RawItem(sections[0], image, description, name);
     }
 
     public String toString() {
