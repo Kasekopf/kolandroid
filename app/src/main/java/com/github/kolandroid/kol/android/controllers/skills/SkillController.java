@@ -102,7 +102,13 @@ public class SkillController extends ModelController<SkillModel> {
 
         final View targetLabel = view.findViewById(R.id.skill_target_label);
 
+        SkillModel.Type modelType = getModel().getType();
         final Button expand = (Button) view.findViewById(R.id.skill_more_load);
+        if (modelType == SkillModel.Type.COMBAT || modelType == SkillModel.Type.PASSIVE) {
+            expand.setVisibility(View.GONE);
+            one.setVisibility(View.GONE);
+        }
+
         expand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,7 +128,7 @@ public class SkillController extends ModelController<SkillModel> {
                     }
                 }
 
-                if (getModel().isBuff()) {
+                if (getModel().getType() == SkillModel.Type.BUFF) {
                     target.setVisibility(View.VISIBLE);
                     targetLabel.setVisibility(View.VISIBLE);
                     amount.setImeOptions(EditorInfo.IME_ACTION_NEXT);

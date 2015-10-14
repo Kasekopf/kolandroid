@@ -28,7 +28,7 @@ public class SkillModel extends Model implements SubtextElement {
     private final String castAction;
     private WebModel description;
     private String image;
-    private boolean isBuff;
+    private SkillModel.Type type;
 
     /**
      * Create a new model in the provided session.
@@ -46,7 +46,7 @@ public class SkillModel extends Model implements SubtextElement {
         descriptionUrl = "desc_skill.php?whichskill=" + id;
 
         castAction = "runskillz.php?pwd=" + pwd + "&action=Skillz&targetplayer=" + yourself + "&whichskill=" + id;
-        isBuff = true;
+        type = Type.BUFF; // default to buff
     }
 
     public SkillModel(Session s, String pwd, String yourself, OptionElement base) {
@@ -59,7 +59,7 @@ public class SkillModel extends Model implements SubtextElement {
         descriptionUrl = "desc_skill.php?whichskill=" + base.value;
 
         castAction = "runskillz.php?pwd=" + pwd + "&action=Skillz&targetplayer=" + yourself + "&whichskill=" + base.value;
-        isBuff = true;
+        type = Type.BUFF; // default to buff
     }
 
     @Override
@@ -86,8 +86,8 @@ public class SkillModel extends Model implements SubtextElement {
         this.makeRequest(new Request(url));
     }
 
-    public boolean isBuff() {
-        return isBuff;
+    public SkillModel.Type getType() {
+        return type;
     }
 
     public boolean getDisabled() {
@@ -102,10 +102,18 @@ public class SkillModel extends Model implements SubtextElement {
         RawSkill match = cache.find(this.id);
         if (match != null) {
             if (this.image.equals("")) this.image = match.getImage();
-            this.isBuff = match.isBuff;
+            if (match.isBuff) {
+                this.type = Type.BUFF;
+            } else if (match.isPassive) {
+                this.type = Type.PASSIVE;
+            } else if (match.isCombat) {
+                this.type = Type.COMBAT;
+            } else {
+                this.type = Type.NONCOMBAT;
+            }
         }
 
-        RawSkill newCacheValue = RawSkill.create(id, image, isBuff, name);
+        RawSkill newCacheValue = RawSkill.create(id, image, type == Type.BUFF, type == Type.PASSIVE, type == Type.COMBAT, name);
         cache.store(newCacheValue);
     }
 
@@ -117,7 +125,14 @@ public class SkillModel extends Model implements SubtextElement {
                 @Override
                 public void handle(Session session, ServerReply response) {
                     if (response != null && response.url.contains(descriptionUrl)) {
-                        isBuff = (response.html.contains("<b>Type:</b> Buff<br>"));
+                        // Attempt to determine the type of the skill from the html
+                        for (Type t : Type.values()) {
+                            if (t.matches(response)) {
+                                type = t;
+                                break;
+                            }
+                        }
+
                         description = new WebModel(session, new ServerReply(response, response.html));
                     }
                     onResult.execute(SkillModel.this);
@@ -129,5 +144,19 @@ public class SkillModel extends Model implements SubtextElement {
     @Override
     public String toString() {
         return getText();
+    }
+
+    public enum Type {
+        NONCOMBAT("<b>Type:</b> Noncombat"), COMBAT("<b>Type:</b> Combat"), PASSIVE("<b>Type:</b> Passive"), BUFF("<b>Type:</b> Buff");
+
+        private final String indicator;
+
+        Type(String indicator) {
+            this.indicator = indicator;
+        }
+
+        public boolean matches(ServerReply reply) {
+            return reply.html.contains(indicator);
+        }
     }
 }
