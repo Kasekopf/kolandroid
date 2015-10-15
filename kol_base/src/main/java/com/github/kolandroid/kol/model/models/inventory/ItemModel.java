@@ -255,9 +255,13 @@ public class ItemModel extends Model implements SubtextElement {
                         case "weapon":
                         case "ranged weapon":
                         case "off-hand":
-                        case "accessory":
                         case "familiar equipment":
                             actions.add(new MultiActionElement(s, "Equip", true, "inv_equip.php?pwd=" + pwd + "&which=2&action=equip&whichitem=" + id));
+                            break;
+                        case "accessory":
+                            actions.add(new MultiActionElement(s, "Equip in Slot 1", true, "inv_equip.php?pwd=" + pwd + "&which=2&action=equip&slot=1&whichitem=" + id));
+                            actions.add(new MultiActionElement(s, "Equip in Slot 2", true, "inv_equip.php?pwd=" + pwd + "&which=2&action=equip&slot=2&whichitem=" + id));
+                            actions.add(new MultiActionElement(s, "Equip in Slot 3", true, "inv_equip.php?pwd=" + pwd + "&which=2&action=equip&slot=3&whichitem=" + id));
                             break;
                         case "usable":
                         case "potion":
