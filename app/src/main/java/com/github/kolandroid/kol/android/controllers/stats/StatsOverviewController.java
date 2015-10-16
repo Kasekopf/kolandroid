@@ -26,6 +26,11 @@ public class StatsOverviewController extends LinkedModelController<Void, StatsOv
         title.setText(model.getTitle());
 
         ImageView avatar = (ImageView) view.findViewById(R.id.stats_overview_avatar);
+        if (model.getAvatar().isEmpty()) {
+            avatar.setVisibility(View.GONE);
+        } else {
+            avatar.setVisibility(View.VISIBLE);
+        }
         ImageDownloader.loadFromUrl(avatar, model.getAvatar());
 
         TextView musc = (TextView) view.findViewById(R.id.stats_overview_musc);

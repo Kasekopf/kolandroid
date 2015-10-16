@@ -1,7 +1,8 @@
 package com.github.kolandroid.kol.session.cache;
 
 import com.github.kolandroid.kol.session.Session;
-import com.github.kolandroid.kol.session.data.CharacterStatusData;
+import com.github.kolandroid.kol.session.data.CharacterApiStatusData;
+import com.github.kolandroid.kol.session.data.CharacterPaneData;
 import com.github.kolandroid.kol.session.data.FightActionBarData;
 import com.github.kolandroid.kol.session.data.PwdData;
 import com.github.kolandroid.kol.util.Callback;
@@ -28,7 +29,8 @@ public class SessionCache {
         this.cache = new ConcurrentHashMap<>();
 
         init(Session.class, new BasicCacheLine<>(session));
-        init(CharacterStatusData.class, new CharacterStatusData.Cache(session));
+        init(CharacterApiStatusData.class, new CharacterApiStatusData.Cache(session));
+        init(CharacterPaneData.class, new CharacterPaneData.Cache(session));
         init(PwdData.class, new PwdData.Cache());
         init(FightActionBarData.class, new FightActionBarData.Cache(session));
     }
@@ -92,5 +94,4 @@ public class SessionCache {
             cached.markDirty();
         }
     }
-
 }

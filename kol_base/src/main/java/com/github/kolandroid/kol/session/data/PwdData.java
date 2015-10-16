@@ -50,9 +50,9 @@ public class PwdData implements Serializable {
     public static class Cache extends FixedCacheLine<PwdData> {
         @Override
         protected void recompute(SessionCache cache, final Callback<PwdData> complete, final Callback<Void> failure) {
-            cache.access(CharacterStatusData.class, new Callback<CharacterStatusData>() {
+            cache.access(CharacterApiStatusData.class, new Callback<CharacterApiStatusData>() {
                 @Override
-                public void execute(CharacterStatusData item) {
+                public void execute(CharacterApiStatusData item) {
                     String hash = item.getPwdHash();
                     if (hash == null || hash.isEmpty())
                         failure.execute(null);
@@ -64,7 +64,7 @@ public class PwdData implements Serializable {
 
         @Override
         protected Class[] dependencies() {
-            return new Class[]{CharacterStatusData.class};
+            return new Class[]{CharacterApiStatusData.class};
         }
     }
 }
