@@ -26,4 +26,12 @@ public interface DataContext {
      * @return A cache for player session information
      */
     SessionCache getSessionCache(Session session);
+
+    /**
+     * Get the version identifier for the given resource
+     *
+     * @param name The resource to check version information of
+     * @return The version of the specified resource, or 0 if the resource is not present.
+     */
+    int getVersion(String name);
 }

@@ -12,13 +12,13 @@ import com.github.kolandroid.kol.gamehandler.LoadingContext;
 
 import java.lang.ref.WeakReference;
 
-public class ProgressLoader implements LoadingContext {
+public class PopupLoader implements LoadingContext {
     private static final int START = 0;
     private static final int COMPLETE = 1;
     private static final int ERROR = 2;
     private final Handler progressUpdater;
 
-    public ProgressLoader(View base, ProgressBar bar, TextView text) {
+    public PopupLoader(View base, ProgressBar bar, TextView text) {
         this.progressUpdater = new ProgressUpdater(base, bar, text);
     }
 
@@ -35,6 +35,11 @@ public class ProgressLoader implements LoadingContext {
     public void complete(String page) {
         Message.obtain(progressUpdater, COMPLETE, shortenURL(page))
                 .sendToTarget();
+    }
+
+    @Override
+    public void progress(int percent) {
+        // do nothing
     }
 
     @Override

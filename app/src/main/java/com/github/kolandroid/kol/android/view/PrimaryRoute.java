@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controllers.AccountSettingsController;
+import com.github.kolandroid.kol.android.controllers.AppUpdaterController;
 import com.github.kolandroid.kol.android.controllers.CraftingController;
 import com.github.kolandroid.kol.android.controllers.MessageController;
 import com.github.kolandroid.kol.android.controllers.chat.ChatController;
@@ -28,6 +29,7 @@ import com.github.kolandroid.kol.model.models.inventory.ClosetModel;
 import com.github.kolandroid.kol.model.models.inventory.InventoryModel;
 import com.github.kolandroid.kol.model.models.inventory.InventoryUpdateModel;
 import com.github.kolandroid.kol.model.models.inventory.ItemModel;
+import com.github.kolandroid.kol.model.models.login.AppUpdaterModel;
 import com.github.kolandroid.kol.model.models.login.CreateCharacterModel;
 import com.github.kolandroid.kol.model.models.login.LoginModel;
 import com.github.kolandroid.kol.model.models.skill.SkillsModel;
@@ -47,6 +49,15 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
 
     private Controller getController(Session session, ServerReply response) {
         Log.i("PrimaryRoute", "Creating model for response: " + response.url);
+
+        if (response.url.contains(AppUpdaterModel.VERSION_URL)) {
+            AppUpdaterModel model = new AppUpdaterModel(session, response);
+            if (model.updateDetected(host.getDataContext())) {
+                return new AppUpdaterController(model);
+            } else {
+                return null;
+            }
+        }
 
         if (response.url.contains("androiderror.php")) {
             MessageModel model = new MessageModel(session, response);

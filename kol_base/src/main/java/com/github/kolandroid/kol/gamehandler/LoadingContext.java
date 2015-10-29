@@ -16,6 +16,11 @@ public interface LoadingContext {
         }
 
         @Override
+        public void progress(int percent) {
+            // do nothing
+        }
+
+        @Override
         public void error(String page) {
             // do nothing
         }
@@ -24,6 +29,8 @@ public interface LoadingContext {
     void start(String page);
 
     void complete(String page);
+
+    void progress(int percent);
 
     void error(String page);
 }

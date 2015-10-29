@@ -53,6 +53,11 @@ public class EmptyViewContext implements ViewContext, Serializable {
             public SessionCache getSessionCache(Session session) {
                 return new SessionCache(session);
             }
+
+            @Override
+            public int getVersion(String name) {
+                return -1;
+            }
         };
     }
 

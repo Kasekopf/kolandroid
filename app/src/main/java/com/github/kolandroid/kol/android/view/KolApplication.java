@@ -2,6 +2,7 @@ package com.github.kolandroid.kol.android.view;
 
 import android.app.Application;
 
+import com.github.kolandroid.kol.android.BuildConfig;
 import com.github.kolandroid.kol.data.DataCache;
 import com.github.kolandroid.kol.data.RawItem;
 import com.github.kolandroid.kol.data.RawSkill;
@@ -66,5 +67,15 @@ public class KolApplication extends Application implements DataContext {
         }
 
         return sessionCache.get(key);
+    }
+
+    @Override
+    public int getVersion(String name) {
+        switch (name) {
+            case "app":
+                return BuildConfig.VERSION_CODE;
+            default:
+                return -1;
+        }
     }
 }

@@ -29,7 +29,7 @@ import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.screen.ViewScreen;
 import com.github.kolandroid.kol.android.util.HandlerCallback;
 import com.github.kolandroid.kol.android.view.AndroidViewContext;
-import com.github.kolandroid.kol.android.view.ProgressLoader;
+import com.github.kolandroid.kol.android.view.PopupLoader;
 import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.model.Model;
 import com.github.kolandroid.kol.model.models.stats.StatsGlanceModel;
@@ -55,7 +55,7 @@ public class GameScreen extends ActivityScreen {
                 .findViewById(R.id.game_progress_bar);
         TextView text = (TextView) this.findViewById(R.id.game_progress_text);
         base.setVisibility(View.GONE);
-        ProgressLoader loader = new ProgressLoader(base, bar, text);
+        PopupLoader loader = new PopupLoader(base, bar, text);
         return new AndroidViewContext(this, loader, this.getClass());
     }
 

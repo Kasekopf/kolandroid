@@ -1,9 +1,13 @@
 package com.github.kolandroid.kol.connection;
 
+import com.github.kolandroid.kol.gamehandler.LoadingContext;
 import com.github.kolandroid.kol.util.Logger;
 
+import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -62,6 +66,30 @@ public class Connection {
         try {
             HttpURLConnection connection = this.connect(cookie);
             return new ServerReply(connection);
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        }
+    }
+
+    public void completeToFile(String cookie, FileOutputStream file, LoadingContext loading) throws ConnectionException {
+        try {
+            HttpURLConnection connection = this.connect(cookie);
+            int length = connection.getContentLength();
+            InputStream input = new BufferedInputStream(connection.getInputStream(), 8192);
+
+            byte data[] = new byte[1024];
+            int count;
+            long total = 0;
+
+            while ((count = input.read(data)) != -1) {
+                total += count;
+                loading.progress((int) ((total * 100) / length));
+                file.write(data, 0, count);
+            }
+
+            file.flush();
+            file.close();
+            input.close();
         } catch (IOException e) {
             throw new ConnectionException(e);
         }

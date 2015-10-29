@@ -27,6 +27,11 @@ public class ToastLoader implements LoadingContext {
     }
 
     @Override
+    public void progress(int percent) {
+        // do nothing
+    }
+
+    @Override
     public void error(String page) {
         Message.obtain(toastLauncher, 0, "Loading completed with error").sendToTarget();
     }
