@@ -5,9 +5,9 @@ Beta! Unofficial Android App for The Kingdom of Loathing
 http://imgur.com/a/7z0vC
 
 # Want to try out the app?
-https://bitly.com/1R92N37
+https://bit.ly/kolandroid
 
-USE THE APP AT YOUR OWN RISK. Although I have fixed any bugs I've encounted the app is still DEFINITELY in the beta phase.
+USE THE APP AT YOUR OWN RISK. Although I have fixed any bugs I've encountered the app is still DEFINITELY in the beta phase.
 
 The app requires android 4.0.3. Since this app is not yet available for the Google Play Store, you will also have to enable app sideloading on your device. To do this, go to Settings->Security and check the box labeled "Unknown Sources".
 
