@@ -1,4 +1,9 @@
-<menu xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.github.kolandroid.kol.android.LoginScreen">
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:orderInCategory="150"
+        android:title="Settings"
+        app:showAsAction="always" />
 </menu>

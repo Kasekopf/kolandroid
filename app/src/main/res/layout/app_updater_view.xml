@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="5dp"
-            android:text="Automatically Check for App Updates" />
+            android:text="Automatically check for App updates" />
 
         <Button
             android:id="@+id/app_updater_download"

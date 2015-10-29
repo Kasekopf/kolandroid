@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.github.kolandroid.kol.android.R;
 import com.github.kolandroid.kol.android.chat.ChatBroadcaster;
 import com.github.kolandroid.kol.android.chat.ChatService;
 import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.controller.UpdateController;
+import com.github.kolandroid.kol.android.controllers.AppSettingsController;
 import com.github.kolandroid.kol.android.controllers.ErrorReportingController;
 import com.github.kolandroid.kol.android.screen.ActivityScreen;
 import com.github.kolandroid.kol.android.screen.DialogScreen;
@@ -18,8 +20,10 @@ import com.github.kolandroid.kol.android.screen.FragmentScreen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.android.util.HandlerCallback;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
+import com.github.kolandroid.kol.model.models.AppSettingsModel;
 import com.github.kolandroid.kol.model.models.ErrorReportingModel;
 import com.github.kolandroid.kol.model.models.chat.ChatModel;
+import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Logger;
 
 public class LoginScreen extends ActivityScreen {
@@ -145,9 +149,20 @@ public class LoginScreen extends ActivityScreen {
         }
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case R.id.action_settings:
+                DialogScreen.display(new AppSettingsController(new AppSettingsModel(new Session())), this);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.login_screen, menu);
         return true;

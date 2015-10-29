@@ -25,10 +25,16 @@ import java.io.FileOutputStream;
 
 public class AppUpdaterController extends ModelController<AppUpdaterModel> {
     private static final String fileUrl = "kolandroid_update.apk";
+    private final boolean showAutoCheckbox;
     private transient HandlerCallback<Boolean> onFinishDownloading;
 
     public AppUpdaterController(AppUpdaterModel model) {
+        this(model, true);
+    }
+
+    public AppUpdaterController(AppUpdaterModel model, boolean showAutoCheckbox) {
         super(model);
+        this.showAutoCheckbox = showAutoCheckbox;
     }
 
     @Override
@@ -43,6 +49,7 @@ public class AppUpdaterController extends ModelController<AppUpdaterModel> {
                 settings.set("update_automatically", isChecked);
             }
         });
+        autoUpdate.setVisibility(showAutoCheckbox ? View.VISIBLE : View.GONE);
     }
 
     @Override
