@@ -53,6 +53,11 @@ public interface SettingsContext {
         public void set(String name, Set<String> value) {
 
         }
+
+        @Override
+        public void setImmediately(String name, String value) {
+
+        }
     };
 
     boolean contains(String name);
@@ -74,4 +79,6 @@ public interface SettingsContext {
     void set(String name, String value);
 
     void set(String name, Set<String> value);
+
+    void setImmediately(String name, String value);
 }

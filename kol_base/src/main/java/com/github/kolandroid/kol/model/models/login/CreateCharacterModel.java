@@ -41,7 +41,7 @@ public class CreateCharacterModel extends WebModel {
                     }
 
                     SettingsContext settings = getSettings();
-                    settings.set("magicSessions", session.getCookie("magic", ""));
+                    settings.setImmediately("magicSessions", session.getCookie("magic", ""));
 
                     Request r = new SingleRequest(response.redirectLocation);
                     makeRequest(r, new ResponseHandler() {
