@@ -56,6 +56,11 @@ public class ChatMacroElement extends NavigationElement {
                 Logger.log("NavigationModel", "ChatMacro response: " + response.html);
                 List<String> messages = ChatModel.chatCommandEval(ChatMacroElement.this, getGameHandler(), response.html);
                 for (String message : messages) {
+                    if (message.length() > 200) {
+                        // Error; message probably redirected to the login page.
+                        continue;
+                    }
+
                     displayMessage(message);
                 }
             }
