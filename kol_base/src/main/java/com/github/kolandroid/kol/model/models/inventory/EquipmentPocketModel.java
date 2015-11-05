@@ -68,7 +68,7 @@ public class EquipmentPocketModel extends ItemPocketModel {
         return outfits;
     }
 
-    public <Result> Result execute(PocketVisitor<Result> visitor) {
+    public <Result> Result execute(ItemPocketVisitor<Result> visitor) {
         return visitor.display(this);
     }
 

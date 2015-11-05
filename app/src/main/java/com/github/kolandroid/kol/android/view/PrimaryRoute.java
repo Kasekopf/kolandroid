@@ -10,6 +10,7 @@ import com.github.kolandroid.kol.android.controllers.MessageController;
 import com.github.kolandroid.kol.android.controllers.chat.ChatController;
 import com.github.kolandroid.kol.android.controllers.fight.FightController;
 import com.github.kolandroid.kol.android.controllers.inventory.ClosetController;
+import com.github.kolandroid.kol.android.controllers.inventory.HagnkController;
 import com.github.kolandroid.kol.android.controllers.inventory.InventoryController;
 import com.github.kolandroid.kol.android.controllers.inventory.InventoryUpdateController;
 import com.github.kolandroid.kol.android.controllers.inventory.ItemController;
@@ -26,6 +27,7 @@ import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.model.models.chat.stubs.ChatStubModel;
 import com.github.kolandroid.kol.model.models.fight.FightModel;
 import com.github.kolandroid.kol.model.models.inventory.ClosetModel;
+import com.github.kolandroid.kol.model.models.inventory.HagnkModel;
 import com.github.kolandroid.kol.model.models.inventory.InventoryModel;
 import com.github.kolandroid.kol.model.models.inventory.InventoryUpdateModel;
 import com.github.kolandroid.kol.model.models.inventory.ItemModel;
@@ -106,18 +108,6 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
             return new FightController(model);
         }
 
-        /*
-        if (response.url.contains("choice.php")) {
-            //Ignore a couple badly behaved choice adventures.
-            int whichchoice = ChoiceModel.extractChoiceId(response);
-            if (whichchoice == 985 /* Odd-jobs board /) {
-                //do nothing
-            } else {
-                ChoiceModel model = new ChoiceModel(session, response);
-                return new ChoiceController(model);
-            }
-        }
-        */
         if (response.url.contains("inventory.php")) {
             InventoryModel model = new InventoryModel(session, response);
             return new InventoryController(model);
@@ -126,6 +116,11 @@ public class PrimaryRoute implements ResponseHandler, Callback<Controller> {
         if (response.url.contains("closet.php")) {
             ClosetModel model = new ClosetModel(session, response);
             return new ClosetController(model);
+        }
+
+        if (response.url.contains("storage.php")) {
+            HagnkModel model = new HagnkModel(session, response);
+            return new HagnkController(model);
         }
 
         if (response.url.contains("skillz.php")) {

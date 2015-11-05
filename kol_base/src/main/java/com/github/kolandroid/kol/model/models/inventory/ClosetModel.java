@@ -22,7 +22,7 @@ public class ClosetModel extends ItemStorageModel {
     private final String currentState;
 
     public ClosetModel(Session s, ServerReply text) {
-        super(s, fixServerReply(text), (text.url.contains("fillcloset.php") ? "fillcloset.php" : "closet.php"), false);
+        super(s, fixServerReply(text), (text.url.contains("fillcloset.php") ? "fillcloset.php" : "closet.php"));
 
         String pwd = ALPHA_NUM_VALUE.extractSingle(PWD_INPUT.extractSingle(text.html), "0");
 

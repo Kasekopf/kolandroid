@@ -13,7 +13,7 @@ import com.github.kolandroid.kol.util.Regex;
 
 import java.util.ArrayList;
 
-public class ItemPocketModel extends LiveModel implements ChildModel {
+public class ItemPocketModel extends LiveModel implements ChildModel, ItemPocket {
     protected static final Regex PWD = new Regex(
             "var\\s+pwd\\s*=\\s*\"([a-fA-F0-9]*)\";", 1);
     /**
@@ -91,7 +91,8 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
         }
     }
 
-    protected boolean apply(String itemId, int amountDifference) {
+    @Override
+    public boolean apply(String itemId, int amountDifference) {
         boolean found = false;
         for (ModelGroup<ItemModel> group : this.items) {
             for (int i = 0; i < group.size(); i++) {
@@ -120,7 +121,7 @@ public class ItemPocketModel extends LiveModel implements ChildModel {
         return res;
     }
 
-    public <Result> Result execute(PocketVisitor<Result> visitor) {
+    public <Result> Result execute(ItemPocketVisitor<Result> visitor) {
         return visitor.display(this);
     }
 
