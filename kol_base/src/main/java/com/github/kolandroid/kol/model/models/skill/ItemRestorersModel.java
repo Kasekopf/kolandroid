@@ -6,7 +6,7 @@ import com.github.kolandroid.kol.model.elements.OptionElement.OptionElementParse
 import com.github.kolandroid.kol.model.elements.basic.BasicGroup;
 import com.github.kolandroid.kol.model.models.inventory.InventoryActionFactory;
 import com.github.kolandroid.kol.model.models.inventory.ItemModel;
-import com.github.kolandroid.kol.model.models.inventory.ItemPocketModel;
+import com.github.kolandroid.kol.model.models.inventory.pockets.ItemPocketModel;
 import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Regex;
 

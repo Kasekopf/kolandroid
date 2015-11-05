@@ -2,6 +2,8 @@ package com.github.kolandroid.kol.model.models.inventory;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.model.GroupModel;
+import com.github.kolandroid.kol.model.models.inventory.pockets.ItemPocket;
+import com.github.kolandroid.kol.model.models.inventory.pockets.ItemPocketModel;
 import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Logger;
 import com.github.kolandroid.kol.util.Regex;
@@ -35,7 +37,7 @@ public class ItemStorageModel extends GroupModel<ItemPocket> {
 
         this.baseUrl = baseUrl;
 
-        ArrayList<ItemPocket> foundPockets = new ArrayList<ItemPocket>();
+        ArrayList<ItemPocket> foundPockets = new ArrayList<>();
         String tabs = HEADER_TABS.extractSingle(text.html, "");
         if (tabs.isEmpty()) {
             Logger.log("ItemStorageModel", "Unable to find tabs");

@@ -5,6 +5,8 @@ import com.github.kolandroid.kol.model.elements.ActionElement;
 import com.github.kolandroid.kol.model.elements.MultiuseElement;
 import com.github.kolandroid.kol.model.elements.basic.BasicSubtextElement;
 import com.github.kolandroid.kol.model.elements.interfaces.SubtextElement;
+import com.github.kolandroid.kol.model.models.inventory.pockets.ClosetPocketModel;
+import com.github.kolandroid.kol.model.models.inventory.pockets.ItemPocket;
 import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Regex;
 
@@ -55,6 +57,11 @@ public class ClosetModel extends ItemStorageModel {
         html = html.replace("[some]", "[" + message + " some]");
         html = html.replace("[all]", "[" + message + " all]");
         return new ServerReply(text, html);
+    }
+
+    @Override
+    protected ItemPocket constructPocket(String name, Session s, String url) {
+        return new ClosetPocketModel(name, s, url);
     }
 
     public String getCurrentState() {

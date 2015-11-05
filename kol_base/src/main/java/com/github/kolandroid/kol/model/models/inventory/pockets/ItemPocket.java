@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.model.models.inventory;
+package com.github.kolandroid.kol.model.models.inventory.pockets;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.model.GroupModel;

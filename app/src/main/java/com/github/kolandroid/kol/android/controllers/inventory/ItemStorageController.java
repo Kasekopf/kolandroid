@@ -5,13 +5,13 @@ import com.github.kolandroid.kol.android.controller.GroupController;
 import com.github.kolandroid.kol.android.controller.UpdateController;
 import com.github.kolandroid.kol.android.controllers.web.LiveWebController;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
-import com.github.kolandroid.kol.model.models.inventory.EquipmentPocketModel;
-import com.github.kolandroid.kol.model.models.inventory.HagnkStatusPocketModel;
 import com.github.kolandroid.kol.model.models.inventory.InventoryUpdateModel;
-import com.github.kolandroid.kol.model.models.inventory.ItemPocket;
-import com.github.kolandroid.kol.model.models.inventory.ItemPocketModel;
-import com.github.kolandroid.kol.model.models.inventory.ItemPocketVisitor;
 import com.github.kolandroid.kol.model.models.inventory.ItemStorageModel;
+import com.github.kolandroid.kol.model.models.inventory.pockets.EquipmentPocketModel;
+import com.github.kolandroid.kol.model.models.inventory.pockets.HagnkStatusPocketModel;
+import com.github.kolandroid.kol.model.models.inventory.pockets.ItemPocket;
+import com.github.kolandroid.kol.model.models.inventory.pockets.ItemPocketModel;
+import com.github.kolandroid.kol.model.models.inventory.pockets.ItemPocketVisitor;
 
 public abstract class ItemStorageController<E extends ItemStorageModel> extends GroupController<ItemPocket, E> implements UpdateController<E> {
     /**

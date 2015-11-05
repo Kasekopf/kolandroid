@@ -1,5 +1,4 @@
-package com.github.kolandroid.kol.model.models.inventory;
-
+package com.github.kolandroid.kol.model.models.inventory.pockets;
 
 public interface ItemPocketVisitor<Result> {
     Result display(ItemPocketModel model);

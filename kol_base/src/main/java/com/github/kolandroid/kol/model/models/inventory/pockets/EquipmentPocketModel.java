@@ -1,4 +1,4 @@
-package com.github.kolandroid.kol.model.models.inventory;
+package com.github.kolandroid.kol.model.models.inventory.pockets;
 
 import com.github.kolandroid.kol.connection.ServerReply;
 import com.github.kolandroid.kol.model.elements.ActionElement;
@@ -7,6 +7,8 @@ import com.github.kolandroid.kol.model.elements.basic.BasicAction;
 import com.github.kolandroid.kol.model.elements.basic.BasicGroup;
 import com.github.kolandroid.kol.model.elements.interfaces.DeferredGameAction;
 import com.github.kolandroid.kol.model.elements.interfaces.ModelGroup;
+import com.github.kolandroid.kol.model.models.inventory.InventoryActionFactory;
+import com.github.kolandroid.kol.model.models.inventory.ItemModel;
 import com.github.kolandroid.kol.session.Session;
 import com.github.kolandroid.kol.util.Regex;
 

@@ -18,8 +18,8 @@ import com.github.kolandroid.kol.android.util.HandlerCallback;
 import com.github.kolandroid.kol.android.util.searchlist.GroupSearchListController;
 import com.github.kolandroid.kol.android.util.searchlist.ListSelector;
 import com.github.kolandroid.kol.model.LiveModel.LiveMessage;
-import com.github.kolandroid.kol.model.models.inventory.EquipmentPocketModel;
 import com.github.kolandroid.kol.model.models.inventory.ItemModel;
+import com.github.kolandroid.kol.model.models.inventory.pockets.EquipmentPocketModel;
 
 public class EquipmentPocketController extends LinkedModelController<LiveMessage, EquipmentPocketModel> {
     /**

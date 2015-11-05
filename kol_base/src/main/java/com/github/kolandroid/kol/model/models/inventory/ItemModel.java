@@ -350,6 +350,7 @@ public class ItemModel extends Model implements SubtextElement {
 
             if (lowerName.contains("store") || lowerName.contains("take")) {
                 actDest = actDest.replace("&qty=1", "&qty=#");
+                actDest = actDest.replace("&howmany1=1", "&howmany1=#");
                 restrictSingle = false;
             }
         }

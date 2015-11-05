@@ -1,6 +1,9 @@
 package com.github.kolandroid.kol.model.models.inventory;
 
 import com.github.kolandroid.kol.connection.ServerReply;
+import com.github.kolandroid.kol.model.models.inventory.pockets.HagnkPocketModel;
+import com.github.kolandroid.kol.model.models.inventory.pockets.HagnkStatusPocketModel;
+import com.github.kolandroid.kol.model.models.inventory.pockets.ItemPocket;
 import com.github.kolandroid.kol.session.Session;
 
 public class HagnkModel extends ItemStorageModel {
@@ -18,7 +21,7 @@ public class HagnkModel extends ItemStorageModel {
         if (name.equalsIgnoreCase("hagnk"))
             return new HagnkStatusPocketModel(name, s, url);
         else
-            return super.constructPocket(name, s, url);
+            return new HagnkPocketModel(name, s, url);
     }
 
 }

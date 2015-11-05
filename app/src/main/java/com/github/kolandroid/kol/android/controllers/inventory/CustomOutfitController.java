@@ -10,7 +10,7 @@ import com.github.kolandroid.kol.android.controller.Controller;
 import com.github.kolandroid.kol.android.screen.Screen;
 import com.github.kolandroid.kol.android.screen.ScreenSelection;
 import com.github.kolandroid.kol.model.elements.interfaces.DeferredGameAction;
-import com.github.kolandroid.kol.model.models.inventory.EquipmentPocketModel.CustomOutfitBuilder;
+import com.github.kolandroid.kol.model.models.inventory.pockets.EquipmentPocketModel.CustomOutfitBuilder;
 
 public class CustomOutfitController implements Controller {
     /**

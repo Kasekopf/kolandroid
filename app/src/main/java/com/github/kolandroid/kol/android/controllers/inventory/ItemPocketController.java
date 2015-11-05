@@ -14,7 +14,7 @@ import com.github.kolandroid.kol.android.util.searchlist.GroupSearchListControll
 import com.github.kolandroid.kol.android.util.searchlist.ListSelector;
 import com.github.kolandroid.kol.model.LiveModel.LiveMessage;
 import com.github.kolandroid.kol.model.models.inventory.ItemModel;
-import com.github.kolandroid.kol.model.models.inventory.ItemPocketModel;
+import com.github.kolandroid.kol.model.models.inventory.pockets.ItemPocketModel;
 
 public class ItemPocketController extends
         LinkedModelController<LiveMessage, ItemPocketModel> {
