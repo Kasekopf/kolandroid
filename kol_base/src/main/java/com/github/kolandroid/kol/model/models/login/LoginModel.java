@@ -45,7 +45,7 @@ public class LoginModel extends Model {
 
     public LoginModel(Session s, ServerReply reply) {
         super(s);
-        s.removeCookie("PHPSESSID");
+        s.removeCookie("AWSELB");
 
         stale = false;
         loginId = LOGIN_ID.extractSingle(reply.url, "");
@@ -69,16 +69,16 @@ public class LoginModel extends Model {
         } else {
             announcements = BLANK_TARGETS.replaceAll(announcements, "");
             Logger.log("LoginModel", "Announcements:" + announcements);
-            announcementsModel = new WebModel(s, reply.substituteBody("http://www.kingdomofloathing.com/announcements.php", announcements), WebModel.WebModelType.EXTERNAL);
+            announcementsModel = new WebModel(s, reply.substituteBody("https://www.kingdomofloathing.com/announcements.php", announcements), WebModel.WebModelType.EXTERNAL);
         }
     }
 
     public void login(final String username,
-                      final PasswordHash hash) {
+                      final char[] password) {
         String[] names = {"loginid", "loginname", "password",
                 "loggingin", "challenge", "response", "secure"};
-        String[] values = {loginId, username.replace(" ", "%20"), "", "Yup.", challenge,
-                hash.completeChallenge(challenge), "1"};
+        String[] values = {loginId, username.replace(" ", "%20"), new String(password), "Yup.", challenge,
+                challenge, "1"};
 
         stale = true;
 
@@ -96,7 +96,7 @@ public class LoginModel extends Model {
 
                 session.addCookies(response.cookie);
                 Logger.log("LoginModel", "New game session: " + session);
-                if (session.getCookie("PHPSESSID", "").equals("")) {
+                if (session.getCookie("AWSELB", "").equals("")) {
                     // First, display the updated login page
                     getGameHandler().handle(session, response);
 
@@ -169,7 +169,7 @@ public class LoginModel extends Model {
 
                     session.addCookies(response.cookie);
                     Logger.log("LoginModel", "New game session: " + session);
-                    if (session.getCookie("PHPSESSID", "").equals("")) {
+                    if (session.getCookie("AWSELB", "").equals("")) {
                         // Display the new login screen if it exists
                         getGameHandler().handle(session, response);
 

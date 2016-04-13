@@ -202,7 +202,7 @@ public class WebModel extends Model {
         }
 
         // If there is no session token, the request must be external
-        if (session.getCookie("PHPSESSID", null) == null) {
+        if (session.getCookie("AWSELB", null) == null) {
             return WebModelType.EXTERNAL;
         }
 
@@ -216,7 +216,7 @@ public class WebModel extends Model {
         if (text.url.contains("create.php"))
             return WebModelType.EXTERNAL;
 
-        if (session.getCookie("PHPSESSID", "").equals("")) {
+        if (session.getCookie("AWSELB", "").equals("")) {
             return WebModelType.EXTERNAL;
         } else {
             return WebModelType.REGULAR;
@@ -341,6 +341,7 @@ public class WebModel extends Model {
     }
 
     public InputStream makeBlockingRequest(String url) {
+        url = url.replace("https://www.kingdomofloathing.com/", "");
         url = url.replace("http://www.kingdomofloathing.com/", "");
         url = url.replace("www.kingdomofloathing.com/", "");
 

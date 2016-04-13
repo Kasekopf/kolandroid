@@ -114,7 +114,7 @@ public class ServerReply implements Serializable {
             return null;
 
         Logger.log("ServerReply", "Detected results pane: " + resultsPane);
-        String updatedUrl = "http://www.kingdomofloathing.com/results.php?androiddisplay=results";
+        String updatedUrl = "https://www.kingdomofloathing.com/results.php?androiddisplay=results";
 
         return substituteBody(updatedUrl, "<center>" + resultsPane + "</center>");
     }

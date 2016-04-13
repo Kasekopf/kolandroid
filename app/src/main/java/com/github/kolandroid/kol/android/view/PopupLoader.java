@@ -23,7 +23,8 @@ public class PopupLoader implements LoadingContext {
     }
 
     private String shortenURL(String url) {
-        return url.replace("http://www.kingdomofloathing.com/", "");
+        return url.replace("https://www.kingdomofloathing.com/", "")
+                .replace("http://www.kingdomofloathing.com/", "");
     }
 
     @Override

@@ -135,7 +135,6 @@ public class WebController extends UpdatableModelController<WebModel> {
                 if (url.startsWith("data:text/html"))
                     return null;
 
-                // in = context.getAssets().open(url.replace("http://images.kingdomofloathing.com/", "images/"));
                 if (url.contains(".php")) {
                     if ((url.startsWith("http://") || url.startsWith("https://") || url.startsWith("www"))
                             && !INTERNAL_FULL_URL.matches(url)) {

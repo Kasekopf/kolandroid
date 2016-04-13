@@ -25,7 +25,6 @@ import com.github.kolandroid.kol.android.screen.ViewScreen;
 import com.github.kolandroid.kol.gamehandler.SettingsContext;
 import com.github.kolandroid.kol.model.models.WebModel;
 import com.github.kolandroid.kol.model.models.login.LoginModel;
-import com.github.kolandroid.kol.model.models.login.PasswordHash;
 import com.github.kolandroid.kol.util.Logger;
 
 import java.util.ArrayList;
@@ -126,8 +125,6 @@ public class LoginController extends ModelController<LoginModel> implements Expi
                 char[] password = new char[passField.getText().length()];
                 passField.getText().getChars(0, password.length, password, 0);
 
-                PasswordHash pass;
-
                 if (username.equals(""))
                     return;
 
@@ -136,13 +133,8 @@ public class LoginController extends ModelController<LoginModel> implements Expi
                     if (passwordHash.length != 2)
                         return;
 
-                    char[] hashChars = new char[passwordHash[1].length()];
-                    passwordHash[1].getChars(0, hashChars.length, hashChars, 0);
-                    pass = new PasswordHash(hashChars, true);
-                } else {
-                    if (password.length == 0)
-                        return;
-                    pass = new PasswordHash(password, false);
+                    password = new char[passwordHash[1].length()];
+                    passwordHash[1].getChars(0, password.length, password, 0);
                 }
 
                 View focus = host.getActivity().getCurrentFocus();
@@ -152,7 +144,7 @@ public class LoginController extends ModelController<LoginModel> implements Expi
                     inputManager.hideSoftInputFromWindow(focus.getWindowToken(),
                             InputMethodManager.HIDE_NOT_ALWAYS);
                 }
-                getModel().login(username, pass);
+                getModel().login(username, password);
 
                 settings.set("login_savePassword", configPass.isChecked());
                 settings.set("login_enterChat", configChat.isChecked());
@@ -160,13 +152,11 @@ public class LoginController extends ModelController<LoginModel> implements Expi
 
                 if (configPass.isChecked()) {
                     settings.set("login_defaultUsername", username);
-                    settings.set("login_defaultPassword", username + ":" + new String(pass.getBaseHash()));
+                    settings.set("login_defaultPassword", username + ":" + new String(password));
                 } else {
                     settings.remove("login_defaultUsername");
                     settings.remove("login_defaultPassword");
                 }
-
-                pass.clear();
             }
         });
 

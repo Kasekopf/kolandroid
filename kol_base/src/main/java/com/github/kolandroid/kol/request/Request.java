@@ -76,12 +76,12 @@ public class Request {
      * @return a fresh connection to use.
      */
     protected Connection getConnection(String server) {
-        if(url.contains("http://www.kingdomofloathing.com/")) {
+        if (url.contains("https://www.kingdomofloathing.com/")) {
             return new Connection(url);
         } else if (url.startsWith("/")) {
-            return new Connection("http://www.kingdomofloathing.com" + url);
+            return new Connection("https://www.kingdomofloathing.com" + url);
         } else {
-            return new Connection("http://www.kingdomofloathing.com/" + url);
+            return new Connection("https://www.kingdomofloathing.com/" + url);
         }
     }
 

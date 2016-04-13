@@ -40,7 +40,7 @@ public class ImageDownloader {
 
         if (url == null) return;
         if (url.length() <= 1) return;
-        if (!url.startsWith("http://")) url = "http://" + url;
+        if (!url.startsWith("http://") && !url.startsWith("https://")) url = "http://" + url;
 
         String oldUrl = pendingViews.get(slot);
         if (oldUrl != null && oldUrl.contentEquals(url))
@@ -180,7 +180,6 @@ public class ImageDownloader {
                 in.close();
             } catch (Exception e) {
                 Logger.log("ImageDownloader", "Unable to download: " + url);
-                e.printStackTrace();
             }
 
             return result;

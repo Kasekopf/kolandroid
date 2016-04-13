@@ -111,7 +111,7 @@ public class Connection {
         if (doPost) {
             Logger.log("Connection", "Making POST request to " + url + " [" + getArguments() + "]");
         } else if (!base.contains("newchatmessages.php")) { //filter out the endless new chat message requests
-            Logger.log("Connection", "Making GET request to " + url);
+            Logger.log("Connection", "Making GET request to " + url + " [cookie: " + cookie + "]");
         }
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
