@@ -14,7 +14,7 @@ public class AndroidSettingsContext implements SettingsContext {
     private final SharedPreferences globalSettings;
 
     public AndroidSettingsContext(Context c) {
-        this.globalSettings = c.getSharedPreferences(GLOBAL_STORAGE, 0);
+        this.globalSettings = c.getSharedPreferences(GLOBAL_STORAGE, Context.MODE_PRIVATE);
     }
 
     public boolean contains(String name) {
@@ -70,7 +70,7 @@ public class AndroidSettingsContext implements SettingsContext {
 
     @Override
     public void set(String name, boolean value) {
-        Logger.log("AndroidSettingsContext", "[" + name + "] set to $boolean[" + value + "]");
+        //Logger.log("AndroidSettingsContext", "[" + name + "] set to $boolean[" + value + "]");
         SharedPreferences.Editor editor = globalSettings.edit();
         editor.putBoolean(name, value);
         editor.apply();
@@ -78,7 +78,7 @@ public class AndroidSettingsContext implements SettingsContext {
 
     @Override
     public void set(String name, int value) {
-        Logger.log("AndroidSettingsContext", "[" + name + "] set to $int[" + value + "]");
+        //Logger.log("AndroidSettingsContext", "[" + name + "] set to $int[" + value + "]");
         SharedPreferences.Editor editor = globalSettings.edit();
         editor.putInt(name, value);
         editor.apply();
@@ -86,7 +86,7 @@ public class AndroidSettingsContext implements SettingsContext {
 
     @Override
     public void set(String name, String value) {
-        Logger.log("AndroidSettingsContext", "[" + name + "] set to $string[" + value + "]");
+        //Logger.log("AndroidSettingsContext", "[" + name + "] set to $string[" + value + "]");
         SharedPreferences.Editor editor = globalSettings.edit();
         editor.putString(name, value);
         editor.apply();
@@ -95,6 +95,7 @@ public class AndroidSettingsContext implements SettingsContext {
     @Override
     public void set(String name, Set<String> value) {
         // Join the string values for the sake of logging
+        /*
         StringBuilder logentry = new StringBuilder("[").append(name).append("] set to $strings[");
         for (String s : value) {
             logentry.append(s).append(", ");
@@ -102,6 +103,7 @@ public class AndroidSettingsContext implements SettingsContext {
         logentry.append("]");
 
         Logger.log("AndroidSettingsContext", logentry.toString());
+        */
         SharedPreferences.Editor editor = globalSettings.edit();
         editor.putStringSet(name, value);
         editor.apply();
@@ -115,7 +117,7 @@ public class AndroidSettingsContext implements SettingsContext {
      * @param value
      */
     public void setImmediately(String name, String value) {
-        Logger.log("AndroidSettingsContext", "[" + name + "] set to $string[" + value + "]");
+        //Logger.log("AndroidSettingsContext", "[" + name + "] set to $string[" + value + "]");
         SharedPreferences.Editor editor = globalSettings.edit();
         editor.putString(name, value);
         editor.commit();
