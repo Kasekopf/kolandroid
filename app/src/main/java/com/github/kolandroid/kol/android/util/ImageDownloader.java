@@ -166,7 +166,7 @@ public class ImageDownloader {
             }
 
             try {
-                in = context.getAssets().open(url.replace("http://images.kingdomofloathing.com/", "images/"));
+                in = context.getAssets().open(url.replace("http://images.kingdomofloathing.com/", "images/").replace("https://s3.amazonaws.com/images.kingdomofloathing.com/", "images/"));
                 result = BitmapFactory.decodeStream(in);
                 in.close();
                 return result;
