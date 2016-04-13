@@ -82,7 +82,7 @@ public class LoginController extends ModelController<LoginModel> implements Expi
 
             @Override
             public void afterTextChanged(Editable s) {
-                String[] passwordHash = settings.get("login_defaultPassword", ":").split(":");
+                String[] passwordHash = settings.get("login_storedPassword", ":").split(":");
                 if (passwordHash.length == 2 && userField.getText().toString().equalsIgnoreCase(passwordHash[0])) {
                     passField.setHint("\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"); //unicode dot x10
                 } else {
@@ -91,9 +91,9 @@ public class LoginController extends ModelController<LoginModel> implements Expi
             }
         });
 
-        userField.setText(settings.get("login_defaultUsername", ""));
+        userField.setText(settings.get("login_storedUsername", ""));
 
-        String[] passwordHash = settings.get("login_defaultPassword", ":").split(":");
+        String[] passwordHash = settings.get("login_storedPassword", ":").split(":");
         if(passwordHash.length == 2) {
             savedUser = passwordHash[0];
         } else {
@@ -129,7 +129,7 @@ public class LoginController extends ModelController<LoginModel> implements Expi
                     return;
 
                 if (savedUser != null && username.equalsIgnoreCase(savedUser) && (password.length == 0)) {
-                    String[] passwordHash = settings.get("login_defaultPassword", ":").split(":");
+                    String[] passwordHash = settings.get("login_storedPassword", ":").split(":");
                     if (passwordHash.length != 2)
                         return;
 
@@ -151,11 +151,11 @@ public class LoginController extends ModelController<LoginModel> implements Expi
                 enterChatImmediately = configChat.isChecked();
 
                 if (configPass.isChecked()) {
-                    settings.set("login_defaultUsername", username);
-                    settings.set("login_defaultPassword", username + ":" + new String(password));
+                    settings.set("login_storedUsername", username);
+                    settings.set("login_storedPassword", username + ":" + new String(password));
                 } else {
-                    settings.remove("login_defaultUsername");
-                    settings.remove("login_defaultPassword");
+                    settings.remove("login_storedUsername");
+                    settings.remove("login_storedPassword");
                 }
             }
         });
