@@ -72,4 +72,10 @@
         android:layout_height="wrap_content"
         android:text="Refresh" />
 
+    <Button
+        android:id="@+id/login_connecting_update_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Check for App Updates" />
+
 </LinearLayout>
