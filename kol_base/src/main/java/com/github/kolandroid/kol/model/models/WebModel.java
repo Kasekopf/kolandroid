@@ -259,6 +259,9 @@ public class WebModel extends Model {
                 .replaceAll(html,
                         "$0<meta name=\"viewport\" content=\"width=device-width\">");
 
+        // Fix http images
+        html = html.replace("http://images.kingdomofloathing.com/", "https://s3.amazonaws.com/images.kingdomofloathing.com/");
+
         return html;
     }
 
