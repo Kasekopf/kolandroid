@@ -47,7 +47,7 @@ public class ChatSubmissionController extends ChatStubController<ChatSubmissionS
             public void onClick(View arg0) {
                 String message = text.getText().toString();
 
-                getModel().doChatSubmission(text.getText().toString());
+                getModel().doChatSubmission(message);
                 text.setText("");
 
                 InputMethodManager inputManager = (InputMethodManager) host
