@@ -201,11 +201,6 @@ public class WebModel extends Model {
                 return type;
         }
 
-        // If there is no session token, the request must be external
-        if (session.getCookie("AWSELB", null) == null) {
-            return WebModelType.EXTERNAL;
-        }
-
         if (text.url.contains("desc_item.php")
                 || text.url.contains("desc_effect.php")
                 || text.url.contains("desc_skill.php")
@@ -216,7 +211,8 @@ public class WebModel extends Model {
         if (text.url.contains("create.php"))
             return WebModelType.EXTERNAL;
 
-        if (session.getCookie("AWSELB", "").equals("")) {
+        // If there is no session token, the request must be external
+        if (session.getCookie("AWSALB", "").equals("")) {
             return WebModelType.EXTERNAL;
         } else {
             return WebModelType.REGULAR;

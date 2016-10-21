@@ -45,7 +45,7 @@ public class LoginModel extends Model {
 
     public LoginModel(Session s, ServerReply reply) {
         super(s);
-        s.removeCookie("AWSELB");
+        s.removeCookie("AWSALB");
 
         stale = false;
         loginId = LOGIN_ID.extractSingle(reply.url, "");
@@ -96,7 +96,7 @@ public class LoginModel extends Model {
 
                 session.addCookies(response.cookie);
                 Logger.log("LoginModel", "New game session: " + session);
-                if (session.getCookie("AWSELB", "").equals("")) {
+                if (session.getCookie("AWSALB", "").equals("")) {
                     // First, display the updated login page
                     getGameHandler().handle(session, response);
 
@@ -169,7 +169,7 @@ public class LoginModel extends Model {
 
                     session.addCookies(response.cookie);
                     Logger.log("LoginModel", "New game session: " + session);
-                    if (session.getCookie("AWSELB", "").equals("")) {
+                    if (session.getCookie("AWSALB", "").equals("")) {
                         // Display the new login screen if it exists
                         getGameHandler().handle(session, response);
 

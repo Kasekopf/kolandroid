@@ -56,7 +56,7 @@ public class KolApplication extends Application implements DataContext {
 
     @Override
     public SessionCache getSessionCache(Session session) {
-        String key = session.getCookie("AWSELB", "");
+        String key = session.getCookie("AWSALB", "");
         if (!sessionCache.containsKey(key)) {
             synchronized (this) {
                 if (!sessionCache.containsKey(key)) {

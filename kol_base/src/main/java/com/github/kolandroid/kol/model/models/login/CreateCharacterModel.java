@@ -55,7 +55,7 @@ public class CreateCharacterModel extends WebModel {
 
                             session.addCookies(response.cookie);
                             Logger.log("CreateCharacterModel", "New game session: " + session);
-                            if (session.getCookie("AWSELB", "").equals("")) {
+                            if (session.getCookie("AWSALB", "").equals("")) {
                                 // Failure to login
                                 Logger.log("CreateCharacterModel", "Failed to Login");
                                 makeRequest(new SimulatedRequest(MessageModel.generateErrorMessage("Unable to Create Character [0x04]", MessageModel.ErrorType.SEVERE)));
